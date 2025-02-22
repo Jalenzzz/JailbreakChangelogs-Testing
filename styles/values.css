@@ -1224,6 +1224,49 @@ body {
   #value-sort-dropdown option[value="separator"] {
     font-size: 12px;
   }
+
+  .intro-content {
+    text-align: center;
+  }
+
+  .intro-content h1 {
+    text-align: center;
+  }
+
+  .intro-content .lead {
+    text-align: center;
+  }
+
+  .intro-buttons {
+    justify-content: center;
+    align-items: center;
+  }
+
+  .row.g-3.mb-2 {
+    justify-content: center !important;
+  }
+
+  .row.g-3.mb-2 .col-auto {
+    display: flex;
+    justify-content: center;
+  }
+
+  .trader-notes ul {
+    display: inline-block;
+    text-align: left; /* Keep list items left-aligned for readability */
+  }
+
+  .trader-notes {
+    text-align: center;
+  }
+
+  .categories-section {
+    text-align: center;
+  }
+
+  .categories-section h2 {
+    text-align: center;
+  }
 }
 
 @media (max-width: 576px) {
