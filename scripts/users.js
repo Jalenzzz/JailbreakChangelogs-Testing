@@ -1214,7 +1214,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (comment.item_type === "trade") {
           // Handle trade comments
           imageUrl =
-            "https://placehold.co/2560x1440/212A31/D3D9D4?text=No+Image+Available&font=Montserrat.webp"; // Default image for trades
+            "https://placehold.co/2560x1440/212A31/D3D9D4?text=No+Image+Available&font=Montserrat"; // Default image for trades
           displayTitle = `Trade #${comment.item_id}`;
           displayType = "Trade";
           viewPath = `/trading/ad/${comment.item_id}`; // Correct path for trade pages

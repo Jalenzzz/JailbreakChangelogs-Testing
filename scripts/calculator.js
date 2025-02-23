@@ -59,7 +59,7 @@ function getItemImageElement(item) {
                  class="card-img-top w-100 h-100 object-fit-cover"
                  alt="${item.name}"
                  onload="this.parentElement.previousElementSibling.style.display='none'"
-                 onerror="this.onerror=null; this.src='https://placehold.co/2560x1440/212A31/D3D9D4?text=No+Image+Available&font=Montserrat.webp'">`;
+                 onerror="this.onerror=null; this.src='https://placehold.co/2560x1440/212A31/D3D9D4?text=No+Image+Available&font=Montserrat'">`;
   }
 
   return `<img src="/assets/images/items/480p/${item.type.toLowerCase()}s/${
@@ -68,7 +68,7 @@ function getItemImageElement(item) {
                class="card-img-top w-100 h-100 object-fit-cover"
                alt="${item.name}"
                onload="this.parentElement.previousElementSibling.style.display='none'"
-               onerror="this.onerror=null; this.src='https://placehold.co/2560x1440/212A31/D3D9D4?text=No+Image+Available&font=Montserrat.webp'">`;
+               onerror="this.onerror=null; this.src='https://placehold.co/2560x1440/212A31/D3D9D4?text=No+Image+Available&font=Montserrat'">`;
 }
 
 // Calculate values for each side
