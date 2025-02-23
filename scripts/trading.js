@@ -736,16 +736,9 @@ function displayAvailableItems(type) {
               ${item.name}
             </div>
             <div class="position-relative" style="aspect-ratio: 16/9;">
-              <div class="position-absolute top-50 start-50 translate-middle spinner-container">
-                <div class="spinner-border custom-spinner" role="status">
-                  <span class="visually-hidden">Loading...</span>
-                </div>
-              </div>
-      
               <img class="card-img w-100 h-100 object-fit-cover"
                    src="${getItemImageUrl(item)}"
                    alt=""
-                   onload="this.style.display='block'; this.previousElementSibling.style.display='none'"
                    onerror="this.onerror=null; this.src='https://placehold.co/2560x1440/212A31/D3D9D4?text=No+Image+Available&font=Montserrat'; this.style.display='block'; this.previousElementSibling.style.display='none'"
               >
             </div>

@@ -46,12 +46,22 @@ async function loadItems() {
 
 // Helper function to get item images (copied from trading.js)
 function getItemImageElement(item) {
-  // Special handling for HyperShift
+  if (!item)
+    return "https://placehold.co/2560x1440/212A31/D3D9D4?text=No+Image+Available&font=Montserrat";
+
   if (item.name === "HyperShift") {
     return `<img src="/assets/images/items/hyperchromes/HyperShift.gif" 
                  class="card-img-top w-100 h-100 object-fit-cover"
                  alt="${item.name}"
                  onload="this.parentElement.previousElementSibling.style.display='none'">`;
+  }
+
+  if (item.type === "Horn") {
+    return `<img src="/assets/audios/horn_thumbnail.webp" 
+                 class="card-img-top w-100 h-100 object-fit-cover"
+                 alt="${item.name}"
+                 onload="this.parentElement.previousElementSibling.style.display='none'"
+                 onerror="this.onerror=null; this.src='https://placehold.co/2560x1440/212A31/D3D9D4?text=No+Image+Available&font=Montserrat'">`;
   }
 
   if (item.type === "Drift") {
@@ -69,6 +79,42 @@ function getItemImageElement(item) {
                alt="${item.name}"
                onload="this.parentElement.previousElementSibling.style.display='none'"
                onerror="this.onerror=null; this.src='https://placehold.co/2560x1440/212A31/D3D9D4?text=No+Image+Available&font=Montserrat'">`;
+}
+
+// Add this new centralized function near the top of the file
+function getItemImagePath(item) {
+  if (!item)
+    return "https://placehold.co/2560x1440/212A31/D3D9D4?text=No+Image+Available&font=Montserrat";
+
+  if (item.name === "HyperShift") {
+    return "/assets/images/items/hyperchromes/HyperShift.gif";
+  }
+
+  if (item.type === "Horn") {
+    return "/assets/audios/horn_thumbnail.webp";
+  }
+
+  if (item.type === "Drift") {
+    return `/assets/images/items/480p/drifts/${item.name}.webp`;
+  }
+
+  // Default path for other items
+  return `/assets/images/items/480p/${item.type.toLowerCase()}s/${
+    item.name
+  }.webp`;
+}
+
+// Update the getItemImageElement function to use the new centralized function
+function getItemImageElement(item) {
+  return `<img src="${getItemImagePath(item)}" 
+               class="card-img-top" 
+               alt="${item?.name || "Item"}"
+               onerror="this.src='https://placehold.co/2560x1440/212A31/D3D9D4?text=No+Image+Available&font=Montserrat'">`;
+}
+
+// Update getItemImageUrl to use the new centralized function
+function getItemImageUrl(item) {
+  return getItemImagePath(item);
 }
 
 // Calculate values for each side
@@ -153,7 +199,7 @@ function renderPreviewItems(containerId, items) {
       <h6>
        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 16 16">
 	<rect width="16" height="16" fill="none" />
-	<path fill="currentColor" d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm2 .5v2a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0-.5.5m0 4v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M4.5 9a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 12.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M7.5 6a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM7 9.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m.5 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM10 6.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m.5 2.5a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 0-.5-.5z" />
+	<path fill="currentColor" d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm2 .5v2a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0-.5.5m0 4v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M4.5 9a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 12.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M7.5 6a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m.5 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM10 6.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m.5 2.5a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 0-.5-.5z" />
 </svg>
         ${
           containerId === "preview-offering-items" ? "Offering" : "Requesting"
@@ -438,6 +484,7 @@ function sortModalItems() {
       "tire-styles": "Tire Style",
       drifts: "Drift",
       furnitures: "Furniture",
+      horns: "Horn", // Add Horn type mapping
     };
 
     const targetType = typeMap[category];
@@ -513,6 +560,13 @@ function displayAvailableItems(type) {
     }, 500);
   }
 
+  // Sort filteredItems by cash value descending before displaying
+  filteredItems.sort((a, b) => {
+    const aValue = parseValue(a.cash_value || "0");
+    const bValue = parseValue(b.cash_value || "0");
+    return bValue - aValue;
+  });
+
   // Get the current category from the dropdown
   const sortDropdown = document.getElementById("modal-value-sort-dropdown");
   const selectedOption = sortDropdown
@@ -568,11 +622,6 @@ function displayAvailableItems(type) {
         ${item.name}
       </div>
       <div class="position-relative" style="aspect-ratio: 16/9; overflow: hidden;">
-        <div class="spinner-container position-absolute top-50 start-50 translate-middle">
-          <div class="spinner-border custom-spinner" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-        </div>
         <div class="item-image-wrapper" style="width: 100%; height: 100%;">
           ${getItemImageElement(item)}
         </div>
@@ -1167,7 +1216,7 @@ function renderPreviewItems(containerId, items) {
       <h6>
        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 16 16">
 	<rect width="16" height="16" fill="none" />
-	<path fill="currentColor" d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm2 .5v2a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0-.5.5m0 4v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M4.5 9a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 12.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M7.5 6a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM7 9.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m.5 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM10 6.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m.5 2.5a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 0-.5-.5z" />
+	<path fill="currentColor" d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm2 .5v2a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0-.5.5m0 4v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M4.5 9a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 12.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M7.5 6a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m.5 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM10 6.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m.5 2.5a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 0-.5-.5z" />
 </svg>
         ${
           containerId === "preview-offering-items" ? "Offering" : "Requesting"
