@@ -107,7 +107,7 @@ function getItemImagePath(item) {
 // Update the getItemImageElement function to use the new centralized function
 function getItemImageElement(item) {
   return `<img src="${getItemImagePath(item)}" 
-               class="card-img-top" 
+               class="card-img-top w-100 h-100 object-fit-cover" 
                alt="${item?.name || "Item"}"
                onerror="this.src='https://placehold.co/2560x1440/212A31/D3D9D4?text=No+Image+Available&font=Montserrat'">`;
 }
@@ -461,15 +461,24 @@ function sortModalItems() {
   }
 
   const sortValue = valueSortDropdown.value;
-
-  // Parse sort parameters
   const [sortType, ...categoryParts] = sortValue.split("-");
   const category = categoryParts.join("-");
 
-  // Start with all items if filteredItems is empty
-  let filtered = filteredItems.length > 0 ? [...filteredItems] : [...allItems];
+  // Always start with all items from allItems, not filteredItems
+  let filtered = [...allItems];
 
-  // Apply category filter
+  // First apply search filter if there's a search term
+  const searchInput = document.getElementById("modal-item-search");
+  const searchTerm = searchInput?.value.toLowerCase().trim();
+  if (searchTerm) {
+    filtered = filtered.filter((item) => {
+      const itemName = item.name.toLowerCase();
+      const itemType = item.type.toLowerCase();
+      return itemName.includes(searchTerm) || itemType.includes(searchTerm);
+    });
+  }
+
+  // Then apply category filter
   if (category === "limited-items") {
     filtered = filtered.filter((item) => item.is_limited);
   } else if (category !== "all-items") {
@@ -484,26 +493,20 @@ function sortModalItems() {
       "tire-styles": "Tire Style",
       drifts: "Drift",
       furnitures: "Furniture",
-      horns: "Horn", // Add Horn type mapping
+      horns: "Horn",
     };
 
     const targetType = typeMap[category];
-
     if (targetType) {
       filtered = filtered.filter((item) => item.type === targetType);
     }
   }
 
-  // Sort items
+  // Always sort by cash value descending
   filtered.sort((a, b) => {
-    if (sortType === "value") {
-      const aValue = parseFloat(a.cash_value) || 0;
-      const bValue = parseFloat(b.cash_value) || 0;
-      return bValue - aValue; // Sort high to low
-    } else {
-      // Default to name sort
-      return a.name.localeCompare(b.name);
-    }
+    const aValue = parseFloat(a.cash_value) || 0;
+    const bValue = parseFloat(b.cash_value) || 0;
+    return bValue - aValue;
   });
 
   // Update filteredItems and display
@@ -615,9 +618,15 @@ function displayAvailableItems(type) {
       .map(
         (item) => `
   <div class="col-custom-5">
-    <div class="card available-item-card" 
-         onclick="quickAddItem('${item.name}', '${item.type}')"
-         data-bs-dismiss="modal">
+    <div class="card available-item-card ${
+      item.tradable === 0 ? "not-tradable" : ""
+    }" 
+         onclick="${
+           item.tradable === 0
+             ? ""
+             : `quickAddItem('${item.name}', '${item.type}')`
+         }"
+         ${item.tradable === 0 ? "" : 'data-bs-dismiss="modal"'}>
       <div class="card-header">
         ${item.name}
       </div>
@@ -627,24 +636,30 @@ function displayAvailableItems(type) {
         </div>
       </div>
      <div class="card-body">
-        <div class="info-row">
-          <span class="info-label">Type:</span>
-          <span class="info-value">${item.type}</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Cash Value:</span>
-          <span class="info-value">${formatValue(item.cash_value)}</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Duped Value:</span>
-          <span class="info-value">${formatValue(item.duped_value || 0)}</span>
-        </div>
-        <div class="info-row ${item.is_limited ? "limited-item" : ""}">
-          <span class="info-label">Limited:</span>
-          <span class="info-value">
-            ${
-              item.is_limited
-                ? `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512">
+        ${
+          item.tradable === 0
+            ? '<div class="not-tradable-label">Not Tradable</div>'
+            : `
+              <div class="info-row">
+                <span class="info-label">Type:</span>
+                <span class="info-value">${item.type}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Cash Value:</span>
+                <span class="info-value">${formatValue(item.cash_value)}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Duped Value:</span>
+                <span class="info-value">${formatValue(
+                  item.duped_value || 0
+                )}</span>
+              </div>
+              <div class="info-row ${item.is_limited ? "limited-item" : ""}">
+                <span class="info-label">Limited:</span>
+                <span class="info-value">
+                  ${
+                    item.is_limited
+                      ? `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512">
                           <rect width="512" height="512" fill="none" />
                           <defs>
                             <linearGradient id="meteoconsStarFill0" x1="187.9" x2="324.1" y1="138.1" y2="373.9" gradientUnits="userSpaceOnUse">
@@ -658,16 +673,18 @@ function displayAvailableItems(type) {
                             <animate attributeName="opacity" dur="6s" values="1; .75; 1; .75; 1; .75; 1" />
                           </path>
                         </svg>Yes`
-                : "No"
-            }
-          </span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Demand:</span>
-          <span class="info-value demand-${(
-            item.demand || "0"
-          ).toLowerCase()}">${item.demand || "N/A"}</span>
-        </div>
+                      : "No"
+                  }
+                </span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Demand:</span>
+                <span class="info-value demand-${(
+                  item.demand || "0"
+                ).toLowerCase()}">${item.demand || "N/A"}</span>
+              </div>
+            `
+        }
       </div>
     </div>
   </div>
@@ -1272,7 +1289,30 @@ function resetTrade() {
   document.getElementById("available-items-list").style.display = "block";
 }
 
+// Update handleModalClose function
+function handleModalClose() {
+  const searchInput = document.getElementById("modal-item-search");
+  const clearButton = document.getElementById("clear-search-btn");
+
+  if (searchInput) {
+    searchInput.value = "";
+  }
+
+  if (clearButton) {
+    clearButton.style.display = "none";
+  }
+
+  // Reset filtered items based on current dropdown selection
+  sortModalItems();
+}
+
+// Add event listener for modal close
 document.addEventListener("DOMContentLoaded", () => {
+  const availableItemsModal = document.getElementById("availableItemsModal");
+  if (availableItemsModal) {
+    availableItemsModal.addEventListener("hidden.bs.modal", handleModalClose);
+  }
+
   const sortDropdown = document.getElementById("modal-value-sort-dropdown");
   if (sortDropdown) {
     sortDropdown.addEventListener("change", sortModalItems);
