@@ -1017,7 +1017,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function createItemCard(item) {
-    console.log("Creating card for:", item.name, item.type);
     const cardDiv = document.createElement("div");
     cardDiv.classList.add("col-6", "col-md-4", "col-lg-3", "mb-4");
 
@@ -1330,43 +1329,23 @@ document.addEventListener("DOMContentLoaded", () => {
       return cardDiv;
     }
 
-    // Debug click handling setup
-    console.log("Setting up click handler for:", item.name);
-
     card.addEventListener("click", (e) => {
-      console.log("Raw click event on card:", {
-        item: item.name,
-        type: item.type,
-        target: e.target.tagName,
-        targetClasses: e.target.className,
-        path: e.composedPath().map((el) => ({
-          tag: el.tagName,
-          class: el.className,
-        })),
-      });
-
       // Always ignore favorite icon clicks
       if (e.target.closest(".favorite-icon")) {
-        console.log("Favorite icon clicked - ignoring navigation");
         return;
       }
 
       // For horns, only navigate if clicking card-body
       if (item.type === "Horn") {
         const isCardBody = e.target.closest(".item-card-body");
-        console.log("Horn item clicked:", {
-          isCardBody,
-          shouldNavigate: isCardBody,
-        });
+
         if (!isCardBody) {
-          console.log("Horn media clicked - not navigating");
           return;
         }
       }
 
       // For drift items, check if clicking video/thumbnail
       if (item.type === "Drift" && e.target.closest(".media-container")) {
-        console.log("Drift media clicked - letting media handler work");
         return;
       }
 
@@ -1374,7 +1353,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const formattedType = item.type.toLowerCase();
       const formattedName = encodeURIComponent(item.name);
       const url = `/item/${formattedType}/${formattedName}`;
-      console.log("Navigating to:", url);
       window.location.href = url;
     });
 
