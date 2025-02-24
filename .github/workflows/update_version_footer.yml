@@ -24,7 +24,7 @@ jobs:
         id: api-request
         uses: fjogeleit/http-request-action@v1
         with:
-          url: ${{ vars.UPDATE_VERSION_ENDPOINT }}
+          url: ${{ secrets.UPDATE_VERSION_ENDPOINT }}
           method: "POST"
           customHeaders: '{"Content-Type": "application/json"}'
           data: '{"type": "website", "version": "${{ steps.commit-info.outputs.hash }}", "last_updated": "${{ steps.commit-info.outputs.timestamp }}"}'
