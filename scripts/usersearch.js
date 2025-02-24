@@ -409,9 +409,9 @@ const searchUsers = (searchTerm) => {
   // Regular username/global_name search
   return allUsers.filter(
     (user) =>
-      user.username.toLowerCase().includes(searchTermLower) ||
+      user.username.toLowerCase().startsWith(searchTermLower) ||
       (user.global_name &&
-        user.global_name.toLowerCase().includes(searchTermLower))
+        user.global_name.toLowerCase().startsWith(searchTermLower))
   );
 };
 
@@ -528,10 +528,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       const filteredUsers = allUsers.filter((user) => {
         const usernameMatch = user.username
           .toLowerCase()
-          .includes(searchTermLower);
+          .startsWith(searchTermLower);
         const globalNameMatch =
           user.global_name &&
-          user.global_name.toLowerCase().includes(searchTermLower);
+          user.global_name.toLowerCase().startsWith(searchTermLower);
         return usernameMatch || globalNameMatch;
       });
 

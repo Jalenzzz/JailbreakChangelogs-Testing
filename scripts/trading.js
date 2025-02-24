@@ -866,7 +866,7 @@ function sortModalItems() {
     filtered = filtered.filter((item) => {
       const itemName = item.name.toLowerCase();
       const itemType = item.type.toLowerCase();
-      return itemName.includes(searchTerm) || itemType.includes(searchTerm);
+      return itemName.startsWith(searchTerm) || itemType.startsWith(searchTerm);
     });
   }
 
@@ -957,11 +957,20 @@ function handleSearch(type) {
     currentPage = 1;
 
     // Filter items based on search term
-    filteredItems = allItems.filter((item) => {
-      const itemName = item.name.toLowerCase();
-      const itemType = item.type.toLowerCase();
-      return itemName.includes(searchTerm) || itemType.includes(searchTerm);
-    });
+    if (searchTerm) {
+      filteredItems = allItems.filter((item) => {
+        const itemName = item.name.toLowerCase();
+        const itemType = item.type.toLowerCase();
+        // Only return true if name or type starts with the search term
+        return (
+          itemName.startsWith(searchTerm) ||
+          // Only search by type if search term is longer than 1 character
+          (searchTerm.length > 1 && itemType.startsWith(searchTerm))
+        );
+      });
+    } else {
+      filteredItems = [...allItems];
+    }
 
     // Apply current category filter from dropdown
     const sortDropdown = document.getElementById("modal-value-sort-dropdown");
