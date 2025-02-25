@@ -81,6 +81,70 @@ window.deleteCookie = function (name) {
 const token = getCookie("token");
 const userid = localStorage.getItem("userid"); // Single declaration
 
+// session utilities
+const SessionLogger = {
+  debug: true,
+  logEvent(type, details) {
+    if (this.debug) {
+      console.log(`[Session:${type}]`, details);
+    }
+  },
+};
+
+async function validateUserSession(token) {
+  if (!token) {
+    SessionLogger.logEvent("validate", "No token found");
+    return false;
+  }
+
+  try {
+    SessionLogger.logEvent("validate", "Checking token validity...");
+    const response = await fetch(
+      `https://api3.jailbreakchangelogs.xyz/users/get/token?token=${token}`
+    );
+
+    if (!response.ok) {
+      SessionLogger.logEvent(
+        "validate",
+        `Token validation failed: ${response.status}`
+      );
+      return false;
+    }
+
+    const userData = await response.json();
+    if (!userData || !userData.id) {
+      SessionLogger.logEvent("validate", "Invalid user data received");
+      return false;
+    }
+
+    SessionLogger.logEvent("validate", "Token validated successfully");
+    return true;
+  } catch (error) {
+    SessionLogger.logEvent(
+      "error",
+      `Session validation error: ${error.message}`
+    );
+    return false;
+  }
+}
+
+function clearSessionWithReason(reason) {
+  SessionLogger.logEvent("logout", {
+    reason,
+    previousState: {
+      hadToken: !!getCookie("token"),
+      hadUserData: !!localStorage.getItem("user"),
+      hadUserId: !!localStorage.getItem("userid"),
+    },
+  });
+
+  localStorage.removeItem("user");
+  localStorage.removeItem("avatar");
+  localStorage.removeItem("userid");
+  localStorage.removeItem("showWelcome");
+  deleteCookie("token");
+}
+
 function parseUserData() {
   try {
     const stored = localStorage.getItem("user");
@@ -102,7 +166,7 @@ function cleanupURL() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
   const urlParams = new URLSearchParams(window.location.search);
 
   // Single welcome message function
@@ -354,6 +418,31 @@ document.addEventListener("DOMContentLoaded", function () {
   sideMenu.querySelectorAll(".nav-link, .btn").forEach((link) => {
     link.addEventListener("click", toggleMenu);
   });
+
+  try {
+    if (token) {
+      const isValid = await validateUserSession(token);
+      if (!isValid) {
+        clearSessionWithReason("invalid_session");
+        window.location.reload();
+        return;
+      }
+    } else if (globalUserData || userid) {
+      clearSessionWithReason("missing_token");
+      window.location.reload();
+      return;
+    }
+
+    // ...rest of existing DOMContentLoaded code...
+  } catch (error) {
+    SessionLogger.logEvent(
+      "error",
+      `Critical initialization error: ${error.message}`
+    );
+    notyf.error(
+      "An error occurred while loading your session. Please try again."
+    );
+  }
 });
 
 function formatStamp(unixTimestamp) {
@@ -469,9 +558,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.history.replaceState({}, "", window.location.pathname);
   }
 
-  // Update the session check
-  // Remove duplicate userid declaration and use the global one
-  if (!token && (globalUserData || userid)) {
+  if (!token) {
     clearSessionAndReload();
     return;
   }
@@ -556,7 +643,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Check and clear invalid session state
-  if (!token && (user || userid)) {
+  if (!token) {
     clearSessionAndReload();
     return;
   }
@@ -890,23 +977,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  window.logout = function () {
-    console.log("[Debug] User initiated logout");
-    console.log("[Debug] Previous state:", {
-      user: localStorage.getItem("user") ? "[REDACTED]" : null,
-      avatar: localStorage.getItem("avatar") ? "[REDACTED]" : null,
-      userid: localStorage.getItem("userid") ? "[REDACTED]" : null,
-      token: getCookie("token") ? "[REDACTED]" : null,
-    });
-
-    localStorage.removeItem("user");
-    localStorage.removeItem("avatar");
-    localStorage.removeItem("userid");
-    localStorage.removeItem("showWelcome");
-
-    deleteCookie("token");
-
-    console.log("[Debug] Logout complete, reloading page");
+  window.logout = function (reason = "user_initiated") {
+    SessionLogger.logEvent("logout", `Logout initiated: ${reason}`);
+    clearSessionWithReason(reason);
     window.location.reload();
   };
 });
