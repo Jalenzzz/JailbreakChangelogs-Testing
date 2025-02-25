@@ -598,7 +598,7 @@ document.addEventListener("DOMContentLoaded", () => {
       categoryNameElement.style.display = "none";
       valuesBreadcrumb.classList.add("active");
       valuesBreadcrumb.setAttribute("aria-current", "page");
-      valuesBreadcrumb.innerHTML = "Values";
+      valuesBreadcrumb.innerHTML = "Value List";
     } else {
       let categoryName;
       if (currentSort === "hyperchromes") {
@@ -617,7 +617,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       valuesBreadcrumb.classList.remove("active");
       valuesBreadcrumb.removeAttribute("aria-current");
-      valuesBreadcrumb.innerHTML = '<a href="/values">Values</a>';
+      valuesBreadcrumb.innerHTML = '<a href="/values">Value List</a>';
     }
   };
 
