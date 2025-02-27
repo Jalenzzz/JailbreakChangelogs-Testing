@@ -32,16 +32,9 @@ async function canCreateTradeAd() {
     if (!userData) throw new Error("No user data found");
 
     // Check if user has Roblox data
-    if (!userData.roblox_id || !userData.roblox_username) {
-      notyf.error({
-        message: "Please link your Roblox account first",
-        duration: 5000,
-        dismissible: true,
-        ripple: true,
-        onClick: function () {
-          window.location.href = "/roblox";
-        },
-      });
+    if (!userData.roblox_id) {
+      // Just pass the message string instead of an object
+      notyf.error("Please link your Roblox account first");
       return false;
     }
 
@@ -1276,7 +1269,9 @@ async function deleteTradeAd(tradeId) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    notyf.success("Trade advertisement deleted successfully!");
+    notyf.success(
+      "Trade advertisement deleted successfully! Please note it may take 2-3 minutes for changes to be visible."
+    );
     await loadTradeAds(); // Refresh the trade ads list
   } catch (error) {
     console.error("Error deleting trade:", error);
@@ -1800,38 +1795,6 @@ async function createTradeAdHTML(trade) {
       return "";
     }
 
-    // Helper function to fetch avatar with format fallbacks
-    async function getAvatarUrl(userId, avatarHash) {
-      if (!userId || !avatarHash) return null;
-
-      // Try formats in order: gif -> webp -> png
-      const formats = ["gif", "webp", "png"];
-      for (const format of formats) {
-        try {
-          const url = `https://cdn.discordapp.com/avatars/${userId}/${avatarHash}.${format}?size=4096`;
-          const response = await fetch(url, { method: "HEAD" });
-          if (response.ok) return url;
-        } catch (error) {
-          console.error(`Error checking ${format} avatar:`, error);
-          continue;
-        }
-      }
-      return null;
-    }
-
-    // Get avatar URL with format fallbacks
-    let avatarUrl;
-    if (authorDetails?.avatar) {
-      avatarUrl = await getAvatarUrl(trade.author, authorDetails.avatar);
-    }
-
-    // Fallback to default avatar if no Discord avatar found
-    if (!avatarUrl) {
-      avatarUrl = `https://ui-avatars.com/api/?background=134d64&color=fff&size=128&rounded=true&name=${encodeURIComponent(
-        authorDetails?.username || "Unknown"
-      )}&bold=true&format=svg`;
-    }
-
     // Process item counts for multipliers
     const itemCounts = {};
     trade.offering.split(",").forEach((id) => {
@@ -1847,18 +1810,10 @@ async function createTradeAdHTML(trade) {
       if (!item) return "";
 
       const count = itemCounts[itemId];
-      const multiplierHTML =
-        count > 1 ? `<div class="item-multiplier">×${count}</div>` : "";
-
-      const cashValueClass =
-        item.cash_value !== "N/A" ? "value-available" : "value-na";
-      const dupedValueClass =
-        item.duped_value !== "N/A" ? "value-available" : "value-na";
+      const multiplierHTML = count > 1 ? `<div class="item-multiplier">×${count}</div>` : "";
 
       return `
-        <div class="trade-ad-item" onclick="showBottomSheet(${JSON.stringify(
-          item
-        ).replace(/"/g, "&quot;")})">
+        <div class="trade-ad-item" onclick="showBottomSheet(${JSON.stringify(item).replace(/"/g, "&quot;")})">
           <div class="trade-ad-item-content">
             <div class="item-image-container">
               <img src="${getItemImagePath(item)}" 
@@ -1869,23 +1824,17 @@ async function createTradeAdHTML(trade) {
             <div class="item-details">
               <div class="item-name">${item.name}</div>
               <div class="item-values">
-                <div class="value-badge ${cashValueClass}">
-                  <span class="value-label">Cash Value:</span>
-                  <span class="value-amount">${formatValue(
-                    item.cash_value,
-                    true
-                  )}</span>
-                </div>
-                <div class="value-badge ${dupedValueClass}">
-                  <span class="value-label">Duped Value:</span>
-                  <span class="value-amount">${formatValue(
-                    item.duped_value,
-                    true
-                  )}</span>
-                </div>
                 <div class="value-badge">
                   <span class="value-label">Type:</span>
                   <span class="value-amount">${item.type}</span>
+                </div>
+                <div class="value-badge">
+                  <span class="value-label">Cash Value:</span>
+                  <span class="value-amount">${formatValue(item.cash_value, true)}</span>
+                </div>
+                <div class="value-badge">
+                  <span class="value-label">Duped Value:</span>
+                  <span class="value-amount">${formatValue(item.duped_value, true)}</span>
                 </div>
               </div>
             </div>
@@ -1895,16 +1844,8 @@ async function createTradeAdHTML(trade) {
 
     // Fetch and process items with deduplication
     const [offeringItemsHtml, requestingItemsHtml] = await Promise.all([
-      Promise.all(
-        [...new Set(trade.offering.split(","))]
-          .filter((id) => id)
-          .map(createItemHTML)
-      ),
-      Promise.all(
-        [...new Set(trade.requesting.split(","))]
-          .filter((id) => id)
-          .map(createItemHTML)
-      ),
+      Promise.all([...new Set(trade.offering.split(","))].filter(id => id).map(createItemHTML)),
+      Promise.all([...new Set(trade.requesting.split(","))].filter(id => id).map(createItemHTML))
     ]);
 
     function getFallbackAvatar(username) {
@@ -2568,7 +2509,9 @@ async function createTradeAd() {
     }
 
     // On success
-    notyf.success("Trade advertisement created successfully!");
+    notyf.success(
+      "Trade advertisement created successfully! Please note it may take 2-3 minutes for your trade to appear."
+    );
     resetTrade();
 
     // Update trade ads list without modifying the preview button

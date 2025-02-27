@@ -324,12 +324,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let banner;
   function decimalToHex(decimal) {
-    if (!decimal || decimal === "None") return "#124E66";
+    if (!decimal || decimal === "None") return "#000000";
 
-    // Convert to hex and ensure exactly 6 digits
-    const hex = decimal.toString(16).padStart(6, "0").slice(-6);
-
-    // Return the hex color with a # prefix
+    // Simply convert the decimal string to a 6-character hex
+    // By taking the first 6 characters after converting to hex
+    const hex = decimal.toString(16).substring(0, 6);
     return `#${hex}`;
   }
 
@@ -356,81 +355,56 @@ document.addEventListener("DOMContentLoaded", function () {
     },
   };
 
-  async function fetchBanner(userId, bannerHash, format) {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
+  async function fetchBanner(userId, bannerHash) {
+    // Early return if no banner hash or if banner hash is "None"
+    if (!userId || !bannerHash || bannerHash === "None") {
+      return null;
+    }
 
-    async function tryBannerUrl(baseUrl, size = null) {
-      const url = size ? `${baseUrl}?size=${size}` : baseUrl;
-      try {
-        const response = await fetch(url, {
+    const isAnimated = bannerHash.startsWith("a_");
+    const format = isAnimated ? "gif" : "png";
+    const bannerUrl = `https://cdn.discordapp.com/banners/${userId}/${bannerHash}.${format}?size=4096`;
+
+    try {
+      const response = await fetch(bannerUrl, {
+        method: "HEAD",
+        cache: "no-store",
+      });
+
+      if (response.ok) {
+        return bannerUrl;
+      }
+
+      // Only try PNG as fallback if original request was for GIF
+      if (isAnimated) {
+        const pngUrl = bannerUrl.replace(".gif", ".png");
+        const pngResponse = await fetch(pngUrl, {
           method: "HEAD",
-          signal: controller.signal,
+          cache: "no-store",
         });
-        return response.ok ? url : null;
-      } catch {
-        return null;
-      }
-    }
 
-    try {
-      const baseUrl = `https://cdn.discordapp.com/banners/${userId}/${bannerHash}.${format}`;
-
-      // Try with size parameter first
-      const withSize = await tryBannerUrl(baseUrl, 4096);
-      if (withSize) return withSize;
-
-      // Try without size parameter
-      const withoutSize = await tryBannerUrl(baseUrl);
-      if (withoutSize) return withoutSize;
-
-      return null;
-    } catch (error) {
-      if (error.name === "AbortError") {
-        console.log("Banner fetch timed out");
-      }
-      return null;
-    } finally {
-      clearTimeout(timeout);
-    }
-  }
-
-  async function getBannerUrl(userId, bannerHash) {
-    if (!userId || !bannerHash) {
-      return null;
-    }
-
-    try {
-      // Try GIF first
-      const gifUrl = await fetchBanner(userId, bannerHash, "gif");
-      if (gifUrl) {
-        return gifUrl;
+        if (pngResponse.ok) {
+          return pngUrl;
+        }
       }
 
-      // Fallback to PNG
-      const pngUrl = await fetchBanner(userId, bannerHash, "png");
-      if (pngUrl) {
-        return pngUrl;
-      }
-
-      // If neither format works, return null
       return null;
-    } catch (error) {
-      console.error("Error fetching Discord banner:", error);
+    } catch {
       return null;
     }
   }
 
+  // Remove getBannerUrl function since we've simplified the logic
   async function fetchUserBanner(userId) {
     const bannerContainer = document.querySelector(".banner-container");
     const userBanner = document.getElementById("banner");
 
     try {
-      let image;
-      const randomNumber = Math.floor(Math.random() * 12) + 1;
+      // Generate fallback banner URL once
+      const randomNumber = Math.floor(Math.random() * 14) + 1;
       const fallbackBanner = `/assets/backgrounds/background${randomNumber}.webp`;
 
-      // First, get the user settings
+      // Get user settings first
       const settingsResponse = await fetch(
         `https://api3.jailbreakchangelogs.xyz/users/settings?user=${userId}`,
         {
@@ -448,57 +422,46 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       const settings = await settingsResponse.json();
+      let bannerUrl = fallbackBanner;
 
-      // If banner_discord is enabled, try Discord banner
       if (settings.banner_discord === 1) {
-        image = await getBannerUrl(userId, udata.banner);
-
-        // If no Discord banner, use fallback
-        if (!image) {
-          image = fallbackBanner;
+        const discordBanner = await fetchBanner(userId, udata.banner);
+        if (discordBanner) {
+          bannerUrl = discordBanner;
         }
       } else {
-        // If banner_discord is disabled, try to get custom banner
         const response = await fetch(
           `https://api3.jailbreakchangelogs.xyz/users/background/get?user=${userId}`
         );
 
         if (response.ok) {
           const bannerData = await response.json();
-          // Only use custom banner if it's not a fallback banner path
           if (
             bannerData.image_url &&
             !bannerData.image_url.includes("/assets/backgrounds/background") &&
             bannerData.image_url !== "NONE"
           ) {
-            image = bannerData.image_url;
-          } else {
-            image = fallbackBanner;
+            bannerUrl = bannerData.image_url;
           }
-        } else {
-          image = fallbackBanner;
         }
       }
 
-      // Update banner image
+      // Load the banner image
       const img = new Image();
       img.onload = () => {
         userBanner.src = img.src;
         bannerContainer.classList.remove("loading");
         userBanner.style.opacity = "1";
       };
-      img.src = image; // image is your banner URL
-
       img.onerror = () => {
-        console.error("Failed to load banner image:", image);
         userBanner.src = fallbackBanner;
         bannerContainer.classList.remove("loading");
         userBanner.style.opacity = "1";
       };
+      img.src = bannerUrl;
     } catch (error) {
       console.error("Error fetching banner:", error);
-      const randomNumber = Math.floor(Math.random() * 12) + 1;
-      const fallbackBanner = `/assets/backgrounds/background${randomNumber}.webp`;
+      // Use the same fallback banner variable here instead of generating a new one
       userBanner.src = fallbackBanner;
       bannerContainer.classList.remove("loading");
       userBanner.style.opacity = "1";
@@ -1451,53 +1414,38 @@ document.addEventListener("DOMContentLoaded", function () {
       username
     )}&bold=true&format=svg`;
 
-    async function tryAvatarUrl(baseUrl, size = null) {
-      const url = size ? `${baseUrl}?size=${size}` : baseUrl;
-      try {
-        const response = await fetch(url, { method: "HEAD" });
-        return response.ok ? url : null;
-      } catch {
-        return null;
-      }
+    // Early return if no avatar data
+    if (!udata.id || !udata.avatar || udata.avatar === "None") {
+      userAvatar.src = fallbackUrl;
+      return;
     }
 
     try {
-      // Get avatar hash from udata (assuming udata is available in scope)
-      if (!udata.avatar) {
-        userAvatar.src = fallbackUrl;
+      // Determine if avatar should be animated based on hash
+      const isAnimated = udata.avatar.startsWith("a_");
+      const baseUrl = `https://cdn.discordapp.com/avatars/${udata.id}/${udata.avatar}`;
+
+      // Try primary format first (gif for animated, png for static)
+      const primaryFormat = isAnimated ? "gif" : "png";
+      const primaryUrl = `${baseUrl}.${primaryFormat}?size=4096`;
+
+      const response = await fetch(primaryUrl, { method: "HEAD" });
+      if (response.ok) {
+        userAvatar.src = primaryUrl;
         return;
       }
 
-      // Try GIF format with size
-      const gifBaseUrl = `https://cdn.discordapp.com/avatars/${udata.id}/${udata.avatar}.gif`;
-      const gifWithSize = await tryAvatarUrl(gifBaseUrl, 4096);
-      if (gifWithSize) {
-        userAvatar.src = gifWithSize;
-        return;
+      // If animated failed, try png as fallback
+      if (isAnimated) {
+        const pngUrl = `${baseUrl}.png?size=4096`;
+        const pngResponse = await fetch(pngUrl, { method: "HEAD" });
+        if (pngResponse.ok) {
+          userAvatar.src = pngUrl;
+          return;
+        }
       }
 
-      // Try GIF format without size
-      const gifNoSize = await tryAvatarUrl(gifBaseUrl);
-      if (gifNoSize) {
-        userAvatar.src = gifNoSize;
-        return;
-      }
-
-      // Try WebP format with size
-      const webpBaseUrl = `https://cdn.discordapp.com/avatars/${udata.id}/${udata.avatar}.webp`;
-      const webpWithSize = await tryAvatarUrl(webpBaseUrl, 4096);
-      if (webpWithSize) {
-        userAvatar.src = webpWithSize;
-        return;
-      }
-
-      // Try WebP format without size
-      const webpNoSize = await tryAvatarUrl(webpBaseUrl);
-      if (webpNoSize) {
-        userAvatar.src = webpNoSize;
-        return;
-      }
-
+      // If all attempts fail, use fallback
       userAvatar.src = fallbackUrl;
     } catch {
       userAvatar.src = fallbackUrl;
