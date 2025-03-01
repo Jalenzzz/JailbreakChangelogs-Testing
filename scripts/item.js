@@ -615,19 +615,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Special case for Drifts
     if (item.type === "Drift") {
       return `
-        <div class="media-container ${containerClass} ${
-        item.is_limited && showLimitedBadge ? "limited-item" : ""
-      }">
-          <video src="/assets/images/items/drifts/${item.name}.webm"
-                 class="${imageClass || "img-fluid rounded video-player"}"
+        <div class="media-container position-relative ${containerClass}">
+          ${showFavoriteIcon ? getFavoriteIconHtml(item) : ""}
+          <img src="/assets/images/items/480p/drifts/${item.name}.webp"
+               width="854" 
+               height="480"
+               class="drift-thumbnail ${imageClass || "card-img-top"}" 
+               alt="${item.name}" 
+               onerror="handleimage(this)">
+          <video class="${imageClass || "card-img-top video-player"}" 
+                 style="opacity: 0;" 
                  playsinline 
                  muted 
-                 loop
-                 autoplay
-                 defaultMuted
-                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; opacity: 1;">
+                 loop>
+            <source src="/assets/images/items/drifts/${
+              item.name
+            }.webm" type="video/webm">
+            <source src="/assets/images/items/drifts/${
+              item.name
+            }.mp4" type="video/mp4">
           </video>
-          ${item.is_limited && showLimitedBadge ? getLimitedBadgeHtml() : ""}
+          ${item.is_limited && showFavoriteIcon ? getLimitedBadgeHtml() : ""}
         </div>`;
     }
 
@@ -680,6 +688,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (item.type === "HyperChrome") color = "#E91E63";
     if (item.type === "Furniture") color = "#9C6644";
     if (item.type === "Horn") color = "#4A90E2";
+    if (item.type === "Weapon Skin") color = "#4a6741";
 
     // Modify the badge HTML generation
     let specialBadgeHtml = "";
