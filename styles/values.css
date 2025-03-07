@@ -454,39 +454,102 @@ body {
   box-shadow: 0 0 20px rgba(66, 143, 254, 0.5), 0 0 35px rgba(254, 19, 255, 0.3);
 }
 
-/* Limited item styling */
+/* Update limited item styling */
 .limited-item {
   position: relative;
   border: 2px solid transparent;
   background: linear-gradient(var(--bg-secondary), var(--bg-secondary))
       padding-box,
     linear-gradient(45deg, #ffd700, #ffa500) border-box;
-  transition: all 0.3s ease; /* Add transition for smooth effect */
+  transition: all 0.3s ease;
 }
 
-.limited-badge {
+/* Add seasonal item styling */
+.seasonal-item {
+  position: relative;
+  border: 2px solid transparent;
+  background: linear-gradient(var(--bg-secondary), var(--bg-secondary))
+      padding-box,
+    linear-gradient(45deg, #40c0e7, #00a2e8) border-box;
+  transition: all 0.3s ease;
+}
+
+/* Both limited and seasonal */
+.limited-item.seasonal-item {
+  position: relative;
+  border: 2px solid transparent;
+  background: linear-gradient(var(--bg-secondary), var(--bg-secondary))
+      padding-box,
+    linear-gradient(45deg, #40c0e7, #00a2e8) border-box;
+  transition: all 0.3s ease;
+}
+
+.item-badge {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
-  color: #000;
-  font-size: 0.75rem;
-  padding: 0.3rem 0.6rem;
-  border-radius: 15px;
   z-index: 3;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
 }
 
-.limited-badge i {
-  color: #000;
-  font-size: 0.7rem;
+.seasonal-badge svg {
+  width: 24px;
+  height: 24px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
 }
 
-.limited-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.5),
-    /* Inner glow */ 0 0 35px rgba(255, 165, 0, 0.3); /* Outer glow */
+.limited-badge svg {
+  width: 20px;
+  height: 20px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
 }
+
+.seasonal-badge svg,
+.limited-badge svg {
+  width: 24px;
+  height: 24px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .item-badge {
+    width: 24px;
+    height: 24px;
+    top: 8px;
+    right: 8px;
+  }
+
+  .seasonal-badge svg,
+  .limited-badge svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (max-width: 576px) {
+  .item-badge {
+    width: 20px;
+    height: 20px;
+    top: 6px;
+    right: 6px;
+  }
+
+  .seasonal-badge svg,
+  .limited-badge svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
 .intro-container {
   max-width: 100%;
   margin: 0 auto;
@@ -524,7 +587,7 @@ body {
     #cccc00
   );
   background-size: 1800% 1800%;
-  color: var(--text-primary);
+  color: #fff !important;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
   animation: rainbow 18s ease infinite;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -1026,7 +1089,7 @@ body {
   font-size: 0.95rem; /* Increased from default size */
   padding: 0.35rem 0.7rem; /* Increased padding */
   border-radius: 20px;
-  color: var(--text-primary); /* Add this line */
+  color: #fff !important;
 }
 
 @media (max-width: 768px) {
@@ -1750,4 +1813,63 @@ body.menu-open {
 
 .media-container:hover .media-tooltip {
   opacity: 1;
+}
+
+/* Trader Notes and Legend Section */
+.trader-notes h2 {
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.trader-notes ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.trader-notes li {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+  position: relative;
+  line-height: 1.4;
+}
+
+.trader-notes li:last-child {
+  margin-bottom: 0;
+}
+
+.trader-notes li.d-flex {
+  padding-left: 0;
+}
+
+.trader-notes li:before {
+  content: "•";
+  position: absolute;
+  left: -1rem;
+  color: var(--accent-color-light);
+}
+
+.trader-notes li.d-flex:before {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .trader-notes {
+    margin-bottom: 1rem;
+  }
+
+  .trader-notes:last-child {
+    margin-bottom: 0;
+  }
+
+  .trader-notes h2 {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .trader-notes li {
+    font-size: 0.8125rem;
+  }
 }
