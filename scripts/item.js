@@ -588,11 +588,23 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="media-container ${containerClass}">
             <video class="${imageClass || "card-img-top"}"
                    style="width: 100%; height: 100%; object-fit: contain;"
-                   autoplay loop muted playsinline
-                   onerror="this.onerror=null; this.style.display='none'; let img=document.createElement('img'); img.src='https://placehold.co/2560x1440/212A31/D3D9D4?text=No+Image+Available&font=Montserrat'; img.className=this.className; img.style=this.style; this.parentNode.appendChild(img);">
+                   autoplay loop muted playsinline>
               <source src="/assets/images/items/hyperchromes/HyperShift.webm" type="video/webm">
               <source src="/assets/images/items/hyperchromes/HyperShift.mp4" type="video/mp4">
             </video>
+        </div>`;
+    }
+
+    // Special case for Arcade Racer spoiler
+    if (item.name === "Arcade Racer" && item.type === "Spoiler") {
+      return `
+        <div class="media-container position-relative ${containerClass}">
+          <video class="${imageClass || "card-img-top"}"
+                 style="width: 100%; height: 100%; object-fit: contain;"
+                 autoplay loop muted playsinline>
+            <source src="/assets/images/items/spoilers/Arcade Racer.webm" type="video/webm">
+            <source src="/assets/images/items/spoilers/Arcade Racer.mp4" type="video/mp4">
+          </video>
         </div>`;
     }
 
@@ -907,6 +919,54 @@ document.addEventListener("DOMContentLoaded", async () => {
     function formatPriceValue(price) {
       if (!price || price === "N/A") return "No Price Data";
 
+      // For combined price/robux format with slash
+      if (price.includes("/")) {
+        const [firstPart, secondPart] = price
+          .split("/")
+          .map((part) => part.trim());
+
+        // Handle first part (can be "Free" or a value with suffix)
+        let formattedFirstPart = firstPart;
+        if (firstPart.toLowerCase() !== "free") {
+          const lowerFirst = firstPart.toLowerCase();
+          if (lowerFirst.endsWith("b")) {
+            const num = parseFloat(lowerFirst.replace("b", "")) * 1000000000;
+            formattedFirstPart = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16" style="vertical-align: -0.1em; margin-left: 2px;">
+              <rect width="16" height="16" fill="none" />
+              <path fill="#76ABAE" d="M16 14H2v-1h13V6h1z" />
+              <path fill="#76ABAE" d="M13 4v7H1V4zm1-1H0v9h14z" />
+              <path fill="#76ABAE" d="M3 6H2v3h1v1h4a2.5 2.5 0 1 1 0-5H3zm8 0V5H7a2.5 2.5 0 1 1 0 5h4V9h1V6z" />
+            </svg> ${num.toLocaleString()}`;
+          } else if (lowerFirst.endsWith("m")) {
+            const num = parseFloat(lowerFirst.replace("m", "")) * 1000000;
+            formattedFirstPart = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16" style="vertical-align: -0.1em; margin-left: 2px;">
+              <rect width="16" height="16" fill="none" />
+              <path fill="#76ABAE" d="M16 14H2v-1h13V6h1z" />
+              <path fill="#76ABAE" d="M13 4v7H1V4zm1-1H0v9h14z" />
+              <path fill="#76ABAE" d="M3 6H2v3h1v1h4a2.5 2.5 0 1 1 0-5H3zm8 0V5H7a2.5 2.5 0 1 1 0 5h4V9h1V6z" />
+            </svg> ${num.toLocaleString()}`;
+          } else if (lowerFirst.endsWith("k")) {
+            const num = parseFloat(lowerFirst.replace("k", "")) * 1000;
+            formattedFirstPart = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16" style="vertical-align: -0.1em; margin-left: 2px;">
+              <rect width="16" height="16" fill="none" />
+              <path fill="#76ABAE" d="M16 14H2v-1h13V6h1z" />
+              <path fill="#76ABAE" d="M13 4v7H1V4zm1-1H0v9h14z" />
+              <path fill="#76ABAE" d="M3 6H2v3h1v1h4a2.5 2.5 0 1 1 0-5H3zm8 0V5H7a2.5 2.5 0 1 1 0 5h4V9h1V6z" />
+            </svg> ${num.toLocaleString()}`;
+          }
+        }
+
+        // Handle second part (always Robux)
+        let formattedSecondPart = "";
+        if (secondPart.toLowerCase().includes("robux")) {
+          const numericValue = secondPart.replace(/[^0-9]/g, "");
+          formattedSecondPart = `<img src="/assets/Robux.png" alt="Robux" style="height: 1em; vertical-align: -0.1em; margin-left: 2px;"> ${numericValue}`;
+        }
+
+        return `${formattedFirstPart} / ${formattedSecondPart}`;
+      }
+
+      // Handle non-combined formats below
       // Check if price contains a range (e.g. "100k - 5m")
       if (price.includes("-")) {
         const cashIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16" style="vertical-align: -0.1em; margin-left: 2px;">
@@ -1880,6 +1940,57 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       })
       .catch((error) => console.error("Error fetching favorites:", error));
+
+    // Add video observer after container is populated
+    const videoObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const video = entry.target;
+          if (entry.isIntersecting) {
+            requestAnimationFrame(() => {
+              video
+                .play()
+                .catch((err) => console.log("Video play failed:", err));
+            });
+          } else {
+            video.pause();
+            video.currentTime = 0;
+          }
+        });
+      },
+      {
+        threshold: 0.5,
+      }
+    );
+
+    // Observe main item video if it exists
+    const mainVideo = container.querySelector(".media-container video");
+    if (mainVideo) {
+      videoObserver.observe(mainVideo);
+    }
+
+    // Observe similar item videos
+    document.querySelectorAll(".similar-items video").forEach((video) => {
+      videoObserver.observe(video);
+    });
+
+    // Handle tab visibility
+    document.addEventListener("visibilitychange", () => {
+      const videos = document.querySelectorAll(
+        ".media-container video, .similar-items video"
+      );
+      if (document.hidden) {
+        videos.forEach((video) => video.pause());
+      } else {
+        videos.forEach((video) => {
+          const entry = video.getBoundingClientRect();
+          const isVisible = entry.top < window.innerHeight && entry.bottom > 0;
+          if (isVisible) {
+            video.play().catch((err) => console.log("Video play failed:", err));
+          }
+        });
+      }
+    });
   }
 
   function showErrorMessage(message) {
