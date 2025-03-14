@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
         notyf.success("Code redeemed successfully!");
         codeInput.value = ""; // Clear input
       } else {
-        notyf.error(data.message || "Failed to redeem code");
+        notyf.error(response.status === 409 ? "The code has already been redeemed" : (data.message || "An error occurred redeeming the code"));
       }
     } catch (error) {
       notyf.error("An error occurred while redeeming the code");
