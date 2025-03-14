@@ -9,13 +9,32 @@ function checkAndStoreReportIssue() {
   }
 }
 
+function isValidRedirectUrl(url) {
+  try {
+    // Only allow relative paths or URLs to our domains
+    if (url.startsWith('/')) {
+      return true;
+    }
+
+    const allowedDomains = [
+      'jailbreakchangelogs.xyz',
+      'testing.jailbreakchangelogs.xyz'
+    ];
+    
+    const urlObj = new URL(url, window.location.origin);
+    return allowedDomains.includes(urlObj.hostname) && urlObj.pathname.startsWith('/');
+  } catch {
+    return false;
+  }
+}
+
 $(document).ready(function () {
   checkAndStoreReportIssue();
 
-  // Store redirect URL if present
+  // Store redirect URL if present and valid
   const urlParams = new URLSearchParams(window.location.search);
   const redirectUrl = urlParams.get("redirect");
-  if (redirectUrl) {
+  if (redirectUrl && isValidRedirectUrl(redirectUrl)) {
     localStorage.setItem("loginRedirect", redirectUrl);
   }
 
@@ -62,7 +81,7 @@ $(document).ready(function () {
   // Store original path before OAuth redirect
   if (
     !window.location.pathname.startsWith("/login") &&
-    !window.location.href.includes("discord.com")
+    !(new URL(window.location.href).host === "discord.com")
   ) {
     LoginLogger.log(
       "redirect",
@@ -139,18 +158,20 @@ $(document).ready(function () {
         }
 
         const storedRedirect = localStorage.getItem("loginRedirect");
-        if (storedRedirect) {
+        if (storedRedirect && isValidRedirectUrl(storedRedirect)) {
+          const validatedRedirectUrl = new URL(storedRedirect, window.location.origin);
           LoginLogger.log(
             "redirect",
-            `Redirecting to stored path: ${storedRedirect}`
+            `Redirecting to stored path: ${validatedRedirectUrl.pathname}`
           );
-          window.location.href = `${storedRedirect}${
-            storedRedirect.includes("?") ? "&" : "?"
+          window.location.href = `${validatedRedirectUrl.pathname}${
+            validatedRedirectUrl.search ? "&" : "?"
           }freshlogin=true`;
           localStorage.removeItem("loginRedirect");
           return;
         }
 
+        // Default redirect
         LoginLogger.log("redirect", "Redirecting to homepage");
         window.location.href = "/?freshlogin=true";
       } catch (error) {
@@ -188,6 +209,4 @@ document.addEventListener("DOMContentLoaded", function () {
 
   ageCheck.addEventListener("change", updateLoginButton);
   tosCheck.addEventListener("change", updateLoginButton);
-
-  // ...rest of existing login code...
 });
