@@ -41,12 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .forEach((input) => {
           const setting = input.dataset.setting;
           if (setting in settings) {
-            // Force avatar_discord to be enabled and disabled
-            if (setting === "avatar_discord") {
-              input.checked = true;
-              input.disabled = true;
-              return;
-            }
+           
             input.checked = settings[setting] === 1;
 
             // Handle visibility of custom input fields
@@ -57,6 +52,12 @@ document.addEventListener("DOMContentLoaded", function () {
               if (customBannerInput) {
                 customBannerInput.style.display =
                   settings[setting] === 1 ? "none" : "block";
+              }
+            }
+            if (setting === "avatar_discord") {
+              const customAvatarInput = document.getElementById("custom_avatar_input");
+              if (customAvatarInput) {
+                customAvatarInput.style.display = settings[setting] === 1 ? "none" : "block";
               }
             }
           }
@@ -71,6 +72,19 @@ document.addEventListener("DOMContentLoaded", function () {
           const bannerData = await bannerResponse.json();
           if (bannerData.image_url && bannerData.image_url !== "NONE") {
             document.getElementById("bannerInput").value = bannerData.image_url;
+          }
+        }
+      }
+
+      // Load custom avatar URL if discord avatar is disabled
+      if (settings.avatar_discord === 0) {
+        const userResponse = await fetch(
+          `https://api3.jailbreakchangelogs.xyz/users/get/?id=${userId}`
+        );
+        if (userResponse.ok) {
+          const userData = await userResponse.json();
+          if (userData.custom_avatar) {
+            document.getElementById("avatarInput").value = userData.custom_avatar;
           }
         }
       }
@@ -145,64 +159,67 @@ document.addEventListener("DOMContentLoaded", function () {
     .querySelectorAll(".form-check-input[data-setting]")
     .forEach((input) => {
       input.addEventListener("change", async function () {
-        // Ignore changes to avatar_discord
-        if (this.dataset.setting === "avatar_discord") {
-          this.checked = true;
+        const setting = this.dataset.setting;
+        const newValue = this.checked ? 1 : 0;
+        const token = getCookie("token");
+        
+        // Handle visibility for banner_discord and avatar_discord
+        if (setting === "banner_discord" || setting === "avatar_discord") {
+          const inputId = setting === "banner_discord" ? "custom_banner_input" : "custom_avatar_input";
+          document.getElementById(inputId).style.display = this.checked ? "none" : "block";
+          
+          // Only make API call when toggling ON (1)
+          if (newValue === 1) {
+            try {
+              // Get current state of all settings
+              const currentSettings = {
+                profile_public: document.querySelector('[data-setting="profile_public"]').checked ? 1 : 0,
+                show_recent_comments: document.querySelector('[data-setting="show_recent_comments"]').checked ? 1 : 0,
+                hide_following: document.querySelector('[data-setting="hide_following"]').checked ? 1 : 0,
+                hide_followers: document.querySelector('[data-setting="hide_followers"]').checked ? 1 : 0,
+                hide_favorites: document.querySelector('[data-setting="hide_favorites"]').checked ? 1 : 0,
+                banner_discord: document.querySelector('[data-setting="banner_discord"]').checked ? 1 : 0,
+                avatar_discord: document.querySelector('[data-setting="avatar_discord"]').checked ? 1 : 0,
+                hide_connections: document.querySelector('[data-setting="hide_connections"]').checked ? 1 : 0,
+                hide_presence: document.querySelector('[data-setting="hide_presence"]').checked ? 1 : 0,
+              };
+
+              const response = await fetch(
+                `https://api3.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    "Cache-Control": "no-cache",
+                  },
+                  body: JSON.stringify(currentSettings),
+                }
+              );
+              if (!response.ok) throw new Error("Failed to update setting");
+              notyf.success("Setting updated successfully");
+            } catch (error) {
+              console.error("Error updating setting:", error);
+              notyf.error("Failed to update setting");
+              // Revert the toggle state
+              this.checked = !this.checked;
+              document.getElementById(inputId).style.display = this.checked ? "none" : "block";
+            }
+          }
           return;
         }
 
-        const token = getCookie("token");
-        const setting = this.dataset.setting;
-        const newValue = this.checked ? 1 : 0;
-
+        // For all other settings
         try {
-          // Get current state of all switches
           const currentSettings = {
-            profile_public: document.querySelector(
-              '[data-setting="profile_public"]'
-            ).checked
-              ? 1
-              : 0,
-            show_recent_comments: document.querySelector(
-              '[data-setting="show_recent_comments"]'
-            ).checked
-              ? 1
-              : 0,
-            hide_following: document.querySelector(
-              '[data-setting="hide_following"]'
-            ).checked
-              ? 1
-              : 0,
-            hide_followers: document.querySelector(
-              '[data-setting="hide_followers"]'
-            ).checked
-              ? 1
-              : 0,
-            hide_favorites: document.querySelector(
-              '[data-setting="hide_favorites"]'
-            ).checked
-              ? 1
-              : 0,
-            banner_discord: document.querySelector(
-              '[data-setting="banner_discord"]'
-            ).checked
-              ? 1
-              : 0,
-            avatar_discord: document.querySelector(
-              '[data-setting="avatar_discord"]'
-            ).checked
-              ? 1
-              : 0,
-            hide_connections: document.querySelector(
-              '[data-setting="hide_connections"]'
-            ).checked
-              ? 1
-              : 0,
-            hide_presence: document.querySelector(
-              '[data-setting="hide_presence"]'
-            ).checked
-              ? 1
-              : 0,
+            profile_public: document.querySelector('[data-setting="profile_public"]').checked ? 1 : 0,
+            show_recent_comments: document.querySelector('[data-setting="show_recent_comments"]').checked ? 1 : 0,
+            hide_following: document.querySelector('[data-setting="hide_following"]').checked ? 1 : 0,
+            hide_followers: document.querySelector('[data-setting="hide_followers"]').checked ? 1 : 0,
+            hide_favorites: document.querySelector('[data-setting="hide_favorites"]').checked ? 1 : 0,
+            banner_discord: document.querySelector('[data-setting="banner_discord"]').checked ? 1 : 0,
+            avatar_discord: document.querySelector('[data-setting="avatar_discord"]').checked ? 1 : 0,
+            hide_connections: document.querySelector('[data-setting="hide_connections"]').checked ? 1 : 0,
+            hide_presence: document.querySelector('[data-setting="hide_presence"]').checked ? 1 : 0,
           };
 
           const response = await fetch(
@@ -216,35 +233,15 @@ document.addEventListener("DOMContentLoaded", function () {
               body: JSON.stringify(currentSettings),
             }
           );
-
           const responseData = await response.json();
-
           if (!response.ok || responseData.error) {
             throw new Error(responseData.error || "Failed to update settings");
           }
-
-          // Success - don't verify the returned value since API returns success message
           notyf.success("Setting updated successfully");
-
-          // Handle visibility for banner input
-          if (setting === "banner_discord") {
-            document.getElementById("custom_banner_input").style.display =
-              newValue === 1 ? "none" : "block";
-          }
         } catch (error) {
           console.error("Error updating settings:", error);
           notyf.error("Failed to update settings");
-
-          // Revert the toggle state
           this.checked = !this.checked;
-
-          // If it's a banner toggle, revert the display state
-          if (setting === "banner_discord") {
-            document.getElementById("custom_banner_input").style.display = this
-              .checked
-              ? "none"
-              : "block";
-          }
         }
       });
     });
@@ -276,6 +273,33 @@ document.addEventListener("DOMContentLoaded", function () {
         notyf.error("Failed to update banner");
       }
     });
+
+  // Handle avatar update button
+  document.getElementById("updateAvatarBtn").addEventListener("click", async () => {
+    const imageUrl = document.getElementById("avatarInput").value.trim();
+    const token = getCookie("token");
+    try {
+      const response = await fetch(
+        "https://api3.jailbreakchangelogs.xyz/users/avatar/update",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-cache",
+          },
+          body: JSON.stringify({
+            owner: token,
+            url: imageUrl
+          })
+        }
+      );
+      if (!response.ok) throw new Error("Failed to update avatar");
+      notyf.success("Avatar updated successfully");
+    } catch (error) {
+      console.error("Error updating avatar:", error);
+      notyf.error("Failed to update avatar");
+    }
+  });
 
   // Handle account deletion
   const deleteAccountButton = document.getElementById("delete-account-button");
@@ -370,13 +394,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Add listener for banner_discord toggle
-  document
-    .getElementById("banner_discord")
-    .addEventListener("change", function (e) {
-      const customBannerInput = document.getElementById("custom_banner_input");
-      customBannerInput.style.display = e.target.checked ? "none" : "block";
-    });
+  // Add listeners for banner_discord and avatar_discord toggles
+  document.getElementById("banner_discord").addEventListener("change", function (e) {
+    const customBannerInput = document.getElementById("custom_banner_input");
+    customBannerInput.style.display = e.target.checked ? "none" : "block";
+  });
+
+  document.getElementById("avatar_discord").addEventListener("change", function (e) {
+    const customAvatarInput = document.getElementById("custom_avatar_input");
+    customAvatarInput.style.display = e.target.checked ? "none" : "block";
+  });
 
   // Initialize settings
   loadSettings();

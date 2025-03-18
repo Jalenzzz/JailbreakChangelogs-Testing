@@ -643,7 +643,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const userAvatar = document.getElementById("user-avatar");
         if (userAvatar) {
           userAvatar.src =
-            "https://ui-avatars.com/api/?background=144a61&color=fff&size=128&rounded=true&name=?&bold=true&format=svg";
+            "/assets/default-avatar.png";
           userAvatar.style.border = "4px solid #495057"; // Keep the gray border
         }
 
@@ -1269,9 +1269,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function setAvatarWithFallback(username) {
     const userAvatar = document.getElementById("user-avatar");
-    const fallbackUrl = `https://ui-avatars.com/api/?background=134d64&color=fff&size=128&rounded=true&name=${encodeURIComponent(
-      username
-    )}&bold=true&format=svg`;
+    const fallbackUrl = "assets/default-avatar.png";
 
     // Early return if no avatar data
     if (!udata.id || !udata.avatar || udata.avatar === "None") {
