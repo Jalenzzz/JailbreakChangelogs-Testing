@@ -789,9 +789,7 @@ app.get("/login", (req, res) => {
 });
 
 const getAvatar = async (userId, avatarHash, username) => {
-  const defaultAvatarUrl = `https://ui-avatars.com/api/?background=134d64&color=fff&size=300&rounded=true&name=${encodeURIComponent(
-    username
-  )}&bold=true&format=png`;
+  const defaultAvatarUrl = "assets/default-avatar.png";
 
   if (!avatarHash) {
     return defaultAvatarUrl;

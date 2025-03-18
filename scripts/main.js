@@ -441,9 +441,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   window.checkAndSetAvatar = async function (userData) {
     // Early return for users without avatars
     if (!userData.id || !userData.avatar || userData.avatar === "None") {
-      return `https://ui-avatars.com/api/?background=134d64&color=fff&size=128&rounded=true&name=${encodeURIComponent(
-        userData.username
-      )}&bold=true`;
+      return "assets/default-avatar.png";
     }
 
     // Check if avatar is animated (starts with a_)
@@ -477,9 +475,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     // Return fallback avatar if all attempts fail
-    return `https://ui-avatars.com/api/?background=134d64&color=fff&size=128&rounded=true&name=${encodeURIComponent(
-      userData.username
-    )}&bold=true`;
+    return "assets/default-avatar.png";
   };
 
   function toggleMenu() {

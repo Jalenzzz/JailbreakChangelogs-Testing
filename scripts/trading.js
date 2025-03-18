@@ -1869,9 +1869,7 @@ async function createTradeAdHTML(trade) {
     ]);
 
     function getFallbackAvatar(username) {
-      return `https://ui-avatars.com/api/?background=134d64&color=fff&size=128&rounded=true&name=${encodeURIComponent(
-        username || "Unknown"
-      )}&bold=true&format=svg`;
+      return "assets/default-avatar.png";
     }
 
     tradeAdElement.innerHTML = `

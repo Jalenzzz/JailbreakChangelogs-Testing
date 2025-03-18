@@ -467,9 +467,7 @@ class CommentsManager {
       ? `Last edited ${formatDate(comment.edited_at)}`
       : formatDate(comment.date);
 
-    const fallbackAvatar = `https://ui-avatars.com/api/?background=134d64&color=fff&size=128&rounded=true&name=${encodeURIComponent(
-      displayName
-    )}&bold=true&format=svg`;
+    const fallbackAvatar = "assets/default-avatar.png";
 
     // Handle deleted user avatar differently
     const avatarElement = userDetails?.isDeleted
@@ -593,9 +591,7 @@ class CommentsManager {
       : formatDate(comment.date);
 
     // Use displayName for the fallback avatar
-    const fallbackAvatar = `https://ui-avatars.com/api/?background=134d64&color=fff&size=128&rounded=true&name=${encodeURIComponent(
-      displayName
-    )}&bold=true&format=svg`;
+    const fallbackAvatar = "assets/default-avatar.png";
 
     const li = document.createElement("li");
     li.className = "list-group-item comment-item";
