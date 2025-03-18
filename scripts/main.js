@@ -467,7 +467,13 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
 
         // Check if avatar is animated (starts with a_)
-        const format = userData.avatar.startsWith("a_") ? "gif" : "png";
+        const isAnimated = userData.avatar.startsWith("a_");
+        
+        // Check if user has premium access for animated avatars
+        const hasAnimatedAccess = userData.premiumtype === 3;
+        
+        // Determine format based on premium status and whether avatar is animated
+        const format = isAnimated && hasAnimatedAccess ? "gif" : "png";
         const avatarUrl = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.${format}`;
 
         try {
@@ -478,19 +484,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
           if (response.ok) {
             return avatarUrl;
-          }
-
-          // If GIF fails for animated avatar, try PNG as fallback
-          if (format === "gif") {
-            const pngUrl = avatarUrl.replace(".gif", ".png");
-            const pngResponse = await fetch(pngUrl, {
-              method: "HEAD",
-              cache: "no-store",
-            });
-
-            if (pngResponse.ok) {
-              return pngUrl;
-            }
           }
         } catch (error) {
           console.error("Error fetching Discord avatar:", error);

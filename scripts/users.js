@@ -356,40 +356,34 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   async function fetchBanner(userId, bannerHash) {
-    // Early return if no banner hash or if banner hash is "None"
-    if (!userId || !bannerHash || bannerHash === "None") {
-      return null;
-    }
-
-    const isAnimated = bannerHash.startsWith("a_");
-    const format = isAnimated ? "gif" : "png";
-    const bannerUrl = `https://cdn.discordapp.com/banners/${userId}/${bannerHash}.${format}?size=4096`;
+    if (!bannerHash || bannerHash === "None") return null;
 
     try {
-      const response = await fetch(bannerUrl, {
-        method: "HEAD",
-        cache: "no-store",
-      });
-
-      if (response.ok) {
-        return bannerUrl;
+      // Fetch user data to check premium type
+      const userResponse = await fetch(
+        `https://api3.jailbreakchangelogs.xyz/users/get/?id=${userId}`
+      );
+      
+      if (!userResponse.ok) {
+        throw new Error("Failed to fetch user data");
       }
 
-      // Only try PNG as fallback if original request was for GIF
-      if (isAnimated) {
-        const pngUrl = bannerUrl.replace(".gif", ".png");
-        const pngResponse = await fetch(pngUrl, {
-          method: "HEAD",
-          cache: "no-store",
-        });
+      const userData = await userResponse.json();
+      
+      // Check if banner is animated (starts with a_)
+      const isAnimated = bannerHash.startsWith("a_");
+      
+      // Check if user has premium access for animated banners (type 2 or 3)
+      const hasAnimatedAccess = userData.premiumtype === 2 || userData.premiumtype === 3;
+      
+      // Determine format based on premium status and whether banner is animated
+      const format = isAnimated && hasAnimatedAccess ? "gif" : "png";
+      const bannerUrl = `https://cdn.discordapp.com/banners/${userId}/${bannerHash}.${format}?size=4096`;
 
-        if (pngResponse.ok) {
-          return pngUrl;
-        }
-      }
-
-      return null;
-    } catch {
+      const response = await fetch(bannerUrl, { method: "HEAD" });
+      return response.ok ? bannerUrl : null;
+    } catch (error) {
+      console.error("Error fetching banner:", error);
       return null;
     }
   }
