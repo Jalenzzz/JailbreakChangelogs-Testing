@@ -5,6 +5,17 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
+  // Show loading overlay immediately when page loads
+  showLoadingOverlay();
+
+  function showLoadingOverlay() {
+    document.querySelector("#loading-overlay").classList.add("show");
+  }
+
+  function hideLoadingOverlay() {
+    document.querySelector("#loading-overlay").classList.remove("show");
+  }
+
   // Helper function to create toggle button
   function createToggleButton(value) {
     const icon = document.createElement("i");
@@ -88,9 +99,13 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         }
       }
+
+      // Hide loading overlay once everything is loaded
+      hideLoadingOverlay();
     } catch (error) {
       console.error("Error loading settings:", error);
       notyf.error("Failed to load settings");
+      hideLoadingOverlay(); // Hide overlay even on error
     }
   }
 
@@ -111,6 +126,12 @@ document.addEventListener("DOMContentLoaded", function () {
       },
     ],
   });
+
+  // Helper function to refresh page after settings update
+  function refreshPage() {
+    showLoadingOverlay();
+    window.location.reload();
+  }
 
   // Add click handlers for all toggle buttons
   document.querySelectorAll('.btn[id$="_button"]').forEach((button) => {
@@ -137,16 +158,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!response.ok) throw new Error("Failed to update setting");
 
-        button.innerHTML = createToggleButton(newValue);
-        button.classList.remove("btn-danger", "btn-success");
-        button.classList.add(newValue === 1 ? "btn-success" : "btn-danger");
-
-        if (settingKey === "banner_discord") {
-          document.getElementById("custom_banner_input").style.display =
-            newValue === 1 ? "none" : "block";
-        }
-
         notyf.success("Setting updated successfully");
+        refreshPage(); // Refresh page after successful update
       } catch (error) {
         console.error("Error updating setting:", error);
         notyf.error("Failed to update setting");
@@ -197,6 +210,7 @@ document.addEventListener("DOMContentLoaded", function () {
               );
               if (!response.ok) throw new Error("Failed to update setting");
               notyf.success("Setting updated successfully");
+              refreshPage(); // Refresh page after successful update
             } catch (error) {
               console.error("Error updating setting:", error);
               notyf.error("Failed to update setting");
@@ -238,6 +252,7 @@ document.addEventListener("DOMContentLoaded", function () {
             throw new Error(responseData.error || "Failed to update settings");
           }
           notyf.success("Setting updated successfully");
+          refreshPage(); // Refresh page after successful update
         } catch (error) {
           console.error("Error updating settings:", error);
           notyf.error("Failed to update settings");
@@ -300,6 +315,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("custom_banner_input").style.display = "block";
 
       notyf.success("Banner updated successfully");
+      refreshPage(); // Refresh page after successful update
     } catch (error) {
       console.error("Error updating banner:", error);
       notyf.error("Failed to update banner");
@@ -363,6 +379,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("custom_avatar_input").style.display = "block";
 
       notyf.success("Avatar updated successfully");
+      refreshPage(); // Refresh page after successful update
     } catch (error) {
       console.error("Error updating avatar:", error);
       notyf.error("Failed to update avatar");
