@@ -1271,42 +1271,18 @@ document.addEventListener("DOMContentLoaded", function () {
     const userAvatar = document.getElementById("user-avatar");
     const fallbackUrl = "assets/default-avatar.png";
 
-    // Early return if no avatar data
-    if (!udata.id || !udata.avatar || udata.avatar === "None") {
-      userAvatar.src = fallbackUrl;
-      return;
-    }
-
     try {
-      // Determine if avatar should be animated based on hash
-      const isAnimated = udata.avatar.startsWith("a_");
-      const baseUrl = `https://cdn.discordapp.com/avatars/${udata.id}/${udata.avatar}`;
-
-      // Try primary format first (gif for animated, png for static)
-      const primaryFormat = isAnimated ? "gif" : "png";
-      const primaryUrl = `${baseUrl}.${primaryFormat}?size=4096`;
-
-      const response = await fetch(primaryUrl, { method: "HEAD" });
-      if (response.ok) {
-        userAvatar.src = primaryUrl;
+      const avatarUrl = await window.checkAndSetAvatar(udata);
+      if (avatarUrl) {
+        userAvatar.src = avatarUrl;
         return;
       }
-
-      // If animated failed, try png as fallback
-      if (isAnimated) {
-        const pngUrl = `${baseUrl}.png?size=4096`;
-        const pngResponse = await fetch(pngUrl, { method: "HEAD" });
-        if (pngResponse.ok) {
-          userAvatar.src = pngUrl;
-          return;
-        }
-      }
-
-      // If all attempts fail, use fallback
-      userAvatar.src = fallbackUrl;
-    } catch {
-      userAvatar.src = fallbackUrl;
+    } catch (error) {
+      console.error("Error setting avatar:", error);
     }
+
+    // Fallback if everything fails
+    userAvatar.src = fallbackUrl;
   }
 
   userAvatar = document.getElementById("user-avatar");

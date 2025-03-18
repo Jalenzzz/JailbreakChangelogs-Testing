@@ -439,43 +439,85 @@ document.addEventListener("DOMContentLoaded", async function () {
   const mobileAvatarToggle = document.getElementById("mobileAvatarToggle");
 
   window.checkAndSetAvatar = async function (userData) {
-    // Early return for users without avatars
-    if (!userData.id || !userData.avatar || userData.avatar === "None") {
-      return "assets/default-avatar.png";
-    }
-
-    // Check if avatar is animated (starts with a_)
-    const format = userData.avatar.startsWith("a_") ? "gif" : "png";
-    const avatarUrl = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.${format}`;
-
     try {
-      const response = await fetch(avatarUrl, {
-        method: "HEAD",
-        cache: "no-store",
-      });
+      // First check user settings
+      const settingsResponse = await fetch(
+        `https://api3.jailbreakchangelogs.xyz/users/settings?user=${userData.id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            Pragma: "no-cache",
+            Expires: "0",
+          },
+        }
+      );
 
-      if (response.ok) {
-        return avatarUrl;
+      if (!settingsResponse.ok) {
+        throw new Error("Failed to fetch user settings");
       }
-    } catch (error) {
-      // If GIF fails for animated avatar, try PNG as fallback
-      if (format === "gif") {
+
+      const settings = await settingsResponse.json();
+
+      // If using Discord avatar
+      if (settings.avatar_discord === 1) {
+        // Early return for users without Discord avatars
+        if (!userData.id || !userData.avatar || userData.avatar === "None") {
+          return "assets/default-avatar.png";
+        }
+
+        // Check if avatar is animated (starts with a_)
+        const format = userData.avatar.startsWith("a_") ? "gif" : "png";
+        const avatarUrl = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.${format}`;
+
         try {
-          const pngUrl = avatarUrl.replace(".gif", ".png");
-          const pngResponse = await fetch(pngUrl, {
+          const response = await fetch(avatarUrl, {
             method: "HEAD",
             cache: "no-store",
           });
 
-          if (pngResponse.ok) {
-            return pngUrl;
+          if (response.ok) {
+            return avatarUrl;
           }
-        } catch {}
-      }
-    }
 
-    // Return fallback avatar if all attempts fail
-    return "assets/default-avatar.png";
+          // If GIF fails for animated avatar, try PNG as fallback
+          if (format === "gif") {
+            const pngUrl = avatarUrl.replace(".gif", ".png");
+            const pngResponse = await fetch(pngUrl, {
+              method: "HEAD",
+              cache: "no-store",
+            });
+
+            if (pngResponse.ok) {
+              return pngUrl;
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching Discord avatar:", error);
+        }
+      } else {
+        // Using custom avatar
+        try {
+          const userResponse = await fetch(
+            `https://api3.jailbreakchangelogs.xyz/users/get/?id=${userData.id}`
+          );
+          if (userResponse.ok) {
+            const userDetails = await userResponse.json();
+            if (userDetails.custom_avatar) {
+              return userDetails.custom_avatar;
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching custom avatar:", error);
+        }
+      }
+
+      // Return fallback avatar if all attempts fail
+      return "assets/default-avatar.png";
+    } catch (error) {
+      console.error("Error in checkAndSetAvatar:", error);
+      return "assets/default-avatar.png";
+    }
   };
 
   function toggleMenu() {

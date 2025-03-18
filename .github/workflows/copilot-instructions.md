@@ -1,53 +1,67 @@
-    Appearance Settings Logic:
+    User Avatar Logic:
 
-        Ensure POST requests to update the banner or avatar are only made when the respective "Update Banner" (updateBannerBtn) or "Update Avatar" (updateAvatarBtn) button is clicked.
+        Fetch user settings from the endpoint: https://api3.jailbreakchangelogs.xyz/users/settings?user= (where user is the user's ID).
 
-        Do not make POST requests when the "Use Discord Banner" or "Use Discord Avatar" toggles are switched from ON to OFF.
+        Use the following logic to determine the user's profile picture:
 
-        For all other settings, API calls can be made on toggle switches as usual, but these two toggles are exceptions.
+            If "avatar_discord": 0, use the avatar from custom_avatar.
 
-    Button Creation:
+            If "avatar_discord": 1, construct the profile picture URL using:
+            javascript
+            Copy
 
-        The updateBannerBtn already exists. Add a new button, updateAvatarBtn, with the same style and positioning as updateBannerBtn.
+            const baseUrl = `https://cdn.discordapp.com/avatars/${udata.id}/${udata.avatar}`;
 
-        Ensure both buttons are properly linked to their respective JavaScript logic for handling API requests.
+        If any error occurs (e.g., CORS or custom_avatar cannot be shown), fall back to fallbackUrl, which is already assigned to assets/default-avatar.png.
 
-    API Endpoints:
+    Integration with nav.ejs:
 
-        Use fetch or axios for API calls to:
+        Check and modify nav.ejs in the api/views/partials folder to ensure the avatar is correctly set in the navigation bar.
 
-            Banner endpoint: https://api3.jailbreakchangelogs.xyz/users/background/update?user=
+        Use the same logic as above to determine whether to display the custom avatar or the Discord avatar.
 
-            Avatar endpoint: https://api3.jailbreakchangelogs.xyz/users/avatar/update.
+    Integration with main.js:
 
-    Code Refactoring:
+        Reference main.js to understand how the avatar is currently set.
 
-        Remove or refactor any redundant code or unnecessary API calls in the existing implementation.
+        Ensure the logic in main.js aligns with the avatar settings:
 
-        Ensure the code is clean, efficient, and follows best practices.
+            If "avatar_discord": 0, use custom_avatar.
 
-    Expected Behavior:
+            If "avatar_discord": 1, use the constructed Discord avatar URL.
 
-        Toggles should visually reflect their state (ON/OFF) and dynamically update the profile appearance.
+            Fall back to fallbackUrl if errors occur.
 
-        API calls should only occur on button clicks for "Update Banner" and "Update Avatar", not on toggle switches for these two settings.
+    Integration with comments.js:
+
+        Modify comments.js to ensure the correct avatar is set for comments.
+
+        Use the same logic as above to determine whether to display the custom avatar or the Discord avatar for each user in the comments section.
+
+    Error Handling:
+
+        Ensure proper error handling for:
+
+            Failed API requests.
+
+            Invalid or missing custom_avatar.
+
+            CORS issues.
+
+        Always fall back to fallbackUrl if the primary avatar source fails.
 
     Files to Modify:
 
-        settings.ejs:
+        users.js: Implement the avatar logic as described.
 
-            Ensure the "Use Discord Banner" and "Use Discord Avatar" toggles are present.
+        nav.ejs (in api/views/partials): Ensure the avatar is correctly set in the navigation bar.
 
-            Add the updateAvatarBtn with the same style and positioning as updateBannerBtn.
+        main.js: Align the avatar-setting logic with the user's settings.
 
-        settings.js:
+        comments.js: Ensure the correct avatar is set for each user in the comments section.
 
-            Update logic to handle toggles and API requests as specified.
+    Expected Behavior:
 
-            Ensure API calls are only made on button clicks for the two exceptions.
+        The correct avatar is displayed across the application (navigation bar, comments, etc.) based on the avatar_discord setting.
 
-Key Reinforcements
-
-    API Calls for Toggles: For all settings except "Use Discord Banner" and "Use Discord Avatar," API calls can be made on toggle switches. For these two, API calls should only be made when the respective "Update" button is clicked.
-
-    Button Consistency: The new updateAvatarBtn must match the style and positioning of the existing updateBannerBtn.
+        Errors are gracefully handled, and the fallback avatar is shown if necessary.

@@ -247,39 +247,74 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
   // Handle banner update button
-  document
-    .getElementById("updateBannerBtn")
-    .addEventListener("click", async () => {
-      const imageUrl = document.getElementById("bannerInput").value.trim();
-      const token = getCookie("token");
+  document.getElementById("updateBannerBtn").addEventListener("click", async () => {
+    const imageUrl = document.getElementById("bannerInput").value.trim();
+    const token = getCookie("token");
+    const bannerDiscordToggle = document.querySelector('[data-setting="banner_discord"]');
 
-      try {
-        const response = await fetch(
-          `https://api3.jailbreakchangelogs.xyz/users/background/update?user=${token}&image=${encodeURIComponent(
-            imageUrl || "NONE"
-          )}`,
-          {
-            method: "POST",
-            headers: {
-              "Cache-Control": "no-cache",
-            },
-          }
-        );
+    try {
+      // First update the banner URL
+      const bannerResponse = await fetch(
+        `https://api3.jailbreakchangelogs.xyz/users/background/update?user=${token}&image=${encodeURIComponent(
+          imageUrl || "NONE"
+        )}`,
+        {
+          method: "POST",
+          headers: {
+            "Cache-Control": "no-cache",
+          },
+        }
+      );
+      if (!bannerResponse.ok) throw new Error("Failed to update banner URL");
 
-        if (!response.ok) throw new Error("Failed to update banner");
-        notyf.success("Banner updated successfully");
-      } catch (error) {
-        console.error("Error updating banner:", error);
-        notyf.error("Failed to update banner");
+      // Then ensure the setting is set to use custom banner
+      const currentSettings = {
+        profile_public: document.querySelector('[data-setting="profile_public"]').checked ? 1 : 0,
+        show_recent_comments: document.querySelector('[data-setting="show_recent_comments"]').checked ? 1 : 0,
+        hide_following: document.querySelector('[data-setting="hide_following"]').checked ? 1 : 0,
+        hide_followers: document.querySelector('[data-setting="hide_followers"]').checked ? 1 : 0,
+        hide_favorites: document.querySelector('[data-setting="hide_favorites"]').checked ? 1 : 0,
+        banner_discord: 0, // Force to use custom banner
+        avatar_discord: document.querySelector('[data-setting="avatar_discord"]').checked ? 1 : 0,
+        hide_connections: document.querySelector('[data-setting="hide_connections"]').checked ? 1 : 0,
+        hide_presence: document.querySelector('[data-setting="hide_presence"]').checked ? 1 : 0,
+      };
+
+      const settingsResponse = await fetch(
+        `https://api3.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-cache",
+          },
+          body: JSON.stringify(currentSettings),
+        }
+      );
+      if (!settingsResponse.ok) throw new Error("Failed to update banner settings");
+
+      // Update UI to reflect changes
+      if (bannerDiscordToggle) {
+        bannerDiscordToggle.checked = false;
       }
-    });
+      document.getElementById("custom_banner_input").style.display = "block";
+
+      notyf.success("Banner updated successfully");
+    } catch (error) {
+      console.error("Error updating banner:", error);
+      notyf.error("Failed to update banner");
+    }
+  });
 
   // Handle avatar update button
   document.getElementById("updateAvatarBtn").addEventListener("click", async () => {
     const imageUrl = document.getElementById("avatarInput").value.trim();
     const token = getCookie("token");
+    const avatarDiscordToggle = document.querySelector('[data-setting="avatar_discord"]');
+
     try {
-      const response = await fetch(
+      // First update the avatar URL
+      const avatarResponse = await fetch(
         "https://api3.jailbreakchangelogs.xyz/users/avatar/update",
         {
           method: "POST",
@@ -293,7 +328,40 @@ document.addEventListener("DOMContentLoaded", function () {
           })
         }
       );
-      if (!response.ok) throw new Error("Failed to update avatar");
+      if (!avatarResponse.ok) throw new Error("Failed to update avatar URL");
+
+      // Then ensure the setting is set to use custom avatar
+      const currentSettings = {
+        profile_public: document.querySelector('[data-setting="profile_public"]').checked ? 1 : 0,
+        show_recent_comments: document.querySelector('[data-setting="show_recent_comments"]').checked ? 1 : 0,
+        hide_following: document.querySelector('[data-setting="hide_following"]').checked ? 1 : 0,
+        hide_followers: document.querySelector('[data-setting="hide_followers"]').checked ? 1 : 0,
+        hide_favorites: document.querySelector('[data-setting="hide_favorites"]').checked ? 1 : 0,
+        banner_discord: document.querySelector('[data-setting="banner_discord"]').checked ? 1 : 0,
+        avatar_discord: 0, // Force to use custom avatar
+        hide_connections: document.querySelector('[data-setting="hide_connections"]').checked ? 1 : 0,
+        hide_presence: document.querySelector('[data-setting="hide_presence"]').checked ? 1 : 0,
+      };
+
+      const settingsResponse = await fetch(
+        `https://api3.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-cache",
+          },
+          body: JSON.stringify(currentSettings),
+        }
+      );
+      if (!settingsResponse.ok) throw new Error("Failed to update avatar settings");
+
+      // Update UI to reflect changes
+      if (avatarDiscordToggle) {
+        avatarDiscordToggle.checked = false;
+      }
+      document.getElementById("custom_avatar_input").style.display = "block";
+
       notyf.success("Avatar updated successfully");
     } catch (error) {
       console.error("Error updating avatar:", error);
