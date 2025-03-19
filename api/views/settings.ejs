@@ -230,14 +230,14 @@
                         type="checkbox"
                         id="banner_discord"
                         data-setting="banner_discord"
+                        <%- user.premiumtype < 2 ? 'disabled' : '' %>
                       />
                       <label class="form-check-label" for="banner_discord">
                         <h6 class="mb-1">Use Discord Banner</h6>
-                        <small class="text-muted"
-                          >Use your Discord banner as profile background</small
-                        >
+                        <small class="text-muted">Use your Discord banner as profile background</small>
                       </label>
                     </div>
+                    <%- user.premiumtype < 2 ? '<small class="text-warning">Supporter 2+ is required to change this setting.</small>' : '' %>
                   </div>
 
                   <!-- Custom Banner Input -->
@@ -250,18 +250,19 @@
                         class="form-control"
                         placeholder="Enter image URL"
                         aria-label="Custom banner URL"
+                        <%- user.premiumtype < 2 ? 'disabled' : '' %>
                       />
                       <button
                         class="btn btn-primary"
                         type="button"
                         id="updateBannerBtn"
+                        <%- user.premiumtype < 2 ? 'disabled' : '' %>
                       >
                         Update Banner
                       </button>
                     </div>
-                    <small class="text-muted d-block mt-1"
-                      >Enter a direct link to your custom banner image</small
-                    >
+                    <small class="text-muted d-block mt-1">Enter a direct link to your custom banner image</small>
+                    <%- user.premiumtype < 2 ? '<small class="text-warning">Supporter 2+ is required to change this setting.</small>' : '' %>
                   </div>
 
                   <div class="list-group-item">
@@ -271,14 +272,14 @@
                         type="checkbox"
                         id="avatar_discord"
                         data-setting="avatar_discord"
+                        <%- user.premiumtype < 2 ? 'disabled' : '' %>
                       />
                       <label class="form-check-label" for="avatar_discord">
                         <h6 class="mb-1">Use Discord Avatar</h6>
-                        <small class="text-muted"
-                          >Use your Discord avatar as profile picture</small
-                        >
+                        <small class="text-muted">Use your Discord avatar as profile picture</small>
                       </label>
                     </div>
+                    <%- user.premiumtype < 2 ? '<small class="text-warning">Supporter 2+ is required to change this setting.</small>' : '' %>
                   </div>
                   <!-- Custom Avatar Input -->
                   <div class="list-group-item" id="custom_avatar_input">
@@ -290,18 +291,19 @@
                         class="form-control"
                         placeholder="Enter image URL"
                         aria-label="Custom avatar URL"
+                        <%- user.premiumtype < 2 ? 'disabled' : '' %>
                       />
                       <button
                         class="btn btn-primary"
                         type="button"
                         id="updateAvatarBtn"
+                        <%- user.premiumtype < 2 ? 'disabled' : '' %>
                       >
                         Update Avatar
                       </button>
                     </div>
-                    <small class="text-muted d-block mt-1"
-                      >Enter a direct link to your custom avatar image</small
-                    >
+                    <small class="text-muted d-block mt-1">Enter a direct link to your custom avatar image</small>
+                    <%- user.premiumtype < 2 ? '<small class="text-warning">Supporter 2+ is required to use this setting.</small>' : '' %>
                   </div>
                 </div>
               </div>

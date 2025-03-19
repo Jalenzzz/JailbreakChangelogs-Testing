@@ -1291,21 +1291,43 @@ app.get("/api", (req, res) => {
   res.redirect("/");
 });
 
-app.get("/settings", (req, res) => {
+app.get("/settings", async (req, res) => {
   const token = req.cookies?.token;
   if (!token) {
     res.redirect("/login");
     return;
   }
 
-  res.render("settings", {
-    title: "Settings - Changelogs",
-    logoUrl:
-      "https://jailbreakchangelogs.xyz/assets/logos/Banner_Background.webp",
-    logoAlt: "Settings Page Logo",
-    MIN_TITLE_LENGTH,
-    MIN_DESCRIPTION_LENGTH,
-  });
+  try {
+    // Fetch user data from token
+    const userResponse = await fetch(
+      `https://api3.jailbreakchangelogs.xyz/users/get/token?token=${token}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Origin: "https://jailbreakchangelogs.xyz",
+        },
+      }
+    );
+
+    if (!userResponse.ok) {
+      throw new Error("Failed to fetch user data");
+    }
+
+    const user = await userResponse.json();
+
+    res.render("settings", {
+      title: "Settings - Changelogs",
+      logoUrl: "https://jailbreakchangelogs.xyz/assets/logos/Banner_Background.webp",
+      logoAlt: "Settings Page Logo",
+      MIN_TITLE_LENGTH,
+      MIN_DESCRIPTION_LENGTH,
+      user
+    });
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    res.redirect("/login");
+  }
 });
 
 app.get("/exploiters", (req, res) => {

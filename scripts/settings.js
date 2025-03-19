@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
   async function loadSettings() {
     try {
       const response = await fetch(
-        `https://api3.jailbreakchangelogs.xyz/users/settings?user=${userId}`,
+        `https://api3.jailbreakchangelogs.xyz/users/settings?user=${userId}&nocache=true`,
         {
           headers: {
             "Cache-Control": "no-cache",
@@ -261,13 +261,71 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
 
+  // Helper functions for URL validation
+  function validateImageUrl(url, userPremiumType, isAvatar = false) {
+    try {
+      const urlObj = new URL(url);
+      const hostname = urlObj.hostname.toLowerCase();
+      
+      // Check for premium requirement first
+      if (userPremiumType < 2) {
+        notyf.error("Supporter 2+ is required to use custom avatars/banners");
+        return false;
+      }
+
+      // Validate hostname
+      const isImgur = hostname === 'imgur.com' || hostname === 'i.imgur.com';
+      const isTenor = hostname === 'tenor.com' || hostname.endsWith('.tenor.com');
+      
+      if (!isImgur && !isTenor) {
+        notyf.error("Only Imgur and Tenor URLs are allowed");
+        return false;
+      }
+
+      // Validate file extension
+      const ext = url.split('.').pop().toLowerCase();
+      const allowedExtensions = ['jpeg', 'jpg', 'webp', 'gif', 'png'];
+
+      if (!allowedExtensions.includes(ext)) {
+        notyf.error("Only .jpeg, .jpg, .webp, .gif, and .png are allowed");
+        return false;
+      }
+
+      // Additional check for GIF animations based on premium type and whether it's an avatar
+      if (ext === 'gif' && isAvatar && userPremiumType < 3) {
+        notyf.error("Supporter 3 is required to use animated avatars");
+        return false;
+      }
+
+      return true;
+    } catch (e) {
+      notyf.error("Invalid URL format");
+      return false;
+    }
+  }
+
   // Handle banner update button
   document.getElementById("updateBannerBtn").addEventListener("click", async () => {
     const imageUrl = document.getElementById("bannerInput").value.trim();
     const token = getCookie("token");
-    const bannerDiscordToggle = document.querySelector('[data-setting="banner_discord"]');
 
     try {
+      // Get user's premium type first
+      const userResponse = await fetch(`https://api3.jailbreakchangelogs.xyz/users/get/token?token=${token}`);
+      if (!userResponse.ok) throw new Error("Failed to get user data");
+      const userData = await userResponse.json();
+
+      // Early return if user doesn't have required premium level
+      if (userData.premiumtype < 2) {
+        notyf.error("Supporter 2+ is required to use custom banners");
+        return;
+      }
+
+      // Validate URL before making the update request (false means it's not an avatar)
+      if (!validateImageUrl(imageUrl, userData.premiumtype, false)) {
+        return;
+      }
+
       // First update the banner URL
       const bannerResponse = await fetch(
         `https://api3.jailbreakchangelogs.xyz/users/background/update?user=${token}&image=${encodeURIComponent(
@@ -309,6 +367,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!settingsResponse.ok) throw new Error("Failed to update banner settings");
 
       // Update UI to reflect changes
+      const bannerDiscordToggle = document.querySelector('[data-setting="banner_discord"]');
       if (bannerDiscordToggle) {
         bannerDiscordToggle.checked = false;
       }
@@ -326,9 +385,24 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("updateAvatarBtn").addEventListener("click", async () => {
     const imageUrl = document.getElementById("avatarInput").value.trim();
     const token = getCookie("token");
-    const avatarDiscordToggle = document.querySelector('[data-setting="avatar_discord"]');
 
     try {
+      // Get user's premium type first
+      const userResponse = await fetch(`https://api3.jailbreakchangelogs.xyz/users/get/token?token=${token}`);
+      if (!userResponse.ok) throw new Error("Failed to get user data");
+      const userData = await userResponse.json();
+
+      // Early return if user doesn't have required premium level
+      if (userData.premiumtype < 2) {
+        notyf.error("Supporter 2+ is required to use custom avatars");
+        return;
+      }
+
+      // Validate URL before making the update request (true means it's an avatar)
+      if (!validateImageUrl(imageUrl, userData.premiumtype, true)) {
+        return;
+      }
+
       // First update the avatar URL
       const avatarResponse = await fetch(
         "https://api3.jailbreakchangelogs.xyz/users/avatar/update",
@@ -373,6 +447,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!settingsResponse.ok) throw new Error("Failed to update avatar settings");
 
       // Update UI to reflect changes
+      const avatarDiscordToggle = document.querySelector('[data-setting="avatar_discord"]');
       if (avatarDiscordToggle) {
         avatarDiscordToggle.checked = false;
       }
