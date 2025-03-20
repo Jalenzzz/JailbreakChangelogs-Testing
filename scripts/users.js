@@ -1,4 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
+  // Initialize badge elements once at the top
+  const crown = document.getElementById("crown");
+  const earlyBadge = document.getElementById("early-badge");
+  const premiumBadge = document.getElementById("premium-badge");
+  const badgesContainer = document.querySelector(".badges-container");
+
   // Initialize all tooltips
   const tooltipTriggerList = document.querySelectorAll(
     '[data-bs-toggle="tooltip"]'
@@ -38,7 +44,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const follow_button = document.getElementById("follow-button");
   const settings_button = document.getElementById("settings-button");
   const pathSegments = window.location.pathname.split("/");
-  const earlyBadge = document.getElementById("early-badge");
   const loggedinuserId = localStorage.getItem("userid");
   const userId = pathSegments[pathSegments.length - 1];
   const card_pagination = document.getElementById("card-pagination");
@@ -1870,13 +1875,61 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
 
-  // Initialize badge elements once at the top
-  const crown = document.getElementById("crown");
-  const badgesContainer = document.querySelector(".badges-container");
+  function updatePremiumBadge(premiumType) {
+    if (!premiumBadge) return;
 
-  // Hide badges container by default
-  if (badgesContainer) {
-    badgesContainer.style.display = "none";
+    let badgeSvg = '';
+    let badgeTitle = '';
+
+    if (premiumType === 1) {
+      badgeSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+        <defs>
+          <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#81C784;stop-opacity:1" />
+          </linearGradient>
+        </defs>
+        <circle cx="50" cy="50" r="45" fill="url(#grad1)" />
+        <text x="50" y="60" font-size="40" fill="#FFFFFF" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold">1</text>
+        <circle cx="50" cy="50" r="45" fill="transparent" stroke="#FFFFFF" stroke-width="3" />
+      </svg>`;
+      badgeTitle = 'Supporter Level 1';
+    } else if (premiumType === 2) {
+      badgeSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+        <defs>
+          <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#64B5F6;stop-opacity:1" />
+          </linearGradient>
+        </defs>
+        <circle cx="50" cy="50" r="45" fill="url(#grad2)" />
+        <text x="50" y="60" font-size="40" fill="#FFFFFF" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold">2</text>
+        <circle cx="50" cy="50" r="45" fill="transparent" stroke="#FFFFFF" stroke-width="3" />
+      </svg>`;
+      badgeTitle = 'Supporter Level 2';
+    } else if (premiumType === 3) {
+      badgeSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+        <defs>
+          <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#FFC107;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#FFD54F;stop-opacity:1" />
+          </linearGradient>
+        </defs>
+        <circle cx="50" cy="50" r="45" fill="url(#grad3)" />
+        <text x="50" y="60" font-size="40" fill="#FFFFFF" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold">3</text>
+        <circle cx="50" cy="50" r="45" fill="transparent" stroke="#FFFFFF" stroke-width="3" />
+      </svg>`;
+      badgeTitle = 'Supporter Level 3';
+    }
+
+    if (badgeSvg) {
+      premiumBadge.innerHTML = badgeSvg;
+      premiumBadge.setAttribute('data-bs-original-title', badgeTitle);
+      premiumBadge.style.display = 'inline-block';
+    } else {
+      premiumBadge.style.display = 'none';
+    }
+    updateBadgesVisibility();
   }
 
   function updateBadgesVisibility() {
@@ -1884,8 +1937,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const hasCrown = crown?.style?.display === "inline-block";
     const hasEarlyBadge = earlyBadge?.style?.display === "inline-block";
+    const hasPremiumBadge = premiumBadge?.style?.display === "inline-block";
 
-    if (hasCrown || hasEarlyBadge) {
+    if (hasCrown || hasEarlyBadge || hasPremiumBadge) {
       badgesContainer.classList.add("visible");
     } else {
       badgesContainer.classList.remove("visible");
@@ -1909,6 +1963,9 @@ document.addEventListener("DOMContentLoaded", function () {
   } else {
     crown.style.display = "none";
   }
+
+  // Initialize premium badge based on user's premium type
+  updatePremiumBadge(udata.premiumtype);
 
   // Update visibility after setting states
   updateBadgesVisibility();
