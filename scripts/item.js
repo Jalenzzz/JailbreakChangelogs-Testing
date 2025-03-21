@@ -43,6 +43,16 @@ function isValidHyperChrome(name) {
   });
 }
 
+function formatFavoritesCount(count) {
+  if (count >= 1000000) {
+    return (count / 1000000).toFixed(1) + "M";
+  } else if (count >= 1000) {
+    return (count / 1000).toFixed(1) + "K";
+  }
+  return count.toString();
+}
+
+
 function calculateNameSimilarity(str1, str2) {
   const len1 = str1.length;
   const len2 = str2.length;
@@ -357,6 +367,30 @@ document.addEventListener("DOMContentLoaded", async () => {
         throw new Error("Invalid URL format");
       }
 
+      // First check if user is logged in and get their favorites
+      const token = getCookie("token");
+      const userData = JSON.parse(localStorage.getItem("user") || "{}");
+      let userFavorites = [];
+
+      if (token && userData.id) {
+        try {
+          const favoritesResponse = await fetch(
+            `https://api3.jailbreakchangelogs.xyz/favorites/get?user=${userData.id}`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Origin: "https://jailbreakchangelogs.xyz",
+              },
+            }
+          );
+          if (favoritesResponse.ok) {
+            userFavorites = await favoritesResponse.json();
+          }
+        } catch (error) {
+          console.error("Error fetching favorites:", error);
+        }
+      }
+
       const response = await fetch(
         `https://api3.jailbreakchangelogs.xyz/items/get?name=${encodeURIComponent(
           itemName
@@ -376,6 +410,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       const item = await response.json();
 
       if (item && !item.error && item.type) {
+        // Add is_favorite property based on user's favorites
+        if (userFavorites.length > 0) {
+          item.is_favorite = userFavorites.some(fav => fav.item_id === item.id);
+        } else {
+          item.is_favorite = false;
+        }
         displayItemDetails(item);
       } else {
         throw new Error("Invalid item data received");
@@ -705,7 +745,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         </span>`;
     }
 
-    // Update the badge container HTML to include all badges
+    // Update the badge container HTML to include item ID and click handler
     const badgeContainerHtml = `
       <div class="badge-container d-flex align-items-center gap-2">
         ${
@@ -719,12 +759,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             ? `<span class="badge" style="background-color: #dc3545;">Not Tradable</span>`
             : ""
         }
-        <span class="badge favorites-badge" style="background-color: #ffea005f; display: flex; align-items: center; gap: 4px;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 512 512">
-            <rect width="512" height="512" fill="none"/>
-            <path fill="#ffb636" d="m252.5 381l-128 49c-5.9 2.2-12.1-2.3-11.8-8.6l7-136.9c.1-2.1-.6-4.2-1.9-5.9L31.6 172c-4-4.9-1.6-12.2 4.5-13.9l132.4-35.6c2.1-.6 3.9-1.9 5-3.7L248.3 4c3.4-5.3 11.2-5.3 14.6 0l74.8 114.9c1.2 1.8 3 3.1 5 3.7l132.4 35.6c6.1 1.6 8.5 9 4.5 13.9l-86.1 106.6c-1.3 1.7-2 3.8-1.9 5.9l7 136.9c.3 6.3-5.9 10.8-11.8 8.6l-128-49c-2.1-.8-4.3-.8-6.3-.1"/>
-            <path fill="#ffd469" d="m456.1 51.7l-41-41c-1.2-1.2-2.8-1.7-4.4-1.5s-3.1 1.2-3.9 2.6l-42.3 83.3c-1.2 2.1-.8 4.6.9 6.3c1 1 2.4 1.5 3.7 1.5c.9 0 1.8-.2 2.6-.7L454.9 60c1.4-.8 2.4-2.2 2.6-3.9c.3-1.6-.3-3.2-1.4-4.4"/>
-          </svg>
+        <span class="badge favorites-badge" 
+              style="background-color: #ffea005f; display: flex; align-items: center; gap: 4px; cursor: pointer;"
+              data-item-id="${item.id}"
+              onclick="toggleFavorite(event)">
+          ${getFavoriteStarHtml(item.is_favorite)}
           <span id="favorites-count">0</span>
         </span>
       </div>`;
@@ -1930,15 +1969,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     loadSimilarItems(item);
 
-    function formatFavoritesCount(count) {
-      if (count >= 1000000) {
-        return (count / 1000000).toFixed(1) + "M";
-      } else if (count >= 1000) {
-        return (count / 1000).toFixed(1) + "K";
-      }
-      return count.toString();
-    }
-
+   
     // Fetch favorites count
     fetch(`https://api3.jailbreakchangelogs.xyz/item/favorites?id=${item.id}`)
       .then((response) => response.json())
@@ -2237,5 +2268,85 @@ function handleUrlParams() {
     // Clean up URL
     const url = window.location.pathname;
     window.history.replaceState({}, "", url);
+  }
+}
+
+// Add getFavoriteStarHtml helper function
+function getFavoriteStarHtml(isFavorited) {
+  return `
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 512 512">
+      <rect width="512" height="512" fill="none"/>
+      <path fill="${isFavorited ? "#f8ff00" : "none"}"
+            stroke="${isFavorited ? "none" : "#f8ff00"}"
+            stroke-width="20"
+            d="m252.5 381l-128 49c-5.9 2.2-12.1-2.3-11.8-8.6l7-136.9c.1-2.1-.6-4.2-1.9-5.9L31.6 172c-4-4.9-1.6-12.2 4.5-13.9l132.4-35.6c2.1-.6 3.9-1.9 5-3.7L248.3 4c3.4-5.3 11.2-5.3 14.6 0l74.8 114.9c1.2 1.8 3 3.1 5 3.7l132.4 35.6c6.1 1.6 8.5 9 4.5 13.9l-86.1 106.6c-1.3 1.7-2 3.8-1.9 5.9l7 136.9c.3 6.3-5.9 10.8-11.8 8.6l-128-49c-2.1-.8-4.3-.8-6.3-.1"/>
+      <path fill="${isFavorited ? "#ffd469" : "none"}"
+            d="m456.1 51.7l-41-41c-1.2-1.2-2.8-1.7-4.4-1.5s-3.1 1.2-3.9 2.6l-42.3 83.3c-1.2 2.1-.8 4.6.9 6.3c1 1 2.4 1.5 3.7 1.5c.9 0 1.8-.2 2.6-.7L454.9 60c1.4-.8 2.4-2.2 2.6-3.9c.3-1.6-.3-3.2-1.4-4.4"/>
+    </svg>`;
+}
+
+// Add favorite toggle handler
+async function toggleFavorite(e) {
+  e.preventDefault();
+  e.stopPropagation();
+
+  const token = getCookie("token");
+  if (!token) {
+    notyf.error("Please login to favorite items", {
+      position: "bottom-right",
+      duration: 2000,
+    });
+    return;
+  }
+
+  const favoritesBtn = e.currentTarget;
+  const favoritesPath = favoritesBtn.querySelector("path");
+  const favoritesCount = favoritesBtn.querySelector("#favorites-count");
+  
+  const isFavorited = favoritesPath.getAttribute("fill") === "#f8ff00";
+  const itemId = favoritesBtn.dataset.itemId;
+
+  try {
+    const response = await fetch(
+      `https://api3.jailbreakchangelogs.xyz/favorites/${isFavorited ? "remove" : "add"}`,
+      {
+        method: isFavorited ? "DELETE" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Origin: "https://jailbreakchangelogs.xyz",
+        },
+        body: JSON.stringify({
+          item_id: itemId,
+          owner: token,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Request failed with status ${response.status}`);
+    }
+
+    // Update star appearance
+    favoritesPath.setAttribute("fill", isFavorited ? "none" : "#f8ff00");
+    favoritesPath.setAttribute("stroke", isFavorited ? "#f8ff00" : "none");
+
+    // Update count
+    const currentCount = parseInt(favoritesCount.textContent.replace(/[KM]/g, ""));
+    const newCount = isFavorited ? currentCount - 1 : currentCount + 1;
+    favoritesCount.textContent = formatFavoritesCount(newCount);
+
+    notyf.success(
+      isFavorited ? "Item removed from favorites" : "Item added to favorites",
+      {
+        position: "bottom-right",
+        duration: 2000,
+      }
+    );
+  } catch (error) {
+    console.error("Error updating favorite:", error);
+    notyf.error("Failed to update favorite status", {
+      position: "bottom-right",
+      duration: 2000,
+    });
   }
 }

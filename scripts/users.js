@@ -1730,7 +1730,7 @@ document.addEventListener("DOMContentLoaded", function () {
     return colors[type.toLowerCase()] || "#748D92";
   }
 
-  // Create item card function
+  // Create item card function without favorite functionality
   function createItemCard(item) {
     const itemType = item.type.toLowerCase();
     
@@ -1786,87 +1786,6 @@ document.addEventListener("DOMContentLoaded", function () {
         </a>
       </div>`;
   }
-
-  // Add loading spinner to favorite action
-  window.handleFavorite = async function (event, itemId) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    const token = getCookie("token");
-    if (!token) {
-      notyf.error("Please login to favorite items", {
-        position: "bottom-right",
-        duration: 2000,
-      });
-      return;
-    }
-
-    const favoriteIcon = event.target.closest(".favorite-icon");
-    const svgPath = favoriteIcon.querySelector("path");
-    const isFavorited = svgPath.getAttribute("fill") === "#f8ff00";
-
-    // Add loading spinner
-    const originalHTML = favoriteIcon.innerHTML;
-    favoriteIcon.innerHTML =
-      '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
-    favoriteIcon.style.pointerEvents = "none";
-
-    try {
-      const response = await fetch(
-        `https://api3.jailbreakchangelogs.xyz/favorites/${
-          isFavorited ? "remove" : "add"
-        }`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Origin: "https://jailbreakchangelogs.xyz",
-          },
-          body: JSON.stringify({
-            item_id: itemId,
-            owner: token,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`Request failed with status ${response.status}`);
-      }
-
-      // Restore original icon with updated state
-      favoriteIcon.innerHTML = originalHTML;
-      if (isFavorited) {
-        svgPath.setAttribute("fill", "none");
-        svgPath.setAttribute("stroke", "#f8ff00");
-      } else {
-        svgPath.setAttribute("fill", "#f8ff00");
-        svgPath.setAttribute("stroke", "none");
-      }
-
-      const item = allItems.find((item) => item.id === itemId);
-      if (item) {
-        item.is_favorite = !isFavorited;
-      }
-
-      notyf.success(
-        isFavorited ? "Item removed from favorites" : "Item added to favorites",
-        {
-          position: "bottom-right",
-          duration: 2000,
-        }
-      );
-    } catch (error) {
-      console.error("Error updating favorite:", error);
-      notyf.error("Failed to update favorite status", {
-        position: "bottom-right",
-        duration: 2000,
-      });
-      // Restore original icon on error
-      favoriteIcon.innerHTML = originalHTML;
-    } finally {
-      favoriteIcon.style.pointerEvents = "auto";
-    }
-  };
 
   function updatePremiumBadge(premiumType) {
     if (!premiumBadge) return;
