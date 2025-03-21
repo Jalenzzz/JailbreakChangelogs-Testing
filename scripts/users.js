@@ -1080,7 +1080,7 @@ document.addEventListener("DOMContentLoaded", function () {
               displayTitle = itemData.name;
               displayType = itemData.type;
               // Use item name in URL for regular items
-              viewPath = `/item/${comment.item_type.toLowerCase()}/${encodeURIComponent(itemData.name)}`;
+              viewPath = `/item/${comment.item_type.toLowerCase()}/${encodeURIComponent(itemData.name)}?comments`;
             } else {
               imageUrl = "/assets/logos/Banner_Background_480.webp";
               // Fallback to ID if item fetch fails
@@ -1611,13 +1611,15 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       const favorites = await response.json();
-
       // Now check favorites length after we have the data
       if (!favorites || favorites.length === 0) {
         showNoFavoritesMessage();
         return;
       }
 
+      // Sort favorites by created_at timestamp (latest first)
+      favorites.sort((a, b) => b.created_at - a.created_at);
+      
       // Fetch full item details for each favorite
       const itemPromises = favorites.map(async (fav) => {
         const itemResponse = await fetch(
@@ -1662,77 +1664,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Clear and populate the favorites container
       favoritesContainer.innerHTML = paginatedItems
-        .map((item) => {
-          const itemType = item.type.toLowerCase();
-
-          if (item.favorite_id === 587) {
-            const card = `
-              <div class="col-6 col-md-4 col-lg-3">
-                <a href="/item/${itemType}/${encodeURIComponent(item.name)}" class="text-decoration-none">
-                  <div class="card items-card">
-                    <div class="position-relative">
-                      <div class="media-container" style="width: 100%; height: 100%; overflow: hidden;">
-                        <video 
-                          class="card-img-top w-100 h-100" 
-                          style="object-fit: cover;"
-                          playsinline 
-                          muted 
-                          loop 
-                          autoplay
-                        >
-                          <source src="/assets/images/items/hyperchromes/HyperShift Lvl5.webm" type="video/webm">
-                          <source src="/assets/images/items/hyperchromes/HyperShift Lvl5.mp4" type="video/mp4">
-                        </video>
-                      </div>
-                      <div class="item-card-body text-center">
-                        <div class="badges-container d-flex justify-content-center gap-2">
-                          <span class="badge item-type-badge" style="background-color: ${getTypeColor(itemType)}">${item.type}</span>
-                        </div>
-                        <h5 class="card-title">${item.name}</h5>
-                      </div>
-                    </div>
-                  </div>
-                </a>
-              </div>`;
-            return card;
-          }
-
-          // Normal items handling (existing code)
-          let imageUrl;
-          if (itemType === "horn") {
-            imageUrl = "/assets/audios/horn_thumbnail.webp";
-          } else if (itemType === "drift") {
-            imageUrl = `/assets/images/items/480p/drifts/${item.name}.webp`;
-          } else {
-            imageUrl = `/assets/images/items/480p/${itemType}s/${item.name}.webp`;
-          }
-
-          return `
-            <div class="col-6 col-md-4 col-lg-3">
-              <a href="/item/${itemType}/${encodeURIComponent(
-            item.name
-          )}" class="text-decoration-none">
-                <div class="card items-card">
-                  <div class="position-relative">
-                    <div class="media-container">
-                      <img src="${imageUrl}" class="card-img-top" alt="${
-            item.name
-          }">
-                    </div>
-                    <div class="item-card-body text-center">
-                      <div class="badges-container d-flex justify-content-center gap-2">
-                        <span class="badge item-type-badge" style="background-color: ${getTypeColor(
-                          itemType
-                        )}">${item.type}</span>
-                      </div>
-                      <h5 class="card-title">${item.name}</h5>
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </div>
-          `;
-        })
+        .map((item) => createItemCard(item))
         .join("");
 
       // Remove drift video hover effects since we're not using videos anymore
@@ -1785,16 +1717,74 @@ document.addEventListener("DOMContentLoaded", function () {
       vehicle: "#c82c2c",
       spoiler: "#C18800",
       rim: "#6335B1",
-      "tire-sticker": "#1CA1BD",
-      "tire-style": "#4CAF50",
+      "tire sticker": "#1CA1BD",
+      "tire style": "#4CAF50",
       drift: "#FF4500",
-      "body-color": "#8A2BE2",
+      "body color": "#8A2BE2",
       texture: "#708090",
       hyperchrome: "#E91E63",
       furniture: "#9C6644",
       horn: "#4A90E2",
+      "weapon skin": "#4a6741"
     };
-    return colors[type] || "#748D92";
+    return colors[type.toLowerCase()] || "#748D92";
+  }
+
+  // Create item card function
+  function createItemCard(item) {
+    const itemType = item.type.toLowerCase();
+    
+    // Special handling for HyperShift Lvl5
+    if (item.favorite_id === 587) {
+      return `
+        <div class="col-6 col-md-4 col-lg-3">
+          <a href="/item/${itemType}/${encodeURIComponent(item.name)}" class="text-decoration-none">
+            <div class="card items-card">
+              <div class="position-relative">
+                <div class="media-container">
+                  <video class="card-img-top" playsinline muted loop autoplay>
+                    <source src="/assets/images/items/hyperchromes/HyperShift Lvl5.webm" type="video/webm">
+                    <source src="/assets/images/items/hyperchromes/HyperShift Lvl5.mp4" type="video/mp4">
+                  </video>
+                </div>
+                <div class="item-card-body text-center">
+                  <div class="badges-container d-flex justify-content-center gap-2">
+                    <span class="badge item-type-badge" style="background-color: ${getTypeColor(itemType)};">${item.type}</span>
+                  </div>
+                  <h5 class="card-title">${item.name}</h5>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>`;
+    }
+
+    // Handle regular items
+    let imageUrl;
+    if (itemType === "horn") {
+      imageUrl = "/assets/audios/horn_thumbnail.webp";
+    } else {
+      imageUrl = `/assets/images/items/480p/${itemType}s/${item.name}.webp`;
+    }
+
+    return `
+      <div class="col-6 col-md-4 col-lg-3">
+        <a href="/item/${itemType}/${encodeURIComponent(item.name)}" class="text-decoration-none">
+          <div class="card items-card">
+            <div class="position-relative">
+              <div class="media-container">
+                <img src="${imageUrl}" class="card-img-top" alt="${item.name}">
+              </div>
+              <div class="item-card-body text-center">
+                <div class="badges-container d-flex justify-content-center gap-2">
+                  <span class="badge item-type-badge" style="background-color: ${getTypeColor(itemType)};">${item.type}</span>
+                </div>
+                <h5 class="card-title">${item.name}</h5>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>`;
   }
 
   // Add loading spinner to favorite action
