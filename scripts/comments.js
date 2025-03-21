@@ -251,7 +251,7 @@ class CommentsManager {
 
     try {
       const response = await fetch(
-        `https://api3.jailbreakchangelogs.xyz/comments/get?type=${this.type}&id=${this.itemId}`,
+        `https://api3.jailbreakchangelogs.xyz/comments/get?type=${this.type}&id=${this.itemId}&nocache=true`,
         {
           headers: {
             "Content-Type": "application/json",

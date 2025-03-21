@@ -1065,7 +1065,14 @@ document.addEventListener("DOMContentLoaded", function () {
         
             if (itemResponse.ok) {
               const itemData = await itemResponse.json();
-              if (comment.item_type.toLowerCase() === "horn") {
+              if (comment.item_type.toLowerCase() === "hyperchrome" && itemData.name === "HyperShift Lvl5") {
+                // Special handling for HyperShift Lvl5 with video sources
+                imageUrl = `
+                  <video class="card-img-top" playsinline muted loop autoplay>
+                    <source src="/assets/images/items/hyperchromes/HyperShift Lvl5.webm" type="video/webm">
+                    <source src="/assets/images/items/hyperchromes/HyperShift Lvl5.mp4" type="video/mp4">
+                  </video>`;
+              } else if (comment.item_type.toLowerCase() === "horn") {
                 imageUrl = "/assets/audios/horn_thumbnail.webp";
               } else {
                 imageUrl = `/assets/images/items/480p/${comment.item_type.toLowerCase()}s/${itemData.name}.webp`;
@@ -1086,9 +1093,9 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="card mb-3 comment-card shadow-lg" style="background-color: #212A31; color: #D3D9D4;">
               <div class="card-body">
                 <div class="row">
-                  <!-- Image Section -->
+                  <!-- Image/Video Section -->
                   <div class="col-md-4 d-none d-md-block">
-                    <img src="${imageUrl}" alt="Comment Image" class="img-fluid rounded" style="max-height: 150px; object-fit: cover;">
+                    ${imageUrl.includes('<video') ? imageUrl : `<img src="${imageUrl}" alt="Comment Image" class="img-fluid rounded" style="max-height: 150px; object-fit: cover;">`}
                   </div>
                   
                   <!-- Content Section -->
@@ -1591,7 +1598,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       const response = await fetch(
-        `https://api3.jailbreakchangelogs.xyz/favorites/get?user=${userId}`
+        `https://api3.jailbreakchangelogs.xyz/favorites/get?user=${userId}&nocache=true`
       );
 
       if (response.status === 404) {
@@ -1658,32 +1665,28 @@ document.addEventListener("DOMContentLoaded", function () {
         .map((item) => {
           const itemType = item.type.toLowerCase();
 
-          // Check specifically for HyperShift Lvl5 by favorite_id
-          if (item.favorite_id === 587 && item.name === "HyperShift Lvl5") {
+          if (item.favorite_id === 587) {
             const card = `
               <div class="col-6 col-md-4 col-lg-3">
-                <a href="/item/${itemType}/${encodeURIComponent(
-              item.name
-            )}" class="text-decoration-none">
+                <a href="/item/${itemType}/${encodeURIComponent(item.name)}" class="text-decoration-none">
                   <div class="card items-card">
                     <div class="position-relative">
-                      <div class="media-container">
+                      <div class="media-container" style="width: 100%; height: 100%; overflow: hidden;">
                         <video 
-                          src="/assets/images/items/hyperchromes/HyperShift Lvl5.webm" 
-                          class="card-img-top" 
+                          class="card-img-top w-100 h-100" 
+                          style="object-fit: cover;"
                           playsinline 
                           muted 
                           loop 
                           autoplay
-                          style="width: 100%; height: auto;"
                         >
+                          <source src="/assets/images/items/hyperchromes/HyperShift Lvl5.webm" type="video/webm">
+                          <source src="/assets/images/items/hyperchromes/HyperShift Lvl5.mp4" type="video/mp4">
                         </video>
                       </div>
                       <div class="item-card-body text-center">
                         <div class="badges-container d-flex justify-content-center gap-2">
-                          <span class="badge item-type-badge" style="background-color: ${getTypeColor(
-                            itemType
-                          )}">${item.type}</span>
+                          <span class="badge item-type-badge" style="background-color: ${getTypeColor(itemType)}">${item.type}</span>
                         </div>
                         <h5 class="card-title">${item.name}</h5>
                       </div>
@@ -1733,18 +1736,18 @@ document.addEventListener("DOMContentLoaded", function () {
         .join("");
 
       // Remove drift video hover effects since we're not using videos anymore
-      const driftCards = document.querySelectorAll(".items-card");
-      driftCards.forEach((card) => {
-        const video = card.querySelector("video");
-        const thumbnail = card.querySelector(".thumbnail");
-        // Only remove videos that aren't HyperShift Lvl5
-        if (video && !video.src.includes("HyperShift Lvl5")) {
-          video.remove();
-        }
-        if (thumbnail) {
-          thumbnail.style.opacity = "1";
-        }
-      });
+      // const driftCards = document.querySelectorAll(".items-card");
+      // driftCards.forEach((card) => {
+      //   const video = card.querySelector("video");
+      //   const thumbnail = card.querySelector(".thumbnail");
+      //   // Only remove videos that aren't HyperShift Lvl5
+      //   if (video && !video.src.includes("HyperShift Lvl5")) {
+      //     video.remove();
+      //   }
+      //   if (thumbnail) {
+      //     thumbnail.style.opacity = "1";
+      //   }
+      // });
     } catch (error) {
       console.error("Error fetching favorites:", error);
       favoritesContainer.innerHTML = `
