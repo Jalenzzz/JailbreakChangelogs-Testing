@@ -271,6 +271,10 @@ async function loadSimilarItemsByName(searchName) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  // Initialize tooltips
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  const tooltipList = [...tooltipTriggerList].map(el => new bootstrap.Tooltip(el));
+
   function showLoadingOverlay() {
     $("#loading-overlay").addClass("show");
   }
@@ -1969,7 +1973,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     loadSimilarItems(item);
 
-   
+    // Initialize tooltips for the newly added favorites badge
+    const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    tooltips.forEach(el => new bootstrap.Tooltip(el));
+
     // Fetch favorites count
     fetch(`https://api3.jailbreakchangelogs.xyz/item/favorites?id=${item.id}`)
       .then((response) => response.json())
@@ -2274,7 +2281,10 @@ function handleUrlParams() {
 // Add getFavoriteStarHtml helper function
 function getFavoriteStarHtml(isFavorited) {
   return `
-    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 512 512">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 512 512"
+         data-bs-toggle="tooltip" 
+         data-bs-placement="top" 
+         title="${isFavorited ? 'Unfavorite Item' : 'Favorite Item'}">
       <rect width="512" height="512" fill="none"/>
       <path fill="${isFavorited ? "#f8ff00" : "none"}"
             stroke="${isFavorited ? "none" : "#f8ff00"}"
