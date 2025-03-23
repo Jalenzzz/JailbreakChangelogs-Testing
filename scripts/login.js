@@ -1,11 +1,37 @@
+// Storage check logger
+const StorageLogger = {
+  debug: true,
+  log(step, details) {
+    if (this.debug) {
+      console.log(`[Storage:${step}]`, details);
+    }
+  }
+};
+
 function checkAndStoreReportIssue() {
   const urlParams = new URLSearchParams(window.location.search);
-  const referrerParams = new URLSearchParams(
-    document.referrer.split("?")[1] || ""
-  );
+  const referrerParams = new URLSearchParams(document.referrer.split("?")[1] || "");
 
   if (urlParams.has("report-issue") || referrerParams.has("report-issue")) {
-    localStorage.setItem("reportIssueRedirect", "true");
+    try {
+      localStorage.setItem("reportIssueRedirect", "true");
+    } catch (e) {
+      StorageLogger.log("error", "Failed to store report issue redirect: " + e.message);
+    }
+  }
+}
+
+function isLocalStorageAvailable() {
+  StorageLogger.log("check", "Testing localStorage availability...");
+  try {
+    const test = '__storage_test__';
+    localStorage.setItem(test, test);
+    localStorage.removeItem(test);
+    StorageLogger.log("check", "localStorage is available");
+    return true;
+  } catch (e) {
+    StorageLogger.log("check", "localStorage is NOT available: " + e.message);
+    return false;
   }
 }
 
@@ -28,7 +54,55 @@ function isValidRedirectUrl(url) {
   }
 }
 
-$(document).ready(function () {
+$(document).ready(function() {
+  StorageLogger.log("init", "Initializing login page...");
+  
+  const ageCheck = $("#ageCheck");
+  const tosCheck = $("#tosCheck");
+  const loginButton = $("#login-button");
+
+  // Initialize tooltip
+  const tooltip = new bootstrap.Tooltip(loginButton[0], {
+    title: "Please agree to the terms and confirm your age",
+    trigger: "hover",
+    placement: "top",
+  });
+
+  // Immediately check localStorage and disable login if not available
+  if (!isLocalStorageAvailable()) {
+    StorageLogger.log("init", "Disabling login functionality");
+    loginButton.prop("disabled", true)
+              .attr("title", "Login is not available in private browsing mode");
+    tooltip.dispose(); // Remove existing tooltip
+    new bootstrap.Tooltip(loginButton[0], {
+      title: "Login is not available in private browsing mode",
+      trigger: "hover",
+      placement: "top"
+    });
+    notyf.warning("This website requires cookies to log you in. Please disable private browsing or incognito mode to continue.");
+    
+    // Also disable checkboxes
+    ageCheck.add(tosCheck).prop("disabled", true);
+    return;
+  }
+  
+  function updateLoginButton() {
+    const shouldEnable = ageCheck.prop("checked") && tosCheck.prop("checked");
+    StorageLogger.log("button", `Updating login button state: ${shouldEnable ? "enabled" : "disabled"}`);
+    loginButton.prop("disabled", !shouldEnable);
+
+    if (shouldEnable) {
+      tooltip.disable();
+    } else {
+      tooltip.enable();
+    }
+  }
+
+  // Bind change events
+  ageCheck.add(tosCheck).on("change", updateLoginButton);
+
+  // Rest of the login functionality
+  StorageLogger.log("init", "Initializing normal login functionality");
   checkAndStoreReportIssue();
 
   // Store redirect URL if present and valid
@@ -37,20 +111,6 @@ $(document).ready(function () {
   if (redirectUrl && isValidRedirectUrl(redirectUrl)) {
     localStorage.setItem("loginRedirect", redirectUrl);
   }
-
-  const ageCheck = $("#ageCheck");
-  const tosCheck = $("#tosCheck");
-  const loginButton = $("#login-button");
-
-  function updateLoginButton() {
-    loginButton.prop(
-      "disabled",
-      !(ageCheck.prop("checked") && tosCheck.prop("checked"))
-    );
-  }
-
-  ageCheck.change(updateLoginButton);
-  tosCheck.change(updateLoginButton);
 
   const currentDomain = window.location.hostname;
   let OauthRedirect;
@@ -181,32 +241,4 @@ $(document).ready(function () {
       }
     })();
   }
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-  const ageCheck = document.getElementById("ageCheck");
-  const tosCheck = document.getElementById("tosCheck");
-  const loginButton = document.getElementById("login-button");
-
-  // Initialize tooltip
-  const tooltip = new bootstrap.Tooltip(loginButton, {
-    title: "Please agree to the terms and confirm your age",
-    trigger: "hover",
-    placement: "top",
-  });
-
-  function updateLoginButton() {
-    const isValid = ageCheck.checked && tosCheck.checked;
-    loginButton.disabled = !isValid;
-
-    // Show/hide tooltip based on button state
-    if (isValid) {
-      tooltip.disable();
-    } else {
-      tooltip.enable();
-    }
-  }
-
-  ageCheck.addEventListener("change", updateLoginButton);
-  tosCheck.addEventListener("change", updateLoginButton);
 });

@@ -1,5 +1,44 @@
+// Storage utility with fallback
+const storageUtil = {
+  memoryStorage: new Map(),
+  
+  isLocalStorageAvailable() {
+    try {
+      const test = '__storage_test__';
+      localStorage.setItem(test, test);
+      localStorage.removeItem(test);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  },
+
+  getItem(key) {
+    if (this.isLocalStorageAvailable()) {
+      return localStorage.getItem(key);
+    }
+    return this.memoryStorage.get(key);
+  },
+
+  setItem(key, value) {
+    if (this.isLocalStorageAvailable()) {
+      localStorage.setItem(key, value);
+    } else {
+      this.memoryStorage.set(key, value);
+    }
+  },
+
+  removeItem(key) {
+    if (this.isLocalStorageAvailable()) {
+      localStorage.removeItem(key);
+    } else {
+      this.memoryStorage.delete(key);
+    }
+  }
+};
+
 window.notyf = new Notyf({
-  duration: 4500,
+  duration: 5000,
   position: {
     x: "right",
     y: "bottom",
@@ -81,7 +120,7 @@ window.deleteCookie = function (name) {
 };
 
 const token = getCookie("token");
-const userid = localStorage.getItem("userid"); // Single declaration
+const userid = storageUtil.getItem("userid"); // Single declaration
 
 // session utilities
 const SessionLogger = {
@@ -209,21 +248,21 @@ function clearSessionWithReason(reason) {
     reason,
     previousState: {
       hadToken: !!getCookie("token"),
-      hadUserData: !!localStorage.getItem("user"),
-      hadUserId: !!localStorage.getItem("userid"),
+      hadUserData: !!storageUtil.getItem("user"),
+      hadUserId: !!storageUtil.getItem("userid"),
     },
   });
 
-  localStorage.removeItem("user");
-  localStorage.removeItem("avatar");
-  localStorage.removeItem("userid");
-  localStorage.removeItem("showWelcome");
+  storageUtil.removeItem("user");
+  storageUtil.removeItem("avatar");
+  storageUtil.removeItem("userid");
+  storageUtil.removeItem("showWelcome");
   deleteCookie("token");
 }
 
 function parseUserData() {
   try {
-    const stored = localStorage.getItem("user");
+    const stored = storageUtil.getItem("user");
     return stored ? JSON.parse(stored) : null;
   } catch (e) {
     console.error("Failed to parse user data:", e);
@@ -265,7 +304,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   if (urlParams.has("report-issue")) {
     if (!token) {
       notyf.error("Please sign in to report issues");
-      localStorage.setItem("reportIssueRedirect", "true");
+      storageUtil.setItem("reportIssueRedirect", "true");
       setTimeout(() => {
         window.location.href =
           "/login?redirect=" +
@@ -279,8 +318,8 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 
   // Check for stored redirect first
-  if (token && localStorage.getItem("reportIssueRedirect")) {
-    localStorage.removeItem("reportIssueRedirect");
+  if (token && storageUtil.getItem("reportIssueRedirect")) {
+    storageUtil.removeItem("reportIssueRedirect");
     window.location.href = "/?report-issue";
     return; // Stop execution here since we're redirecting
   }
@@ -639,13 +678,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (userData) {
           // Update all user data at once
           globalUserData = userData;
-          localStorage.setItem("user", JSON.stringify(userData));
-          localStorage.setItem("userid", userData.id);
+          storageUtil.setItem("user", JSON.stringify(userData));
+          storageUtil.setItem("userid", userData.id);
 
           if (userData.id && userData.avatar) {
             const avatarUrl = await window.checkAndSetAvatar(userData);
             if (avatarUrl) {
-              localStorage.setItem("avatar", avatarUrl);
+              storageUtil.setItem("avatar", avatarUrl);
 
               // Update profile pictures if they exist
               const profilePicture = document.getElementById("profile-picture");
@@ -829,9 +868,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           deleteCookie("token");
           setCookie("token", token, 7);
           const avatarURL = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png`;
-          localStorage.setItem("user", JSON.stringify(userData));
-          localStorage.setItem("avatar", avatarURL);
-          localStorage.setItem("userid", userData.id);
+          storageUtil.setItem("user", JSON.stringify(userData));
+          storageUtil.setItem("avatar", avatarURL);
+          storageUtil.setItem("userid", userData.id);
           closeModal();
           window.location.reload(); // Just reload the current page instead of redirecting
         })
