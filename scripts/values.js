@@ -1650,7 +1650,7 @@ window.handleimage = function (element) {
     (element.alt === "HyperShift Lvl5" &&
       element.closest(".media-container")?.querySelector("video"));
 
-  if (isHyperShift Lvl5) {
+  if (isHyperShiftLvl5) {
     return;
   }
 

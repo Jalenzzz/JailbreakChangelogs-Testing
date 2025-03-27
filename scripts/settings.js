@@ -46,66 +46,58 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!response.ok) throw new Error("Failed to load settings");
       const settings = await response.json();
 
-      // Update all switches
-      document
-        .querySelectorAll(".form-check-input[data-setting]")
-        .forEach((input) => {
-          const setting = input.dataset.setting;
-          if (setting in settings) {
-           
-            input.checked = settings[setting] === 1;
+      // Load custom banner and avatar URLs first
+      const [userResponse, bannerResponse] = await Promise.all([
+        fetch(`https://api3.jailbreakchangelogs.xyz/users/get/?id=${userId}`),
+        fetch(`https://api3.jailbreakchangelogs.xyz/users/background/get?user=${userId}`)
+      ]);
 
-            // Handle visibility of custom input fields
-            if (setting === "banner_discord") {
-              const customBannerInput = document.getElementById(
-                "custom_banner_input"
-              );
-              if (customBannerInput) {
-                customBannerInput.style.display =
-                  settings[setting] === 1 ? "none" : "block";
-              }
-            }
-            if (setting === "avatar_discord") {
-              const customAvatarInput = document.getElementById("custom_avatar_input");
-              if (customAvatarInput) {
-                customAvatarInput.style.display = settings[setting] === 1 ? "none" : "block";
-              }
-            }
-          }
-        });
+      let customAvatarUrl = '';
+      let customBannerUrl = '';
 
-      // Load custom banner URL if discord banner is disabled
-      if (settings.banner_discord === 0) {
-        const bannerResponse = await fetch(
-          `https://api3.jailbreakchangelogs.xyz/users/background/get?user=${userId}`
-        );
-        if (bannerResponse.ok) {
-          const bannerData = await bannerResponse.json();
-          if (bannerData.image_url && bannerData.image_url !== "NONE") {
-            document.getElementById("bannerInput").value = bannerData.image_url;
-          }
+      if (userResponse.ok) {
+        const userData = await userResponse.json();
+        if (userData.custom_avatar) {
+          customAvatarUrl = userData.custom_avatar;
+          document.getElementById("avatarInput").value = customAvatarUrl;
         }
       }
 
-      // Load custom avatar URL if discord avatar is disabled
-      if (settings.avatar_discord === 0) {
-        const userResponse = await fetch(
-          `https://api3.jailbreakchangelogs.xyz/users/get/?id=${userId}`
-        );
-        if (userResponse.ok) {
-          const userData = await userResponse.json();
-          if (userData.custom_avatar) {
-            document.getElementById("avatarInput").value = userData.custom_avatar;
-          }
+      if (bannerResponse.ok) {
+        const bannerData = await bannerResponse.json();
+        if (bannerData.image_url && bannerData.image_url !== "NONE") {
+          customBannerUrl = bannerData.image_url;
+          document.getElementById("bannerInput").value = customBannerUrl;
         }
       }
 
-      // Hide loading overlay once everything is loaded
+      // Update all switches and handle visibility
+      document.querySelectorAll(".form-check-input[data-setting]").forEach((input) => {
+        const setting = input.dataset.setting;
+        if (setting in settings) {
+          input.checked = settings[setting] === 1;
+
+          // Handle visibility of custom input fields
+          if (setting === "banner_discord") {
+            const customBannerInput = document.getElementById("custom_banner_input");
+            if (customBannerInput) {
+              customBannerInput.style.display = settings[setting] === 1 ? "none" : "block";
+            }
+          }
+          if (setting === "avatar_discord") {
+            const customAvatarInput = document.getElementById("custom_avatar_input");
+            if (customAvatarInput) {
+              customAvatarInput.style.display = settings[setting] === 1 ? "none" : "block";
+            }
+          }
+        }
+      });
+
       hideLoadingOverlay();
     } catch (error) {
       console.error("Error loading settings:", error);
       notyf.error("Failed to load settings");
-      hideLoadingOverlay(); // Hide overlay even on error
+      hideLoadingOverlay();
     }
   }
 
@@ -210,7 +202,6 @@ document.addEventListener("DOMContentLoaded", function () {
               );
               if (!response.ok) throw new Error("Failed to update setting");
               notyf.success("Setting updated successfully");
-              refreshPage(); // Refresh page after successful update
             } catch (error) {
               console.error("Error updating setting:", error);
               notyf.error("Failed to update setting");
@@ -252,7 +243,7 @@ document.addEventListener("DOMContentLoaded", function () {
             throw new Error(responseData.error || "Failed to update settings");
           }
           notyf.success("Setting updated successfully");
-          refreshPage(); // Refresh page after successful update
+          refreshPage(); // Only refresh for non-avatar/banner settings
         } catch (error) {
           console.error("Error updating settings:", error);
           notyf.error("Failed to update settings");
@@ -374,7 +365,6 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("custom_banner_input").style.display = "block";
 
       notyf.success("Banner updated successfully");
-      refreshPage(); // Refresh page after successful update
     } catch (error) {
       console.error("Error updating banner:", error);
       notyf.error("Failed to update banner");
@@ -454,7 +444,6 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("custom_avatar_input").style.display = "block";
 
       notyf.success("Avatar updated successfully");
-      refreshPage(); // Refresh page after successful update
     } catch (error) {
       console.error("Error updating avatar:", error);
       notyf.error("Failed to update avatar");

@@ -477,74 +477,92 @@ document.addEventListener("DOMContentLoaded", async function () {
   const mobileViewUpdates = document.getElementById("mobileViewUpdates");
   const mobileAvatarToggle = document.getElementById("mobileAvatarToggle");
 
+  // Global cache for users list
+  let globalUsersList = null;
+  let fetchingUsersList = false;
+  let usersListPromise = null;
+
+  async function fetchUsersList() {
+    // Return cached data if available
+    if (globalUsersList) {
+      return globalUsersList;
+    }
+
+    // Return existing promise if already fetching
+    if (usersListPromise) {
+      return usersListPromise;
+    }
+
+    // Start new fetch if needed
+    fetchingUsersList = true;
+    usersListPromise = (async () => {
+      try {
+        const response = await fetch('https://api.testing.jailbreakchangelogs.xyz/users/list');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        globalUsersList = await response.json();
+        return globalUsersList;
+      } catch (error) {
+        console.error('Error fetching users list:', error);
+        throw error;
+      } finally {
+        fetchingUsersList = false;
+      }
+    })();
+
+    return usersListPromise;
+  }
+
   window.checkAndSetAvatar = async function (userData) {
     try {
-      // First check user settings
-      const settingsResponse = await fetch(
-        `https://api3.jailbreakchangelogs.xyz/users/settings?user=${userData.id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Cache-Control": "no-cache, no-store, must-revalidate",
-            Pragma: "no-cache",
-            Expires: "0",
-          },
+      // Only fetch users list if we don't have it cached
+      let completeUserData = null;
+      if (!globalUsersList) {
+        try {
+          const usersList = await fetchUsersList();
+          completeUserData = usersList.find(user => user.id === userData.id);
+        } catch (error) {
+          console.error('Failed to fetch users list:', error);
+          // Continue with provided userData if fetch fails
         }
-      );
-
-      if (!settingsResponse.ok) {
-        throw new Error("Failed to fetch user settings");
+      } else {
+        completeUserData = globalUsersList.find(user => user.id === userData.id);
       }
-
-      const settings = await settingsResponse.json();
-
-      // If using Discord avatar
-      if (settings.avatar_discord === 1) {
-        // Early return for users without Discord avatars
+      
+      // If we couldn't find the user in our list, use provided userData
+      if (!completeUserData) {
         if (!userData.id || !userData.avatar || userData.avatar === "None") {
           return "assets/default-avatar.png";
         }
+      }
 
-        // Check if avatar is animated (starts with a_)
-        const isAnimated = userData.avatar.startsWith("a_");
-        
-        // Check if user has premium access for animated avatars
-        const hasAnimatedAccess = userData.premiumtype === 3;
-        
-        // Determine format based on premium status and whether avatar is animated
+      const finalUserData = completeUserData || userData;
+      const settings = completeUserData?.settings;
+
+      // If using Discord avatar (default or explicitly set)
+      if (!settings || settings.avatar_discord === 1) {
+        if (!finalUserData.id || !finalUserData.avatar || finalUserData.avatar === "None") {
+          return "assets/default-avatar.png";
+        }
+
+        const isAnimated = finalUserData.avatar.startsWith("a_");
+        const hasAnimatedAccess = finalUserData.premiumtype === 3;
         const format = isAnimated && hasAnimatedAccess ? "gif" : "png";
-        const avatarUrl = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.${format}`;
+        const avatarUrl = `https://cdn.discordapp.com/avatars/${finalUserData.id}/${finalUserData.avatar}.${format}`;
 
         try {
-          const response = await fetch(avatarUrl, {
-            method: "HEAD",
-            cache: "no-store",
-          });
-
+          const response = await fetch(avatarUrl, { method: "HEAD" });
           if (response.ok) {
             return avatarUrl;
           }
         } catch (error) {
-          console.error("Error fetching Discord avatar:", error);
+          console.error("Error checking Discord avatar:", error);
         }
-      } else {
-        // Using custom avatar
-        try {
-          const userResponse = await fetch(
-            `https://api3.jailbreakchangelogs.xyz/users/get/?id=${userData.id}`
-          );
-          if (userResponse.ok) {
-            const userDetails = await userResponse.json();
-            if (userDetails.custom_avatar) {
-              return userDetails.custom_avatar;
-            }
-          }
-        } catch (error) {
-          console.error("Error fetching custom avatar:", error);
-        }
+      } else if (completeUserData && completeUserData.custom_avatar) {
+        return completeUserData.custom_avatar;
       }
 
-      // Return fallback avatar if all attempts fail
       return "assets/default-avatar.png";
     } catch (error) {
       console.error("Error in checkAndSetAvatar:", error);
