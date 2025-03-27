@@ -265,11 +265,12 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       // Validate hostname
-      const isImgur = hostname === 'imgur.com' || hostname === 'i.imgur.com';
+      const isImgBB = hostname === 'imgbb.com' || hostname === 'i.ibb.co';
       const isTenor = hostname === 'tenor.com' || hostname.endsWith('.tenor.com');
+      const isPostImg = hostname === 'postimg.cc' || hostname === 'i.postimg.cc';
       
-      if (!isImgur && !isTenor) {
-        notyf.error("Only Imgur and Tenor URLs are allowed");
+      if (!isImgBB && !isTenor && !isPostImg) {
+        notyf.error("Only ImgBB, PostImg, and Tenor URLs are allowed");
         return false;
       }
 

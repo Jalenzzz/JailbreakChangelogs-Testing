@@ -38,7 +38,7 @@
     />
     <link
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/gh/JBChangelogs/JailbreakChangelogs@1.1.26/styles/settings.min.css"
+      href="/styles/settings.css"
     />
     <link
       rel="stylesheet"
@@ -262,6 +262,15 @@
                       </button>
                     </div>
                     <small class="text-muted d-block mt-1">Enter a direct link to your custom banner image</small>
+                    <div class="image-upload-help mt-2">
+                      <small class="text-warning d-block">Important: Use the direct image link, not the sharing link!</small>
+                      <small class="d-block mt-1">Upload your image using one of these sites:</small>
+                      <div class="upload-sites mt-1">
+                        <a href="https://imgbb.com/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">ImgBB</a>
+                        <a href="https://postimages.org/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">PostImages</a>
+                        <a href="https://tenor.com/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">Tenor</a>
+                      </div>
+                    </div>
                     <%- user.premiumtype < 2 ? '<small class="text-warning">Supporter 2+ is required to change this setting.</small>' : '' %>
                   </div>
 
@@ -303,6 +312,15 @@
                       </button>
                     </div>
                     <small class="text-muted d-block mt-1">Enter a direct link to your custom avatar image</small>
+                    <div class="image-upload-help mt-2">
+                      <small class="text-warning d-block">Important: Use the direct image link, not the sharing link!</small>
+                      <small class="d-block mt-1">Upload your image using one of these sites:</small>
+                      <div class="upload-sites mt-1">
+                        <a href="https://imgbb.com/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">ImgBB</a>
+                        <a href="https://postimages.org/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">PostImages</a>
+                        <a href="https://tenor.com/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">Tenor</a>
+                      </div>
+                    </div>
                     <%- user.premiumtype < 2 ? '<small class="text-warning">Supporter 2+ is required to use this setting.</small>' : '' %>
                   </div>
                 </div>
