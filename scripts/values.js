@@ -1080,18 +1080,29 @@ document.addEventListener("DOMContentLoaded", () => {
   async function loadItems() {
     showLoadingOverlay();
     try {
-      const response = await fetch(
-        "https://api3.jailbreakchangelogs.xyz/items/list",
-        {
+      // Fetch values version last updated
+      const versionResponse = await fetch("https://api3.jailbreakchangelogs.xyz/version/values", {
           method: "GET",
           headers: {
-            "Content-Type": "application/json",
-            Origin: "https://jailbreakchangelogs.xyz",
+              "Content-Type": "application/json",
+              Origin: "https://jailbreakchangelogs.xyz",
           },
-        }
-      );
+      });
+      
+      if (versionResponse.ok) {
+          const versionData = await versionResponse.json();
+          updateLastUpdatedTimestamp(versionData.last_updated);
+      }
 
-      window.allItems = await response.json();
+      const response = await fetch("https://api3.jailbreakchangelogs.xyz/items/list", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Origin: "https://jailbreakchangelogs.xyz",
+        },
+      });
+
+    window.allItems = await response.json();
 
       // Add favorite status to items if user is logged in and we have user data
       const token = getCookie("token");
@@ -1160,6 +1171,30 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error in loadItems:", error);
       hideLoadingOverlay();
     }
+  }
+
+  function updateLastUpdatedTimestamp(timestamp) {
+    const lastUpdatedElement = document.getElementById("values-last-updated");
+    if (!lastUpdatedElement || !timestamp) return;
+
+    const now = Date.now();
+    const diff = now - (timestamp * 1000); // Convert to milliseconds
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    let timeAgoText;
+    if (days > 0) {
+        timeAgoText = `${days} ${days === 1 ? 'day' : 'days'} ago`;
+    } else if (hours > 0) {
+        timeAgoText = `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`;
+    } else if (minutes > 0) {
+        timeAgoText = `${minutes} ${minutes === 1 ? 'minute' : 'minutes'} ago`;
+    } else {
+        timeAgoText = 'Just now';
+    }
+
+    lastUpdatedElement.textContent = timeAgoText;
   }
 
   function updateTotalItemsCount() {

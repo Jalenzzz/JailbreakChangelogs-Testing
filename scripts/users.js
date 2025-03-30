@@ -281,7 +281,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         const response = await fetch(
-          "https://api3.jailbreakchangelogs.xyz/users/description/update",
+          "https://api.testing.jailbreakchangelogs.xyz/users/description/update",
           {
             method: "POST",
             headers: {
@@ -1390,7 +1390,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const targetUserId = pathSegments[2]; // This gets the ID from /users/{id}
 
       const response = await fetch(
-        `https://api3.jailbreakchangelogs.xyz/users/followers/add`,
+        `https://api.testing.jailbreakchangelogs.xyz/users/followers/add`,
         {
           method: "POST",
           headers: {
@@ -1441,7 +1441,7 @@ document.addEventListener("DOMContentLoaded", function () {
     try {
       const user = getCookie("token");
       const response = await fetch(
-        `https://api3.jailbreakchangelogs.xyz/users/followers/remove`,
+        `https://api.testing.jailbreakchangelogs.xyz/users/followers/remove`,
         {
           method: "DELETE",
           headers: {
