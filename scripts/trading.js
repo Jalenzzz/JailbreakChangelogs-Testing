@@ -2629,6 +2629,11 @@ async function createTradeAd() {
       }
     );
 
+    if (response.status === 409) {
+      notyf.error("You already have an active trade advertisement with the selected items");
+      return;
+    }
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
