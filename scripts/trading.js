@@ -1309,6 +1309,52 @@ async function deleteTradeAd(tradeId) {
   }
 }
 
+async function makeTradeOffer(tradeId) {
+  try {
+    const token = getCookie("token");
+    if (!token) {
+      notyf.error("Please login to make offers");
+      return;
+    }
+
+    // Get user data to get the user ID
+    const userResponse = await fetch(
+      `https://api3.jailbreakchangelogs.xyz/users/get/token?token=${token}&nocache=true`
+    );
+    if (!userResponse.ok) {
+      throw new Error("Failed to fetch user data");
+    }
+    const userData = await userResponse.json();
+
+    // Prepare the request body
+    const offerData = {
+      id: parseInt(tradeId),
+      owner: token
+    };
+
+    // Make the offer
+    const response = await fetch(
+      "https://api.testing.jailbreakchangelogs.xyz/trades/offer",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(offerData),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    notyf.success("Offer sent successfully!");
+  } catch (error) {
+    console.error("Error making offer:", error);
+    notyf.error("Failed to send offer");
+  }
+}
+
 async function editTradeAd(tradeId) {
   try {
     // Update URL with edit parameter
@@ -1984,6 +2030,18 @@ async function createTradeAdHTML(trade) {
 	</g>
 </svg> View Details
           </a>
+           ${
+            authorDetails?.id !== currentUserId 
+            ? `<button class="btn btn-sm btn-outline-success" onclick="makeTradeOffer('${String(trade.id)}')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                  <rect width="24" height="24" fill="none" />
+                  <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                    <path d="M3 12h4l3 8l4-16l3 8h4" />
+                  </g>
+                </svg> Make Offer
+              </button>`
+            : ''
+          }
           ${
             authorDetails?.id === currentUserId
               ? `
