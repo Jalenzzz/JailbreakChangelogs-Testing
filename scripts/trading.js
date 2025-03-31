@@ -1345,7 +1345,12 @@ async function makeTradeOffer(tradeId) {
     );
 
     if (response.status === 409) {
-      notyf.error("You have already made an offer for this trade");
+      notyf.warning("You have already made an offer for this trade");
+      return;
+    }
+
+    if (response.status === 403) {
+      notyf.error("Cannot send offer - this user's settings does not allow direct messages");
       return;
     }
 
@@ -2635,7 +2640,7 @@ async function createTradeAd() {
     );
 
     if (response.status === 409) {
-      notyf.error("You already have an active trade advertisement with the selected items");
+      notyf.warning("You already have an active trade advertisement with the selected items");
       return;
     }
 
