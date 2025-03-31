@@ -2262,10 +2262,10 @@ function renderPreviewItems(containerId, items) {
                     </linearGradient>
                 </defs>
                 <path fill="url(#meteoconsStarFill0)" stroke="#fcd34d" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="m105.7 263.5l107.5 29.9a7.9 7.9 0 0 1 5.4 5.4l29.9 107.5a7.8 7.8 0 0 0 15 0l29.9-107.5a7.9 7.9 0 0 1 5.4-5.4l107.5-29.9a7.8 7.8 0 0 0 0-15l-107.5-29.9a7.9 7.9 0 0 1-5.4-5.4l-29.9-107.5a7.8 7.8 0 0 0-15 0l-29.9 107.5a7.9 7.9 0 0 1-5.4 5.4l-107.5 29.9a7.8 7.8 0 0 0 0 15Z">
-                    <animateTransform additive="sum" attributeName="transform" calcMode="spline" dur="6s" keySplines=".42, 0, .58, 1; .42, 0, .58, 1" repeatCount="indefinite" type="rotate" values="-15 256 256; 15 256 256; -15 256 256" />
-                    <animate attributeName="opacity" dur="6s" values="1; .75; 1; .75; 1; .75; 1" />
-                </path>
-            </svg>`
+                            <animateTransform additive="sum" attributeName="transform" calcMode="spline" dur="6s" keySplines=".42, 0, .58, 1; .42, 0, .58, 1" repeatCount="indefinite" type="rotate" values="-15 256 256; 15 256 256; -15 256 256" />
+                            <animate attributeName="opacity" dur="6s" values="1; .75; 1; .75; 1; .75; 1" />
+                          </path>
+                        </svg>`
           : ""
       }
     
@@ -2315,7 +2315,6 @@ function renderPreviewItems(containerId, items) {
       </div>
     </div>
   `;
-
   container.innerHTML = `
     <div class="preview-items-grid">
       ${itemsHtml}
@@ -2504,11 +2503,16 @@ async function createTradeAd() {
       return;
     }
 
+    // Get selected expiration time
+    const expirationSelect = document.getElementById("trade-expiration");
+    const expires = parseInt(expirationSelect.value);
+
     // Prepare trade data
     const tradeData = {
       offering: offeringList.map((item) => item.id).join(","),
       requesting: requestingList.map((item) => item.id).join(","),
       owner: token,
+      expires: expires
     };
 
     // Make API call to create trade
