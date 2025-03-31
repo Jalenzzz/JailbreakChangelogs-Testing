@@ -346,11 +346,12 @@
             <div class="form-group mt-3">
               <label for="trade-expiration" class="form-label">Trade Expires In:</label>
               <select id="trade-expiration" class="form-select">
-                <option value="6">6 Hours</option>
-                <option value="12">12 Hours</option>
-                <option value="24" selected>24 Hours</option>
-                <option value="48">48 Hours</option>
+                <option value="6">6 Hours (Free)</option>
+                <option value="12" disabled data-premium="1">12 Hours (Premium)</option>
+                <option value="24" disabled data-premium="2">24 Hours (Premium+)</option>
+                <option value="48" disabled data-premium="3">48 Hours (Premium++)</option>
               </select>
+              <div class="invalid-feedback">Your premium tier does not allow this expiration time.</div>
             </div>
             <div class="preview-actions mt-4 text-center"></div>
           </div>
