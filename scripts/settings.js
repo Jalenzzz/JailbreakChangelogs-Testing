@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
   async function loadSettings() {
     try {
       const response = await fetch(
-        `https://api3.jailbreakchangelogs.xyz/users/settings?user=${userId}&nocache=true`,
+        `https://api.testing.jailbreakchangelogs.xyz/users/settings?user=${userId}&nocache=true`,
         {
           headers: {
             "Cache-Control": "no-cache",
@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function () {
       try {
         const token = getCookie("token");
         const response = await fetch(
-          `https://api3.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
+          `https://api.testing.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
           {
             method: "POST",
             headers: {
@@ -190,7 +190,7 @@ document.addEventListener("DOMContentLoaded", function () {
               };
 
               const response = await fetch(
-                `https://api3.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
+                `https://api.testing.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
                 {
                   method: "POST",
                   headers: {
@@ -229,7 +229,7 @@ document.addEventListener("DOMContentLoaded", function () {
           };
 
           const response = await fetch(
-            `https://api3.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
+            `https://api.testing.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
             {
               method: "POST",
               headers: {
@@ -347,7 +347,7 @@ document.addEventListener("DOMContentLoaded", function () {
       };
 
       const settingsResponse = await fetch(
-        `https://api3.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
+        `https://api.testing.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
         {
           method: "POST",
           headers: {
@@ -426,7 +426,7 @@ document.addEventListener("DOMContentLoaded", function () {
       };
 
       const settingsResponse = await fetch(
-        `https://api3.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
+        `https://api.testing.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
         {
           method: "POST",
           headers: {

@@ -405,7 +405,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Get user settings first
       const settingsResponse = await fetch(
-        `https://api3.jailbreakchangelogs.xyz/users/settings?user=${userId}`,
+        `https://api.testing.jailbreakchangelogs.xyz/users/settings?user=${userId}&nocache=true`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -1569,7 +1569,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // First check user settings
       const settingsResponse = await fetch(
-        `https://api3.jailbreakchangelogs.xyz/users/settings?user=${userId}`
+        `https://api.testing.jailbreakchangelogs.xyz/users/settings?user=${userId}&nocache=true`
       );
       if (!settingsResponse.ok) {
         throw new Error("Failed to fetch user settings");

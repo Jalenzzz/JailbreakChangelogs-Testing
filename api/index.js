@@ -859,7 +859,7 @@ app.get("/users/:user/followers", async (req, res) => {
 
     // Step 2: Get user settings
     const settingsResponse = await fetch(
-      `https://api3.jailbreakchangelogs.xyz/users/settings?user=${requestedUser}`,
+      `https://api.testing.jailbreakchangelogs.xyz/users/settings?user=${requestedUser}&nocache=true`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -976,7 +976,7 @@ app.get("/users/:user/following", async (req, res) => {
 
     // Step 2: Get user settings
     const settingsResponse = await fetch(
-      `https://api3.jailbreakchangelogs.xyz/users/settings?user=${requestedUser}`,
+      `https://api.testing.jailbreakchangelogs.xyz/users/settings?user=${requestedUser}&nocache=true`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -1131,7 +1131,7 @@ app.get("/users/:user", async (req, res) => {
 
     // Step 2: Get user settings
     const settingsResponse = await fetch(
-      `https://api3.jailbreakchangelogs.xyz/users/settings?user=${user}`,
+      `https://api.testing.jailbreakchangelogs.xyz/users/settings?user=${user}&nocache=true`,
       {
         headers: {
           "Content-Type": "application/json",
