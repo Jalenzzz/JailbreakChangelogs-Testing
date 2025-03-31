@@ -105,6 +105,7 @@
               <div class="mb-4">
                 <h5>Profile Settings</h5>
                 <div class="list-group">
+                  <!-- Core Privacy Settings -->
                   <div class="list-group-item">
                     <div class="form-check form-switch">
                       <input
@@ -115,89 +116,7 @@
                       />
                       <label class="form-check-label" for="profile_public">
                         <h6 class="mb-1">Public Profile</h6>
-                        <small class="text-muted"
-                          >Allow others to view your profile</small
-                        >
-                      </label>
-                    </div>
-                  </div>
-                  <div class="list-group-item">
-                    <div class="form-check form-switch">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="show_comments"
-                        data-setting="show_recent_comments"
-                      />
-                      <label class="form-check-label" for="show_comments">
-                        <h6 class="mb-1">Show Recent Comments</h6>
-                        <small class="text-muted"
-                          >Display your recent comments on your profile</small
-                        >
-                      </label>
-                    </div>
-                  </div>
-                  <div class="list-group-item">
-                    <div class="form-check form-switch">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="hide_following"
-                        data-setting="hide_following"
-                      />
-                      <label class="form-check-label" for="hide_following">
-                        <h6 class="mb-1">Hide Following</h6>
-                        <small class="text-muted"
-                          >Hide your following list from others</small
-                        >
-                      </label>
-                    </div>
-                  </div>
-                  <div class="list-group-item">
-                    <div class="form-check form-switch">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="hide_followers"
-                        data-setting="hide_followers"
-                      />
-                      <label class="form-check-label" for="hide_followers">
-                        <h6 class="mb-1">Hide Followers</h6>
-                        <small class="text-muted"
-                          >Hide your followers list from others</small
-                        >
-                      </label>
-                    </div>
-                  </div>
-                  <div class="list-group-item">
-                    <div class="form-check form-switch">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="hide_favorites"
-                        data-setting="hide_favorites"
-                      />
-                      <label class="form-check-label" for="hide_favorites">
-                        <h6 class="mb-1">Hide Favorites</h6>
-                        <small class="text-muted"
-                          >Hide your favorites from others</small
-                        >
-                      </label>
-                    </div>
-                  </div>
-                  <div class="list-group-item">
-                    <div class="form-check form-switch">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="hide_connections"
-                        data-setting="hide_connections"
-                      />
-                      <label class="form-check-label" for="hide_connections">
-                        <h6 class="mb-1">Hide Connections</h6>
-                        <small class="text-muted"
-                          >Hide your linked accounts from others</small
-                        >
+                        <small class="text-muted">Allow others to view your profile</small>
                       </label>
                     </div>
                   </div>
@@ -211,9 +130,97 @@
                       />
                       <label class="form-check-label" for="hide_presence">
                         <h6 class="mb-1">Hide Presence</h6>
-                        <small class="text-muted"
-                          >Hide your online status from others</small
-                        >
+                        <small class="text-muted">Hide your online status from others</small>
+                      </label>
+                    </div>
+                  </div>
+                  
+                  <!-- Content Visibility -->
+                  <div class="list-group-item">
+                    <div class="form-check form-switch">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="show_comments"
+                        data-setting="show_recent_comments"
+                      />
+                      <label class="form-check-label" for="show_comments">
+                        <h6 class="mb-1">Show Recent Comments</h6>
+                        <small class="text-muted">Display your recent comments on your profile</small>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="list-group-item">
+                    <div class="form-check form-switch">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="hide_favorites"
+                        data-setting="hide_favorites"
+                      />
+                      <label class="form-check-label" for="hide_favorites">
+                        <h6 class="mb-1">Hide Favorites</h6>
+                        <small class="text-muted">Hide your favorites from others</small>
+                      </label>
+                    </div>
+                  </div>
+
+                  <!-- Social Connections -->
+                  <div class="list-group-item">
+                    <div class="form-check form-switch">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="hide_following"
+                        data-setting="hide_following"
+                      />
+                      <label class="form-check-label" for="hide_following">
+                        <h6 class="mb-1">Hide Following</h6>
+                        <small class="text-muted">Hide your following list from others</small>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="list-group-item">
+                    <div class="form-check form-switch">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="hide_followers"
+                        data-setting="hide_followers"
+                      />
+                      <label class="form-check-label" for="hide_followers">
+                        <h6 class="mb-1">Hide Followers</h6>
+                        <small class="text-muted">Hide your followers list from others</small>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="list-group-item">
+                    <div class="form-check form-switch">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="hide_connections"
+                        data-setting="hide_connections"
+                      />
+                      <label class="form-check-label" for="hide_connections">
+                        <h6 class="mb-1">Hide Connections</h6>
+                        <small class="text-muted">Hide your linked accounts from others</small>
+                      </label>
+                    </div>
+                  </div>
+
+                  <!-- Communication Settings -->
+                  <div class="list-group-item">
+                    <div class="form-check form-switch">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="dms_allowed"
+                        data-setting="dms_allowed"
+                      />
+                      <label class="form-check-label" for="dms_allowed">
+                        <h6 class="mb-1">Allow DMs from Bot</h6>
+                        <small class="text-muted">Allow our Discord bot to send you direct messages</small>
                       </label>
                     </div>
                   </div>

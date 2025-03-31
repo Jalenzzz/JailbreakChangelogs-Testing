@@ -391,7 +391,7 @@ app.get("/seasons/:season", async (req, res) => {
 app.get("/trading", async (req, res) => {
   try {
     // Check if trades API is available before rendering the page
-    const tradesResponse = await fetchWithTimeout("https://api3.jailbreakchangelogs.xyz/trades/list", {
+    const tradesResponse = await fetchWithTimeout("https://api.testing.jailbreakchangelogs.xyz/trades/list", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

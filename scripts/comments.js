@@ -1086,7 +1086,7 @@ class CommentsManager {
 
     try {
       const tradeResponse = await fetch(
-        `https://api3.jailbreakchangelogs.xyz/trades/get?id=${this.itemId}`
+        `https://api.testing.jailbreakchangelogs.xyz/trades/get?id=${this.itemId}`
       );
       if (!tradeResponse.ok) return false;
 

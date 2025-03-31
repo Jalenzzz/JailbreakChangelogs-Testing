@@ -213,7 +213,7 @@ async function loadTradeData() {
   try {
     // Fetch trade details
     const tradeResponse = await fetch(
-      `https://api3.jailbreakchangelogs.xyz/trades/get?id=${tradeId}&nocache=true`
+      `https://api.testing.jailbreakchangelogs.xyz/trades/get?id=${tradeId}&nocache=true`
     );
 
     if (!tradeResponse.ok) {

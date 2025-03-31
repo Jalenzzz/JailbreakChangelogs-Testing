@@ -225,6 +225,7 @@ document.addEventListener("DOMContentLoaded", function () {
             avatar_discord: document.querySelector('[data-setting="avatar_discord"]').checked ? 1 : 0,
             hide_connections: document.querySelector('[data-setting="hide_connections"]').checked ? 1 : 0,
             hide_presence: document.querySelector('[data-setting="hide_presence"]').checked ? 1 : 0,
+            dms_allowed: document.querySelector('[data-setting="dms_allowed"]').checked ? 1 : 0
           };
 
           const response = await fetch(
