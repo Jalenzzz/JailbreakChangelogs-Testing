@@ -814,15 +814,16 @@ app.get("/login", (req, res) => {
 
 const getAvatar = async (userId, avatarHash, username) => {
   const defaultAvatarUrl = "assets/default-avatar.png";
+  const proxyUrl = "https://euphonious-melomakarona-a257cd.netlify.app/?destination=";
 
   if (!avatarHash) {
     return defaultAvatarUrl;
   }
 
   try {
-    const url = `https://cdn.discordapp.com/avatars/${userId}/${avatarHash}.png`;
-    const response = await fetch(url, { method: "HEAD" });
-    return response.ok ? url : defaultAvatarUrl;
+    const discordUrl = `https://cdn.discordapp.com/avatars/${userId}/${avatarHash}.png`;
+    const response = await fetch(discordUrl, { method: "HEAD" });
+    return response.ok ? `${proxyUrl}${encodeURIComponent(discordUrl)}` : defaultAvatarUrl;
   } catch (error) {
     console.error("Error fetching avatar:", error);
     return defaultAvatarUrl;
