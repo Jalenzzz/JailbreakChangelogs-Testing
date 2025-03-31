@@ -1344,6 +1344,11 @@ async function makeTradeOffer(tradeId) {
       }
     );
 
+    if (response.status === 409) {
+      notyf.error("You have already made an offer for this trade");
+      return;
+    }
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
