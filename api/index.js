@@ -841,7 +841,7 @@ app.get("/login", (req, res) => {
   });
 });
 
-const getAvatar = async (userId, avatarHash, username, settings = null) => {
+const getAvatar = async (userId, avatarHash, settings = null) => {
   const defaultAvatarUrl = "assets/default-avatar.png";
   const proxyUrl = "https://euphonious-melomakarona-a257cd.netlify.app/?destination=";
 
