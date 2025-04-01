@@ -1278,7 +1278,7 @@ app.get("/redeem", (req, res) => {
 
 app.get("/supporting", (req, res) => {
   res.render("supporting", {
-    title: "Changelogs",
+    title: "Support Us - Changelogs",
     logoUrl:
       "https://jailbreakchangelogs.xyz/assets/logos/Banner_Background.webp",
     logoAlt: "Supporting Page Logo",
