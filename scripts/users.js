@@ -954,7 +954,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       const response = await fetch(
-        `https://api3.jailbreakchangelogs.xyz/comments/get/user?author=${userId}`
+        `https://api.testing.jailbreakchangelogs.xyz/comments/get/user?author=${userId}`
       );
 
       if (!response.ok) {
