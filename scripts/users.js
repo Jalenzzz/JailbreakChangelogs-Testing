@@ -668,7 +668,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Then get bio data
       const bioResponse = await fetch(
-        `https://api3.jailbreakchangelogs.xyz/users/description/get?user=${userId}`,
+        `https://api.testing.jailbreakchangelogs.xyz/users/description/get?user=${userId}`,
         {
           headers: {
             "Content-Type": "application/json",
