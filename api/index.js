@@ -169,18 +169,24 @@ app.get("/changelogs/:changelog", async (req, res) => {
   try {
     // Use Promise.race with timeout for parallel requests
     const [latestResponse, requestedResponse] = await Promise.all([
-      fetchWithTimeout("https://api3.jailbreakchangelogs.xyz/changelogs/latest", {
-        headers: {
-          "Content-Type": "application/json",
-          Origin: "https://jailbreakchangelogs.xyz",
-        },
-      }),
-      fetchWithTimeout(`https://api3.jailbreakchangelogs.xyz/changelogs/get?id=${changelogId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Origin: "https://jailbreakchangelogs.xyz",
-        },
-      }),
+      fetchWithTimeout(
+        "https://api3.jailbreakchangelogs.xyz/changelogs/latest",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Origin: "https://jailbreakchangelogs.xyz",
+          },
+        }
+      ),
+      fetchWithTimeout(
+        `https://api3.jailbreakchangelogs.xyz/changelogs/get?id=${changelogId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Origin: "https://jailbreakchangelogs.xyz",
+          },
+        }
+      ),
     ]);
 
     // Check if any response is not ok (including 500 errors)
@@ -193,13 +199,15 @@ app.get("/changelogs/:changelog", async (req, res) => {
       if (latestResponse.status === 500 || requestedResponse.status === 500) {
         status = 503;
         title = "503 - Service Temporarily Unavailable";
-        message = "Our changelog service is temporarily unavailable. Please try again later.";
+        message =
+          "Our changelog service is temporarily unavailable. Please try again later.";
       }
 
       return res.status(status).render("error", {
         title,
         message,
-        logoUrl: "https://jailbreakchangelogs.xyz/assets/logos/Banner_Background.webp",
+        logoUrl:
+          "https://jailbreakchangelogs.xyz/assets/logos/Banner_Background.webp",
         logoAlt: "Error Page Logo",
         MIN_TITLE_LENGTH,
         MIN_DESCRIPTION_LENGTH,
@@ -285,7 +293,7 @@ app.get("/seasons", async (req, res) => {
 app.get("/seasons/:season", async (req, res) => {
   const seasonId = req.params.season;
   const apiUrl = `https://api3.jailbreakchangelogs.xyz/seasons/get?season=${seasonId}`;
-  const seasonsListUrl = 'https://api3.jailbreakchangelogs.xyz/seasons/list';
+  const seasonsListUrl = "https://api3.jailbreakchangelogs.xyz/seasons/list";
   const latestSeason = 25;
 
   try {
@@ -317,13 +325,15 @@ app.get("/seasons/:season", async (req, res) => {
       if (seasonResponse.status === 500 || seasonsListResponse.status === 500) {
         status = 503;
         title = "503 - Service Temporarily Unavailable";
-        message = "Our season service is temporarily unavailable. Please try again later.";
+        message =
+          "Our season service is temporarily unavailable. Please try again later.";
       }
 
       return res.status(status).render("error", {
         title,
         message,
-        logoUrl: "https://jailbreakchangelogs.xyz/assets/logos/Banner_Background.webp",
+        logoUrl:
+          "https://jailbreakchangelogs.xyz/assets/logos/Banner_Background.webp",
         logoAlt: "Error Page Logo",
         MIN_TITLE_LENGTH,
         MIN_DESCRIPTION_LENGTH,
@@ -339,17 +349,23 @@ app.get("/seasons/:season", async (req, res) => {
     }
 
     // Generate reward image URLs and filter out nulls
-    const imageUrls = seasonData.rewards ? seasonData.rewards.map(reward => {
-      // Use absolute URLs for image paths
-      if (reward.link && reward.link.startsWith('/assets')) {
-        return `https://jailbreakchangelogs.xyz${reward.link}`;
-      }
-      return null;
-    }).filter(url => url !== null) : [];
+    const imageUrls = seasonData.rewards
+      ? seasonData.rewards
+          .map((reward) => {
+            // Use absolute URLs for image paths
+            if (reward.link && reward.link.startsWith("/assets")) {
+              return `https://jailbreakchangelogs.xyz${reward.link}`;
+            }
+            return null;
+          })
+          .filter((url) => url !== null)
+      : [];
 
     // If no image URLs are found, use a default image
     if (imageUrls.length === 0) {
-      imageUrls.push('https://jailbreakchangelogs.xyz/assets/logos/Banner_Background.webp');
+      imageUrls.push(
+        "https://jailbreakchangelogs.xyz/assets/logos/Banner_Background.webp"
+      );
     }
 
     // Render the season page
@@ -359,19 +375,21 @@ app.get("/seasons/:season", async (req, res) => {
       seasonId: seasonId, // Add this for comments
       image_urls: imageUrls,
       metaDescription: `View Season ${seasonId} reward information including level rewards, exclusive items, and more for Roblox Jailbreak.`,
-      logoUrl: "https://jailbreakchangelogs.xyz/assets/logos/Banner_Background.webp",
+      logoUrl:
+        "https://jailbreakchangelogs.xyz/assets/logos/Banner_Background.webp",
       logoAlt: "Seasons Page Logo",
       MIN_TITLE_LENGTH,
       MIN_DESCRIPTION_LENGTH,
     });
-
   } catch (error) {
     console.error("Error fetching season data:", error);
     if (error.message === "Request timed out") {
       return res.status(503).render("error", {
         title: "503 - Service Unavailable",
-        message: "The server is taking too long to respond. Please try again later.",
-        logoUrl: "https://jailbreakchangelogs.xyz/assets/logos/Banner_Background.webp",
+        message:
+          "The server is taking too long to respond. Please try again later.",
+        logoUrl:
+          "https://jailbreakchangelogs.xyz/assets/logos/Banner_Background.webp",
         logoAlt: "Error Page Logo",
         MIN_TITLE_LENGTH,
         MIN_DESCRIPTION_LENGTH,
@@ -380,7 +398,8 @@ app.get("/seasons/:season", async (req, res) => {
     return res.status(500).render("error", {
       title: "500 - Server Error",
       message: "The server encountered an error while processing your request.",
-      logoUrl: "https://jailbreakchangelogs.xyz/assets/logos/Banner_Background.webp",
+      logoUrl:
+        "https://jailbreakchangelogs.xyz/assets/logos/Banner_Background.webp",
       logoAlt: "Error Page Logo",
       MIN_TITLE_LENGTH,
       MIN_DESCRIPTION_LENGTH,
@@ -391,19 +410,24 @@ app.get("/seasons/:season", async (req, res) => {
 app.get("/trading", async (req, res) => {
   try {
     // Check if trades API is available before rendering the page
-    const tradesResponse = await fetchWithTimeout("https://api.testing.jailbreakchangelogs.xyz/trades/list", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Origin: "https://jailbreakchangelogs.xyz",
-      },
-    });
+    const tradesResponse = await fetchWithTimeout(
+      "https://api.testing.jailbreakchangelogs.xyz/trades/list",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Origin: "https://jailbreakchangelogs.xyz",
+        },
+      }
+    );
 
     if (!tradesResponse.ok) {
       return res.status(503).render("error", {
         title: "503 - Service Unavailable",
-        message: "Our trade ads service is temporarily unavailable. Please try again later.",
-        logoUrl: "https://jailbreakchangelogs.xyz/assets/logos/Banner_Background.webp",
+        message:
+          "Our trade ads service is temporarily unavailable. Please try again later.",
+        logoUrl:
+          "https://jailbreakchangelogs.xyz/assets/logos/Banner_Background.webp",
         logoAlt: "Error Page Logo",
         MIN_TITLE_LENGTH,
         MIN_DESCRIPTION_LENGTH,
@@ -412,7 +436,8 @@ app.get("/trading", async (req, res) => {
 
     res.render("trading", {
       title: "Trading - Changelogs",
-      logoUrl: "https://jailbreakchangelogs.xyz/assets/logos/Logo_Collab_Background.webp",
+      logoUrl:
+        "https://jailbreakchangelogs.xyz/assets/logos/Logo_Collab_Background.webp",
       logoAlt: "Trading Page Logo",
       MIN_TITLE_LENGTH,
       MIN_DESCRIPTION_LENGTH,
@@ -420,9 +445,11 @@ app.get("/trading", async (req, res) => {
   } catch (error) {
     console.error("Error checking trades API:", error);
     return res.status(503).render("error", {
-      title: "503 - Service Unavailable", 
-      message: "Our trade adsservice is temporarily unavailable. Please try again later.",
-      logoUrl: "https://jailbreakchangelogs.xyz/assets/logos/Banner_Background.webp",
+      title: "503 - Service Unavailable",
+      message:
+        "Our trade adsservice is temporarily unavailable. Please try again later.",
+      logoUrl:
+        "https://jailbreakchangelogs.xyz/assets/logos/Banner_Background.webp",
       logoAlt: "Error Page Logo",
       MIN_TITLE_LENGTH,
       MIN_DESCRIPTION_LENGTH,
@@ -535,7 +562,7 @@ app.get("/item/:type/:item", async (req, res) => {
   let itemName = decodeURIComponent(req.params.item)
     .trim()
     .replace(/\s+/g, " ");
-  
+
   // Convert URL format (tire-sticker) to original format (tire sticker)
   let itemType = decodeURIComponent(req.params.type)
     .trim()
@@ -544,7 +571,7 @@ app.get("/item/:type/:item", async (req, res) => {
 
   const formattedUrlType = itemType
     .split(" ")
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 
   // Check if URL uses spaces instead of hyphens and redirect if needed
@@ -561,7 +588,9 @@ app.get("/item/:type/:item", async (req, res) => {
   itemName = itemName.replace(/-/g, " ");
 
   // Use original itemType (with spaces) for API request
-  const apiUrl = `https://api3.jailbreakchangelogs.xyz/items/get?name=${encodeURIComponent(itemName)}&type=${encodeURIComponent(itemType)}`;
+  const apiUrl = `https://api3.jailbreakchangelogs.xyz/items/get?name=${encodeURIComponent(
+    itemName
+  )}&type=${encodeURIComponent(itemType)}`;
 
   try {
     const response = await fetch(apiUrl, {
@@ -812,22 +841,30 @@ app.get("/login", (req, res) => {
   });
 });
 
-const getAvatar = async (userId, avatarHash, username) => {
+const getAvatar = async (userId, avatarHash, username, settings = null) => {
   const defaultAvatarUrl = "assets/default-avatar.png";
   const proxyUrl = "https://euphonious-melomakarona-a257cd.netlify.app/?destination=";
 
-  if (!avatarHash) {
-    return defaultAvatarUrl;
+  // If settings is provided and avatar_discord is 0, use custom_avatar
+  if (settings && settings.avatar_discord === 0 && userData.custom_avatar) {
+    return `${proxyUrl}${encodeURIComponent(userData.custom_avatar)}`;
   }
 
-  try {
-    const discordUrl = `https://cdn.discordapp.com/avatars/${userId}/${avatarHash}.png`;
-    const response = await fetch(discordUrl, { method: "HEAD" });
-    return response.ok ? `${proxyUrl}${encodeURIComponent(discordUrl)}` : defaultAvatarUrl;
-  } catch (error) {
-    console.error("Error fetching avatar:", error);
-    return defaultAvatarUrl;
+  // If avatar_discord is 1 or no custom avatar, use Discord avatar
+  if (avatarHash && avatarHash !== "None") {
+    try {
+      const discordUrl = `https://cdn.discordapp.com/avatars/${userId}/${avatarHash}.png`;
+      const response = await fetch(discordUrl, { method: "HEAD" });
+      return response.ok
+        ? `${proxyUrl}${encodeURIComponent(discordUrl)}`
+        : defaultAvatarUrl;
+    } catch (error) {
+      console.error("Error fetching avatar:", error);
+      return defaultAvatarUrl;
+    }
   }
+
+  return defaultAvatarUrl;
 };
 
 app.get("/users/:user/followers", async (req, res) => {
@@ -920,7 +957,8 @@ app.get("/users/:user/followers", async (req, res) => {
     const avatar = await getAvatar(
       userData.id,
       userData.avatar,
-      userData.username
+      userData.username,
+      settings
     );
 
     // Step 6: Render the followers page
@@ -1037,7 +1075,8 @@ app.get("/users/:user/following", async (req, res) => {
     const avatar = await getAvatar(
       userData.id,
       userData.avatar,
-      userData.username
+      userData.username,
+      settings
     );
 
     // Step 6: Render the following page
@@ -1188,7 +1227,8 @@ app.get("/users/:user", async (req, res) => {
     const avatar = await getAvatar(
       parsedUserData.id,
       parsedUserData.avatar,
-      parsedUserData.username
+      parsedUserData.username,
+      settings
     );
 
     if (!canAccessProfile) {
@@ -1332,11 +1372,12 @@ app.get("/settings", async (req, res) => {
 
     res.render("settings", {
       title: "Settings - Changelogs",
-      logoUrl: "https://jailbreakchangelogs.xyz/assets/logos/Banner_Background.webp",
+      logoUrl:
+        "https://jailbreakchangelogs.xyz/assets/logos/Banner_Background.webp",
       logoAlt: "Settings Page Logo",
       MIN_TITLE_LENGTH,
       MIN_DESCRIPTION_LENGTH,
-      user
+      user,
     });
   } catch (error) {
     console.error("Error fetching user data:", error);
