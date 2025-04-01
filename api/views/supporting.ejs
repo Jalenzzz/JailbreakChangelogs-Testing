@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="no-referrer" />
+
+    <!-- Primary Meta Tags -->
+    <title><%= title %></title>
+    <meta name="title" content="<%= title %>" />
+    <meta
+      name="description"
+      content="Redeem your Jailbreak Changelogs codes and claim exclusive rewards. Enter your code to receive special items and bonuses."
+    />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://jailbreakchangelogs.xyz/redeem" />
+    <meta property="og:title" content="<%= title %>" />
+    <meta
+      property="og:description"
+      content="Redeem your Jailbreak Changelogs codes and claim exclusive rewards. Enter your code to receive special items and bonuses."
+    />
+    <meta property="og:image" content="<%= logoUrl %>" />
+    <meta property="og:image:width" content="4000" />
+    <meta property="og:image:height" content="900" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#124e66" />
+
+    <!-- Stylesheets -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link 
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" 
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/JBChangelogs/JailbreakChangelogs@1.1.26/styles/colors.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/styles/supporting.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/JBChangelogs/JailbreakChangelogs@1.1.26/styles/redeem.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/JBChangelogs/JailbreakChangelogs@1.1.26/styles/main.min.css"
+    />
+
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/assets/logos/apple-touch-icon.png" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Montserrat:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/notyf@3.10.0/notyf.min.css"
+      integrity="sha256-IwkvZNRC/3S26O1gWwjBINmrPZ4zYvPX4z/98OKWHkQ="
+      crossorigin="anonymous"
+    />
+  </head>
+
+  <!-- Google tag (gtag.js) -->
+  <script
+    async
+    src="https://www.googletagmanager.com/gtag/js?id=G-729QSV9S7B"
+  ></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+
+    gtag("config", "G-729QSV9S7B");
+  </script>
+
+  <body data-scroll-container>
+    <!-- prettier-ignore -->
+    <%- include('partials/nav') %>
+
+    <div class="container py-5">
+      <h1 class="text-center mb-5">Support Tiers</h1>
+      
+      <div class="row g-4 pricing-grid">
+        <!-- Free Tier -->
+        <div class="col-lg-3 col-md-6">
+          <div class="pricing-card h-100">
+            <div class="pricing-header">
+              <h3>Free</h3>
+              <div class="price">$0</div>
+              <div class="price-sub">NO SUPPORTER</div>
+            </div>
+            <div class="pricing-features">
+              <ul class="list-unstyled">
+                <li><span class="feature-label">Comment Limit:</span> 200 chars</li>
+                <li><i class="bi bi-x-circle text-danger"></i> Animated Discord PFP</li>
+                <li><i class="bi bi-x-circle text-danger"></i> Animated Discord Banner</li>
+                <li><i class="bi bi-x-circle text-danger"></i> Custom Animated PFP</li>
+                <li><i class="bi bi-x-circle text-danger"></i> Custom Animated Banner</li>
+                <li><span class="feature-label">Trade Ad Duration:</span> 6 Hours</li>
+                <li><i class="bi bi-x-circle text-danger"></i> Custom Supporter Badge</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Supporter 1 Tier -->
+        <div class="col-lg-3 col-md-6">
+          <div class="pricing-card h-100">
+            <div class="pricing-header">
+              <h3>Supporter I</h3>
+              <div class="price">75R$</div>
+              <div class="price-sub">or $1 on Ko-fi</div>
+            </div>
+            <div class="pricing-features">
+              <ul class="list-unstyled">
+                <li><span class="feature-label">Comment Limit:</span> 400 chars</li>
+                <li><i class="bi bi-x-circle text-danger"></i> Animated Discord PFP</li>
+                <li><i class="bi bi-x-circle text-danger"></i> Animated Discord Banner</li>
+                <li><i class="bi bi-x-circle text-danger"></i> Custom Animated PFP</li>
+                <li><i class="bi bi-x-circle text-danger"></i> Custom Animated Banner</li>
+                <li><i class="bi bi-check-circle text-success"></i> Custom Static Avatar</li>
+                <li><i class="bi bi-x-circle text-danger"></i> Custom Static Banner</li>
+                <li><i class="bi bi-check-circle text-success"></i> Enhanced Comments</li>
+                <li><span class="feature-label">Trade Ad Duration:</span> 12 Hours</li>
+                <li><i class="bi bi-check-circle text-success"></i> Custom Supporter Badge</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Supporter 2 Tier -->
+        <div class="col-lg-3 col-md-6">
+          <div class="pricing-card h-100 recommended">
+            <div class="pricing-header">
+              <div class="recommended-badge">Recommended</div>
+              <h3>Supporter II</h3>
+              <div class="price">200R$</div>
+              <div class="price-sub">or $3 on Ko-fi</div>
+            </div>
+            <div class="pricing-features">
+              <ul class="list-unstyled">
+                <li><span class="feature-label">Comment Limit:</span> 800 chars</li>
+                <li><i class="bi bi-x-circle text-danger"></i> Animated Discord PFP</li>
+                <li><i class="bi bi-check-circle text-success"></i> Animated Discord Banner</li>
+                <li><i class="bi bi-x-circle text-danger"></i> Custom Animated PFP</li>
+                <li><i class="bi bi-check-circle text-success"></i> Custom Animated Banner</li>
+                <li><i class="bi bi-check-circle text-success"></i> Custom Static Avatar</li>
+                <li><i class="bi bi-check-circle text-success"></i> Custom Static/Animated Banner</li>
+                <li><span class="feature-label">Trade Ad Duration:</span> 24 Hours</li>
+                <li><i class="bi bi-check-circle text-success"></i> Custom Supporter Badge</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Supporter 3 Tier -->
+        <div class="col-lg-3 col-md-6">
+          <div class="pricing-card h-100">
+            <div class="pricing-header">
+              <h3>Supporter III</h3>
+              <div class="price">400R$</div>
+              <div class="price-sub">or $5 on Ko-fi</div>
+            </div>
+            <div class="pricing-features">
+              <ul class="list-unstyled">
+                <li><span class="feature-label">Comment Limit:</span> Unlimited</li>
+                <li><i class="bi bi-check-circle text-success"></i> Animated Discord PFP</li>
+                <li><i class="bi bi-check-circle text-success"></i> Animated Discord Banner</li>
+                <li><i class="bi bi-check-circle text-success"></i> Custom Static/Animated Avatar</li>
+                <li><i class="bi bi-check-circle text-success"></i> Custom Static/Animated Banner</li>
+                <li><span class="feature-label">Trade Ad Duration:</span> 48 Hours</li>
+                <li><i class="bi bi-check-circle text-success"></i> Custom Supporter Badge</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Support Links Section -->
+      <div class="support-links mt-5 text-center">
+        <h3 class="mb-4">Ways to Support Us</h3>
+        <div class="row justify-content-center align-items-center g-4">
+          <div class="col-md-4">
+            <div class="support-method">
+              <h4>Support via Ko-fi</h4>
+              <img src="/assets/supporter-qr-code.webp" alt="Ko-fi QR Code" class="qr-code mb-3">
+              <p>Scan the QR code or <a href="https://ko-fi.com/jailbreakchangelogs" target="_blank" rel="noopener noreferrer">visit our Ko-fi page</a></p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="support-method">
+              <h4>Support via Robux</h4>
+              <img src="/assets/Robux.png" alt="Robux Icon" class="robux-icon mb-3">
+              <p><a href="https://www.roblox.com/games/104188650191561/Support-Us" target="_blank" rel="noopener noreferrer">Visit our Roblox support game</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('partials/footer') %>
+
+    <!-- Scripts -->
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/notyf@3.10.0/notyf.min.js"
+      integrity="sha256-UnlpkMLasaTx2ZqovxBXUcQ5jq3oKXaZZ1aWENNFETE="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="/scripts/redeem.js"></script>
+    <script src="/scripts/main.js"></script>
+  </body>
+</html>

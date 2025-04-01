@@ -1276,6 +1276,17 @@ app.get("/redeem", (req, res) => {
   });
 });
 
+app.get("/supporting", (req, res) => {
+  res.render("supporting", {
+    title: "Changelogs",
+    logoUrl:
+      "https://jailbreakchangelogs.xyz/assets/logos/Banner_Background.webp",
+    logoAlt: "Supporting Page Logo",
+    MIN_TITLE_LENGTH,
+    MIN_DESCRIPTION_LENGTH,
+  });
+});
+
 app.get("/dupes/calculator", (req, res) => {
   res.render("dupes", {
     title: "Find Duped Items / Changelogs",

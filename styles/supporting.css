@@ -1,0 +1,110 @@
+.pricing-card {
+  background-color: var(--bg-primary);
+  border-radius: 1rem;
+  padding: 2rem;
+  transition: transform 0.3s ease;
+}
+
+.pricing-card:hover {
+  transform: translateY(-5px);
+}
+
+.pricing-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--accent-color);
+}
+
+.pricing-header h3 {
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.price {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--accent-color-light);
+}
+
+.price-sub {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.pricing-features {
+  color: var(--text-primary);
+}
+
+.pricing-features ul li {
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.feature-label {
+  color: var(--text-muted);
+  margin-right: 0.3rem;
+}
+
+.pricing-features .bi {
+  font-size: 1.1rem;
+}
+
+.text-success {
+  color: #2ecc71 !important;
+}
+
+.text-danger {
+  color: #e74c3c !important;
+}
+
+.recommended {
+  position: relative;
+  border: 2px solid var(--accent-color-light);
+}
+
+.recommended-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--accent-color-light);
+  color: var(--text-primary);
+  padding: 0.3rem 1rem;
+  border-radius: 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.support-links {
+  background-color: var(--bg-secondary);
+  padding: 2rem;
+  border-radius: 1rem;
+  margin-top: 4rem;
+}
+
+.support-method {
+  padding: 1.5rem;
+}
+
+.support-method img.qr-code {
+  max-width: 200px;
+  height: auto;
+}
+
+.support-method img.robux-icon {
+  max-width: 100px;
+  height: auto;
+}
+
+.support-method a {
+  color: var(--accent-color-light);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.support-method a:hover {
+  color: var(--text-primary);
+}
