@@ -1282,7 +1282,7 @@ document.addEventListener("DOMContentLoaded", () => {
       value === "N/A"
     ) {
       return {
-        display: "No Value", // Changed from "-" to "No Value"
+        display: "No Value",
         numeric: 0,
       };
     }
@@ -1309,22 +1309,14 @@ document.addEventListener("DOMContentLoaded", () => {
       };
     }
 
-    // Format display value based on screen size
+    // Format display value in shorthand (K/M)
     let displayValue;
-    if (window.innerWidth <= 768) {
-      // Mobile devices - use 2 decimal places for better precision
-      if (numericValue >= 1000000) {
-        displayValue =
-          (numericValue / 1000000).toFixed(2).replace(/\.?0+$/, "") + "M";
-      } else if (numericValue >= 1000) {
-        displayValue =
-          (numericValue / 1000).toFixed(2).replace(/\.?0+$/, "") + "K";
-      } else {
-        displayValue = numericValue.toString();
-      }
+    if (numericValue >= 1000000) {
+      displayValue = (numericValue / 1000000).toFixed(2).replace(/\.?0+$/, "") + "M";
+    } else if (numericValue >= 1000) {
+      displayValue = (numericValue / 1000).toFixed(2).replace(/\.?0+$/, "") + "K";
     } else {
-      // Desktop - use comma formatting
-      displayValue = numericValue.toLocaleString("en-US");
+      displayValue = numericValue.toString();
     }
 
     return {
@@ -1352,10 +1344,17 @@ document.addEventListener("DOMContentLoaded", () => {
     if (item.type === "Horn") color = "#4A90E2";
     if (item.type === "Weapon Skin") color = "#4a6741";
 
+    let borderClasses = "border";
+    if (item.is_seasonal) {
+      borderClasses = "border-3 border-info"; // Just use Bootstrap border
+    } else if (item.is_limited) {
+      borderClasses = "border-3 border-warning"; // Just use Bootstrap border
+    }
+
     // Get the card classes based on limited and seasonal status
-    const cardClasses = ["card", "items-card", "shadow-sm"];
-    if (item.is_limited) cardClasses.push("limited-item");
-    if (item.is_seasonal) cardClasses.push("seasonal-item");
+    const cardClasses = ["card", "items-card", "shadow-sm", borderClasses];
+    // if (item.is_limited) cardClasses.push("limited-item");
+    // if (item.is_seasonal) cardClasses.push("seasonal-item");
 
     // Only show HyperChrome badge for HyperChrome items, otherwise show regular type badge
     const isHyperChrome = item.type === "HyperChrome";
@@ -1379,61 +1378,49 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Create card HTML
     const cardHtml = `
-      <div class="${cardClasses.join(" ")}" style="cursor: pointer;">
-        <div class="position-relative">
-          ${mediaElement}
-          <div class="item-card-body text-center">
-            <div class="badges-container d-flex justify-content-center gap-2">
-              ${typeBadgeHtml}
+    <div class="${cardClasses.join(' ')}">
+      <div class="position-relative">
+        ${mediaElement}
+        <div class="card-body text-center">
+          <div class="d-flex justify-content-center gap-2 mb-2">
+            ${typeBadgeHtml}
+          </div>
+          <h5 class="card-title">${item.name}</h5>
+          <div class="card-text">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span>Cash Value:</span>
+              <span data-value="${cashValue.numeric}">${cashValue.display}</span>
             </div>
-            <h5 class="card-title">${item.name}</h5>
-            <div class="value-container">
-              <div class="d-flex justify-content-between align-items-center mb-2 value-row">
-                <span>Cash Value:</span>
-                <span class="cash-value" data-value="${cashValue.numeric}">${
-      cashValue.display
-    }</span>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span>Duped Value:</span>
+              <span data-value="${dupedValue.numeric}">${dupedValue.display}</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <span>Demand:</span>
+              <span>${item.demand === "'N/A'" || item.demand === "N/A" ? "No Demand" : item.demand || "No Value"}</span>
+            </div>
+            ${item.last_updated ? `
+              <div class="mt-2">
+                <small class="text-muted">
+                  Last Updated: ${formatTimeAgo(item.last_updated)}
+                </small>
               </div>
-              <div class="d-flex justify-content-between align-items-center mb-2 value-row">
-                <span>Duped Value:</span>
-                <span class="duped-value" data-value="${dupedValue.numeric}">${
-      dupedValue.display
-    }</span>
-              </div>
-              <div class="d-flex justify-content-between align-items-center value-row">
-                <span>Demand:</span>
-                <span class="demand-value">${
-                  item.demand === "'N/A'" || item.demand === "N/A"
-                    ? "No Demand"
-                    : item.demand || "No Value"
-                }</span>
-              </div>
-              ${
-                item.last_updated
-                  ? `
-                <div class="mt-2 d-flex align-items-center">
-                  <small class="text-muted" style="font-size: 0.8rem;">
-                    Last Updated: ${formatTimeAgo(item.last_updated)}
-                  </small>
-                </div>
-              `
-                  : `
-              <div class="mt-2 d-flex align-items-center">
-                <small class="text-muted" style="font-size: 0.8rem;">
+            ` : `
+              <div class="mt-2">
+                <small class="text-muted">
                   Last Updated: Unknown
                 </small>
               </div>
-            `
-              }
-            </div>
+            `}
           </div>
         </div>
-      </div>`;
+      </div>
+    </div>`;
 
     cardDiv.innerHTML = cardHtml;
 
     // Add event listeners
-    const card = cardDiv.querySelector(".items-card");
+    const card = cardDiv.querySelector(".card");
 
     // Handle card clicks
     card.addEventListener("click", (e) => {
@@ -1879,21 +1866,21 @@ const videoObserver = new IntersectionObserver(
 
 // Function to observe all videos in cards
 function observeCardVideos() {
-  document.querySelectorAll(".items-card video").forEach((video) => {
-    videoObserver.observe(video);
-  });
+  // document.querySelectorAll(".items-card video").forEach((video) => {
+  //   videoObserver.observe(video);
+  // });
 }
 
 // Also handle tab/window visibility
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
     // Pause all videos when tab is not visible
-    document.querySelectorAll(".items-card video").forEach((video) => {
-      video.pause();
-    });
+    // document.querySelectorAll(".items-card video").forEach((video) => {
+    //   video.pause();
+    // });
   } else {
     // Check which videos are visible and should be playing
-    document.querySelectorAll(".items-card video").forEach((video) => {
+    document.querySelectorAll(".card video").forEach((video) => {
       const entry = video.getBoundingClientRect();
       const isVisible = entry.top < window.innerHeight && entry.bottom > 0;
       if (isVisible) {
