@@ -1340,6 +1340,23 @@ body {
   background-color: var(--bg-primary) !important;
 }
 
+.bg-dark-subtle {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.bg-primary
+{
+  background-color: var(--accent-color-light) !important;
+}
+
+.bg-indigo {
+  background-color: #6610f2 !important;
+}
+
+.bg-purple {
+  background-color: #8a2be2 !important;
+}
+
 .items-card:hover .favorite-icon,
 .media-container:hover .favorite-icon,
 .item-card-body:hover .favorite-icon {

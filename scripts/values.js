@@ -14,6 +14,27 @@ const VALID_SORTS = [
   "weapon-skins",
 ];
 
+function getDemandBadgeClass(demand) {
+  switch(demand) {
+    case 'Close to none':
+      return 'bg-danger'; // Red
+      case 'Very Low':
+        return 'bg-warning'; // Orange/Yellow
+        case 'Low':
+          return 'bg-info'; // Light Blue
+          case 'Medium':
+            return 'bg-primary'; // Blue
+            case 'Decent':
+              return 'bg-success'; // Green
+              case 'High':
+                return 'bg-indigo' // Indigo
+                case 'Very High':
+                  return 'bg-purple'; // Purple
+                  default:
+                    return 'bg-danger'; // Default to red for no demand
+  }
+}
+
 // Initialize allItems globally
 window.allItems = [];
 let filteredItems = [];
@@ -1365,41 +1386,61 @@ document.addEventListener("DOMContentLoaded", () => {
     const dupedValue = formatValue(item.duped_value);
 
     // Create card HTML
-    const cardHtml = `
-    <div class="${cardClasses.join(' ')}">
-      <div class="position-relative">
-        ${mediaElement}
-        <div class="card-body text-center">
-          <div class="d-flex justify-content-center gap-2 mb-2">
-            ${typeBadgeHtml}
+   
+const cardHtml = `
+<div class="${cardClasses.join(' ')}">
+  <div class="position-relative">
+    ${mediaElement}
+    <div class="card-body text-center">
+      <div class="d-flex justify-content-center gap-2 mb-2">
+        ${typeBadgeHtml}
+      </div>
+      <h5 class="card-title">${item.name}</h5>
+      <div class="card-text">
+        <div class="list-group list-group-flush">
+          <!-- Cash Value Card -->
+          <div class="list-group-item bg-dark-subtle rounded mb-2 p-2">
+            <div class="d-flex justify-content-between align-items-center">
+              <small class="text-body-secondary">Cash Value</small>
+              <span class="badge bg-primary rounded-pill" data-value="${cashValue.numeric}">
+                ${cashValue.display}
+              </span>
+            </div>
           </div>
-          <h5 class="card-title">${item.name}</h5>
-          <div class="card-text">
-            <div class="d-flex justify-content-between mb-2">
-              <span>Cash Value:</span>
-              <span data-value="${cashValue.numeric}">${cashValue.display}</span>
+          
+          <!-- Duped Value Card -->
+          <div class="list-group-item bg-dark-subtle rounded mb-2 p-2">
+            <div class="d-flex justify-content-between align-items-center">
+              <small class="text-body-secondary">Duped Value</small>
+              <span class="badge rounded-pill" style="background-color: var(--text-muted);" data-value="${dupedValue.numeric}">
+                ${dupedValue.display}
+              </span>
             </div>
-            <div class="d-flex justify-content-between mb-2">
-              <span>Duped Value:</span>
-              <span data-value="${dupedValue.numeric}">${dupedValue.display}</span>
-            </div>
-            <div class="d-flex justify-content-between">
-              <span>Demand:</span>
-              <span>${item.demand === "'N/A'" || item.demand === "N/A" ? "No Demand" : item.demand || "No Value"}</span>
+          </div>
+        
+          <!-- Demand Card -->
+          <div class="list-group-item bg-dark-subtle rounded p-2">
+            <div class="d-flex justify-content-between align-items-center">
+              <small class="text-body-secondary">Demand</small>
+              <span class="badge ${getDemandBadgeClass(item.demand)} rounded-pill">
+                ${item.demand === "'N/A'" || item.demand === "N/A" ? "No Demand" : item.demand || "No Value"}
+              </span>
             </div>
           </div>
         </div>
-        ${item.last_updated ? `
-          <div class="card-footer">
-            <small class="text-body-secondary">Last Updated ${formatTimeAgo(item.last_updated)}</small>
-          </div>`
-          :`
-          <div class="card-footer">
-            <small class="text-body-secondary">Last updated Unknown</small>
-          </div>
-          `}
       </div>
-    </div>`;
+    </div>
+    ${item.last_updated ? `
+      <div class="card-footer">
+        <small class="text-body-secondary">Last updated ${formatTimeAgo(item.last_updated)}</small>
+      </div>`
+      :`
+      <div class="card-footer">
+        <small class="text-body-secondary">Last updated Unknown</small>
+      </div>
+    `}
+  </div>
+</div>`;
 
     cardDiv.innerHTML = cardHtml;
 
