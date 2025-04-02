@@ -1394,9 +1394,9 @@ const cardHtml = `
   <div class="position-relative">
     ${mediaElement}
     <div class="card-body text-center">
-      <div class="d-flex justify-content-center gap-2 mb-2">
-        ${typeBadgeHtml}
-      </div>
+    <div class="badges-container">
+      ${typeBadgeHtml}
+    </div>
       <h5 class="card-title">${item.name}</h5>
       <div class="card-text">
         <div class="list-group list-group-flush">
