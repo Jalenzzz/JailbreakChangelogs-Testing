@@ -14,6 +14,13 @@ class CommentsManager {
     this.currentEditingComment = null;
     this._isLoading = false;
     this._renderTimeout = null;
+    this.currentUserPremiumType = 0; // Default to free tier
+    this.characterLimits = {
+      0: 200,  // Free tier
+      1: 400,  // Premium tier 1
+      2: 800,  // Premium tier 2
+      3: Infinity // Premium tier 3 (unlimited)
+    };
 
     // Wait for DOM to be ready
     if (document.readyState === "loading") {
@@ -35,7 +42,7 @@ class CommentsManager {
   checkLoginStatus() {
     const token = getCookie("token");
 
-    if (!this.input || !this.submitBtn) {
+    if (!this.input || !this.submitBtn || !this.charCounter) {
       console.error("[Debug] Elements not found in checkLoginStatus");
       return false;
     }
@@ -46,10 +53,24 @@ class CommentsManager {
       this.submitBtn.textContent = "Login";
       this.submitBtn.classList.add("btn-secondary");
       this.submitBtn.classList.remove("btn-primary");
-      // Don't disable the button when not logged in, so it can be clicked to redirect to login
+      this.charCounter.style.display = "none";
       this.submitBtn.disabled = false;
       return false;
     }
+
+    // Get user's premium type when logged in
+    fetch(`https://api3.jailbreakchangelogs.xyz/users/get/token?token=${token}`)
+      .then(response => response.json())
+      .then(userData => {
+        this.currentUserPremiumType = userData.premiumtype || 0;
+        const charLimit = this.characterLimits[this.currentUserPremiumType];
+        document.getElementById('char-limit').textContent = charLimit === Infinity ? 'Unlimited' : charLimit;
+        this.charCounter.style.display = "block";
+      })
+      .catch(error => {
+        console.error("Error fetching user premium status:", error);
+        this.currentUserPremiumType = 0;
+      });
 
     this.input.disabled = false;
     this.input.placeholder = "Write a comment...";
@@ -80,15 +101,12 @@ class CommentsManager {
 
     const editModalElement = document.getElementById("editCommentModal");
 
-    if (
-      !this.form ||
-      !this.input ||
-      !this.submitBtn ||
-      !this.commentsList ||
-      !this.paginationControls ||
-      !this.commentsHeader ||
-      !editModalElement
-    ) {
+    this.charCounter = document.getElementById("char-counter");
+    const valid = this.form && this.input && this.submitBtn && this.commentsList && 
+                 this.paginationControls && this.commentsHeader && editModalElement && 
+                 this.charCounter;
+    
+    if (!valid) {
       console.error("[Debug] Required comment elements not found!");
       return false;
     }
@@ -100,6 +118,38 @@ class CommentsManager {
     this.input.placeholder = this.checkLoginStatus()
       ? "Write a comment..."
       : "Login to comment";
+
+    // Initialize char counter with current input value if any
+    if (this.input && this.charCounter) {
+      const currentLength = this.input.value.length;
+      const charCount = document.getElementById('char-count');
+      if (charCount) {
+        charCount.textContent = currentLength;
+        
+        // Check if over limit
+        const charLimit = this.characterLimits[this.currentUserPremiumType];
+        if (currentLength > charLimit && charLimit !== Infinity) {
+          charCount.style.color = '#dc3545';
+          this.submitBtn.disabled = true;
+          this.charCounter.classList.add('over-limit');
+          
+          let warning = document.querySelector('.char-limit-warning');
+          if (!warning) {
+            warning = document.createElement('div');
+            warning.className = 'char-limit-warning text-danger small mt-1';
+            warning.innerHTML = `You've exceeded the ${charLimit} character limit for your current premium tier. <a href="/supporting" class="text-primary">Upgrade your tier</a> for a higher limit!`;
+            this.charCounter.after(warning);
+          }
+        } else {
+          charCount.style.color = '';
+          this.submitBtn.disabled = false;
+          this.charCounter.classList.remove('over-limit');
+          
+          const warning = document.querySelector('.char-limit-warning');
+          if (warning) warning.remove();
+        }
+      }
+    }
 
     if (this.sortSelect) {
       this.sortSelect.value = this.sortOrder;
@@ -143,6 +193,43 @@ class CommentsManager {
     const saveEditBtn = document.getElementById("saveCommentEdit");
     if (saveEditBtn) {
       saveEditBtn.addEventListener("click", () => this.saveEditedComment());
+    }
+
+    // Add input event listener for character counter
+    if (this.input) {
+      this.input.addEventListener('input', () => {
+        const currentLength = this.input.value.length;
+        const charLimit = this.characterLimits[this.currentUserPremiumType];
+        const charCount = document.getElementById('char-count');
+        
+        if (charCount) {
+          charCount.textContent = currentLength;
+          const charCounter = document.getElementById('char-counter');
+          
+          if (currentLength > charLimit && charLimit !== Infinity) {
+            charCount.style.color = '#dc3545'; // Bootstrap danger color
+            this.submitBtn.disabled = true;
+            charCounter.classList.add('over-limit');
+            
+            // Show warning if over limit
+            let warning = document.querySelector('.char-limit-warning');
+            if (!warning) {
+              warning = document.createElement('div');
+              warning.className = 'char-limit-warning text-danger small mt-1';
+              warning.innerHTML = `You've exceeded the ${charLimit} character limit for your current premium tier. <a href="/supporting" class="text-primary">Upgrade your tier</a> for a higher limit!`;
+              charCounter.after(warning);
+            }
+          } else {
+            charCount.style.color = ''; // Reset to default
+            this.submitBtn.disabled = false;
+            charCounter.classList.remove('over-limit');
+            
+            // Remove warning if under limit
+            const warning = document.querySelector('.char-limit-warning');
+            if (warning) warning.remove();
+          }
+        }
+      });
     }
 
     // Initial login status check
@@ -906,8 +993,10 @@ class CommentsManager {
     }
 
     const content = this.input.value.trim();
-
-    if (!content) {
+    const charLimit = this.characterLimits[this.currentUserPremiumType];
+    
+    if (content.length > charLimit && charLimit !== Infinity) {
+      notyf.error(`Your comment exceeds the ${charLimit} character limit for your current premium tier. Visit /supporting to upgrade your tier!`);
       return;
     }
 

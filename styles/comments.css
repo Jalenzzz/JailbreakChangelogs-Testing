@@ -665,3 +665,31 @@
   vertical-align: middle;
   line-height: 1;
 }
+#char-counter {
+  color: var(--text-muted) !important;
+  font-size: 0.85rem !important;
+  margin-top: 0.5rem !important;
+  display: block !important;
+}
+
+#char-counter.over-limit {
+  color: #dc3545 !important;
+}
+
+.char-limit-warning {
+  margin-top: 0.5rem !important;
+  color: #dc3545 !important;
+  font-size: 0.85rem !important;
+  animation: fadeIn 0.3s ease-in-out !important;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
