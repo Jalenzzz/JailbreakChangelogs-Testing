@@ -95,12 +95,6 @@
   font-size: 14px;
 }
 
-/* Make the pointing icon smaller and more subtle */
-.bi-box-arrow-up-right {
-  font-size: 12px;
-  color: var(--text-secondary);
-}
-
 .fs-7 {
   font-size: 0.75rem !important;
 }

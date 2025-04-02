@@ -334,6 +334,12 @@ body {
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
 }
 
+/* Add specific sizing for limited badge SVG */
+.limited-badge svg {
+  width: 24px; /* Slightly larger to compensate for smaller viewBox */
+  height: 24px;
+}
+
 /* Mobile adjustments */
 @media (max-width: 768px) {
   .seasonal-badge {
@@ -345,23 +351,23 @@ body {
 
   .seasonal-badge svg,
   .limited-badge svg {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
   }
 }
 
 @media (max-width: 576px) {
   .seasonal-badge {
-    width: 20px;
-    height: 20px;
+    width: 14px;
+    height: 14px;
     top: 6px;
     right: 6px;
   }
 
   .seasonal-badge svg,
   .limited-badge svg {
-    width: 14px;
-    height: 14px;
+    width: 18px;
+    height: 18px;
   }
 }
 
@@ -446,10 +452,6 @@ body {
   width: 100%;
 }
 
-.contributor-header i.bi-people-fill {
-  margin-right: 0.5rem; /* Adjust icon spacing */
-}
-
 .contributor-header h5 {
   margin: 0;
 }
@@ -466,9 +468,6 @@ body {
   color: var(--text-muted);
 }
 
-.contributor-header .bi-people-fill {
-  color: var(--text-muted);
-}
 
 .toggle-icon {
   display: none; /* Hide by default */
@@ -1295,6 +1294,17 @@ body {
   .intro-content {
     padding: 16px !important; /* Maintain padding even on smallest screens */
   }
+
+  .items-card .badge {
+    font-size: 0.6rem !important;
+    padding: 0.15rem 0.35rem !important;
+    max-width: 90px !important;
+  }
+
+  .items-card .text-body-secondary {
+    font-size: 0.65rem !important;
+  }
+  
 }
 
 @media (min-width: 428px) and (max-width: 768px) {
@@ -1349,13 +1359,14 @@ body {
   background-color: var(--accent-color-light) !important;
 }
 
-.bg-indigo {
-  background-color: #6610f2 !important;
-}
+.bg-gray-500 { background-color: #6b7280 !important; } /* Neutral gray */
+.bg-red-500 { background-color: #ef4444 !important; } /* Critical */
+.bg-orange-500 { background-color: #f97316 !important; } /* Warning */
+.bg-yellow-500 { background-color: #eab308 !important; } /* Moderate */
+.bg-green-500 { background-color: #22c55e !important; } /* Good */
+.bg-blue-500 { background-color: #3b82f6 !important; } /* Strong */
+.bg-purple-500 { background-color: #a855f7 !important; } /* Premium */
 
-.bg-purple {
-  background-color: #8a2be2 !important;
-}
 
 .items-card:hover .favorite-icon,
 .media-container:hover .favorite-icon,
@@ -1564,6 +1575,71 @@ body.menu-open {
   .horn-play-btn .pause-icon {
     width: 32px; /* Reduced from 40px */
     height: 32px;
+  }
+}
+
+/* Add/modify these mobile-specific styles */
+@media (max-width: 576px) {
+  /* Adjust card body padding */
+  .items-card .card-body {
+    padding: 0.75rem !important;
+  }
+
+  /* Reduce card title size */
+  .items-card .card-title {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Adjust list group spacing */
+  .items-card .list-group-item {
+    padding: 0.35rem 0.5rem !important;
+    margin-bottom: 0.35rem !important;
+  }
+
+  /* Make value badges more compact */
+  .items-card .badge {
+    font-size: 0.65rem !important;
+    padding: 0.2rem 0.4rem !important;
+    max-width: 110px !important; /* Limit maximum width */
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  /* Reduce text size for labels */
+  .items-card .text-body-secondary {
+    font-size: 0.7rem !important;
+  }
+
+  /* Adjust card footer */
+  .items-card .card-footer {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .items-card .card-footer small {
+    font-size: 0.65rem;
+  }
+
+  /* Ensure media container maintains aspect ratio */
+  .media-container {
+    aspect-ratio: 16/9;
+  }
+
+  /* Maintain 2 cards per row with proper gutters */
+  .col-6 {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .row {
+    margin-left: -4px;
+    margin-right: -4px;
+  }
+
+  /* Add some bottom margin between rows */
+  .col-6 {
+    margin-bottom: 8px;
   }
 }
 
