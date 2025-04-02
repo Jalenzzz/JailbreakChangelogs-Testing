@@ -1336,6 +1336,10 @@ body {
   background-color: var(--bg-primary) !important;
 }
 
+.card-footer {
+  background-color: var(--bg-primary) !important;
+}
+
 .items-card:hover .favorite-icon,
 .media-container:hover .favorite-icon,
 .item-card-body:hover .favorite-icon {

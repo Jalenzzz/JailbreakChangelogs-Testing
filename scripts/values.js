@@ -568,7 +568,7 @@ document.addEventListener("DOMContentLoaded", () => {
           : "";
 
       itemsRow.innerHTML = `
-      <div class="col-12 d-flex justify-content-center align-items-center" style="min-height: 300px;">
+      <div class="col-12 d-flex justify-content-center" style="min-height: 300px;">
         <div class="no-results">
           <h4>No items found for "${escapeHtml(searchTerm)}"${categoryMessage}</h4>
           <p class="text-muted">Try different keywords or check the spelling</p>
@@ -1334,9 +1334,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let borderClasses = "border";
     if (item.is_seasonal) {
-      borderClasses = "border-3 border-info"; // Just use Bootstrap border
+      borderClasses = "border-3 border-info"; // Blue border for seasonal items
     } else if (item.is_limited) {
-      borderClasses = "border-3 border-warning"; // Just use Bootstrap border
+      borderClasses = "border-3 border-warning"; // Gold/Yellow border for limited items
     }
 
     // Get the card classes based on limited and seasonal status
@@ -1375,29 +1375,29 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
           <h5 class="card-title">${item.name}</h5>
           <div class="card-text">
-            <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="d-flex justify-content-between mb-2">
               <span>Cash Value:</span>
               <span data-value="${cashValue.numeric}">${cashValue.display}</span>
             </div>
-            <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="d-flex justify-content-between mb-2">
               <span>Duped Value:</span>
               <span data-value="${dupedValue.numeric}">${dupedValue.display}</span>
             </div>
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex justify-content-between">
               <span>Demand:</span>
               <span>${item.demand === "'N/A'" || item.demand === "N/A" ? "No Demand" : item.demand || "No Value"}</span>
             </div>
-            ${item.last_updated ? `
-              <div class="card-footer">
-                <small class="text-body-secondary">Last Updated: ${formatTimeAgo(item.last_updated)}</small>
-              </div>`
-              :`
-              <div class="card-footer">
-                <small class="text-body-secondary">Last updated: Unknown</small>
-              </div>
-              `}
           </div>
         </div>
+        ${item.last_updated ? `
+          <div class="card-footer">
+            <small class="text-body-secondary">Last Updated ${formatTimeAgo(item.last_updated)}</small>
+          </div>`
+          :`
+          <div class="card-footer">
+            <small class="text-body-secondary">Last updated Unknown</small>
+          </div>
+          `}
       </div>
     </div>`;
 
