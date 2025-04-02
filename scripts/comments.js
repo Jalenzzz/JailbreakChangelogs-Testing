@@ -17,9 +17,9 @@ class CommentsManager {
     this.currentUserPremiumType = 0; // Default to free tier
     this.characterLimits = {
       0: 200,  // Free tier
-      1: 400,  // Premium tier 1
-      2: 800,  // Premium tier 2
-      3: Infinity // Premium tier 3 (unlimited)
+      1: 400,  // Supporter tier 1
+      2: 800,  // Supporter tier 2
+      3: Infinity // Supporter tier 3 (unlimited)
     };
 
     // Wait for DOM to be ready
@@ -137,7 +137,7 @@ class CommentsManager {
           if (!warning) {
             warning = document.createElement('div');
             warning.className = 'char-limit-warning text-danger small mt-1';
-            warning.innerHTML = `You've exceeded the ${charLimit} character limit for your current premium tier. <a href="/supporting" class="text-primary">Upgrade your tier</a> for a higher limit!`;
+            warning.innerHTML = `You've exceeded the ${charLimit} character limit for your current Supporter tier. <a href="/supporting" class="text-primary">Upgrade your tier</a> for a higher limit!`;
             this.charCounter.after(warning);
           }
         } else {
@@ -216,7 +216,7 @@ class CommentsManager {
             if (!warning) {
               warning = document.createElement('div');
               warning.className = 'char-limit-warning text-danger small mt-1';
-              warning.innerHTML = `You've exceeded the ${charLimit} character limit for your current premium tier. <a href="/supporting" class="text-primary">Upgrade your tier</a> for a higher limit!`;
+              warning.innerHTML = `You've exceeded the ${charLimit} character limit for your current Supporter tier. <a href="/supporting" class="text-primary">Upgrade your tier</a> for a higher limit!`;
               charCounter.after(warning);
             }
           } else {
@@ -502,12 +502,10 @@ class CommentsManager {
     let userDetails = null;
 
     try {
-      // Fetch user details
       if (comment.user_id) {
         userDetails = await this.fetchUserDetails(comment.user_id);
       }
 
-      // Check ownership
       if (token) {
         const response = await fetch(
           `https://api3.jailbreakchangelogs.xyz/users/get/token?token=${token}`
@@ -521,21 +519,25 @@ class CommentsManager {
       console.error("Error generating comment HTML:", error);
     }
 
-    // Check if commenter is trade owner
     const isOwnerComment = await this.isTradeOwner(comment.user_id);
+    const premiumType = userDetails?.premiumtype || 0;
 
-    // Determine display name from user details
-    const displayName =
-      userDetails && userDetails.global_name !== "None"
-        ? userDetails.global_name
-        : userDetails
-        ? userDetails.username
-        : comment.author;
+    const displayName = userDetails && userDetails.global_name !== "None"
+      ? userDetails.global_name
+      : userDetails
+      ? userDetails.username
+      : comment.author;
+
+    let premiumBadge = '';
+    if (premiumType > 0) {
+      premiumBadge = `<a href="/supporting" class="premium-badge tier-${premiumType}">Tier ${premiumType}</a>`;
+    }
 
     const userNameElement = userDetails?.isDeleted
       ? `<span class="comment-author text-muted">${displayName}</span>`
       : `<a href="/users/${comment.user_id}" class="comment-author">
           ${displayName}
+          ${premiumBadge}
           ${isOwnerComment ? '<span class="op-badge">OP</span>' : ""}
          </a>`;
 
@@ -555,8 +557,6 @@ class CommentsManager {
       : formatDate(comment.date);
 
     const fallbackAvatar = "assets/default-avatar.png";
-
-    // Get avatar URL using checkAndSetAvatar
     const avatarUrl = userDetails?.isDeleted 
       ? fallbackAvatar 
       : await window.checkAndSetAvatar(userDetails);
@@ -571,7 +571,7 @@ class CommentsManager {
           alt="${displayName}'s avatar">`;
 
     return `
-      <li class="list-group-item comment-item" data-comment-id="${comment.id}">
+      <li class="list-group-item comment-item" data-comment-id="${comment.id}" data-premium="${premiumType}">
         <div class="d-flex align-items-start">
           ${avatarElement}
           <div class="flex-grow-1">
@@ -584,33 +584,30 @@ class CommentsManager {
                   ${displayDate}
                 </small>
               </div>
-              ${
-                isOwner
-                  ? `
-                <div class="comment-actions">
-                  <button class="comment-actions-toggle" aria-label="Comment actions">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                      <rect width="16" height="16" fill="none" />
-                      <path fill="currentColor" d="M9.5 13a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0" />
-                    </svg>
-                  </button>
-                  <div class="comment-actions-menu d-none">
-                    <button class="comment-action-item edit-comment">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                        <rect width="24" height="24" fill="none" />
-                        <path fill="currentColor" d="m14.06 9.02l.92.92L5.92 19H5v-.92zM17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83a.996.996 0 0 0 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" />
-                      </svg>Edit
+              ${isOwner
+                ? `<div class="comment-actions">
+                    <button class="comment-actions-toggle" aria-label="Comment actions">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                        <rect width="16" height="16" fill="none" />
+                        <path fill="currentColor" d="M9.5 13a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0" />
+                      </svg>
                     </button>
-                    <button class="comment-action-item delete-comment delete">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                        <rect width="24" height="24" fill="none" />
-                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16m-10 4v6m4-6v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" />
-                      </svg>Delete
-                    </button>
-                  </div>
-                </div>
-                  `
-                  : ""
+                    <div class="comment-actions-menu d-none">
+                      <button class="comment-action-item edit-comment">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                          <rect width="24" height="24" fill="none" />
+                          <path fill="currentColor" d="m14.06 9.02l.92.92L5.92 19H5v-.92zM17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83a.996.996 0 0 0 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" />
+                        </svg>Edit
+                      </button>
+                      <button class="comment-action-item delete-comment delete">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                          <rect width="24" height="24" fill="none" />
+                          <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16m-10 4v6m4-6v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" />
+                        </svg>Delete
+                      </button>
+                    </div>
+                  </div>`
+                : ""
               }
             </div>
             <div class="comment-content">
@@ -996,7 +993,7 @@ class CommentsManager {
     const charLimit = this.characterLimits[this.currentUserPremiumType];
     
     if (content.length > charLimit && charLimit !== Infinity) {
-      notyf.error(`Your comment exceeds the ${charLimit} character limit for your current premium tier. Visit /supporting to upgrade your tier!`);
+      notyf.error(`Your comment exceeds the ${charLimit} character limit for your current Supporter tier. Visit /supporting to upgrade your tier!`);
       return;
     }
 
@@ -1046,6 +1043,15 @@ class CommentsManager {
       }
 
       this.input.value = "";
+      // Reset character counter
+      const charCount = document.getElementById('char-count');
+      if (charCount) {
+        charCount.textContent = "0";
+        charCount.style.color = ''; // Reset color
+        this.charCounter.classList.remove('over-limit');
+        const warning = document.querySelector('.char-limit-warning');
+        if (warning) warning.remove();
+      }
       await this.loadComments();
       notyf.success("Comment added successfully");
     } catch (error) {
