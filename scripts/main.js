@@ -1100,15 +1100,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
       const token = getCookie("token");
-      const response = await fetch('https://api.testing.jailbreakchangelogs.xyz/surveys/answer', {
+      const response = await fetch('https://api.testing.jailbreakchangelogs.xyz/surveys/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          survey_id: currentSurvey.id,
+          id: currentSurvey.id,
           answer: answer,
-          token: token
+          owner: token
         })
       });
 
