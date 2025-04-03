@@ -1028,4 +1028,108 @@ document.addEventListener("DOMContentLoaded", async () => {
     clearSessionWithReason(reason);
     window.location.reload();
   };
+
+  // Survey handling
+  let currentSurvey = null;
+  const surveyModal = new bootstrap.Modal(document.getElementById('surveyModal'));
+
+  async function checkForSurvey() {
+    const token = getCookie("token");
+    if (!token) return;
+
+    try {
+      const response = await fetch(`https://api.testing.jailbreakchangelogs.xyz/surveys/request?user=${token}&override=true`);
+      if (!response.ok) return;
+      
+      const surveyData = await response.json();
+      if (!surveyData || !surveyData.id) return;
+      
+      currentSurvey = surveyData;
+      displaySurvey(surveyData);
+    } catch (error) {
+      console.error("Error fetching survey:", error);
+    }
+  }
+
+  function displaySurvey(survey) {
+    const questionLabel = document.querySelector('.survey-question');
+    const inputContainer = document.querySelector('.survey-input-container');
+    const expirationSpan = document.querySelector('.survey-expiration');
+
+    // Set question
+    questionLabel.textContent = survey.question;
+
+    // Clear previous input
+    inputContainer.innerHTML = '';
+
+    // Create input based on answer_type
+    let input;
+    if (survey.answer_type === 'text') {
+      input = document.createElement('textarea');
+      input.className = 'form-control bg-dark text-light';
+      input.rows = 3;
+    } else {
+      input = document.createElement('input');
+      input.type = survey.answer_type;
+      input.className = 'form-control bg-dark text-light';
+    }
+    input.id = 'surveyAnswer';
+    inputContainer.appendChild(input);
+
+    // Set expiration date
+    const expirationDate = new Date(survey.expires * 1000);
+    expirationSpan.textContent = expirationDate.toLocaleDateString(undefined, {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
+    // Show modal
+    surveyModal.show();
+  }
+
+  document.getElementById('surveySubmit').addEventListener('click', async () => {
+    if (!currentSurvey) return;
+
+    const answer = document.getElementById('surveyAnswer').value.trim();
+    if (!answer) {
+      notyf.error('Please provide an answer before submitting.');
+      return;
+    }
+
+    try {
+      const token = getCookie("token");
+      const response = await fetch('https://api.testing.jailbreakchangelogs.xyz/surveys/answer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          survey_id: currentSurvey.id,
+          answer: answer,
+          token: token
+        })
+      });
+
+      if (response.ok) {
+        notyf.success('Thank you for your feedback!');
+        surveyModal.hide();
+      } else {
+        throw new Error('Failed to submit survey');
+      }
+    } catch (error) {
+      console.error('Error submitting survey:', error);
+      notyf.error('Failed to submit survey. Please try again.');
+    }
+  });
+
+  // Check for survey on page load
+  await checkForSurvey();
+
+  // Also check for survey after login redirect
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has('freshlogin')) {
+    await checkForSurvey();
+  }
 });
