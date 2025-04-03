@@ -1256,38 +1256,33 @@ body {
 }
 
 @media (max-width: 375px) {
+  .badges-container {
+    margin-top: -15px !important;
+  }
   .container-fluid {
     padding-left: 4px !important;
     padding-right: 4px !important;
   }
-
   .limited-badge {
     top: 4px;
     right: 4px;
     font-size: 0.6rem;
     padding: 0.15rem 0.35rem;
   }
-  .badges-container {
-    margin-top: -12px !important;
-  }
   .intro-container {
     padding: 4px !important;
   }
-
   .intro-content {
     padding: 16px !important; /* Maintain padding even on smallest screens */
   }
-
   .items-card .badge {
     font-size: 0.6rem !important;
     padding: 0.15rem 0.35rem !important;
     max-width: 90px !important;
   }
-
   .items-card .text-body-secondary {
     font-size: 0.65rem !important;
   }
-  
 }
 
 @media (min-width: 428px) and (max-width: 768px) {
