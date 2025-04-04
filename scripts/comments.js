@@ -1097,7 +1097,7 @@ class CommentsManager {
           },
           body: JSON.stringify({
             id: String(commentId),
-            author: token,
+            owner: token,
           }),
         }
       );
