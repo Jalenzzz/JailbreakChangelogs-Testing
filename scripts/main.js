@@ -1038,7 +1038,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!token) return;
 
     try {
-      const response = await fetch(`https://api.testing.jailbreakchangelogs.xyz/surveys/request?user=${token}&override=true`);
+      const response = await fetch(`https://api.testing.jailbreakchangelogs.xyz/surveys/request?user=${token}`);
       if (!response.ok) return;
       
       const surveyData = await response.json();

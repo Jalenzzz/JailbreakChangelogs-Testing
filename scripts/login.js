@@ -167,7 +167,7 @@ $(document).ready(function() {
 
       try {
         const response = await fetch(
-          "https://api3.jailbreakchangelogs.xyz/auth?code=" + code,
+          "https://api.testing.jailbreakchangelogs.xyz/auth?code=" + code,
           {
             method: "POST",
             headers: {
@@ -176,18 +176,37 @@ $(document).ready(function() {
           }
         );
 
-        // Handle response status
-        if (response.status === 403) {
-          LoginLogger.log("error", "User is banned");
-          notyf.error(
-            "Your account has been banned from Jailbreak Changelogs."
-          );
+        // Handle error responses
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          LoginLogger.log("error", `Status: ${response.status}, Message: ${errorData.message || 'Unknown error'}`);
+
+          switch (response.status) {
+            case 403:
+              notyf.error("You are banned from Jailbreak ChangeLogs.");
+              break;
+            case 404:
+              notyf.error("Owner not found.");
+              break;
+            case 409:
+              notyf.error("Account is linked to another Discord account.");
+              break;
+            case 422:
+              notyf.error(errorData.message || "Missing required information.");
+              break;
+            case 500:
+              if (errorData.message) {
+                notyf.error(errorData.message);
+              } else {
+                notyf.error("An internal server error occurred.");
+              }
+              break;
+            default:
+              notyf.error("An unexpected error occurred during login.");
+          }
+          
           setTimeout(() => (window.location.href = "/"), 3500);
           return;
-        }
-
-        if (!response.ok) {
-          throw new Error(`Auth failed: ${response.status}`);
         }
 
         const userData = await response.json();
