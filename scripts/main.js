@@ -420,7 +420,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Origin: "jailbreakchangelogs.xyz",
+              Origin: "https://jailbreakchangelogs.xyz",
             },
             body: JSON.stringify({
               user: actualUserId,

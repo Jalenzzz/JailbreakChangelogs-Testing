@@ -175,7 +175,7 @@ $(document).ready(function() {
             },
             body: JSON.stringify({
               code: code,
-              origin: "https://jailbreakchangelogs.xyz"
+              origin: "https://testing.jailbreakchangelogs.xyz"
             })
           }
         );
