@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   loginButton.addEventListener("click", () => {
     console.log("Redirecting to Roblox OAuth...");
-    window.location.href = redirect;
+    window.location.href = test_redirect;
   });
 
   if (window.location.search.includes("code=")) {
