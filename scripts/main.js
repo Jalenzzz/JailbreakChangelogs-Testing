@@ -1008,6 +1008,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   window.logout = async function (reason = "user_initiated") {
     SessionLogger.logEvent("logout", `Logout initiated: ${reason}`);
 
+    // Show persistent notification
+    const notification = notyf.open({
+      type: "info",
+      message: "Logging out...",
+      duration: 0, // Make it persistent
+      dismissible: false
+    });
+
     const token = getCookie("token");
     if (token) {
       try {

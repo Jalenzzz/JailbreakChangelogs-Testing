@@ -1,0 +1,115 @@
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="loginModalLabel">Authenticate with Discord</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center mb-4">
+          <img src="/assets/logos/logos--discord.webp" alt="Discord Logo" width="128" height="32" class="mb-3">
+          <p class="mb-0">Connect your Discord account to access all features</p>
+        </div>
+        <div class="d-grid gap-2">
+          <a href="#" class="btn btn-primary btn-lg" id="discordLoginBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20.59" height="16" viewBox="0 0 256 199" class="me-2">
+              <rect width="256" height="199" fill="none" />
+              <path fill="#ffffff" d="M216.856 16.597A208.5 208.5 0 0 0 164.042 0c-2.275 4.113-4.933 9.645-6.766 14.046q-29.538-4.442-58.533 0c-1.832-4.4-4.55-9.933-6.846-14.046a207.8 207.8 0 0 0-52.855 16.638C5.618 67.147-3.443 116.4 1.087 164.956c22.169 16.555 43.653 26.612 64.775 33.193A161 161 0 0 0 79.735 175.3a136.4 136.4 0 0 1-21.846-10.632a109 109 0 0 0 5.356-4.237c42.122 19.702 87.89 19.702 129.51 0a132 132 0 0 0 5.355 4.237a136 136 0 0 1-21.886 10.653c4.006 8.02 8.638 15.67 13.873 22.848c21.142-6.58 42.646-16.637 64.815-33.213c5.316-56.288-9.08-105.09-38.056-148.36M85.474 135.095c-12.645 0-23.015-11.805-23.015-26.18s10.149-26.2 23.015-26.2s23.236 11.804 23.015 26.2c.02 14.375-10.148 26.18-23.015 26.18m85.051 0c-12.645 0-23.014-11.805-23.014-26.18s10.148-26.2 23.014-26.2c12.867 0 23.236 11.804 23.015 26.2c0 14.375-10.148 26.18-23.015 26.18" />
+            </svg>
+            Continue with Discord
+          </a>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <p class="text-muted small mb-0">By continuing, you agree to our <a href="/terms" class="text-decoration-none">Terms of Service</a> and <a href="/privacy" class="text-decoration-none">Privacy Policy</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  #loginModal .modal-content {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--accent-color);
+    border-radius: 12px;
+  }
+
+  #loginModal .modal-header {
+    border-bottom: 1px solid var(--accent-color);
+    padding: 1.5rem;
+  }
+
+  #loginModal .modal-title {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  #loginModal .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+  }
+
+  #loginModal .modal-body {
+    padding: 2rem;
+  }
+
+  #loginModal .btn-primary {
+    background-color: var(--accent-color);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    color: white !important;
+  }
+
+  #loginModal .modal-footer {
+    border-top: 1px solid var(--accent-color);
+    padding: 1rem 1.5rem;
+  }
+
+  #loginModal .text-muted {
+    color: var(--text-secondary) !important;
+  }
+
+  #loginModal a {
+    color: var(--accent-color-light);
+  }
+
+  #loginModal a:hover {
+    color: var(--accent-color);
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Check for token in URL and set cookie if present
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const showLoginModal = urlParams.get('showLoginModal');
+    
+    if (showLoginModal === 'true') {
+      const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+      loginModal.show();
+    }
+
+    if (token) {
+      // Set cookie with 7 day expiration
+      const date = new Date();
+      date.setTime(date.getTime() + (7 * 24 * 60 * 60 * 1000));
+      document.cookie = `token=${token}; expires=${date.toUTCString()}; path=/`;
+      
+      // Remove token from URL and refresh the page
+      const newUrl = window.location.pathname + window.location.search.replace(/[?&]token=[^&]+(&|$)/, '');
+      window.location.href = newUrl;
+    }
+
+    const discordLoginBtn = document.getElementById('discordLoginBtn');
+    if (discordLoginBtn) {
+      discordLoginBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const currentURL = window.location.pathname + window.location.search;
+        const oauthRedirect = `https://api.testing.jailbreakchangelogs.xyz/oauth?redirect=${encodeURIComponent(window.location.origin + currentURL)}`;
+        window.location.href = oauthRedirect;
+      });
+    }
+  });
+</script> 

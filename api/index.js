@@ -1319,7 +1319,7 @@ app.get("/api", (req, res) => {
 app.get("/settings", async (req, res) => {
   const token = req.cookies?.token;
   if (!token) {
-    res.redirect("/login");
+    res.redirect("/?showLoginModal=true");
     return;
   }
 
@@ -1351,7 +1351,7 @@ app.get("/settings", async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching user data:", error);
-    res.redirect("/login");
+    res.redirect("/?showLoginModal=true");
   }
 });
 
