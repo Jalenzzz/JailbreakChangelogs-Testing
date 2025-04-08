@@ -157,12 +157,6 @@
           if (userData) {
             localStorage.setItem("user", JSON.stringify(userData));
             localStorage.setItem("userid", userData.id);
-            // Show welcome message
-            const name = userData.username || userData.global_name;
-            if (name) {
-              notyf.special(`Hello, ${name}!`);
-            }
-            // Let checkAndSetAvatar handle the avatar logic when page loads
           }
         }
       } catch (error) {

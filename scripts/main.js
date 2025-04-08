@@ -304,12 +304,8 @@ document.addEventListener("DOMContentLoaded", async function () {
   if (urlParams.has("report-issue")) {
     if (!token) {
       notyf.error("Please sign in to report issues");
-      storageUtil.setItem("reportIssueRedirect", "true");
-      setTimeout(() => {
-        window.location.href =
-          "/login?redirect=" +
-          encodeURIComponent(window.location.pathname + window.location.search);
-      }, 3000);
+      const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+      loginModal.show();
       return;
     } else {
       document.querySelector('[data-bs-target="#reportIssueModal"]')?.click();
@@ -338,11 +334,8 @@ document.addEventListener("DOMContentLoaded", async function () {
       reportIssueBtn.onclick = (e) => {
         e.preventDefault();
         notyf.error("Please sign in to report issues");
-
-        // Redirect to login page after 3 seconds
-        setTimeout(() => {
-          window.location.href = "/login";
-        }, 3000);
+        const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+        loginModal.show();
       };
     } else {
       // Remove disabled state if it was previously set
@@ -1140,4 +1133,34 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (urlParams.has('freshlogin')) {
     await checkForSurvey();
   }
+});
+
+// Add this function after the existing functions
+function handleReportIssue() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const showReportModal = urlParams.get('report-issue');
+  
+  if (showReportModal) {
+    const modal = new bootstrap.Modal(document.getElementById('reportIssueModal'));
+    modal.show();
+    
+    // Clean up URL without refreshing
+    const newUrl = window.location.pathname + window.location.search.replace(/[?&]report-issue=[^&]+(&|$)/, '');
+    window.history.replaceState({}, '', newUrl);
+  }
+}
+
+// Add event listener for report issue button
+document.addEventListener('DOMContentLoaded', function() {
+  const reportIssueBtn = document.querySelector('[data-bs-target="#reportIssueModal"]');
+  if (reportIssueBtn) {
+    reportIssueBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const modal = new bootstrap.Modal(document.getElementById('reportIssueModal'));
+      modal.show();
+    });
+  }
+  
+  // Handle URL parameter
+  handleReportIssue();
 });
