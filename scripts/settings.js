@@ -119,153 +119,99 @@ document.addEventListener("DOMContentLoaded", function () {
     ],
   });
 
-  // Helper function to refresh page after settings update
-  function refreshPage() {
-    showLoadingOverlay();
-    window.location.reload();
-  }
-
-  // Add click handlers for all toggle buttons
-  document.querySelectorAll('.btn[id$="_button"]').forEach((button) => {
-    button.addEventListener("click", async () => {
-      const settingKey = button.id.replace("_button", "");
-      const currentValue = button.classList.contains("btn-success") ? 1 : 0;
-      const newValue = currentValue === 1 ? 0 : 1;
-
-      try {
-        const token = getCookie("token");
-        const response = await fetch(
-          `https://api.testing.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Cache-Control": "no-cache",
-            },
-            body: JSON.stringify({
-              [settingKey]: newValue,
-            }),
-          }
-        );
-
-        if (!response.ok) throw new Error("Failed to update setting");
-
-        notyf.success("Setting updated successfully");
-        refreshPage(); // Refresh page after successful update
-      } catch (error) {
-        console.error("Error updating setting:", error);
-        notyf.error("Failed to update setting");
-      }
-    });
-  });
-
-  // Handle Save Settings button click
-  document.getElementById("saveSettingsBtn").addEventListener("click", async () => {
-    const token = getCookie("token");
-    if (!token) {
-      notyf.error("You must be logged in to save settings");
-      return;
-    }
-
-    try {
-      showLoadingOverlay();
-      
-      // Get current state of all settings
-      const currentSettings = {
-        profile_public: document.querySelector('[data-setting="profile_public"]').checked ? 1 : 0,
-        show_recent_comments: document.querySelector('[data-setting="show_recent_comments"]').checked ? 1 : 0,
-        hide_following: document.querySelector('[data-setting="hide_following"]').checked ? 1 : 0,
-        hide_followers: document.querySelector('[data-setting="hide_followers"]').checked ? 1 : 0,
-        hide_favorites: document.querySelector('[data-setting="hide_favorites"]').checked ? 1 : 0,
-        banner_discord: document.querySelector('[data-setting="banner_discord"]').checked ? 1 : 0,
-        avatar_discord: document.querySelector('[data-setting="avatar_discord"]').checked ? 1 : 0,
-        hide_connections: document.querySelector('[data-setting="hide_connections"]').checked ? 1 : 0,
-        hide_presence: document.querySelector('[data-setting="hide_presence"]').checked ? 1 : 0,
-        dms_allowed: document.querySelector('[data-setting="dms_allowed"]').checked ? 1 : 0
-      };
-
-      const response = await fetch(
-        `https://api.testing.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Cache-Control": "no-cache",
-          },
-          body: JSON.stringify(currentSettings),
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to update settings");
-
-      notyf.success("Settings saved successfully");
-      hideLoadingOverlay();
-      refreshPage();
-    } catch (error) {
-      console.error("Error saving settings:", error);
-      notyf.error("Failed to save settings");
-      hideLoadingOverlay();
-    }
-  });
-
   // Update settings immediately when a switch changes
   document
     .querySelectorAll(".form-check-input[data-setting]")
     .forEach((input) => {
-      input.addEventListener("change", function () {
+      input.addEventListener("change", async function () {
         const setting = this.dataset.setting;
+        const newValue = this.checked ? 1 : 0;
+        const token = getCookie("token");
         
         // Handle visibility for banner_discord and avatar_discord
         if (setting === "banner_discord" || setting === "avatar_discord") {
           const inputId = setting === "banner_discord" ? "custom_banner_input" : "custom_avatar_input";
           document.getElementById(inputId).style.display = this.checked ? "none" : "block";
+          
+          // Only make API call when toggling ON (1)
+          if (newValue === 1) {
+            try {
+              // Get current state of all settings
+              const currentSettings = {
+                profile_public: document.querySelector('[data-setting="profile_public"]').checked ? 1 : 0,
+                show_recent_comments: document.querySelector('[data-setting="show_recent_comments"]').checked ? 1 : 0,
+                hide_following: document.querySelector('[data-setting="hide_following"]').checked ? 1 : 0,
+                hide_followers: document.querySelector('[data-setting="hide_followers"]').checked ? 1 : 0,
+                hide_favorites: document.querySelector('[data-setting="hide_favorites"]').checked ? 1 : 0,
+                banner_discord: document.querySelector('[data-setting="banner_discord"]').checked ? 1 : 0,
+                avatar_discord: document.querySelector('[data-setting="avatar_discord"]').checked ? 1 : 0,
+                hide_connections: document.querySelector('[data-setting="hide_connections"]').checked ? 1 : 0,
+                hide_presence: document.querySelector('[data-setting="hide_presence"]').checked ? 1 : 0,
+                dms_allowed: document.querySelector('[data-setting="dms_allowed"]').checked ? 1 : 0
+              };
+
+              const response = await fetch(
+                `https://api.testing.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    "Cache-Control": "no-cache",
+                  },
+                  body: JSON.stringify(currentSettings),
+                }
+              );
+              if (!response.ok) throw new Error("Failed to update setting");
+              notyf.success("Setting updated successfully");
+            } catch (error) {
+              console.error("Error updating setting:", error);
+              notyf.error("Failed to update setting");
+              // Revert the toggle state
+              this.checked = !this.checked;
+              document.getElementById(inputId).style.display = this.checked ? "none" : "block";
+            }
+          }
+          return;
+        }
+
+        // For all other settings
+        try {
+          const currentSettings = {
+            profile_public: document.querySelector('[data-setting="profile_public"]').checked ? 1 : 0,
+            show_recent_comments: document.querySelector('[data-setting="show_recent_comments"]').checked ? 1 : 0,
+            hide_following: document.querySelector('[data-setting="hide_following"]').checked ? 1 : 0,
+            hide_followers: document.querySelector('[data-setting="hide_followers"]').checked ? 1 : 0,
+            hide_favorites: document.querySelector('[data-setting="hide_favorites"]').checked ? 1 : 0,
+            banner_discord: document.querySelector('[data-setting="banner_discord"]').checked ? 1 : 0,
+            avatar_discord: document.querySelector('[data-setting="avatar_discord"]').checked ? 1 : 0,
+            hide_connections: document.querySelector('[data-setting="hide_connections"]').checked ? 1 : 0,
+            hide_presence: document.querySelector('[data-setting="hide_presence"]').checked ? 1 : 0,
+            dms_allowed: document.querySelector('[data-setting="dms_allowed"]').checked ? 1 : 0
+          };
+
+          const response = await fetch(
+            `https://api.testing.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Cache-Control": "no-cache",
+              },
+              body: JSON.stringify(currentSettings),
+            }
+          );
+          const responseData = await response.json();
+          if (!response.ok || responseData.error) {
+            throw new Error(responseData.error || "Failed to update settings");
+          }
+          notyf.success("Setting updated successfully");
+        } catch (error) {
+          console.error("Error updating settings:", error);
+          notyf.error("Failed to update settings");
+          this.checked = !this.checked;
         }
       });
     });
-
-  // Helper functions for URL validation
-  function validateImageUrl(url, userPremiumType, isAvatar = false) {
-    try {
-      const urlObj = new URL(url);
-      const hostname = urlObj.hostname.toLowerCase();
-      
-      // Check for premium requirement first
-      if (userPremiumType < 2) {
-        notyf.error("Supporter 2+ is required to use custom avatars/banners");
-        return false;
-      }
-
-      // Validate hostname
-      const isImgBB = hostname === 'imgbb.com' || hostname === 'i.ibb.co';
-      const isTenor = hostname === 'tenor.com' || hostname.endsWith('.tenor.com');
-      const isPostImg = hostname === 'postimg.cc' || hostname === 'i.postimg.cc';
-      
-      if (!isImgBB && !isTenor && !isPostImg) {
-        notyf.error("Only ImgBB, PostImg, and Tenor URLs are allowed");
-        return false;
-      }
-
-      // Validate file extension
-      const ext = url.split('.').pop().toLowerCase();
-      const allowedExtensions = ['jpeg', 'jpg', 'webp', 'gif', 'png'];
-
-      if (!allowedExtensions.includes(ext)) {
-        notyf.error("Only .jpeg, .jpg, .webp, .gif, and .png are allowed");
-        return false;
-      }
-
-      // Additional check for GIF animations based on premium type and whether it's an avatar
-      if (ext === 'gif' && isAvatar && userPremiumType < 3) {
-        notyf.error("Supporter 3 is required to use animated avatars");
-        return false;
-      }
-
-      return true;
-    } catch (e) {
-      notyf.error("Invalid URL format");
-      return false;
-    }
-  }
 
   // Handle banner update button
   document.getElementById("updateBannerBtn").addEventListener("click", async () => {
@@ -527,6 +473,50 @@ document.addEventListener("DOMContentLoaded", function () {
     const customAvatarInput = document.getElementById("custom_avatar_input");
     customAvatarInput.style.display = e.target.checked ? "none" : "block";
   });
+
+  // Helper functions for URL validation
+  function validateImageUrl(url, userPremiumType, isAvatar = false) {
+    try {
+      const urlObj = new URL(url);
+      const hostname = urlObj.hostname.toLowerCase();
+      
+      // Check for premium requirement first
+      if (userPremiumType < 2) {
+        notyf.error("Supporter 2+ is required to use custom avatars/banners");
+        return false;
+      }
+
+      // Validate hostname
+      const isImgBB = hostname === 'imgbb.com' || hostname === 'i.ibb.co';
+      const isTenor = hostname === 'tenor.com' || hostname.endsWith('.tenor.com');
+      const isPostImg = hostname === 'postimg.cc' || hostname === 'i.postimg.cc';
+      
+      if (!isImgBB && !isTenor && !isPostImg) {
+        notyf.error("Only ImgBB, PostImg, and Tenor URLs are allowed");
+        return false;
+      }
+
+      // Validate file extension
+      const ext = url.split('.').pop().toLowerCase();
+      const allowedExtensions = ['jpeg', 'jpg', 'webp', 'gif', 'png'];
+
+      if (!allowedExtensions.includes(ext)) {
+        notyf.error("Only .jpeg, .jpg, .webp, .gif, and .png are allowed");
+        return false;
+      }
+
+      // Additional check for GIF animations based on premium type and whether it's an avatar
+      if (ext === 'gif' && isAvatar && userPremiumType < 3) {
+        notyf.error("Supporter 3 is required to use animated avatars");
+        return false;
+      }
+
+      return true;
+    } catch (e) {
+      notyf.error("Invalid URL format");
+      return false;
+    }
+  }
 
   // Initialize settings
   loadSettings();
