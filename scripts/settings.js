@@ -159,96 +159,66 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  // Handle Save Settings button click
+  document.getElementById("saveSettingsBtn").addEventListener("click", async () => {
+    const token = getCookie("token");
+    if (!token) {
+      notyf.error("You must be logged in to save settings");
+      return;
+    }
+
+    try {
+      showLoadingOverlay();
+      
+      // Get current state of all settings
+      const currentSettings = {
+        profile_public: document.querySelector('[data-setting="profile_public"]').checked ? 1 : 0,
+        show_recent_comments: document.querySelector('[data-setting="show_recent_comments"]').checked ? 1 : 0,
+        hide_following: document.querySelector('[data-setting="hide_following"]').checked ? 1 : 0,
+        hide_followers: document.querySelector('[data-setting="hide_followers"]').checked ? 1 : 0,
+        hide_favorites: document.querySelector('[data-setting="hide_favorites"]').checked ? 1 : 0,
+        banner_discord: document.querySelector('[data-setting="banner_discord"]').checked ? 1 : 0,
+        avatar_discord: document.querySelector('[data-setting="avatar_discord"]').checked ? 1 : 0,
+        hide_connections: document.querySelector('[data-setting="hide_connections"]').checked ? 1 : 0,
+        hide_presence: document.querySelector('[data-setting="hide_presence"]').checked ? 1 : 0,
+        dms_allowed: document.querySelector('[data-setting="dms_allowed"]').checked ? 1 : 0
+      };
+
+      const response = await fetch(
+        `https://api.testing.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-cache",
+          },
+          body: JSON.stringify(currentSettings),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to update settings");
+
+      notyf.success("Settings saved successfully");
+      hideLoadingOverlay();
+      refreshPage();
+    } catch (error) {
+      console.error("Error saving settings:", error);
+      notyf.error("Failed to save settings");
+      hideLoadingOverlay();
+    }
+  });
+
   // Update settings immediately when a switch changes
   document
     .querySelectorAll(".form-check-input[data-setting]")
     .forEach((input) => {
-      input.addEventListener("change", async function () {
+      input.addEventListener("change", function () {
         const setting = this.dataset.setting;
-        const newValue = this.checked ? 1 : 0;
-        const token = getCookie("token");
         
         // Handle visibility for banner_discord and avatar_discord
         if (setting === "banner_discord" || setting === "avatar_discord") {
           const inputId = setting === "banner_discord" ? "custom_banner_input" : "custom_avatar_input";
           document.getElementById(inputId).style.display = this.checked ? "none" : "block";
-          
-          // Only make API call when toggling ON (1)
-          if (newValue === 1) {
-            try {
-              // Get current state of all settings
-              const currentSettings = {
-                profile_public: document.querySelector('[data-setting="profile_public"]').checked ? 1 : 0,
-                show_recent_comments: document.querySelector('[data-setting="show_recent_comments"]').checked ? 1 : 0,
-                hide_following: document.querySelector('[data-setting="hide_following"]').checked ? 1 : 0,
-                hide_followers: document.querySelector('[data-setting="hide_followers"]').checked ? 1 : 0,
-                hide_favorites: document.querySelector('[data-setting="hide_favorites"]').checked ? 1 : 0,
-                banner_discord: document.querySelector('[data-setting="banner_discord"]').checked ? 1 : 0,
-                avatar_discord: document.querySelector('[data-setting="avatar_discord"]').checked ? 1 : 0,
-                hide_connections: document.querySelector('[data-setting="hide_connections"]').checked ? 1 : 0,
-                hide_presence: document.querySelector('[data-setting="hide_presence"]').checked ? 1 : 0,
-              };
-
-              const response = await fetch(
-                `https://api.testing.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
-                {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                    "Cache-Control": "no-cache",
-                  },
-                  body: JSON.stringify(currentSettings),
-                }
-              );
-              if (!response.ok) throw new Error("Failed to update setting");
-              notyf.success("Setting updated successfully");
-            } catch (error) {
-              console.error("Error updating setting:", error);
-              notyf.error("Failed to update setting");
-              // Revert the toggle state
-              this.checked = !this.checked;
-              document.getElementById(inputId).style.display = this.checked ? "none" : "block";
-            }
-          }
-          return;
-        }
-
-        // For all other settings
-        try {
-          const currentSettings = {
-            profile_public: document.querySelector('[data-setting="profile_public"]').checked ? 1 : 0,
-            show_recent_comments: document.querySelector('[data-setting="show_recent_comments"]').checked ? 1 : 0,
-            hide_following: document.querySelector('[data-setting="hide_following"]').checked ? 1 : 0,
-            hide_followers: document.querySelector('[data-setting="hide_followers"]').checked ? 1 : 0,
-            hide_favorites: document.querySelector('[data-setting="hide_favorites"]').checked ? 1 : 0,
-            banner_discord: document.querySelector('[data-setting="banner_discord"]').checked ? 1 : 0,
-            avatar_discord: document.querySelector('[data-setting="avatar_discord"]').checked ? 1 : 0,
-            hide_connections: document.querySelector('[data-setting="hide_connections"]').checked ? 1 : 0,
-            hide_presence: document.querySelector('[data-setting="hide_presence"]').checked ? 1 : 0,
-            dms_allowed: document.querySelector('[data-setting="dms_allowed"]').checked ? 1 : 0
-          };
-
-          const response = await fetch(
-            `https://api.testing.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "Cache-Control": "no-cache",
-              },
-              body: JSON.stringify(currentSettings),
-            }
-          );
-          const responseData = await response.json();
-          if (!response.ok || responseData.error) {
-            throw new Error(responseData.error || "Failed to update settings");
-          }
-          notyf.success("Setting updated successfully");
-          refreshPage(); // Only refresh for non-avatar/banner settings
-        } catch (error) {
-          console.error("Error updating settings:", error);
-          notyf.error("Failed to update settings");
-          this.checked = !this.checked;
         }
       });
     });
@@ -344,6 +314,7 @@ document.addEventListener("DOMContentLoaded", function () {
         avatar_discord: document.querySelector('[data-setting="avatar_discord"]').checked ? 1 : 0,
         hide_connections: document.querySelector('[data-setting="hide_connections"]').checked ? 1 : 0,
         hide_presence: document.querySelector('[data-setting="hide_presence"]').checked ? 1 : 0,
+        dms_allowed: document.querySelector('[data-setting="dms_allowed"]').checked ? 1 : 0
       };
 
       const settingsResponse = await fetch(
@@ -423,6 +394,7 @@ document.addEventListener("DOMContentLoaded", function () {
         avatar_discord: 0, // Force to use custom avatar
         hide_connections: document.querySelector('[data-setting="hide_connections"]').checked ? 1 : 0,
         hide_presence: document.querySelector('[data-setting="hide_presence"]').checked ? 1 : 0,
+        dms_allowed: document.querySelector('[data-setting="dms_allowed"]').checked ? 1 : 0
       };
 
       const settingsResponse = await fetch(
