@@ -1355,17 +1355,6 @@ app.get("/settings", async (req, res) => {
   }
 });
 
-app.get("/exploiters", (req, res) => {
-  res.render("exploiters", {
-    title: "Find Exploiters - Changelogs",
-    logoUrl:
-      "https://jailbreakchangelogs.xyz/assets/logos/Banner_Background.webp",
-    logoAlt: "Exploiters Page Logo",
-    MIN_TITLE_LENGTH,
-    MIN_DESCRIPTION_LENGTH,
-  });
-});
-
 // Handle unknown routes by serving 404 page
 app.get("*", (req, res) => {
   res.status(404).render("error", {
