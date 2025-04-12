@@ -1,9 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const userId = localStorage.getItem("userid");
-  if (!userId) {
-    window.location.href = "/login";
-    return;
-  }
+  const userId = localStorage.getItem("userid");        if (!userId) {
+          const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+          loginModal.show();
+          return;
+        }
 
   // Show loading overlay immediately when page loads
   showLoadingOverlay();

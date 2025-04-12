@@ -678,8 +678,14 @@ document.addEventListener("DOMContentLoaded", () => {
               <h4>Login Required</h4>
               <p>You need to be logged in to view your favorite items</p>
               <div class="login-prompt">
-                <a href="/login" class="login-link">Login now</a>
+                <button class="btn btn-primary" onclick="showLoginModal()">Login now</button>
               </div>
+              <script>
+                function showLoginModal() {
+                  const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+                  loginModal.show();
+                }
+              </script>
             </div>
           </div>
         `;

@@ -178,7 +178,8 @@ class CommentsManager {
       const content = this.input.value.trim();
 
       if (!this.checkLoginStatus()) {
-        window.location.href = "/login";
+        const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+        loginModal.show();
         return;
       }
 
