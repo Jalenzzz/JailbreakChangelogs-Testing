@@ -289,7 +289,7 @@ window.handleFavorite = async function (event, itemId) {
 
   try {
     const response = await fetch(
-      `https://api3.jailbreakchangelogs.xyz/favorites/${
+      `https://api.jailbreakchangelogs.xyz/favorites/${
         isFavorited ? "remove" : "add"
       }`,
       {
@@ -1097,7 +1097,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showLoadingOverlay();
     try {
       // Fetch values version last updated
-      const versionResponse = await fetch("https://api3.jailbreakchangelogs.xyz/version/values", {
+      const versionResponse = await fetch("https://api.jailbreakchangelogs.xyz/version/values", {
           method: "GET",
           headers: {
               "Content-Type": "application/json",
@@ -1110,7 +1110,7 @@ document.addEventListener("DOMContentLoaded", () => {
           updateLastUpdatedTimestamp(versionData.last_updated);
       }
 
-      const response = await fetch("https://api3.jailbreakchangelogs.xyz/items/list", {
+      const response = await fetch("https://api.jailbreakchangelogs.xyz/items/list", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -1127,7 +1127,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (token && userData.id) {
         try {
           const favoritesResponse = await fetch(
-            `https://api3.jailbreakchangelogs.xyz/favorites/get?user=${userData.id}`,
+            `https://api.jailbreakchangelogs.xyz/favorites/get?user=${userData.id}`,
             {
               headers: {
                 "Content-Type": "application/json",

@@ -24,7 +24,7 @@ async function canCreateTradeAd() {
 
   try {
     const response = await fetch(
-      `https://api3.jailbreakchangelogs.xyz/users/get/token?token=${token}&nocache=true`
+      `https://api.jailbreakchangelogs.xyz/users/get/token?token=${token}&nocache=true`
     );
     if (!response.ok) throw new Error("Failed to fetch user data");
 
@@ -378,7 +378,7 @@ let filteredItems = [];
 async function loadItems() {
   try {
     const response = await fetch(
-      "https://api3.jailbreakchangelogs.xyz/items/list"
+      "https://api.jailbreakchangelogs.xyz/items/list"
     );
     allItems = await response.json();
 
@@ -885,7 +885,7 @@ async function updateExpirationOptions() {
     if (!token) return;
 
     const response = await fetch(
-      `https://api3.jailbreakchangelogs.xyz/users/get/token?token=${token}&nocache=true`
+      `https://api.jailbreakchangelogs.xyz/users/get/token?token=${token}&nocache=true`
     );
     const userData = await response.json();
     const premiumTier = userData.premiumtype || 0;
@@ -1287,7 +1287,7 @@ async function deleteTradeAd(tradeId) {
     }
 
     const response = await fetch(
-      `https://api3.jailbreakchangelogs.xyz/trades/delete?id=${tradeId}&token=${token}&nocache=true`,
+      `https://api.jailbreakchangelogs.xyz/trades/delete?id=${tradeId}&token=${token}&nocache=true`,
       {
         method: "DELETE", // Changed from implicit GET to explicit DELETE
       }
@@ -1319,7 +1319,7 @@ async function makeTradeOffer(tradeId) {
 
     // Get user data to get the user ID
     const userResponse = await fetch(
-      `https://api3.jailbreakchangelogs.xyz/users/get/token?token=${token}&nocache=true`
+      `https://api.jailbreakchangelogs.xyz/users/get/token?token=${token}&nocache=true`
     );
     if (!userResponse.ok) {
       throw new Error("Failed to fetch user data");
@@ -1383,7 +1383,7 @@ async function editTradeAd(tradeId) {
 
     // Get user data from token
     const userResponse = await fetch(
-      `https://api3.jailbreakchangelogs.xyz/users/get/token?token=${token}&nocache=true`
+      `https://api.jailbreakchangelogs.xyz/users/get/token?token=${token}&nocache=true`
     );
     if (!userResponse.ok) {
       console.error("Failed to fetch user data:", userResponse.status);
@@ -1836,7 +1836,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 async function fetchItemDetails(id) {
   try {
     const response = await fetch(
-      `https://api3.jailbreakchangelogs.xyz/items/get?id=${id}`
+      `https://api.jailbreakchangelogs.xyz/items/get?id=${id}`
     );
     return await response.json();
   } catch (error) {
@@ -1848,7 +1848,7 @@ async function fetchItemDetails(id) {
 async function fetchUserDetails(userId) {
   try {
     const response = await fetch(
-      `https://api3.jailbreakchangelogs.xyz/users/get/?id=${userId}`
+      `https://api.jailbreakchangelogs.xyz/users/get/?id=${userId}`
     );
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -2586,7 +2586,7 @@ async function createTradeAd() {
 
     // Get user data to check premium tier
     const userResponse = await fetch(
-      `https://api3.jailbreakchangelogs.xyz/users/get/token?token=${token}&nocache=true`
+      `https://api.jailbreakchangelogs.xyz/users/get/token?token=${token}&nocache=true`
     );
     if (!userResponse.ok) {
       throw new Error("Failed to fetch user data");

@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function fetchFollowers(userId) {
     try {
       const response = await fetch(
-        `https://api3.jailbreakchangelogs.xyz/users/followers/get?user=${userId}`,
+        `https://api.jailbreakchangelogs.xyz/users/followers/get?user=${userId}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     for (const follower of followers) {
       try {
         const response = await fetch(
-          `https://api3.jailbreakchangelogs.xyz/users/get?id=${follower.follower_id}`
+          `https://api.jailbreakchangelogs.xyz/users/get?id=${follower.follower_id}`
         );
 
         if (response.ok) {

@@ -81,7 +81,7 @@ function calculateNameSimilarity(str1, str2) {
 async function loadSimilarItemsByName(searchName) {
   try {
     const response = await fetch(
-      "https://api3.jailbreakchangelogs.xyz/items/list"
+      "https://api.jailbreakchangelogs.xyz/items/list"
     );
     if (!response.ok) throw new Error("Failed to fetch items");
 
@@ -367,7 +367,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         .replace(/-/g, " "); // Convert hyphens to spaces
 
       // Store the API response globally for other components to use
-      window.itemApiResponse = fetch(`https://api3.jailbreakchangelogs.xyz/items/get?name=${encodeURIComponent(itemName)}&type=${itemType}`);
+      window.itemApiResponse = fetch(`https://api.jailbreakchangelogs.xyz/items/get?name=${encodeURIComponent(itemName)}&type=${itemType}`);
 
       if (!urlType || !itemName) {
         throw new Error("Invalid URL format");
@@ -381,7 +381,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (token && userData.id) {
         try {
           const favoritesResponse = await fetch(
-            `https://api3.jailbreakchangelogs.xyz/favorites/get?user=${userData.id}`,
+            `https://api.jailbreakchangelogs.xyz/favorites/get?user=${userData.id}`,
             {
               headers: {
                 "Content-Type": "application/json",
@@ -850,7 +850,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function loadSimilarItems(currentItem) {
       try {
         const response = await fetch(
-          "https://api3.jailbreakchangelogs.xyz/items/list"
+          "https://api.jailbreakchangelogs.xyz/items/list"
         );
         const items = await response.json();
 
@@ -1520,7 +1520,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Initialize chart container first
         const chartContainer = document.querySelector(".chart-container");
 
-        fetch(`https://api3.jailbreakchangelogs.xyz/item/history?id=${item.id}`)
+        fetch(`https://api.jailbreakchangelogs.xyz/item/history?id=${item.id}`)
           .then((response) => {
             if (!response.ok) {
               throw new Error("No history found");
@@ -1869,7 +1869,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
               // Fetch data
               fetch(
-                `https://api3.jailbreakchangelogs.xyz/item/history?id=${item.id}`
+                `https://api.jailbreakchangelogs.xyz/item/history?id=${item.id}`
               )
                 .then((response) => response.json())
                 .then((data) => {
@@ -1970,7 +1970,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     tooltips.forEach(el => new bootstrap.Tooltip(el));
 
     // Fetch favorites count
-    fetch(`https://api3.jailbreakchangelogs.xyz/item/favorites?id=${item.id}`)
+    fetch(`https://api.jailbreakchangelogs.xyz/item/favorites?id=${item.id}`)
       .then((response) => response.json())
       .then((count) => {
         const favoritesCount = document.getElementById("favorites-count");
@@ -2310,7 +2310,7 @@ async function toggleFavorite(e) {
 
   try {
     const response = await fetch(
-      `https://api3.jailbreakchangelogs.xyz/favorites/${isFavorited ? "remove" : "add"}`,
+      `https://api.jailbreakchangelogs.xyz/favorites/${isFavorited ? "remove" : "add"}`,
       {
         method: isFavorited ? "DELETE" : "POST",
         headers: {

@@ -48,8 +48,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Load custom banner and avatar URLs first
       const [userResponse, bannerResponse] = await Promise.all([
-        fetch(`https://api3.jailbreakchangelogs.xyz/users/get/?id=${userId}`),
-        fetch(`https://api3.jailbreakchangelogs.xyz/users/background/get?user=${userId}`)
+        fetch(`https://api.jailbreakchangelogs.xyz/users/get/?id=${userId}`),
+        fetch(`https://api.jailbreakchangelogs.xyz/users/background/get?user=${userId}`)
       ]);
 
       let customAvatarUrl = '';
@@ -220,7 +220,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     try {
       // Get user's premium type first
-      const userResponse = await fetch(`https://api3.jailbreakchangelogs.xyz/users/get/token?token=${token}`);
+      const userResponse = await fetch(`https://api.jailbreakchangelogs.xyz/users/get/token?token=${token}`);
       if (!userResponse.ok) throw new Error("Failed to get user data");
       const userData = await userResponse.json();
 
@@ -237,7 +237,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // First update the banner URL
       const bannerResponse = await fetch(
-        `https://api3.jailbreakchangelogs.xyz/users/background/update?user=${token}&image=${encodeURIComponent(
+        `https://api.jailbreakchangelogs.xyz/users/background/update?user=${token}&image=${encodeURIComponent(
           imageUrl || "NONE"
         )}`,
         {
@@ -297,7 +297,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     try {
       // Get user's premium type first
-      const userResponse = await fetch(`https://api3.jailbreakchangelogs.xyz/users/get/token?token=${token}`);
+      const userResponse = await fetch(`https://api.jailbreakchangelogs.xyz/users/get/token?token=${token}`);
       if (!userResponse.ok) throw new Error("Failed to get user data");
       const userData = await userResponse.json();
 
@@ -314,7 +314,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // First update the avatar URL
       const avatarResponse = await fetch(
-        "https://api3.jailbreakchangelogs.xyz/users/avatar/update",
+        "https://api.jailbreakchangelogs.xyz/users/avatar/update",
         {
           method: "POST",
           headers: {
@@ -432,7 +432,7 @@ document.addEventListener("DOMContentLoaded", function () {
       cancelDeleteButton.style.display = "none";
 
       const response = await fetch(
-        `https://api3.jailbreakchangelogs.xyz/users/delete?token=${encodeURIComponent(
+        `https://api.jailbreakchangelogs.xyz/users/delete?token=${encodeURIComponent(
           token
         )}`,
         {

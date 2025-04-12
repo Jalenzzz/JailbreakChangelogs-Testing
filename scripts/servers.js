@@ -167,7 +167,7 @@ async function fetchServers() {
 async function fetchUserInfo(userId) {
   try {
     const response = await fetch(
-      `https://api3.jailbreakchangelogs.xyz/users/get?id=${userId}`
+      `https://api.jailbreakchangelogs.xyz/users/get?id=${userId}`
     );
     if (!response.ok) throw new Error("Network response was not ok");
 
@@ -221,7 +221,7 @@ async function createServerCard(server, number) {
   if (token) {
     try {
       const response = await fetch(
-        `https://api3.jailbreakchangelogs.xyz/users/get/token?token=${encodeURIComponent(
+        `https://api.jailbreakchangelogs.xyz/users/get/token?token=${encodeURIComponent(
           token
         )}` // token as query parameter
       );
@@ -319,7 +319,7 @@ async function editServer(serverId) {
   try {
     // Fetch server details first
     const response = await fetch(
-      `https://api3.jailbreakchangelogs.xyz/servers/get?id=${serverId}`
+      `https://api.jailbreakchangelogs.xyz/servers/get?id=${serverId}`
     );
     const server = await response.json();
 
@@ -490,7 +490,7 @@ async function handleEditServer(event, serverId) {
     };
 
     const response = await fetch(
-      `https://api3.jailbreakchangelogs.xyz/servers/update?id=${serverId}&token=${encodeURIComponent(
+      `https://api.jailbreakchangelogs.xyz/servers/update?id=${serverId}&token=${encodeURIComponent(
         token
       )}`,
       {

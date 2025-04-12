@@ -59,7 +59,7 @@ class CommentsManager {
     }
 
     // Get user's premium type when logged in
-    fetch(`https://api3.jailbreakchangelogs.xyz/users/get/token?token=${token}`)
+    fetch(`https://api.jailbreakchangelogs.xyz/users/get/token?token=${token}`)
       .then(response => response.json())
       .then(userData => {
         this.currentUserPremiumType = userData.premiumtype || 0;
@@ -506,7 +506,7 @@ class CommentsManager {
 
       if (token) {
         const response = await fetch(
-          `https://api3.jailbreakchangelogs.xyz/users/get/token?token=${token}`
+          `https://api.jailbreakchangelogs.xyz/users/get/token?token=${token}`
         );
         if (response.ok) {
           const userData = await response.json();
@@ -675,7 +675,7 @@ class CommentsManager {
     if (token) {
       try {
         const response = await fetch(
-          `https://api3.jailbreakchangelogs.xyz/users/get/token?token=${token}`
+          `https://api.jailbreakchangelogs.xyz/users/get/token?token=${token}`
         );
         if (response.ok) {
           const userData = await response.json();
@@ -798,7 +798,7 @@ class CommentsManager {
   async fetchUserDetails(userId) {
     try {
       const response = await fetch(
-        `https://api3.jailbreakchangelogs.xyz/users/get/?id=${userId}`
+        `https://api.jailbreakchangelogs.xyz/users/get/?id=${userId}`
       );
 
       // If user is not found (404), return default deleted user data
@@ -1003,7 +1003,7 @@ class CommentsManager {
 
     try {
       const userResponse = await fetch(
-        `https://api3.jailbreakchangelogs.xyz/users/get/token?token=${token}`
+        `https://api.jailbreakchangelogs.xyz/users/get/token?token=${token}`
       );
 
       if (!userResponse.ok) {
@@ -1075,7 +1075,7 @@ class CommentsManager {
     try {
       // First get user data to get the author
       const userResponse = await fetch(
-        `https://api3.jailbreakchangelogs.xyz/users/get/token?token=${token}`
+        `https://api.jailbreakchangelogs.xyz/users/get/token?token=${token}`
       );
 
       if (!userResponse.ok) {
