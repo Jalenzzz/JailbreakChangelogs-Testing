@@ -179,6 +179,21 @@ body {
   border-color: #0d6efd;
 }
 
+.btn-primary {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  color: var(--text-primary);
+  font-weight: bold;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active {
+  background-color: var(--accent-color-light) !important;
+  border-color: 5px var(--accent-color) !important;
+}
+
 .btn-calculator {
   background-color: var(--accent-color);
   color: var(--text-primary);

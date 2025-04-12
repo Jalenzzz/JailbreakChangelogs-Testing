@@ -355,17 +355,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       const urlType = urlPath[2];
       const rawItemName = urlPath.pop();
       
-      // Convert hyphens to spaces for both type and name before API request
+      // Keep hyphens in item name, only normalize spaces
       const itemName = decodeURIComponent(rawItemName)
         .trim()
-        .replace(/-/g, " ") // Convert hyphens to spaces
-        .replace(/\s+/g, " "); // Normalize spaces
+        .replace(/\s+/g, " "); // Normalize spaces only
 
       // Convert URL format (tire-sticker) to original format (tire sticker)
       const itemType = decodeURIComponent(urlType)
         .trim()
         .toLowerCase()
         .replace(/-/g, " "); // Convert hyphens to spaces
+
+      // Store the API response globally for other components to use
+      window.itemApiResponse = fetch(`https://api3.jailbreakchangelogs.xyz/items/get?name=${encodeURIComponent(itemName)}&type=${itemType}`);
 
       if (!urlType || !itemName) {
         throw new Error("Invalid URL format");
@@ -395,17 +397,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       }
 
-      const response = await fetch(
-        `https://api3.jailbreakchangelogs.xyz/items/get?name=${encodeURIComponent(
-          itemName
-        )}&type=${encodeURIComponent(itemType)}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Origin: "https://jailbreakchangelogs.xyz",
-          },
-        }
-      );
+      const response = await window.itemApiResponse;
 
       if (!response.ok) {
         throw new Error("Item not found");

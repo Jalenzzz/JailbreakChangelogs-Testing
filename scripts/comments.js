@@ -294,12 +294,9 @@ class CommentsManager {
     // Only verify item existence for item types, not changelogs
     if (this.type !== "changelog" && this.itemName) {
       try {
-        const itemResponse = await fetch(
-          `https://api3.jailbreakchangelogs.xyz/items/get?name=${encodeURIComponent(
-            this.itemName
-          )}&type=${this.type}`
-        );
-
+        // Use the existing API response from item.js
+        const itemResponse = await window.itemApiResponse;
+        
         if (!itemResponse.ok) {
           const commentsSection = document.querySelector(".comment-container");
           if (commentsSection) {

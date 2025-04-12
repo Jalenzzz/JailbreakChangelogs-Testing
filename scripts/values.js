@@ -14,6 +14,11 @@ const VALID_SORTS = [
   "weapon-skins",
 ];
 
+function showLoginModal() {
+  const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+  loginModal.show();
+}
+
 function getDemandBadgeClass(demand) {
   switch(demand) {
     case 'Close to none':
@@ -680,12 +685,6 @@ document.addEventListener("DOMContentLoaded", () => {
               <div class="login-prompt">
                 <button class="btn btn-primary" onclick="showLoginModal()">Login now</button>
               </div>
-              <script>
-                function showLoginModal() {
-                  const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
-                  loginModal.show();
-                }
-              </script>
             </div>
           </div>
         `;
