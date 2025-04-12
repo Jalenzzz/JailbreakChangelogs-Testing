@@ -403,7 +403,7 @@ async function handleAddServer(event) {
         : Math.floor(
             new Date(form.expiresAt.value).getTime() / 1000
           ).toString(),
-      token: token,
+      owner: token,
     };
 
     // Only validate expiration if not "Never Expires"
