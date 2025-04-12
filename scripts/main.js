@@ -989,10 +989,22 @@ document.addEventListener("DOMContentLoaded", async () => {
       );
       sessionStorage.removeItem("campaign");
     } else {
-      notyf.info(
-        "We noticed you're visiting from a campaign. Please log in to count your visit!",
-        "Campaign Visit"
-      );
+      // Check if we've shown this message recently
+      const lastShown = storageUtil.getItem("campaign_notice_shown");
+      const currentTime = Date.now();
+      const COOLDOWN = 1000 * 60 * 5; // 5 minutes cooldown
+
+      if (!lastShown || currentTime - parseInt(lastShown) > COOLDOWN) {
+        notyf.info(
+          "We noticed you're visiting from a campaign. Please log in to count your visit!",
+          "Campaign Visit"
+        );
+        storageUtil.setItem("campaign_notice_shown", currentTime.toString());
+        
+        // Show login modal
+        const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+        loginModal.show();
+      }
 
       sessionStorage.setItem("campaign", campaign);
     }
