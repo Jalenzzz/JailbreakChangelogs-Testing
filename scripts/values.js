@@ -142,8 +142,8 @@ function getItemMediaElement(item, options = {}) {
         <video class="${imageClass || "card-img-top"}"
                style="width: 100%; height: 100%; object-fit: contain;"
                autoplay loop muted playsinline>
-          <source src="/assets/images/items/furnitures/Gamer TV Set.webm" type="video/webm">
-          <source src="/assets/images/items/furnitures/Gamer TV Set.mp4" type="video/mp4">
+          <source src="https://jbc-2.b-cdn.net/assets/images/items/furnitures/Gamer TV Set.webm" type="video/webm">
+          <source src="https://jbc-2.b-cdn.net/assets/images/items/furnitures/Gamer TV Set.mp4" type="video/mp4">
         </video>
         ${mediaBadge}
       </div>`;
@@ -157,8 +157,8 @@ function getItemMediaElement(item, options = {}) {
         <video class="${imageClass || "card-img-top"}"
                style="width: 100%; height: 100%; object-fit: contain;"
                autoplay loop muted playsinline>
-          <source src="/assets/images/items/hyperchromes/HyperShift Lvl5.webm" type="video/webm">
-          <source src="/assets/images/items/hyperchromes/HyperShift Lvl5.mp4" type="video/mp4">
+          <source src="https://jbc-2.b-cdn.net/assets/images/items/hyperchromes/HyperShift Lvl5.webm" type="video/webm">
+          <source src="https://jbc-2.b-cdn.net/assets/images/items/hyperchromes/HyperShift Lvl5.mp4" type="video/mp4">
         </video>
       </div>`;
   }
@@ -171,8 +171,8 @@ function getItemMediaElement(item, options = {}) {
         <video class="${imageClass || "card-img-top"}"
                style="width: 100%; height: 100%; object-fit: contain;"
                autoplay loop muted playsinline>
-          <source src="/assets/images/items/spoilers/Arcade Racer.webm" type="video/webm">
-          <source src="/assets/images/items/spoilers/Arcade Racer.mp4" type="video/mp4">
+          <source src="https://jbc-2.b-cdn.net/assets/images/items/spoilers/Arcade Racer.webm" type="video/webm">
+          <source src="https://jbc-2.b-cdn.net/assets/images/items/spoilers/Arcade Racer.mp4" type="video/mp4">
         </video>
         ${mediaBadge}
       </div>`;
@@ -186,12 +186,12 @@ function getItemMediaElement(item, options = {}) {
       }', event)">
         ${showFavoriteIcon ? getFavoriteIconHtml(item) : ""}
         <div class="horn-player-wrapper" data-horn="${item.name}">
-          <img src="/assets/audios/horn_thumbnail.webp" 
+          <img src="https://jbc-2.b-cdn.net/assets/audios/horn_thumbnail.webp" 
                class="${imageClass || "card-img-top"}" 
                alt="Horn Thumbnail" 
                style="opacity: 0.8;">
           <audio class="horn-audio" preload="none">
-            <source src="/assets/audios/horns/${
+            <source src="https://jbc-2.b-cdn.net/assets/audios/horns/${
               item.name
             }.mp3" type="audio/mp3">
           </audio>
@@ -204,7 +204,7 @@ function getItemMediaElement(item, options = {}) {
     return `
       <div class="media-container position-relative ${containerClass}">
         ${showFavoriteIcon ? getFavoriteIconHtml(item) : ""}
-        <img src="/assets/images/items/480p/drifts/${item.name}.webp"
+        <img src="https://jbc-2.b-cdn.net/assets/images/items/480p/drifts/${item.name}.webp"
              width="854" 
              height="480"
              class="drift-thumbnail ${imageClass || "card-img-top"}" 
@@ -215,10 +215,10 @@ function getItemMediaElement(item, options = {}) {
                playsinline 
                muted 
                loop>
-          <source src="/assets/images/items/drifts/${
+          <source src="https://jbc-2.b-cdn.net/assets/images/items/drifts/${
             item.name
           }.webm" type="video/webm">
-          <source src="/assets/images/items/drifts/${
+          <source src="https://jbc-2.b-cdn.net/assets/images/items/drifts/${
             item.name
           }.mp4" type="video/mp4">
         </video>
@@ -228,7 +228,7 @@ function getItemMediaElement(item, options = {}) {
 
   // Default case for all other items
   const itemType = item.type.toLowerCase();
-  const imagePath = `/assets/images/items/480p/${itemType}s/${item.name}.webp`;
+  const imagePath = `https://jbc-2.b-cdn.net/assets/images/items/480p/${itemType}s/${item.name}.webp`;
 
   return `
     <div class="media-container position-relative ${containerClass}">
@@ -1534,7 +1534,7 @@ const cardHtml = `
       .map((item) => {
         const itemType = item.type.toLowerCase();
         // Get image path directly instead of parsing HTML
-        return `/assets/images/items/480p/${itemType}s/${item.name}.webp`;
+        return `https://jbc-2.b-cdn.net/assets/images/items/480p/${itemType}s/${item.name}.webp`;
       })
       .filter(Boolean); // Remove any undefined/null values
 

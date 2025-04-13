@@ -1,6 +1,6 @@
 {
   "rewrites": [
-    { "source": "/apple-touch-icon.png", "destination": "/assets/logos/apple-touch-icon.png" },
+    { "source": "/apple-touch-icon.png", "destination": "https://jbc-2.b-cdn.net/assets/logos/apple-touch-icon.png" },
     { "source": "/(.*)", "destination": "/api" }
   ],
   "headers": [
@@ -23,7 +23,7 @@
       ]
     },
     {
-      "source": "/assets/(.*)",
+      "source": "https://jbc-2.b-cdn.net/assets/(.*)",
       "headers": [
         {
           "key": "Cache-Control",

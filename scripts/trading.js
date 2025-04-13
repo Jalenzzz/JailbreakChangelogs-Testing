@@ -283,19 +283,19 @@ function getItemImagePath(item) {
     return "https://placehold.co/2560x1440/212A31/D3D9D4?text=No+Image+Available&font=Montserrat";
 
   if (item.name === "HyperShift Lvl5") {
-    return "/assets/images/items/hyperchromes/HyperShift Lvl5.gif";
+    return "https://jbc-2.b-cdn.net/assets/images/items/hyperchromes/HyperShift Lvl5.gif";
   }
 
   if (item.type === "Horn") {
-    return "/assets/audios/horn_thumbnail.webp";
+    return "https://jbc-2.b-cdn.net/assets/audios/horn_thumbnail.webp";
   }
 
   if (item.type === "Drift") {
-    return `/assets/images/items/480p/drifts/${item.name}.webp`;
+    return `https://jbc-2.b-cdn.net/assets/images/items/480p/drifts/${item.name}.webp`;
   }
 
   // Default path for other items
-  return `/assets/images/items/480p/${item.type.toLowerCase()}s/${
+  return `https://jbc-2.b-cdn.net/assets/images/items/480p/${item.type.toLowerCase()}s/${
     item.name
   }.webp`;
 }

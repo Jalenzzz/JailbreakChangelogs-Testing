@@ -614,12 +614,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       return `
         <div class="media-container" data-tooltip="Click to play horn sound">
           <div class="horn-player-wrapper" onclick="playHornSound(this)">
-            <img src="/assets/audios/horn_thumbnail.webp" 
+            <img src="https://jbc-2.b-cdn.net/assets/audios/horn_thumbnail.webp" 
                  class="${imageClass || "card-img-top"}" 
                  alt="Horn Thumbnail" 
                  style="opacity: 1;">
             <audio class="horn-audio" preload="none">
-              <source src="/assets/audios/horns/${
+              <source src="https://jbc-2.b-cdn.net/assets/audios/horns/${
                 item.name
               }.mp3" type="audio/mp3">
             </audio>
@@ -634,8 +634,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             <video class="${imageClass || "card-img-top"}"
                    style="width: 100%; height: 100%; object-fit: contain;"
                    autoplay loop muted playsinline>
-              <source src="/assets/images/items/hyperchromes/HyperShift Lvl5.webm" type="video/webm">
-              <source src="/assets/images/items/hyperchromes/HyperShift Lvl5.mp4" type="video/mp4">
+              <source src="https://jbc-2.b-cdn.net/assets/images/items/hyperchromes/HyperShift Lvl5.webm" type="video/webm">
+              <source src="https://jbc-2.b-cdn.net/assets/images/items/hyperchromes/HyperShift Lvl5.mp4" type="video/mp4">
             </video>
         </div>`;
     }
@@ -647,8 +647,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           <video class="${imageClass || "card-img-top"}"
                  style="width: 100%; height: 100%; object-fit: contain;"
                  autoplay loop muted playsinline>
-            <source src="/assets/images/items/spoilers/Arcade Racer.webm" type="video/webm">
-            <source src="/assets/images/items/spoilers/Arcade Racer.mp4" type="video/mp4">
+            <source src="https://jbc-2.b-cdn.net/assets/images/items/spoilers/Arcade Racer.webm" type="video/webm">
+            <source src="https://jbc-2.b-cdn.net/assets/images/items/spoilers/Arcade Racer.mp4" type="video/mp4">
           </video>
         </div>`;
     }
@@ -660,8 +660,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           <video class="${imageClass || "card-img-top"}"
                  style="width: 100%; height: 100%; object-fit: contain;"
                  autoplay loop muted playsinline>
-            <source src="/assets/images/items/furnitures/Gamer TV Set.webm" type="video/webm">
-            <source src="/assets/images/items/furnitures/Gamer TV Set.mp4" type="video/mp4">
+            <source src="https://jbc-2.b-cdn.net/assets/images/items/furnitures/Gamer TV Set.webm" type="video/webm">
+            <source src="https://jbc-2.b-cdn.net/assets/images/items/furnitures/Gamer TV Set.mp4" type="video/mp4">
           </video>
         </div>`;
     }
@@ -676,10 +676,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                  muted 
                  autoplay
                  loop>
-            <source src="/assets/images/items/drifts/${
+            <source src="https://jbc-2.b-cdn.net/assets/images/items/drifts/${
               item.name
             }.webm" type="video/webm">
-            <source src="/assets/images/items/drifts/${
+            <source src="https://jbc-2.b-cdn.net/assets/images/items/drifts/${
               item.name
             }.mp4" type="video/mp4">
           </video>
@@ -689,10 +689,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Default case for regular items
     const imagePath =
       size === "480p"
-        ? `/assets/images/items/480p/${item.type.toLowerCase()}s/${
+        ? `https://jbc-2.b-cdn.net/assets/images/items/480p/${item.type.toLowerCase()}s/${
             item.name
           }.webp`
-        : `/assets/images/items/${item.type.toLowerCase()}s/${item.name}.webp`;
+        : `https://jbc-2.b-cdn.net/assets/images/items/${item.type.toLowerCase()}s/${item.name}.webp`;
 
     return `
       <div class="media-container ${containerClass}" style="aspect-ratio: ${aspectRatio};">
@@ -1004,7 +1004,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         let formattedSecondPart = "";
         if (secondPart.toLowerCase().includes("robux")) {
           const numericValue = secondPart.replace(/[^0-9]/g, "");
-          formattedSecondPart = `<img src="/assets/Robux.png" alt="Robux" style="height: 1em; vertical-align: -0.1em; margin-left: 2px;"> ${numericValue}`;
+          formattedSecondPart = `<img src="https://jbc-2.b-cdn.net/assets/Robux.png" alt="Robux" style="height: 1em; vertical-align: -0.1em; margin-left: 2px;"> ${numericValue}`;
         }
 
         return `${formattedFirstPart} / ${formattedSecondPart}`;
@@ -1054,7 +1054,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           robuxPart.toLowerCase().includes("robux")
         ) {
           const numericValue = robuxPart.replace(/[^0-9]/g, "");
-          return `Free / <img src="/assets/Robux.png" alt="Robux" style="height: 1em; vertical-align: -0.1em; margin-left: 2px;"> ${numericValue}`;
+          return `Free / <img src="https://jbc-2.b-cdn.net/assets/Robux.png" alt="Robux" style="height: 1em; vertical-align: -0.1em; margin-left: 2px;"> ${numericValue}`;
         }
       }
 
@@ -1063,7 +1063,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Check for Robux values
         if (price.toLowerCase().includes("robux")) {
           const numericValue = price.replace(/[^0-9]/g, "");
-          return `<img src="/assets/Robux.png" alt="Robux" style="height: 1em; vertical-align: -0.1em; margin-left: 2px;"> ${numericValue}`;
+          return `<img src="https://jbc-2.b-cdn.net/assets/Robux.png" alt="Robux" style="height: 1em; vertical-align: -0.1em; margin-left: 2px;"> ${numericValue}`;
         }
 
         // Handle b/k/m suffixes

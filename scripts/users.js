@@ -401,7 +401,7 @@ document.addEventListener("DOMContentLoaded", function () {
     try {
       // Generate fallback banner URL once
       const randomNumber = Math.floor(Math.random() * 14) + 1;
-      const fallbackBanner = `/assets/backgrounds/background${randomNumber}.webp`;
+      const fallbackBanner = `https://jbc-2.b-cdn.net/assets/backgrounds/background${randomNumber}.webp`;
 
       // Get user settings first
       const settingsResponse = await fetch(
@@ -437,7 +437,7 @@ document.addEventListener("DOMContentLoaded", function () {
           const bannerData = await response.json();
           if (
             bannerData.image_url &&
-            !bannerData.image_url.includes("/assets/backgrounds/background") &&
+            !bannerData.image_url.includes("https://jbc-2.b-cdn.net/assets/backgrounds/background") &&
             bannerData.image_url !== "NONE"
           ) {
             bannerUrl = bannerData.image_url;
@@ -642,7 +642,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const userAvatar = document.getElementById("user-avatar");
         if (userAvatar) {
           userAvatar.src =
-            "/assets/default-avatar.png";
+            "https://jbc-2.b-cdn.net/assets/default-avatar.png";
           userAvatar.style.border = "4px solid #495057"; // Keep the gray border
         }
 
@@ -1025,7 +1025,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // Keep special types using ID in path
             switch (comment.item_type.toLowerCase()) {
               case "season":
-                imageUrl = `/assets/images/seasons/${comment.item_id}/10.webp`;
+                imageUrl = `https://jbc-2.b-cdn.net/assets/images/seasons/${comment.item_id}/10.webp`;
                 viewPath = `/seasons/${comment.item_id}`;
                 const seasonResponse = await fetch(
                   `https://api.jailbreakchangelogs.xyz/seasons/get?season=${comment.item_id}`
@@ -1038,7 +1038,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 break;
         
               case "changelog":
-                imageUrl = `/assets/images/changelogs/${comment.item_id}.webp`;
+                imageUrl = `https://jbc-2.b-cdn.net/assets/images/changelogs/${comment.item_id}.webp`;
                 viewPath = `/changelogs/${comment.item_id}`;
                 const changelogResponse = await fetch(
                   `https://api.jailbreakchangelogs.xyz/changelogs/get?id=${comment.item_id}`
@@ -1051,7 +1051,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 break;
         
               case "trade":
-                imageUrl = "/assets/logos/Banner_Background_480.webp";
+                imageUrl = "https://jbc-2.b-cdn.net/assets/logos/Banner_Background_480.webp";
                 displayTitle = `Trade #${comment.item_id}`;
                 displayType = "Trade Ad";
                 viewPath = `/trading/ad/${comment.item_id}`;
@@ -1069,20 +1069,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Special handling for HyperShift Lvl5 with video sources
                 imageUrl = `
                   <video class="card-img-top" playsinline muted loop autoplay>
-                    <source src="/assets/images/items/hyperchromes/HyperShift Lvl5.webm" type="video/webm">
-                    <source src="/assets/images/items/hyperchromes/HyperShift Lvl5.mp4" type="video/mp4">
+                    <source src="https://jbc-2.b-cdn.net/assets/images/items/hyperchromes/HyperShift Lvl5.webm" type="video/webm">
+                    <source src="https://jbc-2.b-cdn.net/assets/images/items/hyperchromes/HyperShift Lvl5.mp4" type="video/mp4">
                   </video>`;
               } else if (comment.item_type.toLowerCase() === "horn") {
-                imageUrl = "/assets/audios/horn_thumbnail.webp";
+                imageUrl = "https://jbc-2.b-cdn.net/assets/audios/horn_thumbnail.webp";
               } else {
-                imageUrl = `/assets/images/items/480p/${comment.item_type.toLowerCase()}s/${itemData.name}.webp`;
+                imageUrl = `https://jbc-2.b-cdn.net/assets/images/items/480p/${comment.item_type.toLowerCase()}s/${itemData.name}.webp`;
               }
               displayTitle = itemData.name;
               displayType = itemData.type;
               // Use item name in URL for regular items
               viewPath = `/item/${comment.item_type.toLowerCase()}/${encodeURIComponent(itemData.name)}?comments`;
             } else {
-              imageUrl = "/assets/logos/Banner_Background_480.webp";
+              imageUrl = "https://jbc-2.b-cdn.net/assets/logos/Banner_Background_480.webp";
               // Fallback to ID if item fetch fails
               viewPath = `/${comment.item_type.toLowerCase()}s/${comment.item_id}`;
             }
@@ -1121,7 +1121,7 @@ document.addEventListener("DOMContentLoaded", function () {
           recentComments.appendChild(commentElement);
         } catch (error) {
           console.error("Error fetching item details:", error);
-          imageUrl = "/assets/logos/Banner_Background_480.webp";
+          imageUrl = "https://jbc-2.b-cdn.net/assets/logos/Banner_Background_480.webp";
         }
       }
     } catch (error) {
@@ -1743,8 +1743,8 @@ document.addEventListener("DOMContentLoaded", function () {
               <div class="position-relative">
                 <div class="media-container">
                   <video class="card-img-top" playsinline muted loop autoplay>
-                    <source src="/assets/images/items/hyperchromes/HyperShift Lvl5.webm" type="video/webm">
-                    <source src="/assets/images/items/hyperchromes/HyperShift Lvl5.mp4" type="video/mp4">
+                    <source src="https://jbc-2.b-cdn.net/assets/images/items/hyperchromes/HyperShift Lvl5.webm" type="video/webm">
+                    <source src="https://jbc-2.b-cdn.net/assets/images/items/hyperchromes/HyperShift Lvl5.mp4" type="video/mp4">
                   </video>
                 </div>
                 <div class="item-card-body text-center">
@@ -1762,9 +1762,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // Handle regular items
     let imageUrl;
     if (itemType === "horn") {
-      imageUrl = "/assets/audios/horn_thumbnail.webp";
+      imageUrl = "https://jbc-2.b-cdn.net/assets/audios/horn_thumbnail.webp";
     } else {
-      imageUrl = `/assets/images/items/480p/${itemType}s/${item.name}.webp`;
+      imageUrl = `https://jbc-2.b-cdn.net/assets/images/items/480p/${itemType}s/${item.name}.webp`;
     }
 
     return `
