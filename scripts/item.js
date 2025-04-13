@@ -366,8 +366,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         .toLowerCase()
         .replace(/-/g, " "); // Convert hyphens to spaces
 
+      // Convert hyphens to spaces in item name BEFORE making the API request
+      const apiItemName = itemName.replace(/-/g, " ");
+
       // Store the API response globally for other components to use
-      window.itemApiResponse = fetch(`https://api.jailbreakchangelogs.xyz/items/get?name=${encodeURIComponent(itemName)}&type=${itemType}`);
+      window.itemApiResponse = fetch(`https://api.jailbreakchangelogs.xyz/items/get?name=${encodeURIComponent(apiItemName)}&type=${itemType}`);
 
       if (!urlType || !itemName) {
         throw new Error("Invalid URL format");
