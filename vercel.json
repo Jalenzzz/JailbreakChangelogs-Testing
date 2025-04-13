@@ -1,6 +1,6 @@
 {
   "rewrites": [
-    { "source": "/apple-touch-icon.png", "destination": "https://jbc-2.b-cdn.net/assets/logos/apple-touch-icon.png" },
+    { "source": "/apple-touch-icon.png", "destination": "https://cdn-2.jailbreakchangelogs.xyz/assets/logos/apple-touch-icon.png" },
     { "source": "/(.*)", "destination": "/api" }
   ],
   "headers": [
