@@ -1784,10 +1784,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (availableItemsModal) {
     availableItemsModal.addEventListener("hidden.bs.modal", handleModalClose);
   }
+
+  // Check login status immediately
+  const token = getCookie("token");
+  if (!token) {
+    notyf.error("Please login to create trade advertisements");
+    // Save current URL to redirect back after login
+    localStorage.setItem("redirectAfterLogin", window.location.href);
+  }
+
   // Load items first
   await loadItems();
 
-  // Check foredit parameter in URL
+  // Check for edit parameter in URL
   const urlParams = new URLSearchParams(window.location.search);
   const editTradeId = urlParams.get("edit");
   if (editTradeId) {
@@ -1798,18 +1807,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Then load trade ads
   await loadTradeAds();
 
-  // Rest of the initialization code...
+  // Check if returning from auth
   const isReturnFromAuth = document.referrer.includes("/roblox");
 
+  // Restore pending trade if it exists
   const pendingTrade = localStorage.getItem("pendingTrade");
   if (pendingTrade) {
     try {
-      const { side1, side2 } = JSON.parse(pendingTrade);
-      side1.forEach((item) => addItemToTrade(item, "Offer"));
-      side2.forEach((item) => addItemToTrade(item, "Request"));
+      const { offering, requesting } = JSON.parse(pendingTrade);
+      offering.forEach(item => addItemToTrade(item, "Offer"));
+      requesting.forEach(item => addItemToTrade(item, "Request"));
       localStorage.removeItem("pendingTrade");
+      
       if (isReturnFromAuth) {
-        previewTrade();
+        notyf.success("Your trade items have been restored");
       }
     } catch (err) {
       console.error("Error restoring pending trade:", err);
