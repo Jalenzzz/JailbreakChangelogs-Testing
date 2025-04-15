@@ -1153,13 +1153,14 @@ function renderTradeItems(tradeType) {
   const itemPositions = new Map();
   const itemCounts = new Map();
 
-  // First pass: count items and record first position
+  // First pass: count items and record first position for this side only
   Object.entries(items).forEach(([index, item]) => {
     if (!item) return;
     const itemKey = `${item.name}-${item.type}`;
     if (!itemPositions.has(itemKey)) {
       itemPositions.set(itemKey, parseInt(index));
     }
+    // Only count items on this side
     itemCounts.set(itemKey, (itemCounts.get(itemKey) || 0) + 1);
   });
 
@@ -1302,6 +1303,7 @@ async function deleteTradeAd(tradeId) {
     notyf.success(
       "Trade advertisement deleted successfully!"
     );
+    cleanupTradePreview();
     await loadTradeAds(); // Refresh the trade ads list
   } catch (error) {
     console.error("Error deleting trade:", error);
@@ -1434,18 +1436,14 @@ async function editTradeAd(tradeId) {
       previewSection.style.display = "block";
 
       // Load offering items
-      const offeringIds = trade.offering.split(",").filter((id) => id);
-      for (const id of offeringIds) {
-        const item = await fetchItemDetails(id);
+      for (const item of trade.offering) {
         if (item) {
           addItemToTrade(item, "Offer");
         }
       }
 
       // Load requesting items
-      const requestingIds = trade.requesting.split(",").filter((id) => id);
-      for (const id of requestingIds) {
-        const item = await fetchItemDetails(id);
+      for (const item of trade.requesting) {
         if (item) {
           addItemToTrade(item, "Request");
         }
@@ -1587,14 +1585,12 @@ async function updateTradeAd(tradeId) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    // Show success toast with a callback for page reload
-    notyf.success("Your trade ad will be updated shortly!", "", {
-      timeOut: 1500,
-      onHidden: function () {
-        // Use window.location.replace instead of modifying URL and using href
-        window.location.replace("/trading");
-      },
-    });
+    // Clean up and refresh
+    cleanupTradePreview();
+    await loadTradeAds();
+    
+    // Show success message
+    notyf.success("Trade advertisement updated successfully!");
   } catch (error) {
     console.error("Error updating trade:", error);
     notyf.error("Failed to update trade advertisement");
@@ -1897,20 +1893,22 @@ async function createTradeAdHTML(trade) {
     }
 
     // Process item counts for multipliers
-    const itemCounts = {};
+    const offeringCounts = {};
+    const requestingCounts = {};
+    
     trade.offering.split(",").forEach((id) => {
-      itemCounts[id] = (itemCounts[id] || 0) + 1;
+      offeringCounts[id] = (offeringCounts[id] || 0) + 1;
     });
     trade.requesting.split(",").forEach((id) => {
-      itemCounts[id] = (itemCounts[id] || 0) + 1;
+      requestingCounts[id] = (requestingCounts[id] || 0) + 1;
     });
 
     // Create item HTML helper function
-    const createItemHTML = async (itemId) => {
+    const createItemHTML = async (itemId, isOffering) => {
       const item = await fetchItemDetails(itemId);
       if (!item) return "";
 
-      const count = itemCounts[itemId];
+      const count = isOffering ? offeringCounts[itemId] : requestingCounts[itemId];
       const multiplierHTML =
         count > 1 ? `<div class="item-multiplier">×${count}</div>` : "";
 
@@ -1957,12 +1955,12 @@ async function createTradeAdHTML(trade) {
       Promise.all(
         [...new Set(trade.offering.split(","))]
           .filter((id) => id)
-          .map(createItemHTML)
+          .map(id => createItemHTML(id, true))
       ),
       Promise.all(
         [...new Set(trade.requesting.split(","))]
           .filter((id) => id)
-          .map(createItemHTML)
+          .map(id => createItemHTML(id, false))
       ),
     ]);
 
@@ -2702,4 +2700,26 @@ async function createTradeAd() {
       // Display items with current filters
       displayAvailableItems(currentTradeType);
     });
+}
+
+function cleanupTradePreview() {
+  // Hide trade preview
+  const previewSection = document.getElementById("trade-preview");
+  if (previewSection) {
+    previewSection.style.display = "none";
+  }
+
+  // Reset trade items
+  resetTrade();
+
+  // Clean URL by removing edit parameter
+  const url = new URL(window.location);
+  url.searchParams.delete("edit");
+  window.history.replaceState({}, "", url);
+
+  // Show confirm trade button
+  const confirmTradeBtn = document.getElementById("confirm-trade-btn");
+  if (confirmTradeBtn) {
+    confirmTradeBtn.style.display = "block";
+  }
 }
