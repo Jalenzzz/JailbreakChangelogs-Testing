@@ -1,9 +1,16 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const userId = localStorage.getItem("userid");        if (!userId) {
-          const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
-          loginModal.show();
-          return;
-        }
+  const userId = localStorage.getItem("userid");
+  if (!userId) {
+    // Only store redirect URL if we're not already on the settings page
+    if (!window.location.pathname.includes('/settings')) {
+      const currentUrl = window.location.href;
+      localStorage.setItem('redirectAfterLogin', currentUrl);
+    }
+    
+    const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+    loginModal.show();
+    return;
+  }
 
   // Show loading overlay immediately when page loads
   showLoadingOverlay();
@@ -16,20 +23,38 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector("#loading-overlay").classList.remove("show");
   }
 
-  // Helper function to create toggle button
-  function createToggleButton(value) {
-    const icon = document.createElement("i");
-    icon.innerHTML =
-      value === 1
-        ? `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                <rect width="16" height="16" fill="none" />
-                <path fill="currentColor" d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06a.733.733 0 0 1 1.047 0l3.052 3.093l5.4-6.425z" />
-               </svg>`
-        : `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                <rect width="16" height="16" fill="none" />
-                <path fill="currentColor" d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
-               </svg>`;
-    return icon.innerHTML;
+  // Handle URL parameter highlighting after loading is complete
+  function handleHighlighting() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const highlightSetting = urlParams.get('highlight');
+    
+    if (highlightSetting) {
+      // Find the setting element and highlight it
+      const settingElement = document.querySelector(`[data-setting="${highlightSetting}"]`);
+      if (settingElement) {
+        // Scroll to the setting
+        settingElement.closest('.list-group-item').scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+        
+        // Add highlight class to the parent list-group-item
+        const parentItem = settingElement.closest('.list-group-item');
+        if (parentItem) {
+          parentItem.classList.add('setting-highlight');
+          
+          // Remove highlight after animation completes
+          setTimeout(() => {
+            parentItem.classList.remove('setting-highlight');
+            
+            // Clean up URL by removing the highlight parameter
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.delete('highlight');
+            window.history.replaceState({}, '', newUrl.toString());
+          }, 4000); // Match the CSS animation duration
+        }
+      }
+    }
   }
 
   // Load settings and update switches
@@ -94,6 +119,8 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
       hideLoadingOverlay();
+      // Handle highlighting after loading is complete
+      handleHighlighting();
     } catch (error) {
       console.error("Error loading settings:", error);
       notyf.error("Failed to load settings");

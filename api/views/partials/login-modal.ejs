@@ -137,10 +137,16 @@
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
     const showLoginModal = urlParams.get('showLoginModal');
+    const redirectUrl = urlParams.get('redirect');
     
     if (showLoginModal === 'true') {
       const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
       loginModal.show();
+      
+      // Store the redirect URL if present
+      if (redirectUrl) {
+        localStorage.setItem('redirectAfterLogin', redirectUrl);
+      }
     }
 
     if (token) {
@@ -157,14 +163,25 @@
           if (userData) {
             localStorage.setItem("user", JSON.stringify(userData));
             localStorage.setItem("userid", userData.id);
+            
+            // Check for stored redirect URL
+            const storedRedirectUrl = localStorage.getItem('redirectAfterLogin');
+            if (storedRedirectUrl) {
+              localStorage.removeItem('redirectAfterLogin');
+              window.location.href = storedRedirectUrl;
+              return;
+            }
           }
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
       
-      // Remove token from URL and refresh the page
-      const newUrl = window.location.pathname + window.location.search.replace(/[?&]token=[^&]+(&|$)/, '');
+      // If no redirect URL is stored, just remove token and showLoginModal from URL
+      const newUrl = window.location.pathname + window.location.search
+        .replace(/[?&]token=[^&]+(&|$)/, '')
+        .replace(/[?&]showLoginModal=true(&|$)/, '')
+        .replace(/[?&]redirect=[^&]+(&|$)/, '');
       window.location.href = newUrl;
     }
 
@@ -190,7 +207,10 @@
     if (discordLoginBtn) {
       discordLoginBtn.addEventListener('click', function(e) {
         e.preventDefault();
+        // Store current URL for redirect after login
         const currentURL = window.location.pathname + window.location.search;
+        localStorage.setItem('redirectAfterLogin', currentURL);
+        
         const oauthRedirect = `https://api.testing.jailbreakchangelogs.xyz/oauth?redirect=${encodeURIComponent(window.location.origin + currentURL)}`;
         window.location.href = oauthRedirect;
       });
@@ -207,7 +227,10 @@
           return;
         }
         
+        // Store current URL for redirect after login
         const currentURL = window.location.pathname + window.location.search;
+        localStorage.setItem('redirectAfterLogin', currentURL);
+        
         const userToken = getCookie('token');
         const oauthRedirect = `https://api.testing.jailbreakchangelogs.xyz/oauth/roblox?redirect=${encodeURIComponent(window.location.origin + currentURL)}&owner=${userToken}`;
         window.location.href = oauthRedirect;
