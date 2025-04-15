@@ -11,15 +11,15 @@ const tradeId = window.location.pathname.split("/").pop();
 
 // Function to get item image element
 function getItemImageElement(item) {
-  // Special handling for HyperShift Lvl5
-  if (item.name === "HyperShift Lvl5") {
-    return `<img src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/hyperchromes/HyperShift Lvl5.gif" 
+  // Special handling for HyperShift
+  if (item.name === "HyperShift") {
+    return `<img src="/assets/images/items/hyperchromes/HyperShift.gif" 
                    class="card-img-top" 
                    alt="${item.name}">`;
   }
 
   if (item.type === "Horn") {
-    return `<img src="https://cdn-2.jailbreakchangelogs.xyz/assets/audios/horn_thumbnail.webp" 
+    return `<img src="/assets/audios/horn_thumbnail.webp" 
                    class="card-img-top" 
                    alt="${item.name}"
                    onerror="this.src='https://placehold.co/2560x1440/212A31/D3D9D4?text=No+Image+Available&font=Montserrat'">`;
@@ -27,14 +27,14 @@ function getItemImageElement(item) {
 
   // Handle Drift items
   if (item.type === "Drift") {
-    return `<img src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/drifts/thumbnails/${item.name}.webp" 
+    return `<img src="/assets/images/items/drifts/thumbnails/${item.name}.webp" 
                    class="card-img-top" 
                    alt="${item.name}"
                    onerror="this.src='https://placehold.co/2560x1440/212A31/D3D9D4?text=No+Image+Available&font=Montserrat'">`;
   }
 
   // Regular items
-  return `<img src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/480p/${item.type.toLowerCase()}s/${
+  return `<img src="/assets/images/items/480p/${item.type.toLowerCase()}s/${
     item.name
   }.webp" 
                  class="card-img-top" 

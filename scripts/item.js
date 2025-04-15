@@ -24,7 +24,7 @@ function isValidHyperChrome(name) {
     "HyperPurple",
     "HyperRed",
     "HyperYellow",
-    "HyperShift Lvl5",
+    "HyperShift",
   ];
 
   // Remove "Level X" and normalize case for comparison
@@ -110,8 +110,8 @@ async function loadSimilarItemsByName(searchName) {
 
     let similarItems = [];
 
-    // Add HyperShift Lvl5 suggestion for HyperChromes
-    if (isHyperChrome && searchName !== "HyperShift Lvl5") {
+    // Add HyperShift suggestion for HyperChromes
+    if (isHyperChrome && searchName !== "HyperShift") {
       // Extract level number if present
       const levelMatch = searchName.match(/Level\s+(\d+)$/);
       const level = levelMatch ? parseInt(levelMatch[1]) : 0;
@@ -124,7 +124,7 @@ async function loadSimilarItemsByName(searchName) {
       if (isHighLevel || showForLowerLevel) {
         const HyperShiftLvl5 = items.find(
           (item) =>
-            item.name === "HyperShift Lvl5" &&
+            item.name === "HyperShift" &&
             item.type.toLowerCase() === "hyperchrome"
         );
         if (HyperShiftLvl5) {
@@ -142,10 +142,10 @@ async function loadSimilarItemsByName(searchName) {
           }
         }
 
-        // Skip HyperShift Lvl5 if already added
+        // Skip HyperShift if already added
         if (
-          item.name === "HyperShift Lvl5" &&
-          similarItems.some((i) => i.name === "HyperShift Lvl5")
+          item.name === "HyperShift" &&
+          similarItems.some((i) => i.name === "HyperShift")
         ) {
           return false;
         }
@@ -189,7 +189,7 @@ async function loadSimilarItemsByName(searchName) {
         return simB - simA;
       });
 
-    // Combine HyperShift Lvl5 (if added) with other similar items
+    // Combine HyperShift (if added) with other similar items
     similarItems = [...similarItems, ...otherSimilarItems].slice(0, 4);
 
     const similarItemsContainer = document.getElementById("similar-items");
@@ -523,12 +523,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (currentItem.type.toLowerCase() === "hyperchrome") {
         score += weights.hyperchrome;
 
-        // Even more points if one is HyperShift Lvl5
+        // Even more points if one is HyperShift
         if (
-          currentItem.name === "HyperShift Lvl5" ||
-          comparisonItem.name === "HyperShift Lvl5"
+          currentItem.name === "HyperShift" ||
+          comparisonItem.name === "HyperShift"
         ) {
-          score += weights.hyperchrome * 0.5; // Additional bonus for HyperShift Lvl5
+          score += weights.hyperchrome * 0.5; // Additional bonus for HyperShift
         }
       }
     }
@@ -617,12 +617,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       return `
         <div class="media-container" data-tooltip="Click to play horn sound">
           <div class="horn-player-wrapper" onclick="playHornSound(this)">
-            <img src="https://cdn-2.jailbreakchangelogs.xyz/assets/audios/horn_thumbnail.webp" 
+            <img src="/assets/audios/horn_thumbnail.webp" 
                  class="${imageClass || "card-img-top"}" 
                  alt="Horn Thumbnail" 
                  style="opacity: 1;">
             <audio class="horn-audio" preload="none">
-              <source src="https://cdn-2.jailbreakchangelogs.xyz/assets/audios/horns/${
+              <source src="/assets/audios/horns/${
                 item.name
               }.mp3" type="audio/mp3">
             </audio>
@@ -630,15 +630,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         </div>`;
     }
 
-    // Special case for HyperShift Lvl5
-    if (item.name === "HyperShift Lvl5" && item.type === "HyperChrome") {
+    // Special case for HyperShift
+    if (item.name === "HyperShift" && item.type === "HyperChrome") {
       return `
         <div class="media-container ${containerClass}">
             <video class="${imageClass || "card-img-top"}"
                    style="width: 100%; height: 100%; object-fit: contain;"
                    autoplay loop muted playsinline>
-              <source src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/hyperchromes/HyperShift Lvl5.webm" type="video/webm">
-              <source src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/hyperchromes/HyperShift Lvl5.mp4" type="video/mp4">
+              <source src="/assets/images/items/hyperchromes/HyperShift.webm" type="video/webm">
+              <source src="/assets/images/items/hyperchromes/HyperShift.mp4" type="video/mp4">
             </video>
         </div>`;
     }
@@ -650,8 +650,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           <video class="${imageClass || "card-img-top"}"
                  style="width: 100%; height: 100%; object-fit: contain;"
                  autoplay loop muted playsinline>
-            <source src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/spoilers/Arcade Racer.webm" type="video/webm">
-            <source src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/spoilers/Arcade Racer.mp4" type="video/mp4">
+            <source src="/assets/images/items/spoilers/Arcade Racer.webm" type="video/webm">
+            <source src="/assets/images/items/spoilers/Arcade Racer.mp4" type="video/mp4">
           </video>
         </div>`;
     }
@@ -663,8 +663,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           <video class="${imageClass || "card-img-top"}"
                  style="width: 100%; height: 100%; object-fit: contain;"
                  autoplay loop muted playsinline>
-            <source src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/furnitures/Gamer TV Set.webm" type="video/webm">
-            <source src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/furnitures/Gamer TV Set.mp4" type="video/mp4">
+            <source src="/assets/images/items/furnitures/Gamer TV Set.webm" type="video/webm">
+            <source src="/assets/images/items/furnitures/Gamer TV Set.mp4" type="video/mp4">
           </video>
         </div>`;
     }
@@ -679,10 +679,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                  muted 
                  autoplay
                  loop>
-            <source src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/drifts/${
+            <source src="/assets/images/items/drifts/${
               item.name
             }.webm" type="video/webm">
-            <source src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/drifts/${
+            <source src="/assets/images/items/drifts/${
               item.name
             }.mp4" type="video/mp4">
           </video>
@@ -692,10 +692,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Default case for regular items
     const imagePath =
       size === "480p"
-        ? `https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/480p/${item.type.toLowerCase()}s/${
+        ? `/assets/images/items/480p/${item.type.toLowerCase()}s/${
             item.name
           }.webp`
-        : `https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/${item.type.toLowerCase()}s/${item.name}.webp`;
+        : `/assets/images/items/${item.type.toLowerCase()}s/${item.name}.webp`;
 
     return `
       <div class="media-container ${containerClass}" style="aspect-ratio: ${aspectRatio};">
@@ -857,11 +857,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         );
         const items = await response.json();
 
-        // For HyperChrome items, check if we should show HyperShift Lvl5
+        // For HyperChrome items, check if we should show HyperShift
         let scoredItems = [];
         if (
           currentItem.type.toLowerCase() === "hyperchrome" &&
-          currentItem.name !== "HyperShift Lvl5"
+          currentItem.name !== "HyperShift"
         ) {
           // Check if it's Level 4 or 5
           const isHighLevel = currentItem.name.match(/Level [45]$/);
@@ -871,7 +871,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           if (isHighLevel || showForLowerLevel) {
             const HyperShiftLvl5 = items.find(
               (item) =>
-                item.name === "HyperShift Lvl5" &&
+                item.name === "HyperShift" &&
                 item.type.toLowerCase() === "hyperchrome"
             );
             if (HyperShiftLvl5) {
@@ -889,7 +889,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             (item) =>
               item.id !== currentItem.id &&
               !(
-                item.name === "HyperShift Lvl5" &&
+                item.name === "HyperShift" &&
                 item.type.toLowerCase() === "hyperchrome"
               )
           )
@@ -899,7 +899,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           }))
           .sort((a, b) => b.similarityScore - a.similarityScore);
 
-        // Combine HyperShift Lvl5 (if added) with top items
+        // Combine HyperShift (if added) with top items
         scoredItems = [...scoredItems, ...otherItems].slice(0, 4);
 
         // Display the similar items
@@ -1007,7 +1007,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         let formattedSecondPart = "";
         if (secondPart.toLowerCase().includes("robux")) {
           const numericValue = secondPart.replace(/[^0-9]/g, "");
-          formattedSecondPart = `<img src="https://cdn-2.jailbreakchangelogs.xyz/assets/Robux.png" alt="Robux" style="height: 1em; vertical-align: -0.1em; margin-left: 2px;"> ${numericValue}`;
+          formattedSecondPart = `<img src="/assets/Robux.png" alt="Robux" style="height: 1em; vertical-align: -0.1em; margin-left: 2px;"> ${numericValue}`;
         }
 
         return `${formattedFirstPart} / ${formattedSecondPart}`;
@@ -1057,7 +1057,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           robuxPart.toLowerCase().includes("robux")
         ) {
           const numericValue = robuxPart.replace(/[^0-9]/g, "");
-          return `Free / <img src="https://cdn-2.jailbreakchangelogs.xyz/assets/Robux.png" alt="Robux" style="height: 1em; vertical-align: -0.1em; margin-left: 2px;"> ${numericValue}`;
+          return `Free / <img src="/assets/Robux.png" alt="Robux" style="height: 1em; vertical-align: -0.1em; margin-left: 2px;"> ${numericValue}`;
         }
       }
 
@@ -1066,7 +1066,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Check for Robux values
         if (price.toLowerCase().includes("robux")) {
           const numericValue = price.replace(/[^0-9]/g, "");
-          return `<img src="https://cdn-2.jailbreakchangelogs.xyz/assets/Robux.png" alt="Robux" style="height: 1em; vertical-align: -0.1em; margin-left: 2px;"> ${numericValue}`;
+          return `<img src="/assets/Robux.png" alt="Robux" style="height: 1em; vertical-align: -0.1em; margin-left: 2px;"> ${numericValue}`;
         }
 
         // Handle b/k/m suffixes
@@ -2164,15 +2164,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // Update handleimage function to skip HyperShift Lvl5
+  // Update handleimage function to skip HyperShift
   window.handleimage = function (element) {
     const isHyperShiftLvl5 =
-      element.id === "HyperShift Lvl5-video" ||
-      (element.alt === "HyperShift Lvl5" &&
+      element.id === "HyperShift-video" ||
+      (element.alt === "HyperShift" &&
         element.closest(".media-container").querySelector("video"));
 
     if (isHyperShiftLvl5) {
-      return; // Don't replace HyperShift Lvl5 video with placeholder
+      return; // Don't replace HyperShift video with placeholder
     }
     element.src =
       "https://placehold.co/2560x1440/212A31/D3D9D4?text=No+Image+Available&font=Montserrat";

@@ -142,23 +142,23 @@ function getItemMediaElement(item, options = {}) {
         <video class="${imageClass || "card-img-top"}"
                style="width: 100%; height: 100%; object-fit: contain;"
                autoplay loop muted playsinline>
-          <source src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/furnitures/Gamer TV Set.webm" type="video/webm">
-          <source src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/furnitures/Gamer TV Set.mp4" type="video/mp4">
+          <source src="/assets/images/items/furnitures/Gamer TV Set.webm" type="video/webm">
+          <source src="/assets/images/items/furnitures/Gamer TV Set.mp4" type="video/mp4">
         </video>
         ${mediaBadge}
       </div>`;
   }
 
-  // Special case for HyperShift Lvl5 - moved up before default case
-  if (item.name === "HyperShift Lvl5" && item.type === "HyperChrome") {
+  // Special case for HyperShift - moved up before default case
+  if (item.name === "HyperShift" && item.type === "HyperChrome") {
     return `
       <div class="media-container position-relative ${containerClass}">
         ${showFavoriteIcon ? getFavoriteIconHtml(item) : ""}
         <video class="${imageClass || "card-img-top"}"
                style="width: 100%; height: 100%; object-fit: contain;"
                autoplay loop muted playsinline>
-          <source src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/hyperchromes/HyperShift Lvl5.webm" type="video/webm">
-          <source src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/hyperchromes/HyperShift Lvl5.mp4" type="video/mp4">
+          <source src="/assets/images/items/hyperchromes/HyperShift.webm" type="video/webm">
+          <source src="/assets/images/items/hyperchromes/HyperShift.mp4" type="video/mp4">
         </video>
       </div>`;
   }
@@ -171,8 +171,8 @@ function getItemMediaElement(item, options = {}) {
         <video class="${imageClass || "card-img-top"}"
                style="width: 100%; height: 100%; object-fit: contain;"
                autoplay loop muted playsinline>
-          <source src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/spoilers/Arcade Racer.webm" type="video/webm">
-          <source src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/spoilers/Arcade Racer.mp4" type="video/mp4">
+          <source src="/assets/images/items/spoilers/Arcade Racer.webm" type="video/webm">
+          <source src="/assets/images/items/spoilers/Arcade Racer.mp4" type="video/mp4">
         </video>
         ${mediaBadge}
       </div>`;
@@ -186,12 +186,12 @@ function getItemMediaElement(item, options = {}) {
       }', event)">
         ${showFavoriteIcon ? getFavoriteIconHtml(item) : ""}
         <div class="horn-player-wrapper" data-horn="${item.name}">
-          <img src="https://cdn-2.jailbreakchangelogs.xyz/assets/audios/horn_thumbnail.webp" 
+          <img src="/assets/audios/horn_thumbnail.webp" 
                class="${imageClass || "card-img-top"}" 
                alt="Horn Thumbnail" 
                style="opacity: 0.8;">
           <audio class="horn-audio" preload="none">
-            <source src="https://cdn-2.jailbreakchangelogs.xyz/assets/audios/horns/${
+            <source src="/assets/audios/horns/${
               item.name
             }.mp3" type="audio/mp3">
           </audio>
@@ -204,7 +204,7 @@ function getItemMediaElement(item, options = {}) {
     return `
       <div class="media-container position-relative ${containerClass}">
         ${showFavoriteIcon ? getFavoriteIconHtml(item) : ""}
-        <img src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/480p/drifts/${item.name}.webp"
+        <img src="/assets/images/items/480p/drifts/${item.name}.webp"
              width="854" 
              height="480"
              class="drift-thumbnail ${imageClass || "card-img-top"}" 
@@ -215,10 +215,10 @@ function getItemMediaElement(item, options = {}) {
                playsinline 
                muted 
                loop>
-          <source src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/drifts/${
+          <source src="/assets/images/items/drifts/${
             item.name
           }.webm" type="video/webm">
-          <source src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/drifts/${
+          <source src="/assets/images/items/drifts/${
             item.name
           }.mp4" type="video/mp4">
         </video>
@@ -228,7 +228,7 @@ function getItemMediaElement(item, options = {}) {
 
   // Default case for all other items
   const itemType = item.type.toLowerCase();
-  const imagePath = `https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/480p/${itemType}s/${item.name}.webp`;
+  const imagePath = `/assets/images/items/480p/${itemType}s/${item.name}.webp`;
 
   return `
     <div class="media-container position-relative ${containerClass}">
@@ -1527,14 +1527,14 @@ const cardHtml = `
     const imageQueue = allItems
       .filter(
         (item) =>
-          // Exclude drifts, horns, and HyperShift Lvl5
+          // Exclude drifts, horns, and HyperShift
           !["drift", "horn"].includes(item.type.toLowerCase()) &&
-          !(item.name === "HyperShift Lvl5" && item.type === "HyperChrome")
+          !(item.name === "HyperShift" && item.type === "HyperChrome")
       )
       .map((item) => {
         const itemType = item.type.toLowerCase();
         // Get image path directly instead of parsing HTML
-        return `https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/480p/${itemType}s/${item.name}.webp`;
+        return `/assets/images/items/480p/${itemType}s/${item.name}.webp`;
       })
       .filter(Boolean); // Remove any undefined/null values
 
@@ -1706,8 +1706,8 @@ const cardHtml = `
 // Default Image
 window.handleimage = function (element) {
   const isHyperShiftLvl5 =
-    element.id === "HyperShift Lvl5-video" ||
-    (element.alt === "HyperShift Lvl5" &&
+    element.id === "HyperShift-video" ||
+    (element.alt === "HyperShift" &&
       element.closest(".media-container")?.querySelector("video"));
 
   if (isHyperShiftLvl5) {

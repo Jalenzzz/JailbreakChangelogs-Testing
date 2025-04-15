@@ -49,15 +49,15 @@ function getItemImageElement(item) {
   if (!item)
     return "https://placehold.co/2560x1440/212A31/D3D9D4?text=No+Image+Available&font=Montserrat";
 
-  if (item.name === "HyperShift Lvl5") {
-    return `<img src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/hyperchromes/HyperShift Lvl5.gif" 
+  if (item.name === "HyperShift") {
+    return `<img src="/assets/images/items/hyperchromes/HyperShift.gif" 
                  class="card-img-top w-100 h-100 object-fit-cover"
                  alt="${item.name}"
                  onload="this.parentElement.previousElementSibling.style.display='none'">`;
   }
 
   if (item.type === "Horn") {
-    return `<img src="https://cdn-2.jailbreakchangelogs.xyz/assets/audios/horn_thumbnail.webp" 
+    return `<img src="/assets/audios/horn_thumbnail.webp" 
                  class="card-img-top w-100 h-100 object-fit-cover"
                  alt="${item.name}"
                  onload="this.parentElement.previousElementSibling.style.display='none'"
@@ -65,14 +65,14 @@ function getItemImageElement(item) {
   }
 
   if (item.type === "Drift") {
-    return `<img src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/480p/drifts/${item.name}.webp" 
+    return `<img src="/assets/images/items/480p/drifts/${item.name}.webp" 
                  class="card-img-top w-100 h-100 object-fit-cover"
                  alt="${item.name}"
                  onload="this.parentElement.previousElementSibling.style.display='none'"
                  onerror="this.onerror=null; this.src='https://placehold.co/2560x1440/212A31/D3D9D4?text=No+Image+Available&font=Montserrat'">`;
   }
 
-  return `<img src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/480p/${item.type.toLowerCase()}s/${
+  return `<img src="/assets/images/items/480p/${item.type.toLowerCase()}s/${
     item.name
   }.webp" 
                class="card-img-top w-100 h-100 object-fit-cover"
@@ -86,20 +86,20 @@ function getItemImagePath(item) {
   if (!item)
     return "https://placehold.co/2560x1440/212A31/D3D9D4?text=No+Image+Available&font=Montserrat";
 
-  if (item.name === "HyperShift Lvl5") {
-    return "https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/hyperchromes/HyperShift Lvl5.gif";
+  if (item.name === "HyperShift") {
+    return "/assets/images/items/hyperchromes/HyperShift.gif";
   }
 
   if (item.type === "Horn") {
-    return "https://cdn-2.jailbreakchangelogs.xyz/assets/audios/horn_thumbnail.webp";
+    return "/assets/audios/horn_thumbnail.webp";
   }
 
   if (item.type === "Drift") {
-    return `https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/480p/drifts/${item.name}.webp`;
+    return `/assets/images/items/480p/drifts/${item.name}.webp`;
   }
 
   // Default path for other items
-  return `https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/480p/${item.type.toLowerCase()}s/${
+  return `/assets/images/items/480p/${item.type.toLowerCase()}s/${
     item.name
   }.webp`;
 }

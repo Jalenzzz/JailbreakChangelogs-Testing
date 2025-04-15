@@ -617,7 +617,7 @@ body {
   text-align: center;
 }
 
-/* Special handling for HyperShift Lvl5 video */
+/* Special handling for HyperShift video */
 .items-card video {
   position: absolute;
   top: 0;

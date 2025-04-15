@@ -500,7 +500,7 @@ async function calculateDupe() {
                 <div class="duped-item-card" style="background: rgba(255, 165, 0, 0.1); border-radius: 12px; border: 1px solid rgba(255, 165, 0, 0.3); padding: 1rem;">
                   <div style="aspect-ratio: 16/9; overflow: hidden; border-radius: 8px; margin-bottom: 1rem;">
                     <img 
-                      src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/480p/${item.type.toLowerCase()}s/${
+                      src="/assets/images/items/480p/${item.type.toLowerCase()}s/${
                   item.name
                 }.webp"
                       class="w-100 h-100"
@@ -599,7 +599,7 @@ async function calculateDupe() {
             <div class="duped-item-card" style="background: rgba(236, 28, 36, 0.1); border-radius: 12px; border: 1px solid rgba(236, 28, 36, 0.2); padding: 1rem;">
               <div style="aspect-ratio: 16/9; overflow: hidden; border-radius: 8px; margin-bottom: 1rem;">
                 <img 
-                  src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/480p/${dupe.item.type.toLowerCase()}s/${
+                  src="/assets/images/items/480p/${dupe.item.type.toLowerCase()}s/${
                 dupe.item.name
               }.webp" 
                   class="w-100 h-100"
@@ -658,7 +658,7 @@ async function calculateDupe() {
           <div class="duped-item-card" style="background: rgba(236, 28, 36, 0.1); border-radius: 12px; border: 1px solid rgba(236, 28, 36, 0.2); padding: 1rem;">
             <div style="aspect-ratio: 16/9; overflow: hidden; border-radius: 8px; margin-bottom: 1rem;">
               <img 
-                src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/480p/${item.type.toLowerCase()}s/${
+                src="/assets/images/items/480p/${item.type.toLowerCase()}s/${
       item.name
     }.webp" 
                 class="w-100 h-100"
@@ -872,7 +872,7 @@ function getItemMediaElement(item, options = {}) {
   if (item.type.toLowerCase() === "horn") {
     return `
       <div class="media-container ${containerClass}" style="aspect-ratio: ${aspectRatio};">
-        <img src="https://cdn-2.jailbreakchangelogs.xyz/assets/audios/horn_thumbnail.webp"
+        <img src="/assets/audios/horn_thumbnail.webp"
              class="${imageClass || "img-fluid rounded thumbnail"}"
              alt="${item.name}"
              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
@@ -880,11 +880,11 @@ function getItemMediaElement(item, options = {}) {
       </div>`;
   }
 
-  // Special case for HyperShift Lvl5
-  if (item.name === "HyperShift Lvl5" && item.type === "HyperChrome") {
+  // Special case for HyperShift
+  if (item.name === "HyperShift" && item.type === "HyperChrome") {
     return `
       <div class="media-container ${containerClass}" style="aspect-ratio: ${aspectRatio};">
-        <img src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/hyperchromes/HyperShift Lvl5.gif"
+        <img src="/assets/images/items/hyperchromes/HyperShift.gif"
              class="${imageClass || "img-fluid rounded thumbnail"}"
              alt="${item.name}"
              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
@@ -895,10 +895,10 @@ function getItemMediaElement(item, options = {}) {
   // Default case for regular items
   const imagePath =
     size === "480p"
-      ? `https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/480p/${item.type.toLowerCase()}s/${
+      ? `/assets/images/items/480p/${item.type.toLowerCase()}s/${
           item.name
         }.webp`
-      : `https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/${item.type.toLowerCase()}s/${item.name}.webp`;
+      : `/assets/images/items/${item.type.toLowerCase()}s/${item.name}.webp`;
 
   return `
     <div class="media-container ${containerClass}" style="aspect-ratio: ${aspectRatio};">

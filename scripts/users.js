@@ -401,7 +401,7 @@ document.addEventListener("DOMContentLoaded", function () {
     try {
       // Generate fallback banner URL once
       const randomNumber = Math.floor(Math.random() * 14) + 1;
-      const fallbackBanner = `https://cdn-2.jailbreakchangelogs.xyz/assets/backgrounds/background${randomNumber}.webp`;
+      const fallbackBanner = `/assets/backgrounds/background${randomNumber}.webp`;
 
       // Get user settings first
       const settingsResponse = await fetch(
@@ -437,7 +437,7 @@ document.addEventListener("DOMContentLoaded", function () {
           const bannerData = await response.json();
           if (
             bannerData.image_url &&
-            !bannerData.image_url.includes("https://cdn-2.jailbreakchangelogs.xyz/assets/backgrounds/background") &&
+            !bannerData.image_url.includes("/assets/backgrounds/background") &&
             bannerData.image_url !== "NONE"
           ) {
             bannerUrl = bannerData.image_url;
@@ -642,7 +642,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const userAvatar = document.getElementById("user-avatar");
         if (userAvatar) {
           userAvatar.src =
-            "https://cdn-2.jailbreakchangelogs.xyz/assets/default-avatar.png";
+            "/assets/default-avatar.png";
           userAvatar.style.border = "4px solid #495057"; // Keep the gray border
         }
 
@@ -1025,7 +1025,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // Keep special types using ID in path
             switch (comment.item_type.toLowerCase()) {
               case "season":
-                imageUrl = `https://cdn-2.jailbreakchangelogs.xyz/assets/images/seasons/${comment.item_id}/10.webp`;
+                imageUrl = `/assets/images/seasons/${comment.item_id}/10.webp`;
                 viewPath = `/seasons/${comment.item_id}`;
                 const seasonResponse = await fetch(
                   `https://api.jailbreakchangelogs.xyz/seasons/get?season=${comment.item_id}`
@@ -1038,7 +1038,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 break;
         
               case "changelog":
-                imageUrl = `https://cdn-2.jailbreakchangelogs.xyz/assets/images/changelogs/${comment.item_id}.webp`;
+                imageUrl = `/assets/images/changelogs/${comment.item_id}.webp`;
                 viewPath = `/changelogs/${comment.item_id}`;
                 const changelogResponse = await fetch(
                   `https://api.jailbreakchangelogs.xyz/changelogs/get?id=${comment.item_id}`
@@ -1051,7 +1051,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 break;
         
               case "trade":
-                imageUrl = "https://cdn-2.jailbreakchangelogs.xyz/assets/logos/Banner_Background_480.webp";
+                imageUrl = "/assets/logos/Banner_Background_480.webp";
                 displayTitle = `Trade #${comment.item_id}`;
                 displayType = "Trade Ad";
                 viewPath = `/trading/ad/${comment.item_id}`;
@@ -1065,24 +1065,24 @@ document.addEventListener("DOMContentLoaded", function () {
         
             if (itemResponse.ok) {
               const itemData = await itemResponse.json();
-              if (comment.item_type.toLowerCase() === "hyperchrome" && itemData.name === "HyperShift Lvl5") {
-                // Special handling for HyperShift Lvl5 with video sources
+              if (comment.item_type.toLowerCase() === "hyperchrome" && itemData.name === "HyperShift") {
+                // Special handling for HyperShift with video sources
                 imageUrl = `
                   <video class="card-img-top" playsinline muted loop autoplay>
-                    <source src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/hyperchromes/HyperShift Lvl5.webm" type="video/webm">
-                    <source src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/hyperchromes/HyperShift Lvl5.mp4" type="video/mp4">
+                    <source src="/assets/images/items/hyperchromes/HyperShift.webm" type="video/webm">
+                    <source src="/assets/images/items/hyperchromes/HyperShift.mp4" type="video/mp4">
                   </video>`;
               } else if (comment.item_type.toLowerCase() === "horn") {
-                imageUrl = "https://cdn-2.jailbreakchangelogs.xyz/assets/audios/horn_thumbnail.webp";
+                imageUrl = "/assets/audios/horn_thumbnail.webp";
               } else {
-                imageUrl = `https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/480p/${comment.item_type.toLowerCase()}s/${itemData.name}.webp`;
+                imageUrl = `/assets/images/items/480p/${comment.item_type.toLowerCase()}s/${itemData.name}.webp`;
               }
               displayTitle = itemData.name;
               displayType = itemData.type;
               // Use item name in URL for regular items
               viewPath = `/item/${comment.item_type.toLowerCase()}/${encodeURIComponent(itemData.name)}?comments`;
             } else {
-              imageUrl = "https://cdn-2.jailbreakchangelogs.xyz/assets/logos/Banner_Background_480.webp";
+              imageUrl = "/assets/logos/Banner_Background_480.webp";
               // Fallback to ID if item fetch fails
               viewPath = `/${comment.item_type.toLowerCase()}s/${comment.item_id}`;
             }
@@ -1121,7 +1121,7 @@ document.addEventListener("DOMContentLoaded", function () {
           recentComments.appendChild(commentElement);
         } catch (error) {
           console.error("Error fetching item details:", error);
-          imageUrl = "https://cdn-2.jailbreakchangelogs.xyz/assets/logos/Banner_Background_480.webp";
+          imageUrl = "/assets/logos/Banner_Background_480.webp";
         }
       }
     } catch (error) {
@@ -1666,8 +1666,8 @@ document.addEventListener("DOMContentLoaded", function () {
       // driftCards.forEach((card) => {
       //   const video = card.querySelector("video");
       //   const thumbnail = card.querySelector(".thumbnail");
-      //   // Only remove videos that aren't HyperShift Lvl5
-      //   if (video && !video.src.includes("HyperShift Lvl5")) {
+      //   // Only remove videos that aren't HyperShift
+      //   if (video && !video.src.includes("HyperShift")) {
       //     video.remove();
       //   }
       //   if (thumbnail) {
@@ -1728,7 +1728,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function createItemCard(item) {
     const itemType = item.type.toLowerCase();
     
-    // Special handling for HyperShift Lvl5
+    // Special handling for HyperShift
     if (item.favorite_id === 587) {
       return `
         <div class="col-6 col-md-4 col-lg-3">
@@ -1737,8 +1737,8 @@ document.addEventListener("DOMContentLoaded", function () {
               <div class="position-relative">
                 <div class="media-container">
                   <video class="card-img-top" playsinline muted loop autoplay>
-                    <source src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/hyperchromes/HyperShift Lvl5.webm" type="video/webm">
-                    <source src="https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/hyperchromes/HyperShift Lvl5.mp4" type="video/mp4">
+                    <source src="/assets/images/items/hyperchromes/HyperShift.webm" type="video/webm">
+                    <source src="/assets/images/items/hyperchromes/HyperShift.mp4" type="video/mp4">
                   </video>
                 </div>
                 <div class="item-card-body text-center">
@@ -1756,9 +1756,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // Handle regular items
     let imageUrl;
     if (itemType === "horn") {
-      imageUrl = "https://cdn-2.jailbreakchangelogs.xyz/assets/audios/horn_thumbnail.webp";
+      imageUrl = "/assets/audios/horn_thumbnail.webp";
     } else {
-      imageUrl = `https://cdn-2.jailbreakchangelogs.xyz/assets/images/items/480p/${itemType}s/${item.name}.webp`;
+      imageUrl = `/assets/images/items/480p/${itemType}s/${item.name}.webp`;
     }
 
     return `
