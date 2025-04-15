@@ -2051,7 +2051,7 @@ async function createTradeAdHTML(trade) {
           </a>
            ${
             authorDetails?.id !== currentUserId 
-            ? `<button class="btn btn-sm btn-outline-success" onclick="makeTradeOffer('${String(trade.id)}')">
+            ? `<button class="btn btn-sm btn-success" onclick="makeTradeOffer('${String(trade.id)}')">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
                   <rect width="24" height="24" fill="none" />
                   <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
