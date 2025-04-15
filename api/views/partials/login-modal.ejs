@@ -208,7 +208,8 @@
         }
         
         const currentURL = window.location.pathname + window.location.search;
-        const oauthRedirect = `https://api.testing.jailbreakchangelogs.xyz/oauth/roblox?redirect=${encodeURIComponent(window.location.origin + currentURL)}`;
+        const userToken = getCookie('token');
+        const oauthRedirect = `https://api.testing.jailbreakchangelogs.xyz/oauth/roblox?redirect=${encodeURIComponent(window.location.origin + currentURL)}&owner=${userToken}`;
         window.location.href = oauthRedirect;
       });
     }

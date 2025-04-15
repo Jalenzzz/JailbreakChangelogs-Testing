@@ -1310,7 +1310,7 @@ document.addEventListener("DOMContentLoaded", function () {
   async function fetchUserFollowers(userId) {
     try {
       const response = await fetch(
-        `https://api.jailbreakchangelogs.xyz/users/followers/get?user=${userId}`
+        `https://api.jailbreakchangelogs.xyz/users/followers/get?user=${userId}&nocache=true`
       );
 
       if (response.status === 404) {
@@ -1344,7 +1344,7 @@ document.addEventListener("DOMContentLoaded", function () {
   async function fetchUserFollowing(userId) {
     try {
       const response = await fetch(
-        `https://api.jailbreakchangelogs.xyz/users/following/get?user=${userId}`,
+        `https://api.jailbreakchangelogs.xyz/users/following/get?user=${userId}&nocache=true`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -1393,12 +1393,6 @@ document.addEventListener("DOMContentLoaded", function () {
         `https://api.testing.jailbreakchangelogs.xyz/users/followers/add`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Cache-Control": "no-cache, no-store, must-revalidate",
-            Pragma: "no-cache",
-            Expires: "0",
-          },
           body: JSON.stringify({
             follower: user, // The logged-in user's token
             following: targetUserId, // The ID from the URL

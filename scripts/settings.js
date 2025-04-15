@@ -370,6 +370,90 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  // Handle Roblox account disconnection
+  const disconnectRobloxButton = document.getElementById("disconnect-roblox-button");
+  const disconnectConfirmation = document.getElementById("disconnect-confirmation");
+  const confirmDisconnectButton = document.getElementById("confirm-disconnect");
+  const cancelDisconnectButton = document.getElementById("cancel-disconnect");
+
+  if (disconnectRobloxButton) {
+    disconnectRobloxButton.addEventListener("click", () => {
+      disconnectConfirmation.style.display = "block";
+      disconnectRobloxButton.style.display = "none";
+    });
+
+    cancelDisconnectButton.addEventListener("click", () => {
+      disconnectConfirmation.style.display = "none";
+      disconnectRobloxButton.style.display = "block";
+    });
+
+    confirmDisconnectButton.addEventListener("click", async () => {
+      const token = getCookie("token");
+      if (!token) {
+        notyf.error("You must be logged in to disconnect your Roblox account");
+        return;
+      }
+
+      try {
+        confirmDisconnectButton.disabled = true;
+        confirmDisconnectButton.innerHTML = `
+          <span class="spinner-border spinner-border-sm" role="status"></span>
+          Disconnecting...
+        `;
+
+        const response = await fetch(
+          "https://api.testing.jailbreakchangelogs.xyz/oauth/roblox/disconnect",
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              "Cache-Control": "no-cache",
+            },
+            body: JSON.stringify({
+              owner: token
+            })
+          }
+        );
+
+        if (!response.ok) throw new Error("Failed to disconnect Roblox account");
+
+        notyf.success("Roblox account disconnected successfully");
+        
+        // Clear cached user data
+        localStorage.removeItem("user");
+        
+        // Fetch fresh user data
+        const userResponse = await fetch(
+          `https://api.jailbreakchangelogs.xyz/users/get/token?token=${token}`
+        );
+        if (userResponse.ok) {
+          const userData = await userResponse.json();
+          // Update localStorage with fresh data
+          localStorage.setItem("user", JSON.stringify(userData));
+          
+          // Update navigation UI
+          const profileContent = document.querySelector('.profile-actions');
+          const dropdownContent = document.querySelector('.dropdown-menu');
+          if (profileContent && dropdownContent) {
+            // Re-render navigation content
+            profileContent.innerHTML = getProfileContent(true);
+            dropdownContent.innerHTML = getDropdownContent(true);
+          }
+        }
+        
+        // Reload the page to reflect changes
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      } catch (error) {
+        console.error("Error disconnecting Roblox account:", error);
+        notyf.error("Failed to disconnect Roblox account");
+        confirmDisconnectButton.disabled = false;
+        confirmDisconnectButton.innerHTML = "Yes, Disconnect";
+      }
+    });
+  }
+
   // Handle account deletion
   const deleteAccountButton = document.getElementById("delete-account-button");
   const deleteConfirmation = document.getElementById("delete-confirmation");
