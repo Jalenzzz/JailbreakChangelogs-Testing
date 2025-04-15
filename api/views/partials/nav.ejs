@@ -288,6 +288,25 @@
 </nav>
 
 <script>
+  // Add this function to show login modal with Roblox tab
+  function showRobloxLoginModal() {
+    const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+    loginModal.show();
+    
+    // Switch to Roblox tab
+    const tabButtons = document.querySelectorAll('.auth-toggle-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    // Remove active class from all buttons and contents
+    tabButtons.forEach(btn => btn.classList.remove('active'));
+    tabContents.forEach(content => content.classList.add('d-none'));
+    
+    // Add active class to Roblox button and show Roblox content
+    const robloxButton = document.querySelector('.auth-toggle-btn[data-tab="roblox"]');
+    robloxButton.classList.add('active');
+    document.getElementById('roblox-tab').classList.remove('d-none');
+  }
+
   window.openSideMenu = function () {
     const sideMenu = document.getElementById("sideMenu");
     const backdrop = document.getElementById("sideMenuBackdrop");
@@ -392,7 +411,7 @@
             ${
               !hasRoblox
                 ? `
-            <a class="nav-link" href="/roblox">
+            <a class="nav-link" href="#" onclick="event.preventDefault(); showRobloxLoginModal()">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
 	<rect width="24" height="24" fill="none" />
 	<path fill="currentColor" d="M18.926 23.998L0 18.892L5.075.002L24 5.108ZM15.348 10.09l-5.282-1.453l-1.414 5.273l5.282 1.453z" />
@@ -442,7 +461,7 @@
             !hasRoblox
               ? `
           <li>
-            <a class="dropdown-item" href="/roblox">
+            <a class="dropdown-item" href="#" onclick="event.preventDefault(); showRobloxLoginModal()">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
 	<rect width="24" height="24" fill="none" />
 	<path fill="currentColor" d="M18.926 23.998L0 18.892L5.075.002L24 5.108ZM15.348 10.09l-5.282-1.453l-1.414 5.273l5.282 1.453z" />

@@ -199,7 +199,8 @@
     // Roblox login button
     const robloxLoginBtn = document.getElementById('robloxLoginBtn');
     if (robloxLoginBtn) {
-      robloxLoginBtn.addEventListener('click', function() {
+      robloxLoginBtn.addEventListener('click', function(e) {
+        e.preventDefault();
         // Check if user has Discord token
         if (!getCookie('token')) {
           notyf.error("You need to connect your Discord account first before linking your Roblox account.");
@@ -207,7 +208,7 @@
         }
         
         const currentURL = window.location.pathname + window.location.search;
-        const oauthRedirect = `https://authorize.roblox.com/?client_id=8033575152059272055&redirect_uri=${encodeURIComponent(window.location.origin + '/roblox')}&scope=openid%20profile&response_type=code`;
+        const oauthRedirect = `https://api.testing.jailbreakchangelogs.xyz/oauth/roblox?redirect=${encodeURIComponent(window.location.origin + currentURL)}`;
         window.location.href = oauthRedirect;
       });
     }
