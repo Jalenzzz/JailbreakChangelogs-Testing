@@ -196,6 +196,7 @@ function getItemMediaElement(item, options = {}) {
             }.mp3" type="audio/mp3">
           </audio>
         </div>
+        ${mediaBadge}
       </div>`;
   }
 
@@ -1298,7 +1299,7 @@ document.addEventListener("DOMContentLoaded", () => {
       value === "N/A"
     ) {
       return {
-        display: "No Value",
+        display: "None",
         numeric: 0,
       };
     }
@@ -1343,7 +1344,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function createItemCard(item) {
     const cardDiv = document.createElement("div");
-    cardDiv.classList.add("col-12", "col-md-4", "col-lg-3");
+    cardDiv.classList.add("col-6", "col-md-4", "col-lg-3");
 
     // Get type color
     let color = "#124e66"; // Default color
@@ -1402,7 +1403,13 @@ const cardHtml = `
     <div class="badges-container">
       ${typeBadgeHtml}
     </div>
-      <h5 class="card-title">${item.name}</h5>
+      <h5 class="card-title">
+        <a href="/item/${item.type.toLowerCase()}/${encodeURIComponent(item.name)}" 
+           class="text-decoration-none item-name-link" 
+           style="color: var(--text-primary);">
+          ${item.name}
+        </a>
+      </h5>
       <div class="card-text">
         <div class="list-group list-group-flush">
           <!-- Cash Value Card -->
@@ -1430,7 +1437,7 @@ const cardHtml = `
             <div class="d-flex justify-content-between align-items-center">
               <small class="text-body-secondary">Demand</small>
               <span class="badge ${getDemandBadgeClass(item.demand)} rounded-pill">
-                ${item.demand === "'N/A'" || item.demand === "N/A" ? "No Demand" : item.demand || "No Value"}
+                ${item.demand === "'N/A'" || item.demand === "N/A" ? "No Demand" : item.demand || "None"}
               </span>
             </div>
           </div>
@@ -1440,15 +1447,13 @@ const cardHtml = `
     ${item.last_updated ? `
       <div class="card-footer">
         <div class="d-flex align-items-center gap-1">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"/><path fill="#748d92" d="M128 20a108 108 0 1 0 108 108A108.12 108.12 0 0 0 128 20m0 192a84 84 0 1 1 84-84a84.09 84.09 0 0 1-84 84m68-84a12 12 0 0 1-12 12h-56a12 12 0 0 1-12-12V72a12 12 0 0 1 24 0v44h44a12 12 0 0 1 12 12"/></svg>
-          <small class="text-body-secondary fw-bold">Last updated ${formatTimeAgo(item.last_updated)}</small>
+          <small class="text-body-secondary">Last updated ${formatTimeAgo(item.last_updated)}</small>
         </div>
       </div>`
       :`
       <div class="card-footer">
         <div class="d-flex align-items-center gap-1">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"/><path fill="#748d92" d="M128 20a108 108 0 1 0 108 108A108.12 108.12 0 0 0 128 20m0 192a84 84 0 1 1 84-84a84.09 84.09 0 0 1-84 84m68-84a12 12 0 0 1-12 12h-56a12 12 0 0 1-12-12V72a12 12 0 0 1 24 0v44h44a12 12 0 0 1 12 12"/></svg>
-          <small class="text-body-secondary fw-bold">Last updated Unknown</small>
+          <small class="text-body-secondary">Last updated Unknown</small>
         </div>
       </div>
     `}
@@ -1833,8 +1838,9 @@ window.handleCategoryClick = function (event, category) {
 
 // Add new function for horn playback
 function handleHornClick(hornName, event) {
-  event.preventDefault();
-   event.stopPropagation();
+  // Don't prevent default or stop propagation to allow navigation
+  // event.preventDefault();
+  // event.stopPropagation();
 
   const audioElement = document.querySelector(
     `[data-horn="${hornName}"] audio`

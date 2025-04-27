@@ -109,7 +109,7 @@ function formatTimestamp(timestamp) {
 
 // Function to format value
 function formatValue(value, useSuffix = false) {
-  if (!value || value === "N/A") return "No Value";
+  if (!value || value === "N/A") return "None";
   const parsedValue = parseValue(value);
 
   // Use suffixes for mobile if enabled
@@ -213,7 +213,7 @@ async function loadTradeData() {
   try {
     // Fetch trade details
     const tradeResponse = await fetch(
-      `https://api.testing.jailbreakchangelogs.xyz/trades/get?id=${tradeId}&nocache=true`
+      `https://api.jailbreakchangelogs.xyz/trades/get?id=${tradeId}&nocache=true`
     );
 
     if (!tradeResponse.ok) {

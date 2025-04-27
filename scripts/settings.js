@@ -1,19 +1,64 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const userId = localStorage.getItem("userid");
-  if (!userId) {
-    // Only store redirect URL if we're not already on the settings page
-    if (!window.location.pathname.includes('/settings')) {
-      const currentUrl = window.location.href;
-      localStorage.setItem('redirectAfterLogin', currentUrl);
-    }
-    
-    const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
-    loginModal.show();
+  // Check for token in URL first
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = urlParams.get('token');
+  
+  // Check if we're logging out from settings page
+  if (urlParams.has('logout')) {
+    // Clear session data
+    localStorage.clear();
+    deleteCookie("token");
+    // Redirect to home without showing login modal
+    window.location.href = '/';
     return;
   }
+  
+  if (token) {
+    // If token is in URL, fetch user data and store it
+    fetch(`https://api.jailbreakchangelogs.xyz/users/get/token?token=${token}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Origin: "https://jailbreakchangelogs.xyz",
+      },
+    })
+    .then(response => {
+      if (!response.ok) throw new Error('Invalid token');
+      return response.json();
+    })
+    .then(userData => {
+      // Store user data
+      localStorage.setItem("userid", userData.id);
+      localStorage.setItem("user", JSON.stringify(userData));
+      
+      // Set cookie
+      document.cookie = `token=${token}; path=/; max-age=604800; secure; samesite=Strict`;
+      
+      // Clean up URL and reload
+      window.history.replaceState({}, '', '/settings');
+      window.location.reload();
+    })
+    .catch(error => {
+      console.error('Error fetching user data:', error);
+      // If token is invalid, proceed with normal flow
+      checkAuthAndRedirect();
+    });
+  } else {
+    checkAuthAndRedirect();
+  }
 
-  // Show loading overlay immediately when page loads
-  showLoadingOverlay();
+  function checkAuthAndRedirect() {
+    const userId = localStorage.getItem("userid");
+    if (!userId) {
+      // Handle OAuth redirect on client side
+      const currentUrl = window.location.href;
+      const redirectUrl = encodeURIComponent(currentUrl);
+      window.location.href = `https://api.jailbreakchangelogs.xyz/oauth?redirect=${redirectUrl}`;
+      return;
+    }
+
+    // Show loading overlay immediately when page loads
+    showLoadingOverlay();
+  }
 
   function showLoadingOverlay() {
     document.querySelector("#loading-overlay").classList.add("show");
@@ -60,8 +105,66 @@ document.addEventListener("DOMContentLoaded", function () {
   // Load settings and update switches
   async function loadSettings() {
     try {
+      const token = getCookie("token");
+      const userId = localStorage.getItem("userid"); // Get userId from localStorage
+      
+      if (!token || !userId) {
+        throw new Error("No token or user ID found");
+      }
+
+      // Fetch user data first to get premium type
+      const userResponse = await fetch(
+        `https://api.jailbreakchangelogs.xyz/users/get/token?token=${token}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Origin: "https://jailbreakchangelogs.xyz",
+          },
+        }
+      );
+
+      if (!userResponse.ok) {
+        throw new Error("Failed to fetch user data");
+      }
+
+      const userData = await userResponse.json();
+      const premiumType = userData.premiumtype || 0;
+
+      // Handle premium features visibility
+      const premiumElements = document.querySelectorAll('.premium-requirement');
+      const premiumInputs = document.querySelectorAll('#banner_discord, #avatar_discord, #bannerInput, #avatarInput, #updateBannerBtn, #updateAvatarBtn');
+      
+      if (premiumType < 2) {
+        premiumElements.forEach(el => el.style.display = 'block');
+        premiumInputs.forEach(el => el.disabled = true);
+      } else {
+        premiumElements.forEach(el => el.style.display = 'none');
+        premiumInputs.forEach(el => el.disabled = false);
+      }
+
+      // Populate custom avatar URL if available
+      if (userData.custom_avatar) {
+        document.getElementById("avatarInput").value = userData.custom_avatar;
+      }
+
+      // Populate custom banner URL if available
+      if (userData.custom_banner) {
+        document.getElementById("bannerInput").value = userData.custom_banner;
+      }
+
+      // Handle Roblox account section
+      if (userData.roblox_username) {
+        const robloxSection = document.getElementById('roblox-account-section');
+        const robloxLink = document.getElementById('roblox-profile-link');
+        
+        robloxSection.style.display = 'block';
+        robloxLink.href = `https://www.roblox.com/users/${userData.roblox_id}/profile`;
+        robloxLink.textContent = userData.roblox_username;
+      }
+
+      // Load settings
       const response = await fetch(
-        `https://api.testing.jailbreakchangelogs.xyz/users/settings?user=${userId}&nocache=true`,
+        `https://api.jailbreakchangelogs.xyz/users/settings?user=${userId}&nocache=true`,
         {
           headers: {
             "Cache-Control": "no-cache",
@@ -71,22 +174,12 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!response.ok) throw new Error("Failed to load settings");
       const settings = await response.json();
 
-      // Load custom banner and avatar URLs first
-      const [userResponse, bannerResponse] = await Promise.all([
-        fetch(`https://api.jailbreakchangelogs.xyz/users/get/?id=${userId}`),
-        fetch(`https://api.jailbreakchangelogs.xyz/users/background/get?user=${userId}`)
+      // Load custom banner and avatar URLs
+      const [bannerResponse] = await Promise.all([
+        fetch(`https://api.jailbreakchangelogs.xyz/users/banner/get?user=${userId}`)
       ]);
 
-      let customAvatarUrl = '';
       let customBannerUrl = '';
-
-      if (userResponse.ok) {
-        const userData = await userResponse.json();
-        if (userData.custom_avatar) {
-          customAvatarUrl = userData.custom_avatar;
-          document.getElementById("avatarInput").value = customAvatarUrl;
-        }
-      }
 
       if (bannerResponse.ok) {
         const bannerData = await bannerResponse.json();
@@ -178,7 +271,7 @@ document.addEventListener("DOMContentLoaded", function () {
               };
 
               const response = await fetch(
-                `https://api.testing.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
+                `https://api.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
                 {
                   method: "POST",
                   headers: {
@@ -217,7 +310,7 @@ document.addEventListener("DOMContentLoaded", function () {
           };
 
           const response = await fetch(
-            `https://api.testing.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
+            `https://api.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
             {
               method: "POST",
               headers: {
@@ -264,14 +357,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // First update the banner URL
       const bannerResponse = await fetch(
-        `https://api.jailbreakchangelogs.xyz/users/background/update?user=${token}&image=${encodeURIComponent(
-          imageUrl || "NONE"
-        )}`,
+        "https://api.jailbreakchangelogs.xyz/users/banner/update",
         {
           method: "POST",
           headers: {
+            "Content-Type": "application/json",
             "Cache-Control": "no-cache",
           },
+          body: JSON.stringify({
+            owner: token,
+            url: imageUrl || "NONE"
+          })
         }
       );
       if (!bannerResponse.ok) throw new Error("Failed to update banner URL");
@@ -291,7 +387,7 @@ document.addEventListener("DOMContentLoaded", function () {
       };
 
       const settingsResponse = await fetch(
-        `https://api.testing.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
+        `https://api.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
         {
           method: "POST",
           headers: {
@@ -371,7 +467,7 @@ document.addEventListener("DOMContentLoaded", function () {
       };
 
       const settingsResponse = await fetch(
-        `https://api.testing.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
+        `https://api.jailbreakchangelogs.xyz/users/settings/update?user=${token}`,
         {
           method: "POST",
           headers: {
@@ -429,7 +525,7 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
 
         const response = await fetch(
-          "https://api.testing.jailbreakchangelogs.xyz/oauth/roblox/disconnect",
+          "https://api.jailbreakchangelogs.xyz/oauth/roblox/disconnect",
           {
             method: "DELETE",
             headers: {
