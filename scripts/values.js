@@ -1510,7 +1510,42 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     cardDiv.innerHTML = cardHtml;
 
-    // Add event listeners for sub-items dropdown
+    // Add click handler for all cards
+    const card = cardDiv.querySelector(".card");
+    card.addEventListener("click", (e) => {
+      // Ignore favorite icon clicks and dropdown clicks
+      if (e.target.closest(".favorite-icon") || e.target.closest(".sub-items-dropdown")) {
+        return;
+      }
+
+      // For horns, only navigate if clicking card-body
+      if (item.type === "Horn") {
+        const isCardBody = e.target.closest(".card-body");
+        if (!isCardBody) {
+          return;
+        }
+      }
+
+      // For drift items, check if clicking video/thumbnail
+      if (item.type === "Drift" && e.target.closest(".media-container")) {
+        return;
+      }
+
+      // Get the currently selected variant if it exists
+      const dropdown = cardDiv.querySelector('.dropdown');
+      const activeItem = dropdown?.querySelector('.dropdown-item.active');
+      const selectedVariant = activeItem?.dataset.variant;
+
+      // Navigate to item page
+      const formattedType = item.type.toLowerCase();
+      const formattedName = encodeURIComponent(item.name.replace(/\s+/g, "-"));
+      const url = selectedVariant && selectedVariant !== currentYear.toString()
+        ? `/item/${formattedType}/${formattedName}?variant=${encodeURIComponent(selectedVariant)}`
+        : `/item/${formattedType}/${formattedName}`;
+      window.location.href = url;
+    });
+
+    // Add event listeners for sub-items dropdown if it exists
     if (hasSubItems) {
       const dropdown = cardDiv.querySelector('.dropdown');
       const dropdownButton = dropdown.querySelector('.dropdown-toggle');
@@ -1557,41 +1592,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
           }
         });
-      });
-
-      // Add click handler for the card
-      const card = cardDiv.querySelector(".card");
-      card.addEventListener("click", (e) => {
-        // Ignore favorite icon clicks and dropdown clicks
-        if (e.target.closest(".favorite-icon") || e.target.closest(".sub-items-dropdown")) {
-          return;
-        }
-
-        // For horns, only navigate if clicking card-body
-        if (item.type === "Horn") {
-          const isCardBody = e.target.closest(".item-card-body");
-          if (!isCardBody) {
-            return;
-          }
-        }
-
-        // For drift items, check if clicking video/thumbnail
-        if (item.type === "Drift" && e.target.closest(".media-container")) {
-          return;
-        }
-
-        // Get the currently selected variant
-        const dropdown = cardDiv.querySelector('.dropdown');
-        const activeItem = dropdown?.querySelector('.dropdown-item.active');
-        const selectedVariant = activeItem?.dataset.variant;
-
-        // Navigate to item page
-        const formattedType = item.type.toLowerCase();
-        const formattedName = encodeURIComponent(item.name.replace(/\s+/g, "-"));
-        const url = selectedVariant === currentYear.toString()
-          ? `/item/${formattedType}/${formattedName}`
-          : `/item/${formattedType}/${formattedName}?variant=${encodeURIComponent(selectedVariant)}`;
-        window.location.href = url;
       });
     }
 
