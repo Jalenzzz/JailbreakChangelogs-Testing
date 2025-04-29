@@ -1417,7 +1417,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const hasSubItems = subItems[item.id] && subItems[item.id].length > 0;
     const currentYear = new Date().getFullYear();
     const subItemsDropdown = hasSubItems ? `
-      <div class="sub-items-dropdown position-absolute top-0 end-0 m-2">
+      <div class="sub-items-dropdown position-absolute top-0 end-0">
         <div class="dropdown">
           <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" data-selected-variant="${currentYear}">
             ${currentYear}
