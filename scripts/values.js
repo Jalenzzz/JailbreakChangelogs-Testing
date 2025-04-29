@@ -49,6 +49,31 @@ const itemsPerPage = 24;
 let isLoading = false;
 let sort = "";
 
+// Global variable to store sub-items
+let subItems = {};
+
+// Function to fetch sub-items
+async function fetchSubItems() {
+  try {
+    const response = await fetch('https://api.testing.jailbreakchangelogs.xyz/items/list/sub?nocache=true');
+    const data = await response.json();
+    
+    // Group sub-items by parent ID
+    subItems = data.reduce((acc, item) => {
+      if (!acc[item.parent]) {
+        acc[item.parent] = [];
+      }
+      acc[item.parent].push(item);
+      return acc;
+    }, {});
+  } catch (error) {
+    console.error('Error fetching sub-items:', error);
+  }
+}
+
+// Call fetchSubItems when the page loads
+document.addEventListener('DOMContentLoaded', fetchSubItems);
+
 function formatTimeAgo(timestamp) {
   if (!timestamp) return null;
 
@@ -1344,7 +1369,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function createItemCard(item) {
     const cardDiv = document.createElement("div");
-    cardDiv.classList.add("col-6", "col-md-4", "col-lg-3");
+    cardDiv.className = "col-6 col-md-4 col-lg-3";
 
     // Get type color
     let color = "#124e66"; // Default color
@@ -1363,17 +1388,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let borderClasses = "border";
     if (item.is_seasonal) {
-      borderClasses = "border-3 border-info"; // Blue border for seasonal items
+      borderClasses = "border-3 border-info";
     } else if (item.is_limited) {
-      borderClasses = "border-3 border-warning"; // Gold/Yellow border for limited items
+      borderClasses = "border-3 border-warning";
     }
 
-    // Get the card classes based on limited and seasonal status
     const cardClasses = ["card", "items-card", "shadow-sm", borderClasses];
-    // if (item.is_limited) cardClasses.push("limited-item");
-    // if (item.is_seasonal) cardClasses.push("seasonal-item");
 
-    // Only show HyperChrome badge for HyperChrome items, otherwise show regular type badge
     const isHyperChrome = item.type === "HyperChrome";
     const typeBadgeHtml = isHyperChrome
       ? `<span class="badge hyperchrome-badge">HyperChrome</span>`
@@ -1381,7 +1402,6 @@ document.addEventListener("DOMContentLoaded", () => {
            ${item.type}
          </span>`;
 
-    // Remove the duplicate limited badge since getItemMediaElement already adds it
     const mediaElement = getItemMediaElement(item, {
       containerClass: "",
       imageClass: "card-img-top",
@@ -1393,82 +1413,137 @@ document.addEventListener("DOMContentLoaded", () => {
     const cashValue = formatValue(item.cash_value);
     const dupedValue = formatValue(item.duped_value);
 
+    // Check if item has sub-items
+    const hasSubItems = subItems[item.id] && subItems[item.id].length > 0;
+    const currentYear = new Date().getFullYear();
+    const subItemsDropdown = hasSubItems ? `
+      <div class="sub-items-dropdown position-absolute top-0 end-0 m-2">
+        <div class="dropdown">
+          <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            ${currentYear}
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item active" href="#" data-item-id="${item.id}">${currentYear}</a></li>
+            ${subItems[item.id].map(subItem => `
+              <li><a class="dropdown-item" href="#" data-item-id="${subItem.id}">${subItem.sub_name}</a></li>
+            `).join('')}
+          </ul>
+        </div>
+      </div>
+    ` : '';
+
     // Create card HTML
-   
-const cardHtml = `
-<div class="${cardClasses.join(' ')}">
-  <div class="position-relative">
-    ${mediaElement}
-    <div class="card-body text-center">
-    <div class="badges-container">
-      ${typeBadgeHtml}
-    </div>
-      <h5 class="card-title">
-        <a href="/item/${item.type.toLowerCase()}/${encodeURIComponent(item.name)}" 
-           class="text-decoration-none item-name-link" 
-           style="color: var(--text-primary);">
-          ${item.name}
-        </a>
-      </h5>
-      <div class="card-text">
-        <div class="list-group list-group-flush">
-          <!-- Cash Value Card -->
-          <div class="list-group-item bg-dark-subtle rounded mb-2 p-2">
-            <div class="d-flex justify-content-between align-items-center">
-              <small class="text-body-secondary">Cash Value</small>
-              <span class="badge bg-primary rounded-pill" data-value="${cashValue.numeric}">
-                ${cashValue.display}
-              </span>
+    const cardHtml = `
+      <div class="${cardClasses.join(' ')}">
+        <div class="position-relative">
+          ${mediaElement}
+          ${subItemsDropdown}
+          <div class="card-body text-center">
+            <div class="badges-container">
+              ${typeBadgeHtml}
+            </div>
+            <h5 class="card-title">
+              <a href="/item/${item.type.toLowerCase()}/${encodeURIComponent(item.name)}" 
+                 class="text-decoration-none item-name-link" 
+                 style="color: var(--text-primary);">
+                ${item.name}
+              </a>
+            </h5>
+            <div class="card-text">
+              <div class="list-group list-group-flush">
+                <!-- Cash Value Card -->
+                <div class="list-group-item bg-dark-subtle rounded mb-2 p-2">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-body-secondary">Cash Value</small>
+                    <span class="badge bg-primary rounded-pill" data-value="${cashValue.numeric}">
+                      ${cashValue.display}
+                    </span>
+                  </div>
+                </div>
+                
+                <!-- Duped Value Card -->
+                <div class="list-group-item bg-dark-subtle rounded mb-2 p-2">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-body-secondary">Duped Value</small>
+                    <span class="badge rounded-pill" style="background-color: var(--text-muted);" data-value="${dupedValue.numeric}">
+                      ${dupedValue.display}
+                    </span>
+                  </div>
+                </div>
+              
+                <!-- Demand Card -->
+                <div class="list-group-item bg-dark-subtle rounded p-2">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-body-secondary">Demand</small>
+                    <span class="badge ${getDemandBadgeClass(item.demand)} rounded-pill">
+                      ${item.demand === "'N/A'" || item.demand === "N/A" ? "No Demand" : item.demand || "None"}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          
-          <!-- Duped Value Card -->
-          <div class="list-group-item bg-dark-subtle rounded mb-2 p-2">
-            <div class="d-flex justify-content-between align-items-center">
-              <small class="text-body-secondary">Duped Value</small>
-              <span class="badge rounded-pill" style="background-color: var(--text-muted);" data-value="${dupedValue.numeric}">
-                ${dupedValue.display}
-              </span>
+          ${item.last_updated ? `
+            <div class="card-footer">
+              <div class="d-flex align-items-center gap-1">
+                <small class="text-body-secondary">Last updated ${formatTimeAgo(item.last_updated)}</small>
+              </div>
+            </div>`
+            :`
+            <div class="card-footer">
+              <div class="d-flex align-items-center gap-1">
+                <small class="text-body-secondary">Last updated Unknown</small>
+              </div>
             </div>
-          </div>
-        
-          <!-- Demand Card -->
-          <div class="list-group-item bg-dark-subtle rounded p-2">
-            <div class="d-flex justify-content-between align-items-center">
-              <small class="text-body-secondary">Demand</small>
-              <span class="badge ${getDemandBadgeClass(item.demand)} rounded-pill">
-                ${item.demand === "'N/A'" || item.demand === "N/A" ? "No Demand" : item.demand || "None"}
-              </span>
-            </div>
-          </div>
+          `}
         </div>
-      </div>
-    </div>
-    ${item.last_updated ? `
-      <div class="card-footer">
-        <div class="d-flex align-items-center gap-1">
-          <small class="text-body-secondary">Last updated ${formatTimeAgo(item.last_updated)}</small>
-        </div>
-      </div>`
-      :`
-      <div class="card-footer">
-        <div class="d-flex align-items-center gap-1">
-          <small class="text-body-secondary">Last updated Unknown</small>
-        </div>
-      </div>
-    `}
-  </div>
-</div>`;
+      </div>`;
 
     cardDiv.innerHTML = cardHtml;
+
+    // Add event listeners for sub-items dropdown
+    if (hasSubItems) {
+      const dropdown = cardDiv.querySelector('.dropdown');
+      const dropdownButton = dropdown.querySelector('.dropdown-toggle');
+      const dropdownItems = dropdown.querySelectorAll('.dropdown-item');
+      
+      dropdownItems.forEach(dropdownItem => {
+        dropdownItem.addEventListener('click', (e) => {
+          e.preventDefault();
+          
+          // Remove active class from all items
+          dropdownItems.forEach(item => item.classList.remove('active'));
+          
+          // Add active class to clicked item
+          dropdownItem.classList.add('active');
+          
+          // Update dropdown button text
+          dropdownButton.textContent = dropdownItem.textContent;
+          
+          // Get the item ID
+          const itemId = parseInt(dropdownItem.dataset.itemId);
+          
+          // If it's the original item, use the parent item
+          if (itemId === item.id) {
+            updateCardValues(cardDiv, item);
+          } else {
+            // Find the sub-item
+            const subItem = subItems[item.id].find(sub => sub.id === itemId);
+            if (subItem) {
+              updateCardValues(cardDiv, subItem);
+            }
+          }
+        });
+      });
+    }
 
     // Add event listeners
     const card = cardDiv.querySelector(".card");
 
     // Handle card clicks
     card.addEventListener("click", (e) => {
-      // Ignore favorite icon clicks
-      if (e.target.closest(".favorite-icon")) {
+      // Ignore favorite icon clicks and dropdown clicks
+      if (e.target.closest(".favorite-icon") || e.target.closest(".sub-items-dropdown")) {
         return;
       }
 
@@ -1492,7 +1567,7 @@ const cardHtml = `
       window.location.href = url;
     });
 
-    // Add hover handlers for drift videos - fix selector
+    // Add hover handlers for drift videos
     if (item.type === "Drift") {
       const video = cardDiv.querySelector("video");
       const thumbnail = cardDiv.querySelector(".drift-thumbnail");
@@ -1515,6 +1590,35 @@ const cardHtml = `
     }
 
     return cardDiv;
+  }
+
+  // Helper function to update card values
+  function updateCardValues(cardDiv, item) {
+    const cashValue = formatValue(item.cash_value);
+    const dupedValue = formatValue(item.duped_value);
+    
+    // Update cash value
+    const cashValueBadge = cardDiv.querySelector('.list-group-item:nth-child(1) .badge');
+    cashValueBadge.textContent = cashValue.display;
+    cashValueBadge.dataset.value = cashValue.numeric;
+    
+    // Update duped value
+    const dupedValueBadge = cardDiv.querySelector('.list-group-item:nth-child(2) .badge');
+    dupedValueBadge.textContent = dupedValue.display;
+    dupedValueBadge.dataset.value = dupedValue.numeric;
+    
+    // Update demand
+    const demandBadge = cardDiv.querySelector('.list-group-item:nth-child(3) .badge');
+    demandBadge.textContent = item.demand === "'N/A'" || item.demand === "N/A" ? "No Demand" : item.demand || "None";
+    demandBadge.className = `badge ${getDemandBadgeClass(item.demand)} rounded-pill`;
+    
+    // Update last updated timestamp
+    const lastUpdatedText = cardDiv.querySelector('.card-footer small');
+    if (item.last_updated) {
+      lastUpdatedText.textContent = `Last updated ${formatTimeAgo(item.last_updated)}`;
+    } else {
+      lastUpdatedText.textContent = 'Last updated Unknown';
+    }
   }
 
   function shuffleArray(array) {
