@@ -428,6 +428,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             children: item.children, // Preserve the children array
             last_updated: variantData.data.last_updated // Use variant's last_updated
           };
+        } else {
+          // If variant doesn't exist, redirect to the base URL without variant parameter
+          const baseUrl = `/item/${item.type.toLowerCase()}/${encodeURIComponent(item.name)}`;
+          window.history.replaceState({}, '', baseUrl);
         }
       }
 
