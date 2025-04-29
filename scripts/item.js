@@ -1450,11 +1450,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                                 <div class="ms-3">
                                   <div class="dropdown">
                                     <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                      ${new URLSearchParams(window.location.search).get('variant') || 'Current'}
+                                      ${new URLSearchParams(window.location.search).get('variant') || new Date().getFullYear()}
                                     </button>
                                     <ul class="dropdown-menu">
                                       <li><a class="dropdown-item ${!new URLSearchParams(window.location.search).get('variant') ? 'active' : ''}" 
-                                            href="/item/${item.type.toLowerCase()}/${encodeURIComponent(item.name.replace(/\s+/g, "-"))}">Current</a></li>
+                                            href="/item/${item.type.toLowerCase()}/${encodeURIComponent(item.name.replace(/\s+/g, "-"))}">${new Date().getFullYear()}</a></li>
                                       ${item.children.map(child => `
                                         <li><a class="dropdown-item ${new URLSearchParams(window.location.search).get('variant') === child.sub_name ? 'active' : ''}" 
                                               href="/item/${item.type.toLowerCase()}/${encodeURIComponent(item.name.replace(/\s+/g, "-"))}?variant=${child.sub_name}">
