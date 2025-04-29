@@ -66,6 +66,11 @@ async function fetchSubItems() {
       acc[item.parent].push(item);
       return acc;
     }, {});
+    
+    // After fetching sub-items, refresh the display
+    if (window.allItems && window.allItems.length > 0) {
+      displayItems();
+    }
   } catch (error) {
     console.error('Error fetching sub-items:', error);
   }
@@ -407,7 +412,7 @@ window.shareCurrentView = debounce(function () {
 const searchBar = document.getElementById("search-bar");
 const clearButton = document.getElementById("clear-search");
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   // Add CSS for favorite icon hover behavior
   const style = document.createElement("style");
   style.textContent = `
@@ -423,6 +428,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   `;
   document.head.appendChild(style);
+
+  // Fetch sub-items when the page loads
+  await fetchSubItems();
 
   const categoryItems = document.querySelectorAll(".category-item");
 
@@ -1443,7 +1451,7 @@ document.addEventListener("DOMContentLoaded", () => {
               ${typeBadgeHtml}
             </div>
             <h5 class="card-title">
-              <a href="/item/${item.type.toLowerCase()}/${encodeURIComponent(item.name)}" 
+              <a href="/item/${item.type.toLowerCase()}/${encodeURIComponent(item.name.replace(/\s+/g, "-"))}" 
                  class="text-decoration-none item-name-link" 
                  style="color: var(--text-primary);"
                  data-variant="${currentYear}">
@@ -1579,7 +1587,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Navigate to item page
         const formattedType = item.type.toLowerCase();
-        const formattedName = encodeURIComponent(item.name);
+        const formattedName = encodeURIComponent(item.name.replace(/\s+/g, "-"));
         const url = selectedVariant === currentYear.toString()
           ? `/item/${formattedType}/${formattedName}`
           : `/item/${formattedType}/${formattedName}?variant=${encodeURIComponent(selectedVariant)}`;

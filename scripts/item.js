@@ -410,7 +410,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // Get the variant parameter from URL
       const urlParams = new URLSearchParams(window.location.search);
-      const variant = urlParams.get('variant');
+      const variant = decodeURIComponent(urlParams.get('variant') || '');
 
       // If variant is specified and item has children, find the matching variant
       if (variant && item.children && item.children.length > 0) {
@@ -1454,10 +1454,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                                     </button>
                                     <ul class="dropdown-menu">
                                       <li><a class="dropdown-item ${!new URLSearchParams(window.location.search).get('variant') ? 'active' : ''}" 
-                                            href="/item/${item.type.toLowerCase()}/${encodeURIComponent(item.name)}">Current</a></li>
+                                            href="/item/${item.type.toLowerCase()}/${encodeURIComponent(item.name.replace(/\s+/g, "-"))}">Current</a></li>
                                       ${item.children.map(child => `
                                         <li><a class="dropdown-item ${new URLSearchParams(window.location.search).get('variant') === child.sub_name ? 'active' : ''}" 
-                                              href="/item/${item.type.toLowerCase()}/${encodeURIComponent(item.name)}?variant=${child.sub_name}">
+                                              href="/item/${item.type.toLowerCase()}/${encodeURIComponent(item.name.replace(/\s+/g, "-"))}?variant=${child.sub_name}">
                                               ${child.sub_name}
                                             </a></li>
                                       `).join('')}
