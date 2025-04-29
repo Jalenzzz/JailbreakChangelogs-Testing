@@ -1726,6 +1726,6 @@ body.menu-open {
 }
 
 .dropdown-item.active {
-  background-color: #1d7da3 !important;
+  background-color: var(--accent-color-light) !important;
   color: white !important;
 }

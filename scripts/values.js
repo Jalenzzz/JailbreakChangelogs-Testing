@@ -1419,13 +1419,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const subItemsDropdown = hasSubItems ? `
       <div class="sub-items-dropdown position-absolute top-0 end-0 m-2">
         <div class="dropdown">
-          <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+          <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" data-selected-variant="${currentYear}">
             ${currentYear}
           </button>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item active" href="#" data-item-id="${item.id}">${currentYear}</a></li>
+            <li><a class="dropdown-item active" href="#" data-item-id="${item.id}" data-variant="${currentYear}">${currentYear}</a></li>
             ${subItems[item.id].map(subItem => `
-              <li><a class="dropdown-item" href="#" data-item-id="${subItem.id}">${subItem.sub_name}</a></li>
+              <li><a class="dropdown-item" href="#" data-item-id="${subItem.id}" data-variant="${subItem.sub_name}">${subItem.sub_name}</a></li>
             `).join('')}
           </ul>
         </div>
@@ -1445,7 +1445,8 @@ document.addEventListener("DOMContentLoaded", () => {
             <h5 class="card-title">
               <a href="/item/${item.type.toLowerCase()}/${encodeURIComponent(item.name)}" 
                  class="text-decoration-none item-name-link" 
-                 style="color: var(--text-primary);">
+                 style="color: var(--text-primary);"
+                 data-variant="${currentYear}">
                 ${item.name}
               </a>
             </h5>
@@ -1506,6 +1507,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const dropdown = cardDiv.querySelector('.dropdown');
       const dropdownButton = dropdown.querySelector('.dropdown-toggle');
       const dropdownItems = dropdown.querySelectorAll('.dropdown-item');
+      const itemLink = cardDiv.querySelector('.item-name-link');
       
       dropdownItems.forEach(dropdownItem => {
         dropdownItem.addEventListener('click', (e) => {
@@ -1517,11 +1519,24 @@ document.addEventListener("DOMContentLoaded", () => {
           // Add active class to clicked item
           dropdownItem.classList.add('active');
           
-          // Update dropdown button text
-          dropdownButton.textContent = dropdownItem.textContent;
+          // Update dropdown button text and data attribute
+          const selectedVariant = dropdownItem.dataset.variant;
+          dropdownButton.textContent = selectedVariant;
+          dropdownButton.dataset.selectedVariant = selectedVariant;
           
-          // Get the item ID
+          // Update the link URL
+          if (itemLink) {
+            const baseUrl = itemLink.href.split('?')[0];
+            // Only add variant parameter if it's not the current year
+            itemLink.href = selectedVariant === currentYear.toString() 
+              ? baseUrl 
+              : `${baseUrl}?variant=${encodeURIComponent(selectedVariant)}`;
+            itemLink.dataset.variant = selectedVariant;
+          }
+          
+          // Get the item ID and variant
           const itemId = parseInt(dropdownItem.dataset.itemId);
+          const variant = dropdownItem.textContent;
           
           // If it's the original item, use the parent item
           if (itemId === item.id) {
@@ -1535,37 +1550,42 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         });
       });
-    }
 
-    // Add event listeners
-    const card = cardDiv.querySelector(".card");
-
-    // Handle card clicks
-    card.addEventListener("click", (e) => {
-      // Ignore favorite icon clicks and dropdown clicks
-      if (e.target.closest(".favorite-icon") || e.target.closest(".sub-items-dropdown")) {
-        return;
-      }
-
-      // For horns, only navigate if clicking card-body
-      if (item.type === "Horn") {
-        const isCardBody = e.target.closest(".item-card-body");
-        if (!isCardBody) {
+      // Add click handler for the card
+      const card = cardDiv.querySelector(".card");
+      card.addEventListener("click", (e) => {
+        // Ignore favorite icon clicks and dropdown clicks
+        if (e.target.closest(".favorite-icon") || e.target.closest(".sub-items-dropdown")) {
           return;
         }
-      }
 
-      // For drift items, check if clicking video/thumbnail
-      if (item.type === "Drift" && e.target.closest(".media-container")) {
-        return;
-      }
+        // For horns, only navigate if clicking card-body
+        if (item.type === "Horn") {
+          const isCardBody = e.target.closest(".item-card-body");
+          if (!isCardBody) {
+            return;
+          }
+        }
 
-      // Navigate to item page
-      const formattedType = item.type.toLowerCase();
-      const formattedName = encodeURIComponent(item.name);
-      const url = `/item/${formattedType}/${formattedName}`;
-      window.location.href = url;
-    });
+        // For drift items, check if clicking video/thumbnail
+        if (item.type === "Drift" && e.target.closest(".media-container")) {
+          return;
+        }
+
+        // Get the currently selected variant
+        const dropdown = cardDiv.querySelector('.dropdown');
+        const activeItem = dropdown?.querySelector('.dropdown-item.active');
+        const selectedVariant = activeItem?.dataset.variant;
+
+        // Navigate to item page
+        const formattedType = item.type.toLowerCase();
+        const formattedName = encodeURIComponent(item.name);
+        const url = selectedVariant === currentYear.toString()
+          ? `/item/${formattedType}/${formattedName}`
+          : `/item/${formattedType}/${formattedName}?variant=${encodeURIComponent(selectedVariant)}`;
+        window.location.href = url;
+      });
+    }
 
     // Add hover handlers for drift videos
     if (item.type === "Drift") {
