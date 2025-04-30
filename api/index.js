@@ -3,7 +3,6 @@ const path = require("path");
 const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 5500; // Set the port
-const fs = require("fs");
 const cookieParser = require("cookie-parser");
 const MIN_TITLE_LENGTH = 10;
 const MIN_DESCRIPTION_LENGTH = 25;
