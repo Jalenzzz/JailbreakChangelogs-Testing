@@ -1,7 +1,6 @@
 const express = require("express");
 const path = require("path");
 const cors = require("cors");
-const axios = require("axios");
 const app = express();
 const PORT = process.env.PORT || 5500; // Set the port
 const fs = require("fs");
@@ -274,7 +273,7 @@ app.get("/changelogs/:changelog", async (req, res) => {
 
 app.get("/seasons", async (req, res) => {
   try {
-    const latestSeason = 25;
+    const latestSeason = 26;
     res.redirect(`/seasons/${latestSeason}`);
   } catch (error) {
     console.error("Error fetching latest season:", error);
@@ -286,7 +285,7 @@ app.get("/seasons/:season", async (req, res) => {
   const seasonId = req.params.season;
   const apiUrl = `https://api.jailbreakchangelogs.xyz/seasons/get?season=${seasonId}`;
   const seasonsListUrl = 'https://api.jailbreakchangelogs.xyz/seasons/list';
-  const latestSeason = 25;
+  const latestSeason = 26;
 
   try {
     // Make both API calls in parallel
