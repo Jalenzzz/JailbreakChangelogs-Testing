@@ -1926,8 +1926,16 @@ document.addEventListener("DOMContentLoaded", async () => {
               });
 
               // Fetch data
+              const urlParams = new URLSearchParams(window.location.search);
+              const variant = urlParams.get('variant');
+              
+              // Determine the correct item ID format for history
+              const historyItemId = variant && item.children && item.children.length > 0
+                ? `${item.id}-${item.children.find(child => child.sub_name === variant)?.id || ''}`
+                : item.id.toString();
+
               fetch(
-                `https://api.jailbreakchangelogs.xyz/item/history?id=${item.id}`
+                `https://api.testing.jailbreakchangelogs.xyz/item/history?id=${historyItemId}`
               )
                 .then((response) => response.json())
                 .then((data) => {
