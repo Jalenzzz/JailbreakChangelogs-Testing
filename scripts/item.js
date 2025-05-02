@@ -384,7 +384,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (token && userData.id) {
         try {
           const favoritesResponse = await fetch(
-            `https://api.jailbreakchangelogs.xyz/favorites/get?user=${userData.id}`,
+            `https://api.testing.jailbreakchangelogs.xyz/favorites/get?user=${userData.id}`,
             {
               headers: {
                 "Content-Type": "application/json",
@@ -438,7 +438,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (item && !item.error && item.type) {
         // Add is_favorite property based on user's favorites
         if (userFavorites.length > 0) {
-          item.is_favorite = userFavorites.some(fav => fav.item_id === item.id);
+          // Get current variant if any
+          const urlParams = new URLSearchParams(window.location.search);
+          const variant = urlParams.get('variant');
+          
+          // Determine the correct item ID format
+          const currentItemId = variant && item.children && item.children.length > 0
+            ? `${item.id}-${item.children.find(child => child.sub_name === variant)?.id || ''}`
+            : item.id.toString();
+            
+          item.is_favorite = userFavorites.some(fav => fav.item_id === currentItemId);
         } else {
           item.is_favorite = false;
         }
@@ -2019,7 +2028,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     tooltips.forEach(el => new bootstrap.Tooltip(el));
 
     // Fetch favorites count
-    fetch(`https://api.jailbreakchangelogs.xyz/item/favorites?id=${item.id}`)
+    const urlParams = new URLSearchParams(window.location.search);
+    const variant = urlParams.get('variant');
+    
+    // If we're viewing a variant, use parentId-childId format
+    // If we're viewing the current year, use just the parent ID
+    const currentItemId = variant && item.children && item.children.length > 0
+      ? `${item.id}-${item.children.find(child => child.sub_name === variant)?.id || ''}`
+      : item.id.toString();
+
+    // Store the current item globally for reference
+    window.currentItem = item;
+
+    // Fetch favorites count using the appropriate ID format
+    fetch(`https://api.testing.jailbreakchangelogs.xyz/item/favorites?id=${currentItemId}`)
       .then((response) => response.json())
       .then((count) => {
         const favoritesCount = document.getElementById("favorites-count");
@@ -2355,11 +2377,20 @@ async function toggleFavorite(e) {
   const favoritesCount = favoritesBtn.querySelector("#favorites-count");
   
   const isFavorited = favoritesPath.getAttribute("fill") === "#f8ff00";
-  const itemId = favoritesBtn.dataset.itemId;
+  const baseItemId = favoritesBtn.dataset.itemId;
+
+  // Get current variant if any
+  const urlParams = new URLSearchParams(window.location.search);
+  const variant = urlParams.get('variant');
+  
+  // Determine the correct item ID format
+  const currentItemId = variant && window.currentItem && window.currentItem.children && window.currentItem.children.length > 0
+    ? `${baseItemId}-${window.currentItem.children.find(child => child.sub_name === variant)?.id || ''}`
+    : baseItemId.toString();
 
   try {
     const response = await fetch(
-      `https://api.jailbreakchangelogs.xyz/favorites/${isFavorited ? "remove" : "add"}`,
+      `https://api.testing.jailbreakchangelogs.xyz/favorites/${isFavorited ? "remove" : "add"}`,
       {
         method: isFavorited ? "DELETE" : "POST",
         headers: {
@@ -2367,7 +2398,7 @@ async function toggleFavorite(e) {
           Origin: "https://jailbreakchangelogs.xyz",
         },
         body: JSON.stringify({
-          item_id: itemId,
+          item_id: currentItemId,
           owner: token,
         }),
       }
