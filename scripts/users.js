@@ -1060,7 +1060,13 @@ document.addEventListener("DOMContentLoaded", function () {
           } else {
             // Handle regular items
             const itemResponse = await fetch(
-              `https://api.jailbreakchangelogs.xyz/items/get?type=${comment.item_type.toLowerCase()}&id=${comment.item_id}`
+              `https://api.jailbreakchangelogs.xyz/items/get?type=${comment.item_type.toLowerCase()}&id=${comment.item_id}`,
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  "Origin": "https://jailbreakchangelogs.xyz"
+                }
+              }
             );
         
             if (itemResponse.ok) {
