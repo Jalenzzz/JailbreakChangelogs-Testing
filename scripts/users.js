@@ -1592,7 +1592,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       const response = await fetch(
-        `https://api.jailbreakchangelogs.xyz/favorites/get?user=${userId}&nocache=true`
+        `https://api.testing.jailbreakchangelogs.xyz/favorites/get?user=${userId}&nocache=true`
       );
 
       if (response.status === 404) {
@@ -1614,21 +1614,11 @@ document.addEventListener("DOMContentLoaded", function () {
       // Sort favorites by created_at timestamp (latest first)
       favorites.sort((a, b) => b.created_at - a.created_at);
       
-      // Fetch full item details for each favorite
-      const itemPromises = favorites.map(async (fav) => {
-        const itemResponse = await fetch(
-          `https://api.jailbreakchangelogs.xyz/items/get?id=${fav.item_id}`
-        );
-        if (!itemResponse.ok) return null;
-        const item = await itemResponse.json();
-        // Add the favorite id to the item object
-        item.favorite_id = fav.item_id;
-        return item;
-      });
-
-      const items = (await Promise.all(itemPromises)).filter(
-        (item) => item !== null
-      );
+      // Extract items from favorites - no need to fetch them separately anymore
+      const items = favorites.map(fav => ({
+        ...fav.item,
+        favorite_id: fav.item_id
+      }));
 
       if (items.length === 0) {
         card_pagination.style.display = "none";

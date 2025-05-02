@@ -50,34 +50,11 @@ let isLoading = false;
 let sort = "";
 
 // Global variable to store sub-items
-let subItems = {};
+// let subItems = {};
 
 // Function to fetch sub-items
-async function fetchSubItems() {
-  try {
-    const response = await fetch('https://api.testing.jailbreakchangelogs.xyz/items/list/sub?nocache=true');
-    const data = await response.json();
-    
-    // Group sub-items by parent ID
-    subItems = data.reduce((acc, item) => {
-      if (!acc[item.parent]) {
-        acc[item.parent] = [];
-      }
-      acc[item.parent].push(item);
-      return acc;
-    }, {});
-    
-    // After fetching sub-items, refresh the display
-    if (window.allItems && window.allItems.length > 0) {
-      displayItems();
-    }
-  } catch (error) {
-    console.error('Error fetching sub-items:', error);
-  }
-}
-
-// Call fetchSubItems when the page loads
-document.addEventListener('DOMContentLoaded', fetchSubItems);
+// async function fetchSubItems() { ... }
+// document.addEventListener('DOMContentLoaded', fetchSubItems);
 
 function formatTimeAgo(timestamp) {
   if (!timestamp) return null;
@@ -286,6 +263,24 @@ function escapeHtml(unsafe) {
 }
 
 function getFavoriteIconHtml(item) {
+  // Get the current year for comparison
+  const currentYear = new Date().getFullYear().toString();
+  
+  // Check if this is a variant item
+  const hasVariants = item.children && item.children.length > 0;
+  
+  // If item has variants, check if current variant is favorited
+  let isFavorited = item.is_favorite;
+  if (hasVariants) {
+    // Default to current year variant
+    const selectedVariant = currentYear;
+    // Check if the current variant is favorited
+    isFavorited = item.children.some(child => 
+      child.sub_name === selectedVariant && 
+      child.is_favorite
+    );
+  }
+
   return `
     <div class="favorite-icon position-absolute top-0 start-0 p-2" 
          style="z-index: 1000;"
@@ -293,8 +288,8 @@ function getFavoriteIconHtml(item) {
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
            style="filter: drop-shadow(0 0 2px rgba(0,0,0,0.7));">
         <rect width="24" height="24" fill="none" />
-        <path fill="${item.is_favorite ? "#f8ff00" : "none"}" 
-              stroke="${item.is_favorite ? "none" : "#f8ff00"}"
+        <path fill="${isFavorited ? "#f8ff00" : "none"}" 
+              stroke="${isFavorited ? "none" : "#f8ff00"}"
               stroke-width="1.5"
               d="M12.954 1.7a1 1 0 0 0-1.908-.001l-2.184 6.92l-6.861-.005a1 1 0 0 0-.566 1.826l5.498 3.762l-2.067 6.545A1 1 0 0 0 6.4 21.86l5.6-4.006l5.594 4.007a1 1 0 0 0 1.536-1.114l-2.067-6.545l5.502-3.762a1 1 0 0 0-.566-1.826l-6.866.005z" />
       </svg>
@@ -318,9 +313,42 @@ window.handleFavorite = async function (event, itemId) {
   const svgPath = event.currentTarget.querySelector("path");
   const isFavorited = svgPath.getAttribute("fill") === "#f8ff00";
 
+  // Get the card element and check for selected variant
+  const card = event.currentTarget.closest('.card');
+  const dropdown = card?.querySelector('.dropdown');
+  const selectedVariant = dropdown?.querySelector('.dropdown-item.active')?.dataset.variant;
+  const currentYear = new Date().getFullYear().toString();
+
+  // Get the item from allItems
+  const item = allItems.find(item => item.id === itemId);
+  if (!item) return;
+
+  // If we have a selected variant that's not the current year, use the variant's ID
+  let favoriteItemId = itemId.toString(); // Convert to string
+  if (selectedVariant && selectedVariant !== currentYear && item.children) {
+    const variant = item.children.find(child => child.sub_name === selectedVariant);
+    if (variant) {
+      favoriteItemId = `${itemId}-${variant.id}`;
+      // Update the variant's favorite status
+      variant.is_favorite = !isFavorited;
+      // Update parent item's favorite status based on any variant being favorited
+      item.is_favorite = item.children.some(child => child.is_favorite);
+    }
+  } else {
+    // For non-variant items or current year variant
+    item.is_favorite = !isFavorited;
+    // If this is a parent item with variants, also update current year variant
+    if (item.children && item.children.length > 0) {
+      const currentYearVariant = item.children.find(child => child.sub_name === currentYear);
+      if (currentYearVariant) {
+        currentYearVariant.is_favorite = !isFavorited;
+      }
+    }
+  }
+
   try {
     const response = await fetch(
-      `https://api.jailbreakchangelogs.xyz/favorites/${
+      `https://api.testing.jailbreakchangelogs.xyz/favorites/${
         isFavorited ? "remove" : "add"
       }`,
       {
@@ -330,7 +358,7 @@ window.handleFavorite = async function (event, itemId) {
           Origin: "https://jailbreakchangelogs.xyz",
         },
         body: JSON.stringify({
-          item_id: itemId,
+          item_id: favoriteItemId,
           owner: token,
         }),
       }
@@ -343,12 +371,6 @@ window.handleFavorite = async function (event, itemId) {
     // Update SVG appearance
     svgPath.setAttribute("fill", isFavorited ? "none" : "#f8ff00");
     svgPath.setAttribute("stroke", isFavorited ? "#f8ff00" : "none");
-
-    // Update item's favorite status in allItems array
-    const item = allItems.find((item) => item.id === itemId);
-    if (item) {
-      item.is_favorite = !isFavorited;
-    }
 
     notyf.success(
       isFavorited ? "Item removed from favorites" : "Item added to favorites",
@@ -430,7 +452,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.head.appendChild(style);
 
   // Fetch sub-items when the page loads
-  await fetchSubItems();
+  // async function fetchSubItems() { ... }
+  // document.addEventListener('DOMContentLoaded', fetchSubItems);
 
   const categoryItems = document.querySelectorAll(".category-item");
 
@@ -1144,7 +1167,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           updateLastUpdatedTimestamp(versionData.last_updated);
       }
 
-      const response = await fetch("https://api.jailbreakchangelogs.xyz/items/list", {
+      const response = await fetch("https://api.testing.jailbreakchangelogs.xyz/items/list", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -1152,7 +1175,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         },
       });
 
-    window.allItems = await response.json();
+      window.allItems = await response.json();
 
       // Add favorite status to items if user is logged in and we have user data
       const token = getCookie("token");
@@ -1161,7 +1184,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (token && userData.id) {
         try {
           const favoritesResponse = await fetch(
-            `https://api.jailbreakchangelogs.xyz/favorites/get?user=${userData.id}`,
+            `https://api.testing.jailbreakchangelogs.xyz/favorites/get?user=${userData.id}`,
             {
               headers: {
                 "Content-Type": "application/json",
@@ -1171,13 +1194,39 @@ document.addEventListener("DOMContentLoaded", async () => {
           );
           if (favoritesResponse.ok) {
             const favorites = await favoritesResponse.json();
-            // Extract just the item_ids from the favorites array
-            const favoriteIds = favorites.map((fav) => fav.item_id);
-            // Mark items as favorite if their ID is in the favoriteIds array
-            window.allItems = window.allItems.map((item) => ({
-              ...item,
-              is_favorite: favoriteIds.includes(item.id),
-            }));
+            // Extract item data from the new favorites format
+            const favoriteItems = favorites.map(fav => {
+              // Split the item_id to check if it's a variant
+              const [parentId, variantId] = fav.item_id.toString().split('-').map(Number);
+              return {
+                parentId,
+                variantId,
+                item: fav.item
+              };
+            });
+
+            // Mark items as favorite
+            window.allItems = window.allItems.map((item) => {
+              const itemFavorites = favoriteItems.filter(fav => fav.parentId === item.id);
+              
+              // If the item has variants
+              if (item.children && item.children.length > 0) {
+                // Mark each variant as favorite if it's in the favorites list
+                item.children = item.children.map(child => ({
+                  ...child,
+                  is_favorite: itemFavorites.some(fav => fav.variantId === child.id)
+                }));
+                // For parent item, check if the current year variant is favorited
+                const currentYear = new Date().getFullYear().toString();
+                const currentYearVariant = item.children.find(child => child.sub_name === currentYear);
+                item.is_favorite = currentYearVariant?.is_favorite || false;
+              } else {
+                // For items without variants, just check if the item is favorited
+                // Only mark as favorite if there's no variant ID (simple item favorite)
+                item.is_favorite = itemFavorites.some(fav => !fav.variantId);
+              }
+              return item;
+            });
           }
         } catch (error) {
           console.error("Error fetching favorites:", error);
@@ -1422,7 +1471,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const dupedValue = formatValue(item.duped_value);
 
     // Check if item has sub-items
-    const hasSubItems = subItems[item.id] && subItems[item.id].length > 0;
+    const hasSubItems = item.children && item.children.length > 0;
     const currentYear = new Date().getFullYear();
     const subItemsDropdown = hasSubItems ? `
       <div class="sub-items-dropdown position-absolute top-0 end-0">
@@ -1432,8 +1481,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           </button>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item active" href="#" data-item-id="${item.id}" data-variant="${currentYear}">${currentYear}</a></li>
-            ${subItems[item.id].map(subItem => `
-              <li><a class="dropdown-item" href="#" data-item-id="${subItem.id}" data-variant="${subItem.sub_name}">${subItem.sub_name}</a></li>
+            ${item.children.map(child => `
+              <li><a class="dropdown-item" href="#" data-item-id="${child.id}" data-variant="${child.sub_name}">${child.sub_name}</a></li>
             `).join('')}
           </ul>
         </div>
@@ -1583,12 +1632,18 @@ document.addEventListener("DOMContentLoaded", async () => {
           
           // If it's the original item, use the parent item
           if (itemId === item.id) {
+            // For current year variant, use the parent item's data
             updateCardValues(cardDiv, item);
           } else {
             // Find the sub-item
-            const subItem = subItems[item.id].find(sub => sub.id === itemId);
+            const subItem = item.children.find(sub => sub.id === itemId);
             if (subItem) {
-              updateCardValues(cardDiv, subItem);
+              // For other variants, use the variant's data with parent item's properties
+              const variantData = {
+                ...subItem.data,
+                is_favorite: subItem.is_favorite // Include the variant's favorite status
+              };
+              updateCardValues(cardDiv, variantData);
             }
           }
         });
@@ -1646,6 +1701,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       lastUpdatedText.textContent = `Last updated ${formatTimeAgo(item.last_updated)}`;
     } else {
       lastUpdatedText.textContent = 'Last updated Unknown';
+    }
+
+    // Update favorite icon
+    const favoriteIcon = cardDiv.querySelector('.favorite-icon path');
+    if (favoriteIcon) {
+      const isFavorited = item.is_favorite;
+      favoriteIcon.setAttribute('fill', isFavorited ? "#f8ff00" : "none");
+      favoriteIcon.setAttribute('stroke', isFavorited ? "none" : "#f8ff00");
     }
   }
 
