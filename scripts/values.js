@@ -560,7 +560,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Apply search filter if search term exists
     if (searchTerm.length > 0) {
       filteredItems = categoryFilteredItems.filter((item) =>
-        item.name.toLowerCase().startsWith(searchTerm)
+        item.name.toLowerCase().includes(searchTerm)
       );
     } else {
       filteredItems = categoryFilteredItems;
