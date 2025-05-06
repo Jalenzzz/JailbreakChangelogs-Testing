@@ -55,8 +55,8 @@ function restorePreviousTrade() {
     offering.forEach(item => addItemToTrade(item, 'Offer'));
     requesting.forEach(item => addItemToTrade(item, 'Request'));
     
-    // Clear saved state
-    localStorage.removeItem('savedTradeState');
+    // Don't clear saved state anymore
+    // localStorage.removeItem('savedTradeState');
     
     // Show success message
     notyf.success('Previous trade restored successfully');
@@ -214,54 +214,108 @@ function getItemImageUrl(item) {
   return getItemImagePath(item);
 }
 
-// Calculate values for each side
-function calculateSideValues(items) {
-  const cashValue = Object.values(items)
-    .filter((item) => item)
-    .reduce((sum, item) => sum + parseValue(item.cash_value || 0), 0);
+// Add a map to store value preferences for items
+const itemValuePreferences = new Map(); // key: itemId, value: 'cash' or 'duped'
 
-  const dupedValue = Object.values(items)
-    .filter((item) => item)
-    .reduce((sum, item) => sum + parseValue(item.duped_value || 0), 0);
-
-  return { cashValue, dupedValue };
+// Function to toggle item value type
+function toggleItemValueType(itemId, currentType) {
+  // If clicking the same type that's already active, clear preference (show both)
+  if (itemValuePreferences.get(itemId) === currentType) {
+    itemValuePreferences.delete(itemId);
+  } else {
+    // Otherwise set to the new type
+    itemValuePreferences.set(itemId, currentType);
+  }
+  updatePreview();
 }
 
-// Render the preview items
+// Update calculateSideValues to respect value preferences
+function calculateSideValues(items) {
+  return Object.values(items)
+    .filter((item) => item)
+    .reduce((totals, item) => {
+      const itemKey = item.is_sub ? item.id : `${item.name}-${item.type}`;
+      const preferredType = itemValuePreferences.get(itemKey);
+      
+      // Add to both totals if no preference, otherwise add to the preferred type only
+      if (!preferredType) {
+        totals.cashValue += parseValue(item.cash_value || 0);
+        totals.dupedValue += parseValue(item.duped_value || 0);
+      } else if (preferredType === 'cash') {
+        totals.cashValue += parseValue(item.cash_value || 0);
+      } else {
+        totals.dupedValue += parseValue(item.duped_value || 0);
+      }
+      
+      return totals;
+    }, { cashValue: 0, dupedValue: 0 });
+}
+
+// Update renderPreviewItems to include value type toggle
 function renderPreviewItems(containerId, items) {
   const container = document.getElementById(containerId);
   const values = calculateSideValues(items);
 
-  // Count duplicates - Modified to account for variants
+  // Check if we're on mobile (screen width less than 768px)
+  const isMobile = window.innerWidth < 768;
+
+  // Count duplicates and track first position
+  const itemPositions = new Map();
   const itemCounts = new Map();
+
+  // First pass: count items and record first position
   Object.values(items)
     .filter((item) => item)
     .forEach((item) => {
-      // Use item ID for sub-items, otherwise use name-type combination
       const itemKey = item.is_sub ? item.id : `${item.name}-${item.type}`;
+      if (!itemPositions.has(itemKey)) {
+        itemPositions.set(itemKey, item);
+      }
       itemCounts.set(itemKey, (itemCounts.get(itemKey) || 0) + 1);
     });
 
   // Create unique items array with counts
   const uniqueItems = [];
-  const processedKeys = new Set();
-
-  Object.values(items)
-    .filter((item) => item)
-    .forEach((item) => {
-      const itemKey = item.is_sub ? item.id : `${item.name}-${item.type}`;
-      if (!processedKeys.has(itemKey)) {
-        processedKeys.add(itemKey);
-        uniqueItems.push({
-          item,
-          count: itemCounts.get(itemKey),
-        });
-      }
+  itemPositions.forEach((item, itemKey) => {
+    uniqueItems.push({
+      item,
+      count: itemCounts.get(itemKey)
     });
+  });
 
   const itemsHtml = uniqueItems
-    .map(
-      ({ item, count }) => `
+    .map(({ item, count }) => {
+      const itemKey = item.is_sub ? item.id : `${item.name}-${item.type}`;
+      const currentValueType = itemValuePreferences.get(itemKey);
+      const hasBothValues = Boolean(item.cash_value) && Boolean(item.duped_value);
+
+      // Determine what value to display, with mobile-specific formatting
+      let valueDisplay;
+      if (!currentValueType && hasBothValues) {
+        // If no preference and has both values, show both
+        valueDisplay = `
+          <div class="item-value">
+            <div>Cash: ${isMobile ? formatValueShorthand(item.cash_value || 0) : formatValue(item.cash_value || 0)}</div>
+            <div>Duped: ${isMobile ? formatValueShorthand(item.duped_value || 0) : formatValue(item.duped_value || 0)}</div>
+          </div>
+        `;
+      } else if (currentValueType === 'cash' || !currentValueType) {
+        // If cash preference or no preference but only one value, show cash
+        valueDisplay = `
+          <div class="item-value">
+            ${isMobile ? formatValueShorthand(item.cash_value || 0) : formatValue(item.cash_value || 0)}
+          </div>
+        `;
+      } else {
+        // If duped preference, show duped
+        valueDisplay = `
+          <div class="item-value">
+            ${isMobile ? formatValueShorthand(item.duped_value || 0) : formatValue(item.duped_value || 0)}
+          </div>
+        `;
+      }
+
+      return `
     <div class="preview-item"
          data-bs-toggle="tooltip"
          data-bs-placement="top"
@@ -300,9 +354,22 @@ function renderPreviewItems(containerId, items) {
             : ""
         }
       </div>
+      ${hasBothValues ? `
+        <div class="value-type-toggle">
+          <button class="btn btn-sm ${currentValueType === 'cash' ? 'btn-success' : 'btn-outline-success'}"
+                  onclick="event.stopPropagation(); toggleItemValueType('${itemKey}', 'cash')">
+            Cash
+          </button>
+          <button class="btn btn-sm ${currentValueType === 'duped' ? 'btn-info' : 'btn-outline-info'}"
+                  onclick="event.stopPropagation(); toggleItemValueType('${itemKey}', 'duped')">
+            Duped
+          </button>
+        </div>
+      ` : ''}
+      ${valueDisplay}
     </div>
-  `
-    )
+  `;
+    })
     .join("");
 
   const valuesHtml = `
@@ -310,7 +377,7 @@ function renderPreviewItems(containerId, items) {
       <h6>
        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 16 16">
         <rect width="16" height="16" fill="none" />
-        <path fill="currentColor" d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm2 .5v2a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0-.5.5m0 4v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M4.5 9a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 12.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M7.5 6a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m.5 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM10 6.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m.5 2.5a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 0-.5-.5z" />
+        <path fill="currentColor" d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm2 .5v2a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0-.5.5m0 4v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M4.5 9a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 12.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M7.5 6a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zm.5 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM10 6.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zm.5 2.5a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 0-.5-.5z" />
       </svg>
         ${
           containerId === "preview-offering-items" ? "Offering" : "Requesting"
@@ -320,13 +387,13 @@ function renderPreviewItems(containerId, items) {
         <span class="text-muted">Cash Value:</span>
         <span class="badge" style="background-color: ${
           containerId === "preview-offering-items" ? "#00c853" : "#2196f3"
-        }">${formatValue(values.cashValue, true)}</span>
+        }">${isMobile ? formatValueShorthand(values.cashValue) : formatValue(values.cashValue, true)}</span>
       </div>
       <div class="side-value-row">
         <span class="text-muted">Duped Value:</span>
         <span class="badge" style="background-color: ${
           containerId === "preview-offering-items" ? "#00c853" : "#2196f3"
-        }">${formatValue(values.dupedValue, true)}</span>
+        }">${isMobile ? formatValueShorthand(values.dupedValue) : formatValue(values.dupedValue, true)}</span>
       </div>
     </div>
   `;
@@ -346,6 +413,9 @@ function renderValueDifferences() {
 
   const cashDiff = requestValues.cashValue - offerValues.cashValue;
   const dupedDiff = requestValues.dupedValue - offerValues.dupedValue;
+  
+  // Check if we're on mobile
+  const isMobile = window.innerWidth < 768;
 
   return `
     <div class="value-differences">
@@ -362,7 +432,7 @@ function renderValueDifferences() {
             <span class="difference-value ${
               cashDiff >= 0 ? "positive" : "negative"
             }">
-              ${cashDiff >= 0 ? "+" : ""}${formatValue(cashDiff, true)}
+              ${cashDiff >= 0 ? "+" : ""}${isMobile ? formatValueShorthand(cashDiff) : formatValue(cashDiff, true)}
             </span>
           </div>
            <div class="difference-indicator">
@@ -393,7 +463,7 @@ function renderValueDifferences() {
             <span class="difference-value ${
               dupedDiff >= 0 ? "positive" : "negative"
             }">
-              ${dupedDiff >= 0 ? "+" : ""}${formatValue(dupedDiff, true)}
+              ${dupedDiff >= 0 ? "+" : ""}${isMobile ? formatValueShorthand(dupedDiff) : formatValue(dupedDiff, true)}
             </span>
           </div>
           <div class="difference-indicator">
@@ -1102,6 +1172,29 @@ function formatValue(value) {
   return formatLargeNumber(parsedValue);
 }
 
+// Add a new function to format values in shorthand (K, M, B)
+function formatValueShorthand(value) {
+  if (!value) return "0";
+  const parsedValue = parseValue(value);
+  
+  if (parsedValue >= 1_000_000_000) {
+    return (parsedValue / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'B';
+  }
+  if (parsedValue >= 1_000_000) {
+    return (parsedValue / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
+  }
+  if (parsedValue >= 1_000) {
+    return (parsedValue / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
+  }
+  
+  return parsedValue.toString();
+}
+
+// Update the formatLargeNumber function to show full numbers
+function formatLargeNumber(num) {
+  return num.toLocaleString("fullwide", { useGrouping: true });
+}
+
 let selectedPlaceholderIndex = -1;
 let selectedTradeType = null;
 
@@ -1273,11 +1366,6 @@ function parseValue(value) {
     return parseFloat(value) * 1000000000;
   }
   return parseFloat(value) || 0;
-}
-
-// Update the formatLargeNumber function to show full numbers
-function formatLargeNumber(num) {
-  return num.toLocaleString("fullwide", { useGrouping: true });
 }
 
 // Update trade summary
@@ -1582,3 +1670,11 @@ function mirrorItems(targetSide) {
   // Show success message
   notyf.success(`Items mirrored to ${targetSide.toLowerCase()}ing side`);
 }
+
+// Add window resize event listener to update the display when screen size changes
+window.addEventListener('resize', function() {
+  // Update the preview if it's visible
+  if (document.getElementById('trade-preview').style.display === 'block') {
+    updatePreview();
+  }
+});

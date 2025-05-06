@@ -107,7 +107,8 @@
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  height: 100%;
+  height: fit-content;
+  align-self: flex-start;
 }
 
 .trade-sides-wrapper .col-12 {
@@ -137,6 +138,7 @@
   gap: 0.75rem;
   padding: 0.5rem;
   margin: 0;
+  min-height: 0; /* Allow grid to shrink */
 }
 
 #offering-list .col-md-3,
@@ -175,6 +177,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   height: 100%;
   display: block !important;
+  align-self: stretch;
 }
 
 .trade-preview h3 {
@@ -231,36 +234,173 @@
   font-size: 1.1rem;
 }
 
-/* Responsive styles */
-@media (min-width: 1400px) {
-  #offering-list,
-  #requesting-list,
-  .preview-items-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  }
+/* Preview Item Card */
+.preview-item {
+  position: relative;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  height: 100%; /* Take full height of grid cell */
+  min-height: 0; /* Allow item to shrink */
 }
 
+.preview-item-image-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--bg-primary);
+  flex-shrink: 0; /* Prevent image from shrinking */
+}
+
+.preview-item .item-name {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin: 0;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+  flex-shrink: 0; /* Prevent text from shrinking */
+}
+
+/* Value type toggle container */
+.value-type-toggle {
+  display: flex;
+  gap: 0.25rem;
+  margin-top: auto; /* Push to bottom */
+  flex-shrink: 0; /* Prevent toggle from shrinking */
+}
+
+.value-type-toggle .btn {
+  flex: 1;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  white-space: nowrap;
+}
+
+/* Responsive adjustments */
 @media (max-width: 991.98px) {
-  .trade-sides-wrapper,
-  .trade-preview {
-    margin-bottom: 1.5rem;
+  #offering-list,
+  #requesting-list {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 0.5rem;
+  }
+
+  .preview-items-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 0.5rem;
   }
   
-  #offering-list,
-  #requesting-list,
-  .preview-items-grid {
-    grid-template-columns: repeat(4, 1fr) !important;
-    gap: 0.5rem;
+  .preview-item {
+    padding: 0.5rem;
+  }
+  
+  .value-type-toggle .btn {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.7rem;
   }
 }
 
 @media (max-width: 767.98px) {
   #offering-list,
-  #requesting-list,
+  #requesting-list {
+    grid-template-columns: repeat(1, 1fr) !important;
+    gap: 0.75rem;
+  }
+
   .preview-items-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-columns: repeat(1, 1fr) !important;
+    gap: 0.75rem;
+  }
+  
+  .preview-item {
+    padding: 0.75rem;
+  }
+  
+  .preview-item .item-name {
+    font-size: 0.9rem;
+  }
+  
+  .value-type-toggle {
+    margin-top: 0.5rem;
+  }
+  
+  .value-type-toggle .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  /* Adjust empty slot size on mobile */
+  .trade-card.empty-slot {
+    aspect-ratio: 16/9;
+    min-height: 200px;
+    margin: 0 auto;
+    max-width: 100%;
+  }
+
+  .trade-card.empty-slot::before {
+    background-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .empty-slot-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 0.5rem;
   }
+
+  .empty-slot-content svg {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .empty-slot-content span {
+    font-size: 1rem;
+  }
+}
+
+/* Empty slot styles */
+.trade-card.empty-slot {
+  aspect-ratio: 16/9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  border: 2px dashed var(--gray-300);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 0; /* Allow empty slot to shrink */
+}
+
+.trade-card.empty-slot:hover {
+  border-color: var(--accent-color);
+  background: var(--bg-secondary);
+}
+
+.trade-card.empty-slot::before {
+  content: "";
+  background-image: url("/assets/bi--plus-circle.png");
+  background-size: 2rem;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 2rem;
+  height: 2rem;
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+}
+
+.trade-card.empty-slot:hover::before {
+  opacity: 1;
 }
 
 /* Trade Action Buttons */
@@ -386,4 +526,67 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.preview-item {
+  position: relative;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.value-type-toggle {
+  display: flex;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+}
+
+.value-type-toggle .btn {
+  flex: 1;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.item-value {
+  text-align: center;
+  font-weight: 500;
+  color: var(--text-primary);
+  padding: 0.25rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  margin-top: 0.25rem;
+}
+
+.item-value div {
+  padding: 0.15rem 0;
+}
+
+.item-value div:first-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #00c853;
+}
+
+.item-value div:last-child {
+  color: #2196f3;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+  .value-type-toggle .btn {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .preview-item {
+    padding: 0.5rem;
+  }
+  
+  .value-type-toggle {
+    margin-top: 0.25rem;
+  }
 }
