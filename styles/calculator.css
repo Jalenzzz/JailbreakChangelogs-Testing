@@ -109,42 +109,55 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   height: fit-content;
   align-self: flex-start;
+  overflow: hidden;
 }
 
 .trade-sides-wrapper .col-12 {
   display: flex;
   flex-direction: column;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
 }
 
 .trade-sides-wrapper .row {
   flex: 1;
   margin: 0;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
 }
 
 /* Adjust grid for trade items */
 #offering-list,
 #requesting-list {
   display: grid;
-  grid-template-columns: repeat(4, 1fr) !important;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
   gap: 0.75rem;
   padding: 0 0.5rem;
   margin: 0;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
 }
 
 /* Preview items grid */
 .preview-items-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr) !important;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
   gap: 0.75rem;
   padding: 0.5rem;
   margin: 0;
-  min-height: 0; /* Allow grid to shrink */
+  min-height: 0;
+  width: 100%;
 }
 
 #offering-list .col-md-3,
 #requesting-list .col-md-3 {
   width: 100%;
   padding: 0;
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* Style the headers */
@@ -286,85 +299,50 @@
 }
 
 /* Responsive adjustments */
-@media (max-width: 991.98px) {
+@media (max-width: 1200px) {
   #offering-list,
-  #requesting-list {
-    grid-template-columns: repeat(3, 1fr) !important;
+  #requesting-list,
+  .preview-items-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+  }
+}
+
+@media (max-width: 992px) {
+  #offering-list,
+  #requesting-list,
+  .preview-items-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) !important;
+  }
+}
+
+@media (max-width: 576px) {
+  #offering-list,
+  #requesting-list,
+  .preview-items-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
     gap: 0.5rem;
   }
+  
+  .trade-sides-wrapper {
+    padding: 1rem;
+  }
+}
 
+@media (max-width: 991.98px) {
+  #offering-list,
+  #requesting-list,
   .preview-items-grid {
     grid-template-columns: repeat(3, 1fr) !important;
     gap: 0.5rem;
-  }
-  
-  .preview-item {
-    padding: 0.5rem;
-  }
-  
-  .value-type-toggle .btn {
-    padding: 0.2rem 0.4rem;
-    font-size: 0.7rem;
   }
 }
 
 @media (max-width: 767.98px) {
   #offering-list,
-  #requesting-list {
-    grid-template-columns: repeat(1, 1fr) !important;
-    gap: 0.75rem;
-  }
-
+  #requesting-list,
   .preview-items-grid {
-    grid-template-columns: repeat(1, 1fr) !important;
+    grid-template-columns: repeat(2, 1fr) !important;
     gap: 0.75rem;
-  }
-  
-  .preview-item {
-    padding: 0.75rem;
-  }
-  
-  .preview-item .item-name {
-    font-size: 0.9rem;
-  }
-  
-  .value-type-toggle {
-    margin-top: 0.5rem;
-  }
-  
-  .value-type-toggle .btn {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.8rem;
-  }
-
-  /* Adjust empty slot size on mobile */
-  .trade-card.empty-slot {
-    aspect-ratio: 16/9;
-    min-height: 200px;
-    margin: 0 auto;
-    max-width: 100%;
-  }
-
-  .trade-card.empty-slot::before {
-    background-size: 3rem;
-    width: 3rem;
-    height: 3rem;
-  }
-
-  .empty-slot-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .empty-slot-content svg {
-    width: 2rem;
-    height: 2rem;
-  }
-
-  .empty-slot-content span {
-    font-size: 1rem;
   }
 }
 
@@ -516,26 +494,42 @@
   font-weight: 500;
 }
 
-/* Ensure trade cards maintain aspect ratio */
+/* Trade card styles */
 .trade-card {
-  aspect-ratio: 16/9;
-}
-
-.trade-card.empty-slot {
-  aspect-ratio: 16/9;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.preview-item {
   position: relative;
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
+  border: 1px solid var(--gray-300);
   border-radius: 8px;
-  padding: 0.75rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  aspect-ratio: 1;
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+}
+
+.trade-card .card-img-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.trade-card .trade-card-info {
+  padding: 0.5rem;
+  flex-shrink: 0;
+}
+
+.trade-card .item-name,
+.trade-card .item-type {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+  font-size: 0.875rem;
 }
 
 .value-type-toggle {
