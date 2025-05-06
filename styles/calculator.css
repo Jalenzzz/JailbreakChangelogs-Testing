@@ -57,3 +57,42 @@
   color: var(--bs-light);
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
+
+/* Restore Trade Modal Styles */
+#restoreTradeModal .modal-content {
+  background-color: var(--bs-dark);
+  border: 1px solid var(--bs-border-color);
+}
+
+#restoreTradeModal .modal-header {
+  border-bottom-color: var(--bs-border-color);
+}
+
+#restoreTradeModal .modal-footer {
+  border-top-color: var(--bs-border-color);
+}
+
+#restoreTradeModal .modal-body {
+  color: var(--bs-light);
+}
+
+#restoreTradeModal .btn-secondary {
+  background-color: var(--bs-secondary);
+  border-color: var(--bs-secondary);
+  color: var(--bs-light);
+}
+
+#restoreTradeModal .btn-secondary:hover {
+  background-color: var(--bs-secondary-dark);
+  border-color: var(--bs-secondary-dark);
+}
+
+#restoreTradeModal .btn-primary {
+  background-color: var(--bs-primary);
+  border-color: var(--bs-primary);
+}
+
+#restoreTradeModal .btn-primary:hover {
+  background-color: var(--bs-primary-dark);
+  border-color: var(--bs-primary-dark);
+}

@@ -4,11 +4,91 @@ const offeringItems = [];
 const requestingItems = [];
 let currentTradeType = "offering"; // Set default to "offering"
 
-const ITEMS_PER_PAGE = 100;
+const ITEMS_PER_PAGE = 30;
 let currentPage = 1;
 let filteredItems = [];
 
-// Fetch all items on load
+// Function to save current trade state to localStorage
+function saveTradeState() {
+  const tradeState = {
+    offering: Object.values(offeringItems).filter(item => item),
+    requesting: Object.values(requestingItems).filter(item => item)
+  };
+  localStorage.setItem('savedTradeState', JSON.stringify(tradeState));
+  console.log('Trade state saved:', tradeState);
+}
+
+// Function to check if there's a saved trade
+function hasSavedTrade() {
+  const savedTrade = localStorage.getItem('savedTradeState');
+  if (!savedTrade) return false;
+  
+  try {
+    const { offering, requesting } = JSON.parse(savedTrade);
+    return offering.length > 0 || requesting.length > 0;
+  } catch (err) {
+    console.error('Error parsing saved trade:', err);
+    return false;
+  }
+}
+
+// Function to restore previous trade
+function restorePreviousTrade() {
+  try {
+    const savedTrade = localStorage.getItem('savedTradeState');
+    if (!savedTrade) return;
+
+    const { offering, requesting } = JSON.parse(savedTrade);
+    
+    // Clear current items
+    offeringItems.length = 0;
+    requestingItems.length = 0;
+    
+    // Restore items
+    offering.forEach(item => addItemToTrade(item, 'Offer'));
+    requesting.forEach(item => addItemToTrade(item, 'Request'));
+    
+    // Clear saved state
+    localStorage.removeItem('savedTradeState');
+    
+    // Show success message
+    notyf.success('Previous trade restored successfully');
+  } catch (err) {
+    console.error('Error restoring trade:', err);
+    notyf.error('Failed to restore previous trade');
+  }
+}
+
+// Function to start fresh trade
+function startFreshTrade() {
+  // Clear saved state
+  localStorage.removeItem('savedTradeState');
+  
+  // Clear current items
+  offeringItems.length = 0;
+  requestingItems.length = 0;
+  
+  // Reset UI
+  renderTradeItems('Offer');
+  renderTradeItems('Request');
+  
+  // Update preview with empty state instead of hiding it
+  const previewSection = document.getElementById('trade-preview');
+  if (previewSection) {
+    previewSection.style.display = 'block';
+    
+    // Reset preview items to empty state
+    renderPreviewItems('preview-offering-items', []);
+    renderPreviewItems('preview-requesting-items', []);
+    
+    // Update value differences to show zeros
+    const valueDifferencesContainer = document.getElementById('value-differences');
+    if (valueDifferencesContainer) {
+      valueDifferencesContainer.innerHTML = renderValueDifferences();
+    }
+  }
+}
+
 // Fetch all items on load
 async function loadItems() {
   try {
@@ -26,6 +106,13 @@ async function loadItems() {
     document.querySelectorAll(".available-items-toggle").forEach((button) => {
       button.dataset.active = (button.dataset.type === "offering").toString();
     });
+
+    // Check for saved trade after loading items
+    if (hasSavedTrade()) {
+      // Show restore modal
+      const restoreModal = new bootstrap.Modal(document.getElementById('restoreTradeModal'));
+      restoreModal.show();
+    }
 
     // Sort items initially by name-all-items
     const sortDropdown = document.getElementById("modal-value-sort-dropdown");
@@ -390,6 +477,9 @@ function addItemToTrade(item, tradeType) {
 
   // Automatically update preview
   updatePreview();
+
+  // Save trade state
+  saveTradeState();
 }
 
 function updatePreview() {
@@ -455,6 +545,7 @@ function quickAddItem(itemName, itemType, itemId, selectedVariant) {
         items[nextEmptyIndex] = item;
         renderTradeItems(selectedTradeType);
         updatePreview();
+        saveTradeState(); // Save state after adding item
       } else {
         notyf.error("No empty slots available");
       }
@@ -473,6 +564,7 @@ function quickAddItem(itemName, itemType, itemId, selectedVariant) {
     // Update UI
     renderTradeItems(currentType);
     updatePreview();
+    saveTradeState(); // Save state after adding item
   } else {
     // No placeholder selected, find first empty slot
     const items = currentTradeType === "offering" ? offeringItems : requestingItems;
@@ -482,6 +574,7 @@ function quickAddItem(itemName, itemType, itemId, selectedVariant) {
       items[emptyIndex] = item;
       renderTradeItems(currentTradeType === "offering" ? "Offer" : "Request");
       updatePreview();
+      saveTradeState(); // Save state after adding item
     } else {
       notyf.error(`No empty slots available in ${currentTradeType === "offering" ? "Offer" : "Request"}`);
     }
@@ -578,6 +671,9 @@ function removeItem(index, tradeType) {
 
   // Automatically update preview
   updatePreview();
+
+  // Save trade state
+  saveTradeState();
 }
 
 // Function to toggle available items display
