@@ -347,8 +347,8 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
 }
 
 @keyframes rainbow {
