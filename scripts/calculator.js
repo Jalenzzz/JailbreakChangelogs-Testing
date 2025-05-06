@@ -288,6 +288,7 @@ function renderPreviewItems(containerId, items) {
       const itemKey = item.is_sub ? item.id : `${item.name}-${item.type}`;
       const currentValueType = itemValuePreferences.get(itemKey);
       const hasBothValues = Boolean(item.cash_value) && Boolean(item.duped_value);
+      const hasDupedValue = Boolean(item.duped_value) && item.duped_value !== "N/A";
 
       // Determine what value to display, with mobile-specific formatting
       let valueDisplay;
@@ -295,22 +296,22 @@ function renderPreviewItems(containerId, items) {
         // If no preference and has both values, show both
         valueDisplay = `
           <div class="item-value">
-            <div>Cash: ${isMobile ? formatValueShorthand(item.cash_value || 0) : formatValue(item.cash_value || 0)}</div>
-            <div>Duped: ${isMobile ? formatValueShorthand(item.duped_value || 0) : formatValue(item.duped_value || 0)}</div>
+            <div style="color: #00c853">Cash: ${isMobile ? formatValueShorthand(item.cash_value || 0) : formatValue(item.cash_value || 0)}</div>
+            <div class="text-info">Duped: ${isMobile ? formatValueShorthand(item.duped_value || 0) : formatValue(item.duped_value || 0)}</div>
           </div>
         `;
       } else if (currentValueType === 'cash' || !currentValueType) {
         // If cash preference or no preference but only one value, show cash
         valueDisplay = `
           <div class="item-value">
-            ${isMobile ? formatValueShorthand(item.cash_value || 0) : formatValue(item.cash_value || 0)}
+            <div style="color: #00c853">Cash: ${isMobile ? formatValueShorthand(item.cash_value || 0) : formatValue(item.cash_value || 0)}</div>
           </div>
         `;
       } else {
         // If duped preference, show duped
         valueDisplay = `
           <div class="item-value">
-            ${isMobile ? formatValueShorthand(item.duped_value || 0) : formatValue(item.duped_value || 0)}
+            <div class="text-info">Duped: ${isMobile ? formatValueShorthand(item.duped_value || 0) : formatValue(item.duped_value || 0)}</div>
           </div>
         `;
       }
@@ -356,12 +357,13 @@ function renderPreviewItems(containerId, items) {
       </div>
       ${hasBothValues ? `
         <div class="value-type-toggle">
-          <button class="btn btn-sm ${currentValueType === 'cash' ? 'btn-success' : 'btn-outline-success'}"
+          <button class="btn btn-sm ${currentValueType === 'cash' ? 'btn-outline-success' : 'btn-success'}"
                   onclick="event.stopPropagation(); toggleItemValueType('${itemKey}', 'cash')">
             Cash
           </button>
-          <button class="btn btn-sm ${currentValueType === 'duped' ? 'btn-info' : 'btn-outline-info'}"
-                  onclick="event.stopPropagation(); toggleItemValueType('${itemKey}', 'duped')">
+          <button class="btn btn-sm ${currentValueType === 'duped' ? 'btn-outline-info' : 'btn-info'} ${!hasDupedValue ? 'disabled opacity-50' : ''}"
+                  onclick="event.stopPropagation(); ${hasDupedValue ? `toggleItemValueType('${itemKey}', 'duped')` : ''}"
+                  ${!hasDupedValue ? 'disabled' : ''}>
             Duped
           </button>
         </div>
@@ -1638,7 +1640,6 @@ function swapSides() {
 function clearTrade() {
   if (confirm('Are you sure you want to clear all items?')) {
     startFreshTrade();
-    notyf.success('Trade cleared successfully');
   }
 }
 

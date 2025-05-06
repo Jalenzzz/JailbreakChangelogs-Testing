@@ -521,6 +521,7 @@
 .trade-card .trade-card-info {
   padding: 0.5rem;
   flex-shrink: 0;
+  background-color: var(--bg-secondary);
 }
 
 .trade-card .item-name,
@@ -582,5 +583,15 @@
   
   .value-type-toggle {
     margin-top: 0.25rem;
+  }
+}
+
+.mirror-btn {
+  font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+  .mirror-btn {
+    font-size: 1rem;
   }
 }
