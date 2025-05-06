@@ -103,6 +103,11 @@
   flex-direction: column;
   gap: 0.5rem;
   max-width: 100%;
+  background: var(--bg-primary);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  height: 100%;
 }
 
 .trade-sides-wrapper .col-12 {
@@ -119,9 +124,19 @@
 #offering-list,
 #requesting-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(4, 1fr) !important;
   gap: 0.75rem;
   padding: 0 0.5rem;
+  margin: 0;
+}
+
+/* Preview items grid */
+.preview-items-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  margin: 0;
 }
 
 #offering-list .col-md-3,
@@ -145,11 +160,107 @@
   padding-bottom: 0.75rem;
 }
 
+/* Style requesting header */
+.trade-sides-wrapper .col-12:nth-child(2) h3 {
+  color: #2196f3; /* Blue for requesting */
+  border-bottom: 2px solid #2196f3;
+  padding-bottom: 0.75rem;
+}
 
+/* Trade Preview Container */
+.trade-preview {
+  background: var(--bg-primary);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  display: block !important;
+}
 
-.trade-sides-wrapper .text-center.mt-2 {
-  margin-top: 0.75rem !important;
-  padding-bottom: 0.25rem;
+.trade-preview h3 {
+  font-family: "Luckiest Guy", Arial, Helvetica, sans-serif;
+  color: var(--text-primary);
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--text-primary);
+  text-align: center;
+}
+
+/* Preview Side Containers */
+.preview-side-offering,
+.preview-side-requesting {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  width: 100%;
+  height: auto;
+  min-height: 150px;
+}
+
+/* Offering Side */
+.preview-side-offering {
+  border-left: 4px solid #00c853;
+  background: rgba(0, 200, 83, 0.1);
+}
+
+.preview-side-offering h4 {
+  color: #00c853;
+  border-bottom: 2px solid rgba(0, 200, 83, 0.3);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+/* Requesting Side */
+.preview-side-requesting {
+  border-left: 4px solid #2196f3;
+  background: rgba(33, 150, 243, 0.1);
+}
+
+.preview-side-requesting h4 {
+  color: #2196f3;
+  border-bottom: 2px solid rgba(33, 150, 243, 0.3);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+/* Responsive styles */
+@media (min-width: 1400px) {
+  #offering-list,
+  #requesting-list,
+  .preview-items-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}
+
+@media (max-width: 991.98px) {
+  .trade-sides-wrapper,
+  .trade-preview {
+    margin-bottom: 1.5rem;
+  }
+  
+  #offering-list,
+  #requesting-list,
+  .preview-items-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  #offering-list,
+  #requesting-list,
+  .preview-items-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.5rem;
+  }
 }
 
 /* Trade Action Buttons */
@@ -263,4 +374,16 @@
 
 .sub-item-year {
   font-weight: 500;
+}
+
+/* Ensure trade cards maintain aspect ratio */
+.trade-card {
+  aspect-ratio: 16/9;
+}
+
+.trade-card.empty-slot {
+  aspect-ratio: 16/9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

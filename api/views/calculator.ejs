@@ -251,16 +251,16 @@
       </div>
 
       <!-- Main Trading Section -->
-      <div class="container">
+      <div class="container-fluid px-4">
         <div class="row justify-content-center">
-          <div class="col-12 col-md-10 col-lg-8">
+          <!-- Trade Sides Wrapper -->
+          <div class="col-12 col-lg-7">
             <div class="row mt-2 trade-sides-wrapper">
               <div class="col-12 mb-3">
                 <h3 class="text-center mb-2">Offering</h3>
                 <div class="row" id="offering-list"></div>
                 <div class="text-center mt-2">
                   <button class="btn btn-outline-primary d-inline-flex align-items-center" onclick="mirrorItems('Offer')">
-                   
                     Mirror
                   </button>
                 </div>
@@ -271,7 +271,6 @@
                 <div class="row" id="requesting-list"></div>
                 <div class="text-center mt-2">
                   <button class="btn btn-outline-primary d-inline-flex align-items-center" onclick="mirrorItems('Request')">
-                   
                     Mirror
                   </button>
                 </div>
@@ -297,6 +296,23 @@
               </div>
             </div>
           </div>
+
+          <!-- Trade Preview Section -->
+          <div class="col-12 col-lg-5">
+            <div class="trade-preview mt-2" id="trade-preview" style="display: none">
+              <h3 class="text-center mb-4">Trade Preview</h3>
+              <div class="preview-side-offering mb-4">
+                <h4 class="text-center">Offering</h4>
+                <div id="preview-offering-items"></div>
+              </div>
+              <div class="preview-side-requesting mb-4">
+                <h4 class="text-center">Requesting</h4>
+                <div id="preview-requesting-items"></div>
+              </div>
+              <div id="value-differences"></div>
+              <div class="preview-actions mt-4 text-center"></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -304,31 +320,6 @@
       <div class="available-items mt-4" id="available-items-container">
         <div id="available-items-list">
           <!-- Available items will be rendered here -->
-        </div>
-      </div>
-
-      <!-- Trade Preview Section -->
-      <div class="container-fluid mt-4">
-        <div class="trade-preview" id="trade-preview" style="display: none">
-          <div class="container">
-            <h3 class="text-center mb-4">Trade Preview</h3>
-            <div class="row">
-              <div class="col-lg-6">
-                <div class="preview-side-offering">
-                  <h4 class="text-center">Offering</h4>
-                  <div id="preview-offering-items"></div>
-                </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="preview-side-requesting">
-                  <h4 class="text-center">Requesting</h4>
-                  <div id="preview-requesting-items"></div>
-                </div>
-              </div>
-            </div>
-            <div id="value-differences"></div>
-            <div class="preview-actions mt-4 text-center"></div>
-          </div>
         </div>
       </div>
 

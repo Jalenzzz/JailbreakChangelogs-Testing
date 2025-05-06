@@ -16,6 +16,13 @@ function saveTradeState() {
   };
   localStorage.setItem('savedTradeState', JSON.stringify(tradeState));
   console.log('Trade state saved:', tradeState);
+  
+  // Show preview if there are any items
+  const hasItems = tradeState.offering.length > 0 || tradeState.requesting.length > 0;
+  const previewSection = document.getElementById('trade-preview');
+  if (previewSection) {
+    previewSection.style.display = hasItems ? 'block' : 'none';
+  }
 }
 
 // Function to check if there's a saved trade
@@ -53,6 +60,9 @@ function restorePreviousTrade() {
     
     // Show success message
     notyf.success('Previous trade restored successfully');
+    
+    // Update preview
+    updatePreview();
   } catch (err) {
     console.error('Error restoring trade:', err);
     notyf.error('Failed to restore previous trade');
@@ -72,21 +82,21 @@ function startFreshTrade() {
   renderTradeItems('Offer');
   renderTradeItems('Request');
   
-  // Update preview with empty state instead of hiding it
+  // Reset preview with empty state but keep it visible
   const previewSection = document.getElementById('trade-preview');
   if (previewSection) {
-    previewSection.style.display = 'block';
-    
-    // Reset preview items to empty state
+    // Update preview items to show empty state
     renderPreviewItems('preview-offering-items', []);
     renderPreviewItems('preview-requesting-items', []);
-    
     // Update value differences to show zeros
     const valueDifferencesContainer = document.getElementById('value-differences');
     if (valueDifferencesContainer) {
       valueDifferencesContainer.innerHTML = renderValueDifferences();
     }
   }
+  
+  // Show success message
+  notyf.success('Trade cleared successfully');
 }
 
 // Fetch all items on load
@@ -468,7 +478,11 @@ function addItemToTrade(item, tradeType) {
   // Always render trade items first
   renderTradeItems(tradeType);
 
-  // Automatically update preview
+  // Show and update preview
+  const previewSection = document.getElementById('trade-preview');
+  if (previewSection) {
+    previewSection.style.display = 'block';
+  }
   updatePreview();
 
   // Save trade state
@@ -662,8 +676,20 @@ function removeItem(index, tradeType) {
 
   renderTradeItems(tradeType);
 
-  // Automatically update preview
-  updatePreview();
+  // Check if there are any items left
+  const hasItems = Object.values(offeringItems).some(item => item) || 
+                  Object.values(requestingItems).some(item => item);
+  
+  // Show/hide preview based on whether there are items
+  const previewSection = document.getElementById('trade-preview');
+  if (previewSection) {
+    previewSection.style.display = hasItems ? 'block' : 'none';
+  }
+
+  // Update preview if visible
+  if (hasItems) {
+    updatePreview();
+  }
 
   // Save trade state
   saveTradeState();
@@ -1082,24 +1108,19 @@ let selectedTradeType = null;
 // Function to create empty placeholder cards
 function createPlaceholderCard(index, tradeType) {
   return `
-    <div class="col-md-3 col-6 mb-3">
-      <div class="trade-card-wrapper">
-        <div class="trade-card empty-slot" 
-             onclick="handlePlaceholderClick(${index}, '${tradeType}')">
-          <div class="empty-slot-content">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-	<rect width="24" height="24" fill="none" />
-	<path fill="currentColor" d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18A10 10 0 0 0 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2m1 5h-2v4H7v2h4v4h2v-4h4v-2h-4z" />
-</svg>
-            <span>Empty Slot</span>
-          </div>
-        </div>
+    <div class="trade-card empty-slot" onclick="handlePlaceholderClick(${index}, '${tradeType}')">
+      <div class="empty-slot-content">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <rect width="24" height="24" fill="none" />
+          <path fill="currentColor" d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18A10 10 0 0 0 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2m1 5h-2v4H7v2h4v4h2v-4h4v-2h-4z" />
+        </svg>
+        <span>Empty Slot</span>
       </div>
     </div>
   `;
 }
 
-// Update handlePlaceholderClick function
+// Function to handle placeholder click
 function handlePlaceholderClick(index, tradeType) {
   // Remove selected state from all slots
   document.querySelectorAll(".trade-card.empty-slot").forEach((slot) => {
