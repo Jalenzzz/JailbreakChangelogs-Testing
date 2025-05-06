@@ -290,13 +290,6 @@ function renderPreviewItems(containerId, items) {
             : ""
         }
       </div>
-      <div class="item-details">
-        <div class="demand-indicator demand-${(
-          item.demand || "0"
-        ).toLowerCase()}">
-          Demand: ${item.demand || "N/A"}
-        </div>
-      </div>
     </div>
   `
     )
