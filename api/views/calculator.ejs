@@ -249,15 +249,52 @@
       </div>
 
       <!-- Main Trading Section -->
-      <div class="row mt-3 trade-sides-wrapper">
-        <div class="col-lg-6">
-          <h3 class="text-center">Offering</h3>
-          <div class="row" id="offering-list"></div>
-        </div>
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-10 col-lg-8">
+            <div class="row mt-2 trade-sides-wrapper">
+              <div class="col-12 mb-3">
+                <h3 class="text-center mb-2">Offering</h3>
+                <div class="row" id="offering-list"></div>
+                <div class="text-center mt-2">
+                  <button class="btn btn-outline-primary d-inline-flex align-items-center" onclick="mirrorItems('Offer')">
+                   
+                    Mirror
+                  </button>
+                </div>
+              </div>
 
-        <div class="col-lg-6">
-          <h3 class="text-center">Requesting</h3>
-          <div class="row" id="requesting-list"></div>
+              <div class="col-12 mb-3">
+                <h3 class="text-center mb-2">Requesting</h3>
+                <div class="row" id="requesting-list"></div>
+                <div class="text-center mt-2">
+                  <button class="btn btn-outline-primary d-inline-flex align-items-center" onclick="mirrorItems('Request')">
+                   
+                    Mirror
+                  </button>
+                </div>
+              </div>
+
+              <div class="col-12 text-center mb-3">
+                <div class="btn-group">
+                  <button class="btn btn-outline-primary btn-sm d-inline-flex align-items-center" onclick="swapSides()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" class="me-1">
+                      <rect width="24" height="24" fill="none"/>
+                      <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16 13l3 3m0 0l-3 3m3-3H5m3-5L5 8m0 0l3-3M5 8h14"/>
+                    </svg>
+                    Swap Sides
+                  </button>
+                  <button class="btn btn-outline-danger btn-sm d-inline-flex align-items-center" onclick="clearTrade()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" class="me-1">
+                      <rect width="24" height="24" fill="none"/>
+                      <path fill="currentColor" d="M19 4h-3.5l-1-1h-5l-1 1H5v2h14M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6z"/>
+                    </svg>
+                    Clear All
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

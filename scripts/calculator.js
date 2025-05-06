@@ -1494,3 +1494,77 @@ function updateCardValues(card, itemData) {
     demandElement.textContent = itemData.demand || "N/A";
   }
 }
+
+// Function to swap offering and requesting sides
+function swapSides() {
+  // Check if both sides are empty
+  const hasOfferingItems = offeringItems.some(item => item);
+  const hasRequestingItems = requestingItems.some(item => item);
+  
+  if (!hasOfferingItems && !hasRequestingItems) {
+    notyf.error('Nothing to swap - both sides are empty');
+    return;
+  }
+
+  // Store current items
+  const tempOffering = [...offeringItems];
+  const tempRequesting = [...requestingItems];
+  
+  // Clear current arrays
+  offeringItems.length = 0;
+  requestingItems.length = 0;
+  
+  // Swap items
+  tempRequesting.forEach(item => {
+    if (item) offeringItems.push(item);
+  });
+  tempOffering.forEach(item => {
+    if (item) requestingItems.push(item);
+  });
+  
+  // Update UI
+  renderTradeItems('Offer');
+  renderTradeItems('Request');
+  updatePreview();
+  saveTradeState();
+  
+  // Show success message
+  notyf.success('Trade sides swapped successfully');
+}
+
+// Function to clear all items (reuse startFreshTrade but with confirmation)
+function clearTrade() {
+  if (confirm('Are you sure you want to clear all items?')) {
+    startFreshTrade();
+    notyf.success('Trade cleared successfully');
+  }
+}
+
+// Function to mirror items from one side to the other
+function mirrorItems(targetSide) {
+  // Determine source and target arrays
+  const sourceSide = targetSide === 'Offer' ? requestingItems : offeringItems;
+  const targetArray = targetSide === 'Offer' ? offeringItems : requestingItems;
+  
+  // Check if source side has items
+  if (!sourceSide.some(item => item)) {
+    notyf.error(`No items to mirror from ${targetSide === 'Offer' ? 'requesting' : 'offering'} side`);
+    return;
+  }
+  
+  // Clear target array
+  targetArray.length = 0;
+  
+  // Copy items from source to target
+  sourceSide.forEach(item => {
+    if (item) targetArray.push({...item});
+  });
+  
+  // Update UI
+  renderTradeItems(targetSide);
+  updatePreview();
+  saveTradeState();
+  
+  // Show success message
+  notyf.success(`Items mirrored to ${targetSide.toLowerCase()}ing side`);
+}

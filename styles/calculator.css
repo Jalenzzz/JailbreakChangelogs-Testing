@@ -96,3 +96,90 @@
   background-color: var(--bs-primary-dark);
   border-color: var(--bs-primary-dark);
 }
+
+/* Trade sides layout */
+.trade-sides-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 100%;
+}
+
+.trade-sides-wrapper .col-12 {
+  display: flex;
+  flex-direction: column;
+}
+
+.trade-sides-wrapper .row {
+  flex: 1;
+  margin: 0;
+}
+
+/* Adjust grid for trade items */
+#offering-list,
+#requesting-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.75rem;
+  padding: 0 0.5rem;
+}
+
+#offering-list .col-md-3,
+#requesting-list .col-md-3 {
+  width: 100%;
+  padding: 0;
+}
+
+/* Style the headers */
+.trade-sides-wrapper h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-family: "Luckiest Guy", Arial, Helvetica, sans-serif;
+  letter-spacing: 0.5px;
+}
+
+/* Style offering header */
+.trade-sides-wrapper .col-12:first-child h3 {
+  color: #00c853; /* Green for offering */
+  border-bottom: 2px solid #00c853;
+  padding-bottom: 0.75rem;
+}
+
+
+
+.trade-sides-wrapper .text-center.mt-2 {
+  margin-top: 0.75rem !important;
+  padding-bottom: 0.25rem;
+}
+
+/* Trade Action Buttons */
+.trade-sides-wrapper .btn-group {
+  gap: 0.25rem;
+  display: inline-flex;
+}
+
+.trade-sides-wrapper .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.trade-sides-wrapper .btn svg {
+  flex-shrink: 0;
+}
+
+.trade-sides-wrapper .btn-outline-primary:hover svg {
+  color: #fff;
+}
+
+.trade-sides-wrapper .btn-outline-danger:hover svg {
+  color: #fff;
+}
+
+.trade-sides-wrapper .btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
