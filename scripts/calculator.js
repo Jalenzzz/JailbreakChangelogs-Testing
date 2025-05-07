@@ -15,7 +15,6 @@ function saveTradeState() {
     requesting: Object.values(requestingItems).filter(item => item)
   };
   localStorage.setItem('savedTradeState', JSON.stringify(tradeState));
-  console.log('Trade state saved:', tradeState);
   
   // Show preview if there are any items
   const hasItems = tradeState.offering.length > 0 || tradeState.requesting.length > 0;
