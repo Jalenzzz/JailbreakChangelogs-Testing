@@ -547,6 +547,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let categoryFilteredItems = [...allItems];
     if (sortValue !== "name-all-items") {
       const parts = sortValue.split("-");
+      const sortType = parts[0]; // Extract sort type from first part
       const itemType = parts.slice(1).join("-");
       categoryFilteredItems = allItems.filter((item) => {
         if (itemType === "limited-items") {
@@ -1285,24 +1286,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     const lastUpdatedElement = document.getElementById("values-last-updated");
     if (!lastUpdatedElement || !timestamp) return;
 
-    const now = Date.now();
-    const diff = now - (timestamp * 1000); // Convert to milliseconds
-    const minutes = Math.floor(diff / 60000);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
+    // Convert timestamp to milliseconds if it's in seconds
+    const timestampInMs = timestamp.toString().length <= 10 ? timestamp * 1000 : timestamp;
+    
+    // Create a Date object
+    const date = new Date(timestampInMs);
+    
+    // Format the date as "Month Day, Year at HH:MM AM/PM"
+    const formattedDate = date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true
+    });
 
-    let timeAgoText;
-    if (days > 0) {
-        timeAgoText = `${days} ${days === 1 ? 'day' : 'days'} ago`;
-    } else if (hours > 0) {
-        timeAgoText = `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`;
-    } else if (minutes > 0) {
-        timeAgoText = `${minutes} ${minutes === 1 ? 'minute' : 'minutes'} ago`;
-    } else {
-        timeAgoText = 'Just now';
-    }
-
-    lastUpdatedElement.textContent = timeAgoText;
+    lastUpdatedElement.textContent = formattedDate;
   }
 
   function updateTotalItemsCount() {
@@ -1482,16 +1482,40 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Check if item has sub-items
     const hasSubItems = item.children && item.children.length > 0;
     const currentYear = new Date().getFullYear();
+
+    // Find the most recent variant with both cash and duped values
+    let defaultVariant = currentYear.toString();
+    let defaultVariantId = item.id;
+    if (hasSubItems) {
+      // Sort children by year in descending order
+      const sortedChildren = [...item.children].sort((a, b) => 
+        parseInt(b.sub_name) - parseInt(a.sub_name)
+      );
+      
+      // Find the first variant that has both cash and duped values
+      const variantWithValues = sortedChildren.find(child => 
+        child.data.cash_value && 
+        child.data.cash_value !== "N/A" && 
+        child.data.duped_value && 
+        child.data.duped_value !== "N/A"
+      );
+
+      if (variantWithValues) {
+        defaultVariant = variantWithValues.sub_name;
+        defaultVariantId = variantWithValues.id;
+      }
+    }
+
     const subItemsDropdown = hasSubItems ? `
       <div class="sub-items-dropdown position-absolute top-0 end-0">
         <div class="dropdown">
-          <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" data-selected-variant="${currentYear}">
-            ${currentYear}
+          <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" data-selected-variant="${defaultVariant}">
+            ${defaultVariant}
           </button>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item active" href="#" data-item-id="${item.id}" data-variant="${currentYear}">${currentYear}</a></li>
+            <li><a class="dropdown-item ${defaultVariant === currentYear.toString() ? 'active' : ''}" href="#" data-item-id="${item.id}" data-variant="${currentYear}">${currentYear}</a></li>
             ${item.children.map(child => `
-              <li><a class="dropdown-item" href="#" data-item-id="${child.id}" data-variant="${child.sub_name}">${child.sub_name}</a></li>
+              <li><a class="dropdown-item ${child.sub_name === defaultVariant ? 'active' : ''}" href="#" data-item-id="${child.id}" data-variant="${child.sub_name}">${child.sub_name}</a></li>
             `).join('')}
           </ul>
         </div>
@@ -1512,7 +1536,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               <a href="/item/${item.type.toLowerCase()}/${encodeURIComponent(item.name.replace(/\s+/g, "-"))}" 
                  class="text-decoration-none item-name-link" 
                  style="color: var(--text-primary);"
-                 data-variant="${currentYear}">
+                 data-variant="${defaultVariant}">
                 ${item.name}
               </a>
             </h5>
@@ -1609,6 +1633,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       const dropdownButton = dropdown.querySelector('.dropdown-toggle');
       const dropdownItems = dropdown.querySelectorAll('.dropdown-item');
       const itemLink = cardDiv.querySelector('.item-name-link');
+      
+      // Update card values with default variant data if not current year
+      if (defaultVariant !== currentYear.toString()) {
+        const defaultVariantData = item.children.find(child => child.sub_name === defaultVariant);
+        if (defaultVariantData) {
+          const variantData = {
+            ...defaultVariantData.data,
+            is_favorite: defaultVariantData.is_favorite
+          };
+          updateCardValues(cardDiv, variantData);
+        }
+      }
       
       dropdownItems.forEach(dropdownItem => {
         dropdownItem.addEventListener('click', (e) => {
@@ -2139,3 +2175,36 @@ document.addEventListener("visibilitychange", () => {
     });
   }
 });
+
+async function getRandomItem(event) {
+  event.preventDefault();
+  
+  // Idk whether I should show the loading overlay here or not
+  // showLoadingOverlay();
+  
+  try {
+    // Fetch random item
+    const response = await fetch('https://api.jailbreakchangelogs.xyz/items/random');
+    const item = await response.json();
+    
+    if (!item) {
+      throw new Error('No item returned');
+    }
+    
+    // Construct URL for the item
+    const itemUrl = `/item/${item.type.toLowerCase()}/${encodeURIComponent(item.name)}`;
+    
+    // Show success notification
+    notyf.success(`Found ${item.name} ${item.type}! Redirecting...`);
+    
+    // Wait 2 seconds before redirecting
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Redirect to the item page
+    window.location.href = itemUrl;
+    
+  } catch (error) {
+    console.error('Error fetching random item:', error);
+    notyf.error('Failed to get random item. Please try again.');
+  }
+}

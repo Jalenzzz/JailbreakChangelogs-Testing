@@ -406,7 +406,7 @@ app.get("/trading", async (req, res) => {
       },
     });
 
-    if (!tradesResponse.ok) {
+    if (!tradesResponse.ok && tradesResponse.status !== 404) {
       return res.status(503).render("error", {
         title: "503 - Service Unavailable",
         message: "Our trade ads service is temporarily unavailable. Please try again later.",
@@ -847,7 +847,7 @@ app.get("/users/:user/followers", async (req, res) => {
     if (token) {
       try {
         const userDataResponse = await fetch(
-          `https://api.jailbreakchangelogs.xyz/users/get/token?token=${token}`,
+          `https://api.jailbreakchangelogs.xyz/users/get/token?token=${token}&nocache=true`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -964,7 +964,7 @@ app.get("/users/:user/following", async (req, res) => {
     if (token) {
       try {
         const userDataResponse = await fetch(
-          `https://api.jailbreakchangelogs.xyz/users/get/token?token=${token}`,
+          `https://api.jailbreakchangelogs.xyz/users/get/token?token=${token}&nocache=true`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -1166,7 +1166,7 @@ app.get("/users/:user", async (req, res) => {
     if (token) {
       try {
         const tokenResponse = await fetch(
-          `https://api.jailbreakchangelogs.xyz/users/get/token?token=${token}`,
+          `https://api.jailbreakchangelogs.xyz/users/get/token?token=${token}&nocache=true`,
           {
             headers: {
               "Content-Type": "application/json",

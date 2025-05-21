@@ -710,7 +710,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       return `
         <div class="media-container position-relative ${containerClass}" style="aspect-ratio: 16/9;">
           <video class="${imageClass || "card-img-top"}" 
-                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;" 
+                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;" 
                  playsinline 
                  muted 
                  autoplay
@@ -2364,7 +2364,7 @@ function handleUrlParams() {
 // Add getFavoriteStarHtml helper function
 function getFavoriteStarHtml(isFavorited) {
   return `
-    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 512 512"
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512"
          data-bs-toggle="tooltip" 
          data-bs-placement="top" 
          title="${isFavorited ? 'Unfavorite Item' : 'Favorite Item'}">

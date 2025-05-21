@@ -63,49 +63,49 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   document
-    .querySelector("#latestChangelogBtn, #latestChangelogMobileBtn")
-    .addEventListener("click", function () {
-      const btn = this;
-
-      // Check if button is already disabled
-      if (btn.disabled) {
-        return;
-      }
-
-      debounceLatestChangelog(() => {
-        if (changelogsData && changelogsData.length > 0) {
-          const latestChangelog = changelogsData[0];
-          const currentChangelogId = parseInt(
-            window.location.pathname.split("/").pop()
-          );
-
-          // Only proceed if we're not already on the latest changelog
-          if (currentChangelogId !== latestChangelog.id) {
-            const newUrl = `/changelogs/${latestChangelog.id}`;
-            history.pushState({}, "", newUrl);
-            displayChangelog(latestChangelog);
-            updateChangelogBreadcrumb(latestChangelog.id);
-
-            if (window.commentsManagerInstance) {
-              window.commentsManagerInstance.clearComments();
-              window.commentsManagerInstance.type = "changelog";
-              window.commentsManagerInstance.itemId = latestChangelog.id;
-              window.commentsManagerInstance.loadComments();
-            }
-
-            changelogToast("Showing latest changelog");
-          }
+    .querySelectorAll("#latestChangelogBtn, #latestChangelogMobileBtn")
+    .forEach(btn => {
+      btn.addEventListener("click", function () {
+        // Check if button is already disabled
+        if (this.disabled) {
+          return;
         }
-      });
-      // Add visual feedback by disabling the button temporarily
-      btn.disabled = true;
-      btn.classList.add("disabled");
 
-      // Re-enable the button after the delay
-      setTimeout(() => {
-        btn.disabled = false;
-        btn.classList.remove("disabled");
-      }, 4700);
+        debounceLatestChangelog(() => {
+          if (changelogsData && changelogsData.length > 0) {
+            const latestChangelog = changelogsData[0];
+            const currentChangelogId = parseInt(
+              window.location.pathname.split("/").pop()
+            );
+
+            // Only proceed if we're not already on the latest changelog
+            if (currentChangelogId !== latestChangelog.id) {
+              const newUrl = `/changelogs/${latestChangelog.id}`;
+              history.pushState({}, "", newUrl);
+              displayChangelog(latestChangelog);
+              updateChangelogBreadcrumb(latestChangelog.id);
+
+              if (window.commentsManagerInstance) {
+                window.commentsManagerInstance.clearComments();
+                window.commentsManagerInstance.type = "changelog";
+                window.commentsManagerInstance.itemId = latestChangelog.id;
+                window.commentsManagerInstance.loadComments();
+              }
+
+              changelogToast("Showing latest changelog");
+            }
+          }
+        });
+        // Add visual feedback by disabling the button temporarily
+        this.disabled = true;
+        this.classList.add("disabled");
+
+        // Re-enable the button after the delay
+        setTimeout(() => {
+          this.disabled = false;
+          this.classList.remove("disabled");
+        }, 4700);
+      });
     });
 
   // Function to show the loading overlay
@@ -1232,11 +1232,11 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Click event for changelog dropdown items
-  // In changelogs.js - Update the dropdown click handler
   document.addEventListener("click", function (e) {
-    if (e.target.classList.contains("changelog-dropdown-item")) {
+    const dropdownItem = e.target.closest(".changelog-dropdown-item");
+    if (dropdownItem) {
       e.preventDefault();
-      const changelogId = e.target.dataset.changelogId;
+      const changelogId = dropdownItem.dataset.changelogId;
       const selectedChangelog = changelogsData.find(
         (cl) => cl.id == changelogId
       );
@@ -1246,7 +1246,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const newUrl = `/changelogs/${changelogId}`;
         history.pushState({}, "", newUrl);
 
-        // Display the changelog
+        // Display the changelog and update breadcrumb
         displayChangelog(selectedChangelog);
         updateChangelogBreadcrumb(changelogId);
 
@@ -1256,11 +1256,14 @@ document.addEventListener("DOMContentLoaded", function () {
           window.commentsManagerInstance.type = "changelog";
           window.commentsManagerInstance.itemId = changelogId;
           window.commentsManagerInstance.loadComments();
+        } else {
+          window.commentsManagerInstance = new CommentsManager("changelog", changelogId);
+          window.commentsManagerInstance.loadComments();
         }
 
         // Close the dropdown
         const dropdown = bootstrap.Dropdown.getInstance(
-          e.target.closest(".dropdown-menu").previousElementSibling
+          dropdownItem.closest(".dropdown-menu").previousElementSibling
         );
         if (dropdown) {
           dropdown.hide();
