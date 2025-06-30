@@ -174,7 +174,7 @@ export default async function RootLayout({
 
             <footer className="bg-[#212A31] py-8">
               <div className="container mx-auto px-4">
-                <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+                <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                   {/* Follow Us */}
                   <div className="space-y-4">
                     <h3 className="mb-4 text-lg font-semibold text-muted">
@@ -371,7 +371,7 @@ export default async function RootLayout({
                           href="https://github.com/v3kmmw"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-blue-300 hover:text-blue-400 hover:underline"
+                          className="text-blue-400 hover:text-blue-300 hover:underline"
                         >
                           Jakobiis
                         </a>{" "}
@@ -421,12 +421,12 @@ export default async function RootLayout({
                 </div>
 
                 <div className="mt-12 border-t border-[#2E3944] pt-8">
-                  <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+                  <div className="flex flex-col items-start lg:items-center justify-between gap-4 lg:flex-row">
                     <p className="text-muted">
                       &copy; {new Date().getFullYear()} Jailbreak Changelogs. All
                       rights reserved.
                     </p>
-                    <div className="flex gap-4">
+                    <div className="flex flex-col md:flex-row gap-4">
                       <Link
                         href="/privacy"
                         className="flex items-center gap-2 text-muted hover:text-[#FFFFFF]"

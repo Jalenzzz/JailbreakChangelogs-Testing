@@ -6,7 +6,7 @@ import React from "react";
 import { ThemeProvider, Skeleton, Pagination, Button } from '@mui/material';
 import { darkTheme } from '@/theme/darkTheme';
 import ValuesChangelogHeader from '@/components/Values/ValuesChangelogHeader';
-import { TEST_API_URL } from '@/services/api';
+import { PROD_API_URL } from '@/services/api';
 import Link from 'next/link';
 import { formatMessageDate } from '@/utils/timestamp';
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/24/outline';
@@ -63,7 +63,7 @@ export default function ValuesChangelogPage() {
   useEffect(() => {
     const fetchChangelogs = async () => {
       try {
-        const response = await fetch(`${TEST_API_URL}/items/changelogs/list`);
+        const response = await fetch(`${PROD_API_URL}/items/changelogs/list`);
         if (!response.ok) {
           throw new Error('Failed to fetch changelogs');
         }
@@ -105,6 +105,10 @@ export default function ValuesChangelogPage() {
         <div className="container mx-auto mb-8 px-4 sm:px-6">
           <Breadcrumb />
           <ValuesChangelogHeader />
+          
+          {/* H1 heading for SEO */}
+          <h1 className="sr-only">Roblox Jailbreak Values Changelogs & History</h1>
+          
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[...Array(10)].map((_, i) => (

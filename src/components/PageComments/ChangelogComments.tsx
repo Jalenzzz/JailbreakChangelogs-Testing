@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Box, CircularProgress, Typography, TextField, Button, IconButton, Pagination, Menu, MenuItem, Skeleton, Tooltip } from '@mui/material';
-import { PROD_API_URL, TEST_API_URL } from '@/services/api';
+import { PROD_API_URL } from '@/services/api';
 import { formatRelativeDate } from '@/utils/timestamp';
 import { UserAvatar } from '@/utils/avatar';
 import { PencilIcon, TrashIcon, ArrowUpIcon, ArrowDownIcon, EllipsisHorizontalIcon, ChatBubbleLeftIcon, FlagIcon } from '@heroicons/react/24/outline';
@@ -27,12 +27,12 @@ const COMMENT_CHAR_LIMITS = {
   0: 200,  // Free tier
   1: 400,  // Supporter tier 1
   2: 800,  // Supporter tier 2
-  3: '∞' // Supporter tier 3 (unlimited)
+  3: 2000 // Supporter tier 3 (2000 characters)
 } as const;
 
 const getCharLimit = (tier: keyof typeof COMMENT_CHAR_LIMITS): number => {
   const limit = COMMENT_CHAR_LIMITS[tier];
-  return typeof limit === 'number' ? limit : Infinity;
+  return limit;
 };
 
 // Add function to check if comment is within editing window (1 hour)
@@ -125,6 +125,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
   const [reportReason, setReportReason] = useState('');
   const [reportingCommentId, setReportingCommentId] = useState<number | null>(null);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
 
   // Supporter modal hook
   const { modalState, closeModal, checkCommentLength } = useSupporterModal();
@@ -181,7 +182,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
     try {
       setLoadingUserData(prev => ({ ...prev, [userId]: true }));
       // Fetch user data
-      const response = await fetch(`${TEST_API_URL}/users/get?id=${userId}&nocache=true`);
+      const response = await fetch(`${PROD_API_URL}/users/get?id=${userId}&nocache=true`);
       if (!response.ok) throw new Error('Failed to fetch user data');
       const data = await response.json();
       setUserData(prev => ({ ...prev, [userId]: data }));
@@ -254,12 +255,18 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
 
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isLoggedIn || !newComment.trim()) return;
+    if (!isLoggedIn || !newComment.trim() || isSubmittingComment) return;
 
     // Check if comment length exceeds user's tier limit
     if (!checkCommentLength(newComment, currentUserPremiumType)) {
-      return; // Modal will be shown by the hook
+      // If user is tier 3 and comment is too long, show a toast error
+      if (currentUserPremiumType >= 3 && newComment.length > 2000) {
+        toast.error('Comment is too long. Maximum length is 2000 characters.');
+      }
+      return; // Modal will be shown by the hook for lower tiers
     }
+
+    setIsSubmittingComment(true);
 
     try {
       const token = getToken();
@@ -282,6 +289,21 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
         })
       });
 
+      if (response.status === 429) {
+        toast.error('🚫 Slow down! You\'re posting too fast. Take a breather and try again in a moment.', {
+          duration: 5000,
+          style: {
+            background: '#1a1a1a',
+            color: '#fff',
+            border: '1px solid #ff6b6b',
+            borderRadius: '8px',
+            fontSize: '14px',
+            fontWeight: '500'
+          }
+        });
+        return;
+      }
+
       if (!response.ok) {
         throw new Error('Failed to post comment');
       }
@@ -295,6 +317,8 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
       fetchComments();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to post comment');
+    } finally {
+      setIsSubmittingComment(false);
     }
   };
 
@@ -303,7 +327,11 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
 
     // Check if edit content length exceeds user's tier limit
     if (!checkCommentLength(editContent, currentUserPremiumType)) {
-      return; // Modal will be shown by the hook
+      // If user is tier 3 and comment is too long, show a toast error
+      if (currentUserPremiumType >= 3 && editContent.length > 2000) {
+        toast.error('Comment is too long. Maximum length is 2000 characters.');
+      }
+      return; // Modal will be shown by the hook for lower tiers
     }
 
     try {
@@ -462,7 +490,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
         return;
       }
 
-      const response = await fetch(`${TEST_API_URL}/comments/report`, {
+      const response = await fetch(`${PROD_API_URL}/comments/report`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -635,8 +663,8 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                 type="submit"
                 variant="contained"
                 size="small"
-                disabled={isLoggedIn && !newComment.trim()}
-                startIcon={isLoggedIn ? <BiSolidSend className="h-4 w-4" /> : <FaSignInAlt className="h-4 w-4" />}
+                disabled={isLoggedIn && (!newComment.trim() || isSubmittingComment)}
+                startIcon={isLoggedIn ? (isSubmittingComment ? <CircularProgress size={16} sx={{ color: '#ffffff' }} /> : <BiSolidSend className="h-4 w-4" />) : <FaSignInAlt className="h-4 w-4" />}
                 onClick={!isLoggedIn ? (e) => {
                   e.preventDefault();
                   setLoginModalOpen(true);
@@ -654,7 +682,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                   },
                 }}
               >
-                {isLoggedIn ? 'Post Comment' : 'Login to Comment'}
+                {isLoggedIn ? (isSubmittingComment ? 'Posting...' : 'Post Comment') : 'Login to Comment'}
               </Button>
             </div>
             {isLoggedIn && (
@@ -803,14 +831,12 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                               size="small"
                               onClick={(e) => handleMenuOpen(e, comment.id)}
                               sx={{ 
-                                color: '#748D92',
+                                color: '#ffffff',
                                 padding: '8px',
                                 borderRadius: '8px',
                                 transition: 'all 0.2s ease-in-out',
                                 '&:hover': {
                                   backgroundColor: 'rgba(88, 101, 242, 0.15)',
-                                  color: '#5865F2',
-                                  transform: 'scale(1.05)',
                                 }
                               }}
                               className={`${currentUserId === comment.user_id ? 'hidden' : 'opacity-0 group-hover:opacity-100'} ${Boolean(menuAnchorEl) && selectedCommentId === comment.id ? 'opacity-100' : ''} transition-all duration-200`}

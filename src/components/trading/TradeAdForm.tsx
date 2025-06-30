@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { PROD_API_URL, TEST_API_URL } from '@/services/api';
+import { PROD_API_URL } from '@/services/api';
 import { getToken } from '@/utils/auth';
 import { TradeItem, TradeAd } from '@/types/trading';
 import { UserData } from '@/types/auth';
@@ -61,15 +61,13 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({ onSuccess, editMode = 
     }
   };
 
-  const formatTotalValue = (total: number): string => {
-    if (total === 0) return '0';
-    if (total >= 1_000_000) {
-      return `${(total / 1_000_000).toFixed(1)}m`;
-    } else if (total >= 1_000) {
-      return `${(total / 1_000).toFixed(1)}k`;
-    } else {
-      return String(total);
-    }
+  const formatTotalValue = (value: string): string => {
+    if (!value || value === 'N/A') return '0';
+    
+    const numValue = parseFloat(value);
+    if (isNaN(numValue)) return '0';
+    
+    return numValue.toLocaleString();
   };
 
   const calculateTotals = (items: TradeItem[]) => {
@@ -82,8 +80,8 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({ onSuccess, editMode = 
     });
 
     return {
-      cashValue: formatTotalValue(totalCash),
-      dupedValue: formatTotalValue(totalDuped),
+      cashValue: formatTotalValue(String(totalCash)),
+      dupedValue: formatTotalValue(String(totalDuped)),
     };
   };
 
@@ -102,7 +100,7 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({ onSuccess, editMode = 
         const token = getToken();
         if (!token) return;
 
-        const response = await fetch(`${TEST_API_URL}/users/get/token?token=${token}&nocache=true`);
+        const response = await fetch(`${PROD_API_URL}/users/get/token?token=${token}&nocache=true`);
         if (response.ok) {
           const userData = await response.json();
           setUserData(userData);
