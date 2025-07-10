@@ -6,10 +6,11 @@ import { getToken } from '@/utils/auth';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
 import AddServerModal from './AddServerModal';
-import { Skeleton, Tooltip } from '@mui/material';
+import { Skeleton, Tooltip, Pagination } from '@mui/material';
 import { UserDetailsTooltip } from '@/components/Users/UserDetailsTooltip';
 import type { UserData } from '@/types/auth';
 import { CustomConfirmationModal } from '@/components/Modals/CustomConfirmationModal';
+import { UserAvatar } from '@/utils/avatar';
 
 interface Server {
   id: number;
@@ -17,6 +18,7 @@ interface Server {
   owner: string;
   rules: string;
   expires: string;
+  created_at: string;
 }
 
 const ServerList: React.FC = () => {
@@ -29,6 +31,14 @@ const ServerList: React.FC = () => {
   const [editingServer, setEditingServer] = React.useState<Server | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
   const [serverToDelete, setServerToDelete] = React.useState<Server | null>(null);
+  const [page, setPage] = React.useState(1);
+  const itemsPerPage = 9;
+
+  // Calculate pagination values
+  const totalPages = Math.ceil(servers.length / itemsPerPage);
+  const startIndex = (page - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentServers = servers.slice(startIndex, endIndex);
 
   React.useEffect(() => {
     const fetchServersAndUser = async () => {
@@ -64,29 +74,23 @@ const ServerList: React.FC = () => {
 
         // Fetch user data for each server owner
         const uniqueOwnerIds = [...new Set(data.map((server: Server) => server.owner))];
-        const userDataPromises = uniqueOwnerIds.map(async (ownerId) => {
+        
+        // Use batch endpoint to fetch all user data at once
+        if (uniqueOwnerIds.length > 0) {
           try {
-            const response = await fetch(`${PROD_API_URL}/users/get?id=${ownerId}&nocache=true`);
-            if (response.ok) {
-              const userData = await response.json() as UserData;
-              return { id: ownerId, data: userData };
+            const userResponse = await fetch(`${PROD_API_URL}/users/get/batch?ids=${uniqueOwnerIds.join(',')}&nocache=true`);
+            if (userResponse.ok) {
+              const userDataArray = await userResponse.json() as UserData[];
+              const userDataMap = userDataArray.reduce((acc, userData) => {
+                acc[userData.id] = userData;
+                return acc;
+              }, {} as Record<string, UserData>);
+              setUserData(userDataMap);
             }
-            return null;
           } catch (err) {
-            console.error(`Error fetching user data for ID ${ownerId}:`, err);
-            return null;
+            console.error('Error fetching user data:', err);
           }
-        });
-
-        const userDataResults = await Promise.all(userDataPromises);
-        const userDataMap = userDataResults.reduce((acc, result) => {
-          if (result) {
-            acc[result.id] = result.data;
-          }
-          return acc;
-        }, {} as Record<string, UserData>);
-
-        setUserData(userDataMap);
+        }
       } catch (serverErr) {
         setError(serverErr instanceof Error ? serverErr.message : 'An error occurred while fetching servers');
       } finally {
@@ -126,29 +130,22 @@ const ServerList: React.FC = () => {
       // Only fetch user data for new owner IDs
       const uniqueOwnerIds = [...new Set(data.map((server: Server) => server.owner))];
       const newOwnerIds = uniqueOwnerIds.filter((ownerId) => !(ownerId in userData));
-      const userDataPromises = newOwnerIds.map(async (ownerId) => {
+      
+      if (newOwnerIds.length > 0) {
         try {
-          const response = await fetch(`${PROD_API_URL}/users/get?id=${ownerId}&nocache=true`);
-          if (response.ok) {
-            const userData = await response.json() as UserData;
-            return { id: ownerId, data: userData };
+          const userResponse = await fetch(`${PROD_API_URL}/users/get/batch?ids=${newOwnerIds.join(',')}&nocache=true`);
+          if (userResponse.ok) {
+            const userDataArray = await userResponse.json() as UserData[];
+            const newUserDataMap = userDataArray.reduce((acc, userData) => {
+              acc[userData.id] = userData;
+              return acc;
+            }, {} as Record<string, UserData>);
+            setUserData((prev) => ({ ...prev, ...newUserDataMap }));
           }
-          return null;
         } catch (err) {
-          console.error(`Error fetching user data for ID ${ownerId}:`, err);
-          return null;
+          console.error('Error fetching new user data:', err);
         }
-      });
-
-      const userDataResults = await Promise.all(userDataPromises);
-      const newUserDataMap = userDataResults.reduce((acc, result) => {
-        if (result) {
-          acc[result.id] = result.data;
-        }
-        return acc;
-      }, {} as Record<string, UserData>);
-
-      setUserData((prev) => ({ ...prev, ...newUserDataMap }));
+      }
     } catch {
       toast.error('Failed to refresh server list');
     }
@@ -211,6 +208,11 @@ const ServerList: React.FC = () => {
     } catch {
       toast.error('Failed to copy server link');
     }
+  };
+
+  const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   if (loading) {
@@ -289,7 +291,12 @@ const ServerList: React.FC = () => {
       <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between px-4 lg:px-0">
         <div className="flex items-center space-x-2">
           <ShieldCheckIcon className="h-5 w-5 text-[#5865F2]" />
-          <span className="text-muted">Total Servers: {servers.length}</span>
+          <span className="text-muted">
+            {servers.length > 0 
+              ? `Showing ${Math.min(itemsPerPage, servers.length - startIndex)} of ${servers.length} servers`
+              : 'Total Servers: 0'
+            }
+          </span>
         </div>
         <button
           onClick={handleAddServer}
@@ -301,12 +308,12 @@ const ServerList: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {servers.map((server, index) => (
+        {currentServers.map((server, index) => (
           <div key={server.id} className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4 sm:p-6">
             <div className="mb-4 flex flex-col gap-3">
               <div className="flex items-center space-x-2">
                 <ShieldCheckIcon className="h-5 w-5 text-[#5865F2]" />
-                <span className="text-muted">Server #{index + 1}</span>
+                <span className="text-muted">Server #{startIndex + index + 1}</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {loggedInUserId && loggedInUserId === server.owner ? (
@@ -365,7 +372,20 @@ const ServerList: React.FC = () => {
 
             <div className="space-y-3 sm:space-y-4">
               <div className="flex items-center space-x-2">
-                <UserIcon className="h-5 w-5 text-[#FFFFFF]" />
+                <UserIcon className="h-5 w-5 text-[#FFFFFF] flex-shrink-0" />
+                {userData[server.owner] && (
+                  <UserAvatar
+                    userId={userData[server.owner].id}
+                    avatarHash={userData[server.owner].avatar}
+                    username={userData[server.owner].username}
+                    size={8}
+                    accent_color={userData[server.owner].accent_color}
+                    custom_avatar={userData[server.owner].custom_avatar}
+                    showBadge={false}
+                    settings={userData[server.owner].settings}
+                    premiumType={userData[server.owner].premiumtype}
+                  />
+                )}
                 <span className="text-muted text-sm sm:text-base">
                   Owner: {userData[server.owner] ? (
                     <Tooltip
@@ -401,7 +421,7 @@ const ServerList: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <ClockIcon className="h-5 w-5 text-[#FFFFFF]" />
                 <span className="text-muted text-sm sm:text-base">
-                  Expires: {server.expires === "Never" ? "Never" : formatProfileDate(server.expires)}
+                  Created: {formatProfileDate(server.created_at)} • Expires: {server.expires === "Never" ? "Never" : formatProfileDate(server.expires)}
                 </span>
               </div>
 
@@ -415,6 +435,30 @@ const ServerList: React.FC = () => {
           </div>
         ))}
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-8">
+          <Pagination
+            count={totalPages}
+            page={page}
+            onChange={handlePageChange}
+            sx={{
+              '& .MuiPaginationItem-root': {
+                color: '#D3D9D4',
+                '&.Mui-selected': {
+                  backgroundColor: '#5865F2',
+                  '&:hover': {
+                    backgroundColor: '#4752C4',
+                  },
+                },
+                '&:hover': {
+                  backgroundColor: '#2E3944',
+                },
+              },
+            }}
+          />
+        </div>
+      )}
 
       <AddServerModal
         isOpen={isAddModalOpen}

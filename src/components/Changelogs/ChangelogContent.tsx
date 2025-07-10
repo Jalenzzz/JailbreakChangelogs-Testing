@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from "next/image";
 import { ArrowRightIcon, ArrowTurnDownRightIcon } from "@heroicons/react/24/outline";
 import localFont from "next/font/local";
@@ -6,6 +6,8 @@ import { parseMarkdown } from '@/utils/changelogs';
 import ChangelogMediaEmbed from './ChangelogMediaEmbed';
 import ChangelogComments from '../PageComments/ChangelogComments';
 import ChangelogQuickNav from './ChangelogQuickNav';
+import DisplayAd from '../Ads/DisplayAd';
+import { getCurrentUserPremiumType } from '@/hooks/useAuth';
 
 const luckiestGuy = localFont({ 
   src: '../../../public/fonts/LuckiestGuy.ttf',
@@ -28,9 +30,41 @@ const ChangelogContent: React.FC<ChangelogContentProps> = ({
   onChangelogSelect,
   changelogList,
 }) => {
+  const [imageAspectRatio, setImageAspectRatio] = useState<string>('aspect-[4/3]');
+  const [currentUserPremiumType, setCurrentUserPremiumType] = useState<number>(0);
+  
   const currentIndex = changelogList.findIndex(c => c.id === changelogId);
   const prevChangelog = currentIndex > 0 ? changelogList[currentIndex - 1] : null;
   const nextChangelog = currentIndex < changelogList.length - 1 ? changelogList[currentIndex + 1] : null;
+
+  useEffect(() => {
+    // Get current user's premium type
+    setCurrentUserPremiumType(getCurrentUserPremiumType());
+
+    // Listen for auth changes
+    const handleAuthChange = () => {
+      setCurrentUserPremiumType(getCurrentUserPremiumType());
+    };
+
+    window.addEventListener('authStateChanged', handleAuthChange);
+    return () => {
+      window.removeEventListener('authStateChanged', handleAuthChange);
+    };
+  }, []);
+
+  const handleImageLoad = (event: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = event.currentTarget;
+    const aspectRatio = img.naturalWidth / img.naturalHeight;
+    
+    // Determine the appropriate aspect ratio class based on image dimensions
+    if (Math.abs(aspectRatio - 1) < 0.1) {
+      // Square image (ratio close to 1:1)
+      setImageAspectRatio('aspect-square');
+    } else {
+      // Everything else uses 16:9
+      setImageAspectRatio('aspect-video');
+    }
+  };
 
   return (
     <div className="grid grid-cols-1 gap-8 sm:grid-cols-12">
@@ -81,13 +115,14 @@ const ChangelogContent: React.FC<ChangelogContentProps> = ({
       <div className="sm:col-span-12 lg:col-span-4 space-y-8">
         {imageUrl && (
           <div>
-            <div className="relative w-full aspect-video">
+            <div className={`relative w-full ${imageAspectRatio}`}>
               <Image
                 src={`https://assets.jailbreakchangelogs.xyz${imageUrl}`}
                 alt={title}
                 fill
                 className="object-contain rounded-lg"
                 unoptimized
+                onLoad={handleImageLoad}
               />
             </div>
           </div>
@@ -100,6 +135,20 @@ const ChangelogContent: React.FC<ChangelogContentProps> = ({
             changelogTitle={title}
             type="changelog"
           />
+          {currentUserPremiumType === 0 && (
+            <div className="my-8 flex justify-center">
+              <div className="w-full max-w-[700px] bg-[#1a2127] rounded-lg overflow-hidden border border-[#2E3944] shadow transition-all duration-300 relative flex items-center justify-center">
+                <span className="absolute top-2 left-2 text-xs text-muted bg-[#212A31] px-2 py-0.5 rounded z-10">
+                  Advertisement
+                </span>
+                <DisplayAd
+                  adSlot="4408799044"
+                  adFormat="auto"
+                  style={{ display: "block", width: "100%" }}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

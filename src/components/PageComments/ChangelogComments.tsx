@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Box, CircularProgress, Typography, TextField, Button, IconButton, Pagination, Menu, MenuItem, Skeleton, Tooltip } from '@mui/material';
 import { PROD_API_URL } from '@/services/api';
-import { formatRelativeDate } from '@/utils/timestamp';
 import { UserAvatar } from '@/utils/avatar';
 import { PencilIcon, TrashIcon, ArrowUpIcon, ArrowDownIcon, EllipsisHorizontalIcon, ChatBubbleLeftIcon, FlagIcon } from '@heroicons/react/24/outline';
 import { BiSolidSend } from "react-icons/bi";
@@ -18,6 +17,7 @@ import SupporterModal from '../Modals/SupporterModal';
 import { useSupporterModal } from '@/hooks/useSupporterModal';
 import { UserDetailsTooltip } from '@/components/Users/UserDetailsTooltip';
 import { UserBadges } from '@/components/Profile/UserBadges';
+import CommentTimestamp from './CommentTimestamp';
 
 const luckiestGuy = localFont({ 
   src: '../../../public/fonts/LuckiestGuy.ttf',
@@ -66,6 +66,14 @@ interface ChangelogCommentsProps {
 }
 
 const INITIAL_COMMENT_LENGTH = 500; // Show first 500 characters initially
+
+// Clean comment text by removing newlines and excessive whitespace
+const cleanCommentText = (text: string): string => {
+  return text
+    .replace(/[\r\n]+/g, ' ') // Replace all newlines with a space
+    .replace(/[ ]{2,}/g, ' ') // Collapse multiple spaces
+    .trim();
+};
 
 const CommentSkeleton = () => {
   return (
@@ -174,23 +182,60 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
     };
   }, []);
 
-  const fetchUserData = useCallback(async (userId: string) => {
-    if (userData[userId]) return; // Skip if we already have the data
-    if (loadingUserData[userId]) return; // Skip if already loading
-    if (failedUserData.has(userId)) return; // Skip if already failed
+  const fetchUserData = useCallback(async (userIds: string[]) => {
+    if (userIds.length === 0) return;
+
+    // Filter out users we already have data for, are loading, or have failed
+    const usersToFetch = userIds.filter(userId => 
+      !userData[userId] && 
+      !loadingUserData[userId] && 
+      !failedUserData.has(userId)
+    );
+
+    if (usersToFetch.length === 0) return;
 
     try {
-      setLoadingUserData(prev => ({ ...prev, [userId]: true }));
-      // Fetch user data
-      const response = await fetch(`${PROD_API_URL}/users/get?id=${userId}&nocache=true`);
+      // Mark all users as loading
+      setLoadingUserData(prev => {
+        const newState = { ...prev };
+        usersToFetch.forEach(userId => {
+          newState[userId] = true;
+        });
+        return newState;
+      });
+
+      // Fetch user data in batch
+      const response = await fetch(`${PROD_API_URL}/users/get/batch?ids=${usersToFetch.join(',')}&nocache=true`);
       if (!response.ok) throw new Error('Failed to fetch user data');
       const data = await response.json();
-      setUserData(prev => ({ ...prev, [userId]: data }));
+      
+      // Update user data state
+      setUserData(prev => {
+        const newState = { ...prev };
+        data.forEach((user: UserData) => {
+          newState[user.id] = user;
+        });
+        return newState;
+      });
     } catch (error) {
       console.error('Error fetching user data:', error);
-      setFailedUserData(prev => new Set(prev).add(userId));
+      // Mark failed users
+      setFailedUserData(prev => {
+        const newSet = new Set(prev);
+        usersToFetch.forEach(userId => {
+          newSet.add(userId);
+        });
+        return newSet;
+      });
     } finally {
-      setLoadingUserData(prev => ({ ...prev, [userId]: false }));
+      // Mark all users as not loading
+      setLoadingUserData(prev => {
+        const newState = { ...prev };
+        usersToFetch.forEach(userId => {
+          newState[userId] = false;
+        });
+        return newState;
+      });
     }
   }, [userData, loadingUserData, failedUserData]);
 
@@ -227,9 +272,8 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
 
       // Fetch user data for each comment
       if (commentsArray.length > 0) {
-        commentsArray.forEach(comment => {
-          fetchUserData(comment.user_id);
-        });
+        const userIds = commentsArray.map(comment => comment.user_id);
+        fetchUserData(userIds);
       }
     } catch (err: unknown) {
       if (err instanceof Error && err.name === 'AbortError') {
@@ -283,7 +327,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          content: newComment,
+          content: cleanCommentText(newComment),
           item_id: changelogId,
           item_type: type === 'item' ? itemType : type,
           owner: token
@@ -350,7 +394,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
         },
         body: JSON.stringify({
           id: commentId,
-          content: editContent,
+          content: cleanCommentText(editContent),
           item_type: type,
           author: token
         })
@@ -818,11 +862,11 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                                 )}
                               </div>
                               
-                              <span className="text-xs text-[#748D92] mt-0.5">
-                                {comment.edited_at 
-                                  ? `edited ${formatRelativeDate(parseInt(comment.edited_at))}`
-                                  : `posted ${formatRelativeDate(parseInt(comment.date))}`}
-                              </span>
+                              <CommentTimestamp
+                                date={comment.date}
+                                editedAt={comment.edited_at}
+                                commentId={comment.id}
+                              />
                             </div>
                           </div>
 

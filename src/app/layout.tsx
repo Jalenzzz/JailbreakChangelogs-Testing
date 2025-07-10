@@ -21,6 +21,7 @@ import NextTopLoader from 'nextjs-toploader';
 import AuthCheck from '@/components/Auth/AuthCheck';
 import { Tooltip } from '@mui/material';
 import SurveyProvider from '@/components/Survey/SurveyProvider';
+import SupportProvider from '@/components/Support/SupportProvider';
 import ReportIssueButton from '@/components/ReportIssue/ReportIssueButton';
 import { checkMaintenanceMode, getMaintenanceMetadata } from '@/utils/maintenance';
 import { Suspense } from 'react';
@@ -90,6 +91,20 @@ export default async function RootLayout({
         <head>
           {/* Google Analytics */}
           <GoogleAnalytics gaId="G-729QSV9S7B" />
+          {/* Google AdSense */}
+          <Script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8152532464536367"
+            crossOrigin="anonymous"
+            strategy="afterInteractive"
+          />
+          {/* Umami Analytics */}
+          <Script 
+            defer 
+            src="https://cloud.umami.is/script.js" 
+            data-website-id="48ae24db-9fca-4738-ba09-a39aff8a600d"
+            strategy="afterInteractive"
+          />
         </head>
         <body className={`${inter.className} ${luckiestGuy.variable} bg-[#2E3944]`}>
           <Maintenance />
@@ -112,6 +127,20 @@ export default async function RootLayout({
       <head>
         {/* Google Analytics */}
         <GoogleAnalytics gaId="G-729QSV9S7B" />
+        {/* Google AdSense */}
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8152532464536367"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+        {/* Umami Analytics */}
+        <Script 
+          defer 
+          src="https://cloud.umami.is/script.js" 
+          data-website-id="48ae24db-9fca-4738-ba09-a39aff8a600d"
+          strategy="afterInteractive"
+        />
       </head>
       <body className={`${inter.className} ${luckiestGuy.variable} bg-[#2E3944]`}>
         <Toaster
@@ -167,6 +196,7 @@ export default async function RootLayout({
         <OfflineDetector />
         <AuthCheck />
         <SurveyProvider>
+          <SupportProvider>
           <div className="flex min-h-screen flex-col">
             <Header />
 
@@ -377,7 +407,7 @@ export default async function RootLayout({
                         </a>{" "}
                         and{" "}
                         <a
-                          href="https://github.com/Jalenzz16"
+                          href="https://github.com/Jalenzzz"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-400 hover:text-blue-300 hover:underline"
@@ -454,6 +484,7 @@ export default async function RootLayout({
               </div>
             </footer>
           </div>
+        </SupportProvider>
         </SurveyProvider>
         <Script id="clarity-script" strategy="afterInteractive">
           {`

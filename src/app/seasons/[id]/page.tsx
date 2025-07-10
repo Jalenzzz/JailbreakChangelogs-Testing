@@ -10,6 +10,8 @@ import { PROD_API_URL } from '@/services/api';
 import { useRouter } from 'next/navigation';
 import localFont from "next/font/local";
 import { formatProfileDate } from '@/utils/timestamp';
+import DisplayAd from '@/components/Ads/DisplayAd';
+import { getCurrentUserPremiumType } from '@/hooks/useAuth';
 
 const luckiestGuy = localFont({ 
   src: '../../../../public/fonts/LuckiestGuy.ttf',
@@ -44,6 +46,22 @@ export default function SeasonPage({ params }: { params: Promise<{ id: string }>
   const [loading, setLoading] = useState(true);
   const [nextSeason, setNextSeason] = useState<Season | null>(null);
   const [currentSeason, setCurrentSeason] = useState<Season | null>(null);
+  const [currentUserPremiumType, setCurrentUserPremiumType] = useState<number>(0);
+
+  useEffect(() => {
+    // Get current user's premium type
+    setCurrentUserPremiumType(getCurrentUserPremiumType());
+
+    // Listen for auth changes
+    const handleAuthChange = () => {
+      setCurrentUserPremiumType(getCurrentUserPremiumType());
+    };
+
+    window.addEventListener('authStateChanged', handleAuthChange);
+    return () => {
+      window.removeEventListener('authStateChanged', handleAuthChange);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchSeasons = async () => {
@@ -305,6 +323,20 @@ export default function SeasonPage({ params }: { params: Promise<{ id: string }>
               changelogTitle={season.title}
               type="season"
             />
+            {currentUserPremiumType === 0 && (
+              <div className="my-8 flex justify-center">
+                <div className="w-full max-w-[336px] h-[280px] bg-[#1a2127] rounded-lg overflow-hidden border border-[#2E3944] shadow transition-all duration-300 relative flex items-center justify-center">
+                  <span className="absolute top-2 left-2 text-xs font-semibold text-white bg-[#212A31] px-2 py-0.5 rounded z-10">
+                    Advertisement
+                  </span>
+                  <DisplayAd
+                    adSlot="4408799044"
+                    adFormat="rectangle"
+                    style={{ display: 'block', width: '100%', height: '280px' }}
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

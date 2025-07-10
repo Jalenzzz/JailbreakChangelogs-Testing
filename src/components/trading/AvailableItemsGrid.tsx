@@ -14,6 +14,12 @@ import { TradeAdErrorModal } from './TradeAdErrorModal';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import { FilterSort, ValueSort } from '@/types';
+import dynamic from 'next/dynamic';
+import DisplayAd from '@/components/Ads/DisplayAd';
+import { useDebounce } from '@/hooks/useDebounce';
+import { getCurrentUserPremiumType } from '@/hooks/useAuth';
+
+const Select = dynamic(() => import('react-select'), { ssr: false });
 
 interface AvailableItemsGridProps {
   onSelect: (item: TradeItem, side: 'offering' | 'requesting') => boolean;
@@ -36,7 +42,20 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
   const [filterSort, setFilterSort] = useState<FilterSort>("name-all-items");
   const [valueSort, setValueSort] = useState<ValueSort>("cash-desc");
   const [showNonTradable, setShowNonTradable] = useState(false);
+  const [selectLoaded, setSelectLoaded] = useState(false);
+  const [currentUserPremiumType, setCurrentUserPremiumType] = useState<number>(0);
   const ITEMS_PER_PAGE = 18;
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+
+  // Set selectLoaded to true after mount to ensure client-side rendering
+  useEffect(() => {
+    setSelectLoaded(true);
+  }, []);
+
+  // Reset page when search query changes
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearchQuery]);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -75,9 +94,25 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
     };
   }, []);
 
+  useEffect(() => {
+    // Get current user's premium type
+    setCurrentUserPremiumType(getCurrentUserPremiumType());
+
+    // Listen for auth changes
+    const handleAuthChange = () => {
+      setCurrentUserPremiumType(getCurrentUserPremiumType());
+    };
+
+    window.addEventListener('authStateChanged', handleAuthChange);
+    return () => {
+      window.removeEventListener('authStateChanged', handleAuthChange);
+    };
+  }, []);
+
   const filteredItems = availableItems.filter(item => {
     // First apply search filter
-    const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = item.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+                         item.type.toLowerCase().includes(debouncedSearchQuery.toLowerCase());
     if (!matchesSearch) return false;
 
     // Then apply tradable filter
@@ -135,9 +170,9 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
     }
   });
 
-  const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
   const startIndex = (page - 1) * ITEMS_PER_PAGE;
   const paginatedItems = filteredItems.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -192,6 +227,22 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
           <h3 className="text-muted font-medium">Tradable Items</h3>
         </div>
 
+        {/* Ad Placement: Above the grid, only for non-premium users */}
+        {currentUserPremiumType === 0 && (
+          <div className="flex justify-center w-full mb-6">
+            <div className="w-full max-w-[728px] h-[90px] bg-[#1a2127] rounded-lg overflow-hidden border border-[#2E3944] shadow transition-all duration-300 flex items-center justify-center relative">
+              <span className="absolute top-2 left-2 text-xs font-semibold text-white bg-[#212A31] px-2 py-0.5 rounded z-10">
+                Advertisement
+              </span>
+              <DisplayAd
+                adSlot="2707870412"
+                adFormat="leaderboard"
+                style={{ display: 'block', width: '100%', height: '90px' }}
+              />
+            </div>
+          </div>
+        )}
+
         <div className="mb-4 relative">
           <div className="relative">
             <SearchIcon 
@@ -200,7 +251,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
             />
             <input
               type="text"
-              placeholder="Search items..."
+              placeholder="Search items by name or type..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-10 py-2 bg-[#2E3944] border border-[#37424D] rounded-lg text-muted placeholder-[#D3D9D4]/50 focus:outline-none focus:border-[#5865F2]"
@@ -215,55 +266,169 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
               </button>
             )}
           </div>
+          {debouncedSearchQuery && (
+            <div className="mt-2 text-sm text-muted">
+              Found {filteredItems.length} {filteredItems.length === 1 ? 'item' : 'items'} matching &quot;{debouncedSearchQuery}&quot;
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-4">
-          <select
-            value={filterSort}
-            onChange={(e) => {
-              const newValue = e.target.value as FilterSort;
-              setFilterSort(newValue);
-              setPage(1);
-            }}
-            className="w-full rounded-lg border border-[#2E3944] bg-[#37424D] px-4 py-2 text-muted focus:border-[#124E66] focus:outline-none"
-          >
-            <option value="name-all-items">All Items</option>
-            <option value="name-limited-items">Limited Items</option>
-            <option value="name-seasonal-items">Seasonal Items</option>
-            <option value="name-vehicles">Vehicles</option>
-            <option value="name-spoilers">Spoilers</option>
-            <option value="name-rims">Rims</option>
-            <option value="name-body-colors">Body Colors</option>
-            <option value="name-hyperchromes">HyperChromes</option>
-            <option value="name-textures">Body Textures</option>
-            <option value="name-tire-stickers">Tire Stickers</option>
-            <option value="name-tire-styles">Tire Styles</option>
-            <option value="name-drifts">Drifts</option>
-            <option value="name-furnitures">Furniture</option>
-            <option value="name-horns">Horns</option>
-            <option value="name-weapon-skins">Weapon Skins</option>
-          </select>
+          {selectLoaded ? (
+            <Select
+              value={{ value: filterSort, label: (() => {
+                switch (filterSort) {
+                  case 'name-all-items': return 'All Items';
+                  case 'name-limited-items': return 'Limited Items';
+                  case 'name-seasonal-items': return 'Seasonal Items';
+                  case 'name-vehicles': return 'Vehicles';
+                  case 'name-spoilers': return 'Spoilers';
+                  case 'name-rims': return 'Rims';
+                  case 'name-body-colors': return 'Body Colors';
+                  case 'name-hyperchromes': return 'HyperChromes';
+                  case 'name-textures': return 'Body Textures';
+                  case 'name-tire-stickers': return 'Tire Stickers';
+                  case 'name-tire-styles': return 'Tire Styles';
+                  case 'name-drifts': return 'Drifts';
+                  case 'name-furnitures': return 'Furniture';
+                  case 'name-horns': return 'Horns';
+                  case 'name-weapon-skins': return 'Weapon Skins';
+                  default: return filterSort;
+                }
+              })() }}
+              onChange={(option: unknown) => {
+                if (!option) {
+                  // Reset to original value when cleared
+                  setFilterSort("name-all-items");
+                  setPage(1);
+                  return;
+                }
+                const newValue = (option as { value: FilterSort }).value;
+                setFilterSort(newValue);
+                setPage(1);
+              }}
+              options={[
+                { value: 'name-all-items', label: 'All Items' },
+                { value: 'name-limited-items', label: 'Limited Items' },
+                { value: 'name-seasonal-items', label: 'Seasonal Items' },
+                { value: 'name-vehicles', label: 'Vehicles' },
+                { value: 'name-spoilers', label: 'Spoilers' },
+                { value: 'name-rims', label: 'Rims' },
+                { value: 'name-body-colors', label: 'Body Colors' },
+                { value: 'name-hyperchromes', label: 'HyperChromes' },
+                { value: 'name-textures', label: 'Body Textures' },
+                { value: 'name-tire-stickers', label: 'Tire Stickers' },
+                { value: 'name-tire-styles', label: 'Tire Styles' },
+                { value: 'name-drifts', label: 'Drifts' },
+                { value: 'name-furnitures', label: 'Furniture' },
+                { value: 'name-horns', label: 'Horns' },
+                { value: 'name-weapon-skins', label: 'Weapon Skins' },
+              ]}
+              classNamePrefix="react-select"
+              className="w-full"
+              isClearable={true}
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  backgroundColor: '#37424D',
+                  borderColor: '#2E3944',
+                  color: '#D3D9D4',
+                }),
+                singleValue: (base) => ({ ...base, color: '#D3D9D4' }),
+                menu: (base) => ({ ...base, backgroundColor: '#37424D', color: '#D3D9D4', zIndex: 3000 }),
+                option: (base, state) => ({
+                  ...base,
+                  backgroundColor: state.isSelected ? '#5865F2' : state.isFocused ? '#2E3944' : '#37424D',
+                  color: state.isSelected || state.isFocused ? '#FFFFFF' : '#D3D9D4',
+                  '&:active': {
+                    backgroundColor: '#124E66',
+                    color: '#FFFFFF',
+                  },
+                }),
+                clearIndicator: (base) => ({
+                  ...base,
+                  color: '#D3D9D4',
+                  '&:hover': {
+                    color: '#FFFFFF',
+                  },
+                }),
+              }}
+              isSearchable={false}
+            />
+          ) : (
+            <div className="w-full h-10 bg-[#37424D] border border-[#2E3944] rounded-md animate-pulse"></div>
+          )}
 
-          <select
-            value={valueSort}
-            onChange={(e) => {
-              const newValue = e.target.value as ValueSort;
-              setValueSort(newValue);
-              setPage(1);
-            }}
-            className="w-full rounded-lg border border-[#2E3944] bg-[#37424D] px-4 py-2 text-muted focus:border-[#124E66] focus:outline-none"
-          >
-            <optgroup label="Values">
-              <option value="cash-desc">Cash Value (High to Low)</option>
-              <option value="cash-asc">Cash Value (Low to High)</option>
-              <option value="duped-desc">Duped Value (High to Low)</option>
-              <option value="duped-asc">Duped Value (Low to High)</option>
-            </optgroup>
-            <optgroup label="Demand">
-              <option value="demand-desc">Demand (High to Low)</option>
-              <option value="demand-asc">Demand (Low to High)</option>
-            </optgroup>
-          </select>
+          {selectLoaded ? (
+            <Select
+              value={{ value: valueSort, label: (() => {
+                switch (valueSort) {
+                  case 'cash-desc': return 'Cash Value (High to Low)';
+                  case 'cash-asc': return 'Cash Value (Low to High)';
+                  case 'duped-desc': return 'Duped Value (High to Low)';
+                  case 'duped-asc': return 'Duped Value (Low to High)';
+                  case 'demand-desc': return 'Demand (High to Low)';
+                  case 'demand-asc': return 'Demand (Low to High)';
+                  default: return valueSort;
+                }
+              })() }}
+              onChange={(option: unknown) => {
+                if (!option) {
+                  // Reset to original value when cleared
+                  setValueSort("cash-desc");
+                  setPage(1);
+                  return;
+                }
+                const newValue = (option as { value: ValueSort }).value;
+                setValueSort(newValue);
+                setPage(1);
+              }}
+              options={[
+                { label: 'Values', options: [
+                  { value: 'cash-desc', label: 'Cash Value (High to Low)' },
+                  { value: 'cash-asc', label: 'Cash Value (Low to High)' },
+                  { value: 'duped-desc', label: 'Duped Value (High to Low)' },
+                  { value: 'duped-asc', label: 'Duped Value (Low to High)' },
+                ]},
+                { label: 'Demand', options: [
+                  { value: 'demand-desc', label: 'Demand (High to Low)' },
+                  { value: 'demand-asc', label: 'Demand (Low to High)' },
+                ]},
+              ]}
+              classNamePrefix="react-select"
+              className="w-full"
+              isClearable={true}
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  backgroundColor: '#37424D',
+                  borderColor: '#2E3944',
+                  color: '#D3D9D4',
+                }),
+                singleValue: (base) => ({ ...base, color: '#D3D9D4' }),
+                menu: (base) => ({ ...base, backgroundColor: '#37424D', color: '#D3D9D4', zIndex: 3000 }),
+                option: (base, state) => ({
+                  ...base,
+                  backgroundColor: state.isSelected ? '#5865F2' : state.isFocused ? '#2E3944' : '#37424D',
+                  color: state.isSelected || state.isFocused ? '#FFFFFF' : '#D3D9D4',
+                  '&:active': {
+                    backgroundColor: '#124E66',
+                    color: '#FFFFFF',
+                  },
+                }),
+                clearIndicator: (base) => ({
+                  ...base,
+                  color: '#D3D9D4',
+                  '&:hover': {
+                    color: '#FFFFFF',
+                  },
+                }),
+              }}
+              isSearchable={false}
+            />
+          ) : (
+            <div className="w-full h-10 bg-[#37424D] border border-[#2E3944] rounded-md animate-pulse"></div>
+          )}
 
           <FormControlLabel
             control={
@@ -340,28 +505,28 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
           </div>
         ) : (
           <>
-            {filteredItems.length === 0 ? (
-              <div className="col-span-full mb-4 rounded-lg bg-[#37424D] p-8 text-center">
-                <p className="text-lg text-muted">
-                  {searchQuery 
-                    ? `No items found matching "${searchQuery}"${filterSort !== "name-all-items" ? ` in ${filterSort.replace("name-", "").replace("-items", "").replace(/-/g, " ")}` : ""}`
-                    : `No items found${filterSort !== "name-all-items" ? ` in ${filterSort.replace("name-", "").replace("-items", "").replace(/-/g, " ")}` : ""}`
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+              {paginatedItems.length === 0 ? (
+                <div className="col-span-full text-center py-8">
+                  <p className="text-muted">
+                    {searchQuery 
+                      ? `No items found matching "${searchQuery}"${filterSort !== "name-all-items" ? ` in ${filterSort.replace("name-", "").replace("-items", "").replace(/-/g, " ")}` : ""}`
+                      : `No items found${filterSort !== "name-all-items" ? ` in ${filterSort.replace("name-", "").replace("-items", "").replace(/-/g, " ")}` : ""}`
                   }
-                </p>
-                <button
-                  onClick={() => {
-                    setSearchQuery('');
-                    setFilterSort("name-all-items");
-                    setValueSort("cash-desc");
-                  }}
-                  className="mt-4 rounded-lg border border-[#2E3944] bg-[#124E66] px-6 py-2 text-muted hover:bg-[#1A5F7A] focus:outline-none"
-                >
-                  Clear All Filters
-                </button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
-                {paginatedItems.map((item) => (
+                  </p>
+                  <button
+                    onClick={() => {
+                      setSearchQuery('');
+                      setFilterSort("name-all-items");
+                      setValueSort("cash-desc");
+                    }}
+                    className="mt-4 rounded-lg border border-[#2E3944] bg-[#124E66] px-6 py-2 text-muted hover:bg-[#1A5F7A] focus:outline-none"
+                  >
+                    Clear All Filters
+                  </button>
+                </div>
+              ) : (
+                paginatedItems.map((item) => (
                   <div
                     key={item.id}
                     className={`p-2 rounded-lg transition-colors text-left w-full flex flex-col ${
@@ -465,7 +630,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
                                   >
                                     2025
                                   </button>
-                                  {item.children.map((child) => (
+                                  {item.children?.map((child) => (
                                     <button
                                       key={child.id}
                                       onClick={(e) => {
@@ -502,9 +667,9 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
                       )}
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
+                ))
+              )}
+            </div>
             {!loading && totalPages > 1 && filteredItems.length > 0 && (
               <div className="flex justify-center mt-4">
                 <Pagination 
