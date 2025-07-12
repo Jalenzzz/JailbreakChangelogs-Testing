@@ -117,6 +117,7 @@ export default function ChangelogDetailsPage({ params }: { params: Promise<{ id:
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const itemsPerPage = 10;
   const [currentUserPremiumType, setCurrentUserPremiumType] = useState<number>(0);
+  const [premiumStatusLoaded, setPremiumStatusLoaded] = useState(false);
 
   useEffect(() => {
     if (!id) {
@@ -171,6 +172,7 @@ export default function ChangelogDetailsPage({ params }: { params: Promise<{ id:
   useEffect(() => {
     // Get current user's premium type
     setCurrentUserPremiumType(getCurrentUserPremiumType());
+    setPremiumStatusLoaded(true);
 
     // Listen for auth changes
     const handleAuthChange = () => {
@@ -551,16 +553,16 @@ export default function ChangelogDetailsPage({ params }: { params: Promise<{ id:
               </div>
             </div>
             {/* Ad Section */}
-            {currentUserPremiumType === 0 && (
-              <div className="flex-shrink-0 w-full max-w-[336px] mt-4 lg:mt-0">
-                <div className="w-full h-[280px] bg-[#1a2127] rounded-lg overflow-hidden border border-[#2E3944] shadow transition-all duration-300 relative flex items-center justify-center">
-                  <span className="absolute top-2 left-2 text-xs font-semibold text-white bg-[#212A31] px-2 py-0.5 rounded z-10">
+            {premiumStatusLoaded && currentUserPremiumType === 0 && (
+              <div className="flex-shrink-0 w-full max-w-[700px] mt-4 lg:mt-0">
+                <div className="w-full bg-[#1a2127] rounded-lg overflow-hidden border border-[#2E3944] shadow transition-all duration-300 relative" style={{ minHeight: '250px' }}>
+                  <span className="absolute top-2 left-2 text-xs text-muted bg-[#212A31] px-2 py-0.5 rounded z-10">
                     Advertisement
                   </span>
                   <DisplayAd
-                    adSlot="4408799044"
-                    adFormat="rectangle"
-                    style={{ display: 'block', width: '100%', height: '280px' }}
+                    adSlot="2909908750"
+                    adFormat="auto"
+                    style={{ display: "block", width: "100%", height: "100%" }}
                   />
                 </div>
               </div>

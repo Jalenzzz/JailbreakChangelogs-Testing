@@ -44,6 +44,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
   const [showNonTradable, setShowNonTradable] = useState(false);
   const [selectLoaded, setSelectLoaded] = useState(false);
   const [currentUserPremiumType, setCurrentUserPremiumType] = useState<number>(0);
+  const [premiumStatusLoaded, setPremiumStatusLoaded] = useState(false);
   const ITEMS_PER_PAGE = 18;
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
@@ -97,6 +98,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
   useEffect(() => {
     // Get current user's premium type
     setCurrentUserPremiumType(getCurrentUserPremiumType());
+    setPremiumStatusLoaded(true);
 
     // Listen for auth changes
     const handleAuthChange = () => {
@@ -228,16 +230,16 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
         </div>
 
         {/* Ad Placement: Above the grid, only for non-premium users */}
-        {currentUserPremiumType === 0 && (
+        {premiumStatusLoaded && currentUserPremiumType === 0 && (
           <div className="flex justify-center w-full mb-6">
-            <div className="w-full max-w-[728px] h-[90px] bg-[#1a2127] rounded-lg overflow-hidden border border-[#2E3944] shadow transition-all duration-300 flex items-center justify-center relative">
-              <span className="absolute top-2 left-2 text-xs font-semibold text-white bg-[#212A31] px-2 py-0.5 rounded z-10">
+            <div className="w-full max-w-[700px] bg-[#1a2127] rounded-lg overflow-hidden border border-[#2E3944] shadow transition-all duration-300 relative" style={{ minHeight: '250px' }}>
+              <span className="absolute top-2 left-2 text-xs text-muted bg-[#212A31] px-2 py-0.5 rounded z-10">
                 Advertisement
               </span>
               <DisplayAd
-                adSlot="2707870412"
-                adFormat="leaderboard"
-                style={{ display: 'block', width: '100%', height: '90px' }}
+                adSlot="4222990422"
+                adFormat="auto"
+                style={{ display: "block", width: "100%", height: "100%" }}
               />
             </div>
           </div>
