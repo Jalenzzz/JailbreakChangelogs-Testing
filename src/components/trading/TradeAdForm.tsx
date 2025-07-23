@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { PROD_API_URL } from '@/services/api';
+import { PUBLIC_API_URL } from "@/utils/api";
 import { getToken } from '@/utils/auth';
 import { TradeItem, TradeAd } from '@/types/trading';
 import { UserData } from '@/types/auth';
@@ -20,6 +20,7 @@ interface TradeAdFormProps {
   onSuccess?: () => void;
   editMode?: boolean;
   tradeAd?: TradeAd;
+  items?: TradeItem[];
 }
 
 interface UserPremiumTier {
@@ -35,7 +36,7 @@ const PREMIUM_TIERS: UserPremiumTier[] = [
   { tier: 3, name: 'Supporter 3', durations: [6, 12, 24, 48] },
 ];
 
-export const TradeAdForm: React.FC<TradeAdFormProps> = ({ onSuccess, editMode = false, tradeAd }) => {
+export const TradeAdForm: React.FC<TradeAdFormProps> = ({ onSuccess, editMode = false, tradeAd, items = [] }) => {
   const [loading, setLoading] = useState(true);
   const [offeringItems, setOfferingItems] = useState<TradeItem[]>([]);
   const [requestingItems, setRequestingItems] = useState<TradeItem[]>([]);
@@ -104,7 +105,7 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({ onSuccess, editMode = 
         const token = getToken();
         if (!token) return;
 
-        const response = await fetch(`${PROD_API_URL}/users/get/token?token=${token}&nocache=true`);
+        const response = await fetch(`${PUBLIC_API_URL}/users/get/token?token=${token}&nocache=true`);
         if (response.ok) {
           const userData = await response.json();
           setUserData(userData);
@@ -226,9 +227,9 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({ onSuccess, editMode = 
       errors.push('You must add at least one item to request');
     }
 
-    // Roblox ID check
-    if (!userData?.roblox_id) {
-      toast.error('You must link your Roblox account first to create trade ads.');
+    // Require all fields
+    if (!userData?.roblox_id || !userData?.roblox_username || !userData?.roblox_display_name || !userData?.roblox_avatar || !userData?.roblox_join_date) {
+      toast.error('You must link a Roblox account first to create trade ads.');
       setLoginModalOpen(true);
       // Set Roblox tab (tab index 1)
       setTimeout(() => {
@@ -261,7 +262,7 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({ onSuccess, editMode = 
         return;
       }
 
-      const endpoint = editMode ? `${PROD_API_URL}/trades/update?id=${tradeAd?.id}` : `${PROD_API_URL}/trades/add`;
+      const endpoint = editMode ? `${PUBLIC_API_URL}/trades/update?id=${tradeAd?.id}` : `${PUBLIC_API_URL}/trades/add`;
       const method = 'POST';
 
       const response = await fetch(endpoint, {
@@ -667,6 +668,7 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({ onSuccess, editMode = 
         {/* Available Items Grid */}
         <div className="mb-8">
           <AvailableItemsGrid
+            items={items}
             onSelect={handleAddItem}
             selectedItems={[...offeringItems, ...requestingItems]}
             onCreateTradeAd={handleSubmit}

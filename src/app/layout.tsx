@@ -26,6 +26,7 @@ import ReportIssueButton from '@/components/ReportIssue/ReportIssueButton';
 import { checkMaintenanceMode, getMaintenanceMetadata } from '@/utils/maintenance';
 import { Suspense } from 'react';
 import { GoogleAnalytics } from '@next/third-parties/google';
+import SupportPromptModalWrapper from './SupportPromptModalWrapper';
 
 const inter = Inter({ subsets: ["latin"] });
 const luckiestGuy = localFont({ 
@@ -185,7 +186,7 @@ export default async function RootLayout({
           <SupportProvider>
           <div className="flex min-h-screen flex-col">
             <Header />
-
+            <SupportPromptModalWrapper />
             <main className="flex-1">{children}</main>
 
             <footer className="bg-[#212A31] py-8">
@@ -216,7 +217,7 @@ export default async function RootLayout({
                       </Tooltip>
                       <Tooltip title="Join our Discord server" arrow placement="top">
                         <a
-                          href="https://discord.com/invite/kAuxDntHG9"
+                          href="https://discord.jailbreakchangelogs.xyz/"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="rounded-full bg-[#5865F2] p-3 text-white hover:bg-[#4650c1] transition-colors"
@@ -308,7 +309,7 @@ export default async function RootLayout({
                     </h3>
                     <div className="space-y-2">
                       <a
-                        href="https://jailbreak.fandom.com/wiki/Jailbreak_Wiki"
+                        href="https://jailbreak.fandom.com/wiki/Jailbreak_Wiki:Home"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-muted hover:text-[#FFFFFF]"

@@ -1,11 +1,10 @@
 import { Metadata } from 'next';
-import { PROD_API_URL } from '@/services/api';
+import { BASE_API_URL } from '@/utils/api';
 import { getItemImagePath } from '@/utils/images';
 import { getMaintenanceMetadata } from '@/utils/maintenance';
 import { formatFullValue } from '@/utils/values';
 import { WithContext, FAQPage, BreadcrumbList, ListItem } from 'schema-dts';
-import type { Item } from '@/types/index';
-import { notFound } from 'next/navigation';
+import type { ItemDetails } from '@/types/index';
 
 const FALLBACK_IMAGE = 'https://assets.jailbreakchangelogs.xyz/assets/logos/collab/JBCL_X_TC_Logo_Long_Dark_Background.webp';
 
@@ -16,16 +15,16 @@ interface Props {
   }>;
 }
 
-async function fetchItem(type: string, name: string): Promise<Item | null> {
+async function fetchItem(type: string, name: string): Promise<ItemDetails | null> {
   const itemName = decodeURIComponent(name);
   const itemType = decodeURIComponent(type);
   try {
     const response = await fetch(
-      `${PROD_API_URL}/items/get?name=${encodeURIComponent(itemName)}&type=${encodeURIComponent(itemType)}`,
-      { next: { revalidate: 3600 } }
+      `${BASE_API_URL}/items/get?name=${encodeURIComponent(itemName)}&type=${encodeURIComponent(itemType)}`,
+      { next: { revalidate: 300 } }
     );
     if (!response.ok) return null;
-    return await response.json() as Item;
+    return await response.json() as ItemDetails;
   } catch {
     return null;
   }
@@ -35,7 +34,7 @@ function sanitizeJsonLd(jsonLd: WithContext<FAQPage | BreadcrumbList>): string {
   return JSON.stringify(jsonLd);
 }
 
-async function generateFAQJsonLd(item: Item | null): Promise<string | null> {
+async function generateFAQJsonLd(item: ItemDetails | null): Promise<string | null> {
   if (!item) return null;
   
   const faqs = [
@@ -56,11 +55,11 @@ async function generateFAQJsonLd(item: Item | null): Promise<string | null> {
   faqs.push(
     {
       question: `Is ${item.name} limited?`,
-      answer: item.is_limited === 1 ? `${item.name} is a limited item.` : `${item.name} is not a limited item.`
+      answer: item.is_limited === 1 ? `${item.name} is a limited item.` : (item.is_limited === 0 ? `${item.name} is not a limited item.` : `It is unknown if ${item.name} is a limited item.`)
     },
     {
       question: `Is ${item.name} seasonal?`,
-      answer: item.is_seasonal === 1 ? `${item.name} is a seasonal item.` : `${item.name} is not a seasonal item.`
+      answer: item.is_seasonal === 1 ? `${item.name} is a seasonal item.` : (item.is_seasonal === 0 ? `${item.name} is not a seasonal item.` : `It is unknown if ${item.name} is a seasonal item.`)
     },
     {
       question: `Can ${item.name} be traded?`,
@@ -107,7 +106,7 @@ async function generateFAQJsonLd(item: Item | null): Promise<string | null> {
   return sanitizeJsonLd(jsonLd);
 }
 
-async function generateBreadcrumbJsonLd(item: Item | null, itemType: string, itemName: string): Promise<string | null> {
+async function generateBreadcrumbJsonLd(item: ItemDetails | null, itemType: string, itemName: string): Promise<string | null> {
   if (!item) return null;
   
   const breadcrumbItems: ListItem[] = [
@@ -241,15 +240,12 @@ export default async function ItemLayout({
 }) {
   const { type, name } = await params;
   const item = await fetchItem(type, name);
-  if (!item) {
-    notFound();
-  }
   const faqJsonLdData = await generateFAQJsonLd(item);
   const breadcrumbJsonLdData = await generateBreadcrumbJsonLd(item, type, name);
 
   return (
     <>
-      {faqJsonLdData && (
+      {item && faqJsonLdData && (
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -257,7 +253,7 @@ export default async function ItemLayout({
           }}
         />
       )}
-      {breadcrumbJsonLdData && (
+      {item && breadcrumbJsonLdData && (
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -266,7 +262,7 @@ export default async function ItemLayout({
         />
       )}
       {/* SEO-friendly H1 that's always present */}
-      <h1 className="sr-only">{item.name} ({item.type})</h1>
+      {item && <h1 className="sr-only">{item.name} ({item.type})</h1>}
       {children}
     </>
   );

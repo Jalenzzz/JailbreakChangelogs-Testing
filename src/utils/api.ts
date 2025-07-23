@@ -19,12 +19,18 @@ interface Changelog {
   image_url: string;
 }
 
-import { Item } from "@/types";
-import { PROD_API_URL } from '@/services/api';
-import { formatFullDate } from '@/utils/timestamp';
+import { Item, ItemDetails } from "@/types";
+import { UserData } from "@/types/auth";
+
+export const BASE_API_URL =
+  process.env.RAILWAY_ENVIRONMENT_NAME === 'production'
+    ? process.env.RAILWAY_INTERNAL_API_URL
+    : process.env.NEXT_PUBLIC_API_URL;
+
+export const PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const fetchUsers = async () => {
-  const response = await fetch(`${PROD_API_URL}/users/list?nocache=true`, {
+  const response = await fetch(`${BASE_API_URL}/users/list`, {
     cache: 'no-store',
     next: { revalidate: 0 }
   });
@@ -35,7 +41,7 @@ export const fetchUsers = async () => {
 export async function fetchUserById(id: string) {
   try {
     console.log('Fetching user with ID:', id);
-    const response = await fetch(`${PROD_API_URL}/users/get?id=${id}&nocache=true`);
+    const response = await fetch(`${BASE_API_URL}/users/get?id=${id}&nocache=true`);
     const data = await response.json();
     
     if (!response.ok) {
@@ -87,7 +93,7 @@ export async function fetchUserByIdForOG(id: string) {
       'settings'
     ].join(',');
     
-    const response = await fetch(`${PROD_API_URL}/users/get?id=${id}&fields=${fields}`);
+    const response = await fetch(`${BASE_API_URL}/users/get?id=${id}&fields=${fields}`);
     const data = await response.json();
     
     if (!response.ok) {
@@ -132,7 +138,7 @@ export async function fetchUserByIdForMetadata(id: string) {
       'username'
     ].join(',');
     
-    const response = await fetch(`${PROD_API_URL}/users/get?id=${id}&fields=${fields}`);
+    const response = await fetch(`${BASE_API_URL}/users/get?id=${id}&fields=${fields}`);
     const data = await response.json();
     
     if (!response.ok) {
@@ -179,6 +185,7 @@ export const fetchUsersForList = async () => {
     'custom_avatar',
     'settings',
     'premiumtype',
+    'created_at',
     'roblox_id',
     'roblox_username',
     'roblox_display_name',
@@ -186,7 +193,7 @@ export const fetchUsersForList = async () => {
     'roblox_join_date'
   ].join(',');
   
-  const response = await fetch(`${PROD_API_URL}/users/list?fields=${fields}&nocache=true`, {
+  const response = await fetch(`${BASE_API_URL}/users/list?fields=${fields}&nocache=true`, {
     cache: 'no-store',
     next: { revalidate: 0 }
   });
@@ -196,12 +203,17 @@ export const fetchUsersForList = async () => {
 
 export async function fetchItems() {
   try {
-    const response = await fetch(`${PROD_API_URL}/items/list`);
+    console.log(`[SERVER] Fetching items from ${BASE_API_URL}...`);
+    const response = await fetch(`${BASE_API_URL}/items/list`, {
+      cache: 'no-store',
+      next: { revalidate: 0 }
+    });
     if (!response.ok) throw new Error("Failed to fetch items");
     const data = await response.json();
+    console.log(`[SERVER] Successfully fetched ${data.length} items from API`);
     return data as Item[];
   } catch (err) {
-    console.error('Error fetching items:', err);
+    console.error('[SERVER] Error fetching items:', err);
     return [];
   }
 }
@@ -210,14 +222,12 @@ export async function fetchLastUpdated(items: Item[]) {
   try {
     if (!items || items.length === 0) {
       console.log('No items provided for last updated');
-      return '';
+      return null;
     }
 
     // Create an array of all items including sub-items
     const allItems = items.reduce((acc: Item[], item) => {
-      // Add the main item
       acc.push(item);
-      // Add all sub-items if they exist
       if (item.children && Array.isArray(item.children)) {
         item.children.forEach(child => {
           if (child.data) {
@@ -234,28 +244,155 @@ export async function fetchLastUpdated(items: Item[]) {
 
     // Sort all items by last_updated in descending order and get the most recent
     const mostRecentItem = [...allItems].sort((a, b) => {
-      // Normalize timestamps to milliseconds
       const aTime = a.last_updated < 10000000000 ? a.last_updated * 1000 : a.last_updated;
       const bTime = b.last_updated < 10000000000 ? b.last_updated * 1000 : b.last_updated;
       return bTime - aTime;
     })[0];
 
-    const formattedDate = formatFullDate(mostRecentItem.last_updated);
-    return formattedDate;
+    // Return the raw timestamp (in ms)
+    const rawTimestamp = mostRecentItem.last_updated < 10000000000 ? mostRecentItem.last_updated * 1000 : mostRecentItem.last_updated;
+    return rawTimestamp;
   } catch (err) {
     console.error('Error getting last updated time:', err);
-    return '';
+    return null;
+  }
+}
+
+export async function fetchItem(type: string, name: string): Promise<ItemDetails | null> {
+  try {
+    console.log('[SERVER] Fetching item from API:', { type, name });
+    const itemName = decodeURIComponent(name);
+    const itemType = decodeURIComponent(type);
+    
+    const response = await fetch(
+      `${BASE_API_URL}/items/get?name=${encodeURIComponent(itemName)}&type=${encodeURIComponent(itemType)}`,
+      { next: { revalidate: 300 } } // Cache for 5 minutes (300 seconds)
+    );
+    
+    if (!response.ok) {
+      console.log('[SERVER] Item not found:', { type: itemType, name: itemName });
+      return null;
+    }
+    
+    const data = await response.json();
+    console.log('[SERVER] Successfully fetched item:', data.name);
+    return data as ItemDetails;
+  } catch (err) {
+    console.error('[SERVER] Error fetching item:', err);
+    return null;
   }
 }
 
 export async function fetchChangelogList(): Promise<Changelog[]> {
-  const response = await fetch(`${PROD_API_URL}/changelogs/list`);
+  const response = await fetch(`${BASE_API_URL}/changelogs/list`);
   if (!response.ok) throw new Error('Failed to fetch changelog list');
   return response.json();
 }
 
 export async function fetchChangelog(id: string): Promise<Changelog> {
-  const response = await fetch(`${PROD_API_URL}/changelogs/get?id=${id}`);
+  const response = await fetch(`${BASE_API_URL}/changelogs/get?id=${id}`);
   if (!response.ok) throw new Error('Failed to fetch changelog');
   return response.json();
+}
+
+export async function fetchTradeAds() {
+  try {
+    console.log(`[SERVER] Fetching trade ads from ${BASE_API_URL}...`);
+    const response = await fetch(`${BASE_API_URL}/trades/list`, {
+      cache: 'no-store',
+      next: { revalidate: 0 }
+    });
+    
+    if (response.status === 404) {
+      // 404 means no trade ads found (all expired)
+      console.log('[SERVER] No trade ads found');
+      return [];
+    }
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch trade ads');
+    }
+    
+    const data = await response.json();
+    console.log(`[SERVER] Successfully fetched ${data.length} trade ads`);
+    return data;
+  } catch (err) {
+    console.error('[SERVER] Error fetching trade ads:', err);
+    return [];
+  }
+}
+
+export async function fetchTradeAd(id: string) {
+  try {
+    console.log(`[SERVER] Fetching trade ad ${id} from ${BASE_API_URL}...`);
+    const response = await fetch(`${BASE_API_URL}/trades/get?id=${id}`, {
+      cache: 'no-store',
+      next: { revalidate: 0 }
+    });
+    
+    if (response.status === 404) {
+      console.log(`[SERVER] Trade ad ${id} not found`);
+      return null;
+    }
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch trade ad');
+    }
+    
+    const data = await response.json();
+    console.log(`[SERVER] Successfully fetched trade ad ${id}`);
+    return data;
+  } catch (err) {
+    console.error('[SERVER] Error fetching trade ad:', err);
+    return null;
+  }
+}
+
+export async function fetchUsersBatch(userIds: string[]) {
+  try {
+    if (userIds.length === 0) {
+      return {};
+    }
+    
+    console.log(`[SERVER] Fetching ${userIds.length} users in batch from ${BASE_API_URL}...`);
+    const response = await fetch(`${BASE_API_URL}/users/get/batch?ids=${userIds.join(',')}&nocache=true`, {
+      next: { revalidate: 300 } // Cache for 5 minutes
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch users batch');
+    }
+    
+    const userDataArray = await response.json();
+    const userMap = userDataArray.reduce((acc: Record<string, UserData>, user: UserData) => {
+      acc[user.id] = user;
+      return acc;
+    }, {});
+    
+    console.log(`[SERVER] Successfully fetched ${userDataArray.length} users in batch`);
+    return userMap;
+  } catch (err) {
+    console.error('[SERVER] Error fetching users batch:', err);
+    return {};
+  }
+}
+
+export async function fetchDupes() {
+  try {
+    console.log(`[SERVER] Fetching dupes from ${BASE_API_URL}...`);
+    const response = await fetch(`${BASE_API_URL}/dupes/list`, {
+      next: { revalidate: 300 } // Cache for 5 minutes
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch dupes');
+    }
+    
+    const data = await response.json();
+    console.log(`[SERVER] Successfully fetched ${data.length} dupes`);
+    return data;
+  } catch (err) {
+    console.error('[SERVER] Error fetching dupes:', err);
+    return [];
+  }
 } 
