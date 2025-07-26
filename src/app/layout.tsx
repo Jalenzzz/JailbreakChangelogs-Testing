@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
-import localFont from "next/font/local";
 import Link from "next/link";
 import Script from 'next/script';
 import "./globals.css";
@@ -21,7 +20,6 @@ import NextTopLoader from 'nextjs-toploader';
 import AuthCheck from '@/components/Auth/AuthCheck';
 import { Tooltip } from '@mui/material';
 import SurveyProvider from '@/components/Survey/SurveyProvider';
-import SupportProvider from '@/components/Support/SupportProvider';
 import ReportIssueButton from '@/components/ReportIssue/ReportIssueButton';
 import { checkMaintenanceMode, getMaintenanceMetadata } from '@/utils/maintenance';
 import { Suspense } from 'react';
@@ -29,11 +27,6 @@ import { GoogleAnalytics } from '@next/third-parties/google';
 import SupportPromptModalWrapper from './SupportPromptModalWrapper';
 
 const inter = Inter({ subsets: ["latin"] });
-const luckiestGuy = localFont({ 
-  src: '../../public/fonts/LuckiestGuy.ttf',
-  variable: '--font-luckiest-guy',
-});
-
 export const viewport: Viewport = {
   themeColor: "#124e66",
 };
@@ -100,7 +93,7 @@ export default async function RootLayout({
             strategy="afterInteractive"
           />
         </head>
-        <body className={`${inter.className} ${luckiestGuy.variable} bg-[#2E3944]`}>
+        <body className={`${inter.className} bg-[#2E3944]`}>
           <Maintenance />
           <Script id="clarity-script" strategy="afterInteractive">
             {`
@@ -129,7 +122,7 @@ export default async function RootLayout({
           strategy="afterInteractive"
         />
       </head>
-      <body className={`${inter.className} ${luckiestGuy.variable} bg-[#2E3944]`}>
+      <body className={`${inter.className} bg-[#2E3944]`}>
         <Toaster
           position="bottom-right"
           toastOptions={{
@@ -183,7 +176,6 @@ export default async function RootLayout({
         <OfflineDetector />
         <AuthCheck />
         <SurveyProvider>
-          <SupportProvider>
           <div className="flex min-h-screen flex-col">
             <Header />
             <SupportPromptModalWrapper />
@@ -217,7 +209,7 @@ export default async function RootLayout({
                       </Tooltip>
                       <Tooltip title="Join our Discord server" arrow placement="top">
                         <a
-                          href="https://discord.jailbreakchangelogs.xyz/"
+                          href="https://discord.jailbreakchangelogs.xyz"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="rounded-full bg-[#5865F2] p-3 text-white hover:bg-[#4650c1] transition-colors"
@@ -471,7 +463,6 @@ export default async function RootLayout({
               </div>
             </footer>
           </div>
-        </SupportProvider>
         </SurveyProvider>
         <Script id="clarity-script" strategy="afterInteractive">
           {`
