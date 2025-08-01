@@ -1,3 +1,14 @@
+const truncateName = (name: string) => name.length > 12 ? name.slice(0, 12) + '…' : name;
+function useWindowWidth() {
+  const [width, setWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  return width;
+}
+
 import React, { useState, useEffect } from 'react';
 import { TradeItem } from '@/types/trading';
 import { Pagination, Checkbox, FormControlLabel } from '@mui/material';
@@ -17,6 +28,7 @@ import DisplayAd from '@/components/Ads/DisplayAd';
 import { useDebounce } from '@/hooks/useDebounce';
 import { getCurrentUserPremiumType } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Select = dynamic(() => import('react-select'), { ssr: false });
 
@@ -32,11 +44,13 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
   items,
   onSelect,
 }) => {
+  const windowWidth = useWindowWidth();
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [selectedVariants, setSelectedVariants] = useState<Record<number, string>>({});
+  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
   const [filterSort, setFilterSort] = useState<FilterSort>("name-all-items");
   const [valueSort, setValueSort] = useState<ValueSort>("cash-desc");
   const [showNonTradable, setShowNonTradable] = useState(false);
@@ -44,15 +58,13 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
   const [currentUserPremiumType, setCurrentUserPremiumType] = useState<number>(0);
   const [premiumStatusLoaded, setPremiumStatusLoaded] = useState(false);
   const router = useRouter();
-  const ITEMS_PER_PAGE = 18;
+  const ITEMS_PER_PAGE = windowWidth === 1024 ? 25 : 24;
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  // Set selectLoaded to true after mount to ensure client-side rendering
   useEffect(() => {
     setSelectLoaded(true);
   }, []);
 
-  // Reset page when search query changes
   useEffect(() => {
     setPage(1);
   }, [debouncedSearchQuery]);
@@ -72,11 +84,9 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
   }, []);
 
   useEffect(() => {
-    // Get current user's premium type
     setCurrentUserPremiumType(getCurrentUserPremiumType());
     setPremiumStatusLoaded(true);
 
-    // Listen for auth changes
     const handleAuthChange = () => {
       setCurrentUserPremiumType(getCurrentUserPremiumType());
     };
@@ -88,15 +98,36 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
   }, []);
 
   const filteredItems = items.filter(item => {
-    // First apply search filter
-    const matchesSearch = item.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
-                         item.type.toLowerCase().includes(debouncedSearchQuery.toLowerCase());
+    const normalize = (str: string) => str.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const tokenize = (str: string) => str.toLowerCase().match(/[a-z0-9]+/g) || [];
+    const splitAlphaNum = (str: string) => {
+      return (str.match(/[a-z]+|[0-9]+/gi) || []).map(s => s.toLowerCase());
+    };
+    const searchNormalized = normalize(debouncedSearchQuery);
+    const searchTokens = tokenize(debouncedSearchQuery);
+    const searchAlphaNum = splitAlphaNum(debouncedSearchQuery);
+    function isTokenSubsequence(searchTokens: string[], nameTokens: string[]) {
+      let i = 0, j = 0;
+      while (i < searchTokens.length && j < nameTokens.length) {
+        if (nameTokens[j].includes(searchTokens[i])) {
+          i++;
+        }
+        j++;
+      }
+      return i === searchTokens.length;
+    }
+    const nameNormalized = normalize(item.name);
+    const typeNormalized = normalize(item.type);
+    const nameTokens = tokenize(item.name);
+    const nameAlphaNum = splitAlphaNum(item.name);
+    const matchesSearch =
+      nameNormalized.includes(searchNormalized) ||
+      typeNormalized.includes(searchNormalized) ||
+      isTokenSubsequence(searchTokens, nameTokens) ||
+      isTokenSubsequence(searchAlphaNum, nameAlphaNum);
     if (!matchesSearch) return false;
-
-    // Then apply tradable filter
     if (!showNonTradable && item.tradable !== 1) return false;
 
-    // Then apply category filter
     switch (filterSort) {
       case "name-limited-items":
         return item.is_limited === 1;
@@ -513,8 +544,8 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
                 </div>
                 <div className="flex flex-col flex-grow">
                   <div className="space-y-1.5">
-                    <span className="text-muted text-sm font-medium truncate transition-colors group-hover:text-blue-400">
-                      {item.name}
+                    <span className="text-blue-300 text-sm font-medium truncate transition-colors group-hover:text-blue-400 hover:underline">
+                      {windowWidth <= 320 ? truncateName(item.name) : item.name}
                     </span>
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <span 
@@ -564,41 +595,55 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
                               onClick={(e) => {
                                 e.stopPropagation();
                                 e.preventDefault();
-                                const dropdown = e.currentTarget.nextElementSibling as HTMLElement;
-                                dropdown?.classList.toggle('hidden');
+                                setOpenDropdownId(openDropdownId === item.id ? null : item.id);
                               }}
                               className="w-full flex items-center justify-between gap-1 rounded-lg border border-[#2E3944] bg-[#37424D] px-3 py-1.5 text-sm text-muted hover:bg-[#124E66] focus:outline-none"
                             >
                               {selectedVariants[item.id] || '2025'}
-                              <ChevronDownIcon className="h-4 w-4" />
+                              <ChevronDownIcon className={`h-4 w-4 transition-transform ${openDropdownId === item.id ? 'rotate-180' : ''}`} />
                             </button>
-                            <div className="absolute z-10 mt-1 w-full hidden rounded-lg border border-[#2E3944] bg-[#37424D] shadow-lg">
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  e.preventDefault();
-                                  handleVariantSelect(item.id, '2025');
-                                  (e.currentTarget.parentElement as HTMLElement)?.classList.add('hidden');
-                                }}
-                                className="w-full px-3 py-2 text-left text-sm text-muted hover:bg-[#124E66]"
-                              >
-                                2025
-                              </button>
-                              {item.children?.map((child) => (
-                                <button
-                                  key={child.id}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    e.preventDefault();
-                                    handleVariantSelect(item.id, child.sub_name);
-                                    (e.currentTarget.parentElement as HTMLElement)?.classList.add('hidden');
-                                  }}
-                                  className="w-full px-3 py-2 text-left text-sm text-muted hover:bg-[#124E66]"
+                            <AnimatePresence>
+                              {openDropdownId === item.id && (
+                                <motion.div
+                                  key="dropdown"
+                                  initial={{ opacity: 0, y: -8 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  exit={{ opacity: 0, y: -8 }}
+                                  transition={{ duration: 0.18, ease: 'easeOut' }}
+                                  className="absolute z-10 mt-1 w-full rounded-lg border border-[#2E3944] bg-[#37424D] shadow-lg"
                                 >
-                                  {child.sub_name}
-                                </button>
-                              ))}
-                            </div>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      e.preventDefault();
+                                      handleVariantSelect(item.id, '2025');
+                                      setOpenDropdownId(null);
+                                    }}
+                                    className={`w-full px-3 py-2 text-left text-sm text-muted hover:bg-[#124E66] ${
+                                      selectedVariants[item.id] === '2025' || !selectedVariants[item.id] ? 'bg-[#124E66]' : ''
+                                    }`}
+                                  >
+                                    2025
+                                  </button>
+                                  {item.children?.map((child) => (
+                                    <button
+                                      key={child.id}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                        handleVariantSelect(item.id, child.sub_name);
+                                        setOpenDropdownId(null);
+                                      }}
+                                      className={`w-full px-3 py-2 text-left text-sm text-muted hover:bg-[#124E66] ${
+                                        selectedVariants[item.id] === child.sub_name ? 'bg-[#124E66]' : ''
+                                      }`}
+                                    >
+                                      {child.sub_name}
+                                    </button>
+                                  ))}
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
                           </div>
                         )}
                       </>
