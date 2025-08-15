@@ -16,10 +16,8 @@ export default async function ContributorsPage() {
   ];
   const valueTeamIds = [
     '1159540851106648174', // free
-    '1190371197230268558', // Gdplayer2818
     '729353754578518058', // Toleda1
     '1181250180436217910', // nbhjlkjkl
-    '1132568688390840321', // rezexa_11261
   ];
   const contributorIds = [
     '1123014543891775509', // PikachuWolverine

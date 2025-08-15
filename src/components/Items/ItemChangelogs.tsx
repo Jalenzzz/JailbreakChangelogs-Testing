@@ -4,9 +4,11 @@ import { formatRelativeDate } from '@/utils/timestamp';
 import { convertUrlsToLinks } from '@/utils/urlConverter';
 import { Button, Tooltip, Pagination } from '@mui/material';
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline';
-import { ArrowUpIcon as ArrowUpSolidIcon, ArrowDownIcon as ArrowDownSolidIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
+import { formatCustomDate } from '@/utils/timestamp';
+import { Chip } from '@mui/material';
+import Image from 'next/image';
 
 type ItemChangeValue = string | number | boolean | null;
 
@@ -37,26 +39,50 @@ interface Change {
   changed_by_id: string;
   suggestion_data?: {
     id: number;
-    user_id: number;
+    user_id: number | string;
     suggestor_name: string;
-    message_id: number;
+    message_id: number | string;
     data: {
+        // Old format fields
       item_name: string;
-      current_value: string;
-      suggested_value: string;
-      current_demand: string | null;
-      suggested_demand: string | null;
-      current_note: string | null;
-      suggested_note: string | null;
-      current_trend: string | null;
-      suggested_trend: string | null;
+        current_value?: string;
+        suggested_value?: string;
+        current_demand?: string | null;
+        suggested_demand?: string | null;
+        current_note?: string | null;
+        suggested_note?: string | null;
+        current_trend?: string | null;
+        suggested_trend?: string | null;
       reason: string;
+        // New format fields
+        item_type?: string;
+        item_id?: number;
+        current_cash_value?: string;
+        suggested_cash_value?: string;
+        current_duped_value?: string;
+        suggested_duped_value?: string;
+        current_notes?: string;
+        suggested_notes?: string;
     };
     vote_data: {
       upvotes: number;
       downvotes: number;
+      voters?: Array<{
+        id: number;
+        name: string;
+        avatar: string;
+        vote_number: number;
+        vote_type: string;
+        timestamp: number;
+      }>;
     };
     created_at: number;
+    metadata?: {
+      avatar?: string;
+      guild_id?: number;
+      channel_id?: number;
+      suggestion_type?: string;
+    };
   };
 }
 
@@ -65,7 +91,7 @@ interface ItemChangelogsProps {
 }
 
 const MAX_REASON_LENGTH = 200;
-const DISCORD_CHANNEL_URL = 'https://discord.com/channels/981485815987318824/1102253731849969764';
+const DISCORD_GUILD_ID = '981485815987318824';
 
 const truncateText = (text: string, maxLength: number) => {
   if (text.length <= maxLength) return { text, isTruncated: false };
@@ -360,22 +386,15 @@ export default function ItemChangelogs({ itemId }: ItemChangelogsProps) {
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 mb-2">
                     <div className="flex items-center gap-2">
                       {change.suggestion_data ? (
-                        <>
-                          <span className="text-sm text-muted">
-                            Suggested by{' '}
-                            <a
-                              href={`https://discord.com/users/${change.suggestion_data.user_id}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-400 hover:text-blue-300 hover:underline"
-                            >
-                              {change.suggestion_data.suggestor_name}
-                            </a>
-                          </span>
-                          <span className="rounded-full bg-[#5865F2]/30 px-2 py-0.5 text-xs text-white font-medium">
-                            Suggestion #{change.suggestion_data.id}
-                          </span>
-                        </>
+                        <Chip
+                          label={`Suggestion #${change.suggestion_data.id}`}
+                          size="small"
+                          sx={{
+                            backgroundColor: '#5865F2',
+                            color: 'white',
+                            '& .MuiChip-label': { color: 'white' }
+                          }}
+                        />
                       ) : (
                         <span className="text-sm text-muted">
                           Changed by{' '}
@@ -388,26 +407,34 @@ export default function ItemChangelogs({ itemId }: ItemChangelogsProps) {
                         </span>
                       )}
                     </div>
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
-                      {change.suggestion_data && (
-                        <div className="flex items-center gap-2">
-                          <Tooltip title="Upvotes" arrow placement="top">
-                            <div className="flex items-center gap-1 rounded-full bg-[#5865F2]/30 px-2 py-0.5">
-                              <ArrowUpSolidIcon className="h-5 w-5 text-[#5865F2]" />
-                              <span className="text-white text-xs font-medium">{change.suggestion_data.vote_data.upvotes}</span>
-                            </div>
-                          </Tooltip>
-                          <Tooltip title="Downvotes" arrow placement="top">
-                            <div className="flex items-center gap-1 rounded-full bg-red-500/30 px-2 py-0.5">
-                              <ArrowDownSolidIcon className="h-5 w-5 text-red-500" />
-                              <span className="text-white text-xs font-medium">{change.suggestion_data.vote_data.downvotes}</span>
-                            </div>
-                          </Tooltip>
-                        </div>
+                    <div className="flex flex-col items-end gap-1">
+                      {!change.suggestion_data && (
+                        <Tooltip 
+                          title={formatCustomDate(change.created_at * 1000)}
+                          placement="top"
+                          arrow
+                          slotProps={{
+                            tooltip: {
+                              sx: {
+                                backgroundColor: '#0F1419',
+                                color: '#D3D9D4',
+                                fontSize: '0.75rem',
+                                padding: '8px 12px',
+                                borderRadius: '8px',
+                                border: '1px solid #2E3944',
+                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                                '& .MuiTooltip-arrow': {
+                                  color: '#0F1419',
+                                }
+                              }
+                            }
+                          }}
+                        >
+                          <span className="text-sm text-muted cursor-help">
+                            {formatRelativeDate(change.created_at * 1000)}
+                          </span>
+                        </Tooltip>
                       )}
-                      <span className="text-sm text-muted">
-                        {formatRelativeDate(change.created_at * 1000)}
-                      </span>
                     </div>
                   </div>
 
@@ -417,21 +444,127 @@ export default function ItemChangelogs({ itemId }: ItemChangelogsProps) {
 
                   {change.suggestion_data && (
                     <>
-                      <div className="mb-4">
-                        <span className="text-sm text-muted">
-                          Changed by{' '}
-                          <Link
-                            href={`/users/${change.changed_by_id}`}
-                            className="text-blue-400 hover:text-blue-300 hover:underline"
-                          >
-                            {change.changed_by}
-                          </Link>
-                        </span>
-                      </div>
-                      <div className="border-b border-[#2E3944] mb-4"></div>
-                      <div className="mb-4">
-                        <div className="text-sm text-white mb-2">Reason:</div>
-                        <div className="text-sm text-muted whitespace-pre-wrap">
+                      <div className="bg-[#5865F2]/10 border border-[#5865F2]/20 rounded-lg p-3 mt-2">
+                        {/* Item type and ID info for new format */}
+                        {(change.suggestion_data.data.item_type || change.suggestion_data.data.item_id) && (
+                          <div className="flex items-center gap-2 mb-2 text-xs">
+                            {change.suggestion_data.data.item_type && (
+                              <span className="px-2 py-1 bg-[#5865F2]/20 text-[#5865F2] rounded">
+                                {change.suggestion_data.data.item_type}
+                              </span>
+                            )}
+                            {change.suggestion_data.data.item_id && (
+                              <span className="px-2 py-1 bg-[#37424D] text-gray-300 rounded">
+                                ID: {change.suggestion_data.data.item_id}
+                              </span>
+                            )}
+                          </div>
+                        )}
+                        
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                          <span className="text-sm font-medium text-white">
+                            Suggested by{' '}
+                            <a
+                              href={`https://discord.com/users/${change.suggestion_data.user_id}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-400 hover:text-blue-300 hover:underline"
+                            >
+                              {change.suggestion_data.suggestor_name}
+                            </a>
+                            {change.suggestion_data.metadata?.avatar && (
+                              <Image 
+                                src={change.suggestion_data.metadata.avatar} 
+                                alt={`${change.suggestion_data.suggestor_name}'s avatar`}
+                                width={16}
+                                height={16}
+                                className="rounded-full ml-2 inline-block"
+                                unoptimized
+                              />
+                            )}
+                          </span>
+                          <div className="flex items-center justify-center text-xs">
+                            <div className="flex items-center justify-center rounded-full border border-gray-600 overflow-hidden">
+                              <Tooltip 
+                                  title={
+                                    change.suggestion_data.vote_data.voters ? (
+                                      <div className="space-y-1">
+                                        <div className="font-medium">Upvotes ({change.suggestion_data.vote_data.upvotes}):</div>
+                                        {change.suggestion_data.vote_data.voters
+                                          .filter(voter => voter.vote_type === 'upvote')
+                                          .map(voter => (
+                                            <div key={voter.id} className="flex items-center gap-2">
+                                              <Image src={voter.avatar} alt={voter.name} width={16} height={16} className="rounded-full" unoptimized />
+                                              <span className="text-xs">{voter.name}</span>
+                                            </div>
+                                          ))}
+                                      </div>
+                                    ) : (
+                                      `${change.suggestion_data.vote_data.upvotes} upvote${change.suggestion_data.vote_data.upvotes !== 1 ? 's' : ''}`
+                                    )
+                                  }
+                                arrow
+                                placement="top"
+                                slotProps={{
+                                  tooltip: {
+                                    sx: {
+                                      bgcolor: '#1A2228',
+                                      border: '1px solid #2E3944',
+                                        maxWidth: '300px',
+                                      '& .MuiTooltip-arrow': {
+                                        color: '#1A2228',
+                                      },
+                                    },
+                                  },
+                                }}
+                              >
+                                <div className="flex items-center justify-center gap-1 bg-green-500/10 border-r border-gray-600 px-2 py-1 cursor-help">
+                                  <span className="text-green-400 font-medium">↑</span>
+                                  <span className="text-green-400 font-semibold">{change.suggestion_data.vote_data.upvotes}</span>
+                                </div>
+                              </Tooltip>
+                              <Tooltip 
+                                  title={
+                                    change.suggestion_data.vote_data.voters ? (
+                                      <div className="space-y-1">
+                                        <div className="font-medium">Downvotes ({change.suggestion_data.vote_data.downvotes}):</div>
+                                        {change.suggestion_data.vote_data.voters
+                                          .filter(voter => voter.vote_type === 'downvote')
+                                          .map(voter => (
+                                            <div key={voter.id} className="flex items-center gap-2">
+                                              <Image src={voter.avatar} alt={voter.name} width={16} height={16} className="rounded-full" unoptimized />
+                                              <span className="text-xs">{voter.name}</span>
+                                            </div>
+                                          ))}
+                                      </div>
+                                    ) : (
+                                      `${change.suggestion_data.vote_data.downvotes} downvote${change.suggestion_data.vote_data.downvotes !== 1 ? 's' : ''}`
+                                    )
+                                  }
+                                arrow
+                                placement="top"
+                                slotProps={{
+                                  tooltip: {
+                                    sx: {
+                                      bgcolor: '#1A2228',
+                                      border: '1px solid #2E3944',
+                                        maxWidth: '300px',
+                                      '& .MuiTooltip-arrow': {
+                                        color: '#1A2228',
+                                      },
+                                    },
+                                  },
+                                }}
+                              >
+                                <div className="flex items-center justify-center gap-1 bg-red-500/10 px-2 py-1 cursor-help">
+                                  <span className="text-red-400 font-medium">↓</span>
+                                  <span className="text-red-400 font-semibold">{change.suggestion_data.vote_data.downvotes}</span>
+                                </div>
+                              </Tooltip>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-sm text-gray-300 mb-2">
                           {(() => {
                             const { text, isTruncated } = truncateText(change.suggestion_data.data.reason, MAX_REASON_LENGTH);
                             return (
@@ -445,7 +578,7 @@ export default function ItemChangelogs({ itemId }: ItemChangelogsProps) {
                                 </ReactMarkdown>
                                 {isTruncated && (
                                   <a
-                                    href={`${DISCORD_CHANNEL_URL}/${change.suggestion_data.message_id}`}
+                                    href={`https://discord.com/channels/${change.suggestion_data.metadata?.guild_id || DISCORD_GUILD_ID}/${change.suggestion_data.metadata?.channel_id || '1102253731849969764'}/${change.suggestion_data.message_id}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="ml-1 text-blue-400 hover:text-blue-300 hover:underline"
@@ -457,7 +590,113 @@ export default function ItemChangelogs({ itemId }: ItemChangelogsProps) {
                             );
                           })()}
                         </div>
+                        
+                        {/* Display suggestion details based on available data */}
+                        {(() => {
+                          // Collect all meaningful suggestion fields
+                          const suggestionFields = [];
+                          
+                          // Handle old format value
+                          if (change.suggestion_data.data.current_value && change.suggestion_data.data.suggested_value) {
+                            suggestionFields.push({
+                              label: 'Value',
+                              old: change.suggestion_data.data.current_value,
+                              new: change.suggestion_data.data.suggested_value
+                            });
+                          }
+                          
+                          // Handle new format cash value
+                          if (change.suggestion_data.data.current_cash_value && change.suggestion_data.data.suggested_cash_value) {
+                            suggestionFields.push({
+                              label: 'Cash Value',
+                              old: change.suggestion_data.data.current_cash_value,
+                              new: change.suggestion_data.data.suggested_cash_value
+                            });
+                          }
+                          
+                          // Handle new format duped value
+                          if (change.suggestion_data.data.current_duped_value && change.suggestion_data.data.suggested_duped_value) {
+                            suggestionFields.push({
+                              label: 'Duped Value',
+                              old: change.suggestion_data.data.current_duped_value,
+                              new: change.suggestion_data.data.suggested_duped_value
+                            });
+                          }
+                          
+                          // Handle new format notes
+                          if (change.suggestion_data.data.current_notes && change.suggestion_data.data.suggested_notes) {
+                            suggestionFields.push({
+                              label: 'Notes',
+                              old: change.suggestion_data.data.current_notes,
+                              new: change.suggestion_data.data.suggested_notes
+                            });
+                          }
+                          
+                          // Handle old format demand/trend/notes only if they have meaningful values
+                          if (change.suggestion_data.data.current_demand !== null && change.suggestion_data.data.suggested_demand !== null) {
+                            suggestionFields.push({
+                              label: 'Demand',
+                              old: change.suggestion_data.data.current_demand,
+                              new: change.suggestion_data.data.suggested_demand
+                            });
+                          }
+                          
+                          if (change.suggestion_data.data.current_trend !== null && change.suggestion_data.data.suggested_trend !== null) {
+                            suggestionFields.push({
+                              label: 'Trend',
+                              old: change.suggestion_data.data.current_trend,
+                              new: change.suggestion_data.data.suggested_trend
+                            });
+                          }
+                          
+                          if (change.suggestion_data.data.current_note !== null && change.suggestion_data.data.suggested_note !== null) {
+                            suggestionFields.push({
+                              label: 'Note',
+                              old: change.suggestion_data.data.current_note,
+                              new: change.suggestion_data.data.suggested_note
+                            });
+                          }
+                          
+                          // Only show the section if there are meaningful fields to display
+                          if (suggestionFields.length === 0) return null;
+                          
+                          return (
+                            <div className="bg-[#2A3441]/50 rounded-lg p-2 mb-2">
+                              <div className="text-xs text-gray-400 mb-1">Suggestion Details:</div>
+                              <div className="space-y-1">
+                                {suggestionFields.map((field, index) => (
+                                  <div key={index} className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                                    <span className="text-xs text-gray-400 flex-shrink-0">{field.label}:</span>
+                                    <span className="text-xs text-gray-300 line-through">{field.old}</span>
+                                    <span className="text-xs text-gray-300">→</span>
+                                    <span className="text-xs text-white font-medium">{field.new}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          );
+                        })()}
+                        <div className="text-xs text-gray-400">
+                          Suggested on {formatCustomDate(change.suggestion_data.created_at * 1000)}
+                          {change.suggestion_data.metadata?.suggestion_type && (
+                            <span className="ml-2 px-2 py-1 bg-[#5865F2]/20 text-[#5865F2] rounded text-xs">
+                              {change.suggestion_data.metadata.suggestion_type.replace(/_/g, ' ')}
+                            </span>
+                          )}
+                        </div>
                       </div>
+                      <div className="mt-3">
+                        <span className="text-sm text-muted">
+                          Changed by{' '}
+                          <Link
+                            href={`/users/${change.changed_by_id}`}
+                            className="text-blue-400 hover:text-blue-300 hover:underline"
+                          >
+                            {change.changed_by}
+                          </Link>
+                        </span>
+                      </div>
+                      <div className="border-b border-[#2E3944] mb-4"></div>
                     </>
                   )}
 

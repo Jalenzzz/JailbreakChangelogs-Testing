@@ -8,17 +8,16 @@ import {
   ArrowUpIcon,
   SparklesIcon,
 } from "@heroicons/react/24/outline";
-import { Pagination } from '@mui/material';
+import { Pagination, Slider } from '@mui/material';
 import ItemCard from "@/components/Items/ItemCard";
 import { Item, FilterSort, ValueSort } from "@/types";
-import { sortAndFilterItems } from "@/utils/values";
+import { sortAndFilterItems, demandOrder, getEffectiveCashValue } from "@/utils/values";
 import toast from 'react-hot-toast';
 import SearchParamsHandler from "@/components/SearchParamsHandler";
 import CategoryIcons from "@/components/Items/CategoryIcons";
 import { PUBLIC_API_URL } from "@/utils/api";
 import { useRouter } from "next/navigation";
 import { useDebounce } from "@/hooks/useDebounce";
-import { demandOrder } from "@/utils/values";
 import dynamic from 'next/dynamic';
 import DisplayAd from "@/components/Ads/DisplayAd";
 import { getCurrentUserPremiumType } from '@/hooks/useAuth';
@@ -52,6 +51,24 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
   const [currentUserPremiumType, setCurrentUserPremiumType] = useState<number>(0);
   const [premiumStatusLoaded, setPremiumStatusLoaded] = useState(false);
+  const MAX_VALUE_RANGE = 500_000_000;
+  const [maxValue, setMaxValue] = useState<number>(MAX_VALUE_RANGE);
+  const [appliedMinValue, setAppliedMinValue] = useState<number>(0);
+  const [appliedMaxValue, setAppliedMaxValue] = useState<number>(MAX_VALUE_RANGE);
+  const parseNumericValue = (value: string | null): number => {
+    if (!value || value === 'N/A') return -1;
+    const lower = value.toLowerCase();
+    const num = parseFloat(lower.replace(/[^0-9.]/g, ''));
+    if (Number.isNaN(num)) return -1;
+    if (lower.includes('k')) return num * 1_000;
+    if (lower.includes('m')) return num * 1_000_000;
+    if (lower.includes('b')) return num * 1_000_000_000;
+    return num;
+  };
+  const rangeFilteredItems = sortedItems.filter((item) => {
+    const cash = parseNumericValue(getEffectiveCashValue(item));
+    return cash >= appliedMinValue && cash <= appliedMaxValue;
+  });
 
   // Load saved preferences after mount
   useEffect(() => {
@@ -178,7 +195,7 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
 
   useEffect(() => {
     setPage(1);
-  }, [filterSort, valueSort, debouncedSearchTerm]);
+  }, [filterSort, valueSort, debouncedSearchTerm, appliedMinValue, appliedMaxValue]);
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -186,8 +203,8 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
 
   const adjustedIndexOfLastItem = page * itemsPerPage;
   const adjustedIndexOfFirstItem = adjustedIndexOfLastItem - itemsPerPage;
-  const displayedItems = sortedItems.slice(adjustedIndexOfFirstItem, adjustedIndexOfLastItem);
-  const totalPages = Math.ceil(sortedItems.length / itemsPerPage);
+  const displayedItems = rangeFilteredItems.slice(adjustedIndexOfFirstItem, adjustedIndexOfLastItem);
+  const totalPages = Math.ceil(rangeFilteredItems.length / itemsPerPage);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -248,7 +265,7 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
         />
       </Suspense>
       
-            <div className="mb-8 rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
+      <div className="mb-8 rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
         <div className="mb-4 flex items-center justify-between">
           <h1 className="text-3xl font-bold text-muted">
             Roblox Jailbreak Value List
@@ -397,7 +414,7 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
           </div>
           <div className="flex-1 flex items-center justify-center">
             <iframe
-              src="https://www.youtube.com/embed/yEsTOaJka3k"
+              src="https://www.youtube.com/embed/yEsTOaJka3k?controls=0&rel=0"
               width="100%"
               height="315"
               allowFullScreen
@@ -425,227 +442,275 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
               !premiumStatusLoaded
                 ? "w-full lg:flex-1 lg:min-w-0 flex flex-col gap-4"
                 : currentUserPremiumType !== 0
-                  ? "w-full flex flex-col lg:flex-row lg:items-center lg:gap-4"
+                  ? "w-full lg:flex-1 lg:min-w-0 flex flex-col gap-4"
                   : "w-full lg:flex-1 lg:min-w-0 flex flex-col gap-4"
             }
           >
-            {/* Search input */}
-            <div className="relative">
-              <input
-                type="text"
-                placeholder={`Search ${filterSort === "name-all-items" ? "items" : filterSort.replace("name-", "").replace("-items", "").replace(/-/g, " ").toLowerCase()}...`}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full lg:w-[380px] xl:w-[480px] rounded-lg border border-[#2E3944] bg-[#37424D] px-4 py-2 pl-10 pr-10 text-muted placeholder-[#D3D9D4] focus:border-[#124E66] focus:outline-none"
-              />
-              <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]" />
-              {searchTerm && (
-                <button
-                  onClick={() => setSearchTerm("")}
-                  className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#FFFFFF] hover:text-muted"
-                  aria-label="Clear search"
-                >
-                  <XMarkIcon />
-                </button>
-              )}
-            </div>
-            {/* Filter dropdown */}
-            {selectLoaded ? (
-              <Select
-                value={{ value: filterSort, label: (() => {
-                  switch (filterSort) {
-                    case 'name-all-items': return 'All Items';
-                    case 'favorites': return 'My Favorites';
-                    case 'name-limited-items': return 'Limited Items';
-                    case 'name-seasonal-items': return 'Seasonal Items';
-                    case 'name-vehicles': return 'Vehicles';
-                    case 'name-spoilers': return 'Spoilers';
-                    case 'name-rims': return 'Rims';
-                    case 'name-body-colors': return 'Body Colors';
-                    case 'name-hyperchromes': return 'HyperChromes';
-                    case 'name-textures': return 'Body Textures';
-                    case 'name-tire-stickers': return 'Tire Stickers';
-                    case 'name-tire-styles': return 'Tire Styles';
-                    case 'name-drifts': return 'Drifts';
-                    case 'name-furnitures': return 'Furniture';
-                    case 'name-horns': return 'Horns';
-                    case 'name-weapon-skins': return 'Weapon Skins';
-                    default: return filterSort;
-                  }
-                })() }}
-                onChange={(option: unknown) => {
-                  if (!option) {
-                    // Reset to original value when cleared
-                    setFilterSort("name-all-items");
-                    localStorage.setItem('valuesFilterSort', "name-all-items");
-                    return;
-                  }
-                  const newValue = (option as { value: FilterSort }).value;
-                  if (newValue === "favorites") {
-                    const storedUser = localStorage.getItem('user');
-                    if (!storedUser) {
-                      toast.error('Please log in to view your favorites');
+            {/* Top controls row: Search + Filter + Sort */}
+            <div
+              className={
+                !premiumStatusLoaded
+                  ? "w-full flex flex-col gap-4"
+                  : currentUserPremiumType !== 0
+                    ? "w-full flex flex-col lg:flex-row lg:items-center lg:gap-4"
+                    : "w-full flex flex-col gap-4"
+              }
+            >
+              {/* Search input */}
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder={`Search ${filterSort === "name-all-items" ? "items" : filterSort.replace("name-", "").replace("-items", "").replace(/-/g, " ").toLowerCase()}...`}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full lg:w-[380px] xl:w-[480px] rounded-lg border border-[#2E3944] bg-[#37424D] px-4 py-2 pl-10 pr-10 text-muted placeholder-[#D3D9D4] focus:border-[#124E66] focus:outline-none"
+                />
+                <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]" />
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm("")}
+                    className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#FFFFFF] hover:text-muted"
+                    aria-label="Clear search"
+                  >
+                    <XMarkIcon />
+                  </button>
+                )}
+              </div>
+              {/* Filter dropdown */}
+              {selectLoaded ? (
+                <Select
+                  value={{ value: filterSort, label: (() => {
+                    switch (filterSort) {
+                      case 'name-all-items': return 'All Items';
+                      case 'favorites': return 'My Favorites';
+                      case 'name-limited-items': return 'Limited Items';
+                      case 'name-seasonal-items': return 'Seasonal Items';
+                      case 'name-vehicles': return 'Vehicles';
+                      case 'name-spoilers': return 'Spoilers';
+                      case 'name-rims': return 'Rims';
+                      case 'name-body-colors': return 'Body Colors';
+                      case 'name-hyperchromes': return 'HyperChromes';
+                      case 'name-textures': return 'Body Textures';
+                      case 'name-tire-stickers': return 'Tire Stickers';
+                      case 'name-tire-styles': return 'Tire Styles';
+                      case 'name-drifts': return 'Drifts';
+                      case 'name-furnitures': return 'Furniture';
+                      case 'name-horns': return 'Horns';
+                      case 'name-weapon-skins': return 'Weapon Skins';
+                      default: return filterSort;
+                    }
+                  })() }}
+                  onChange={(option: unknown) => {
+                    if (!option) {
+                      // Reset to original value when cleared
+                      setFilterSort("name-all-items");
+                      localStorage.setItem('valuesFilterSort', "name-all-items");
                       return;
                     }
-                  }
-                  setFilterSort(newValue);
-                  localStorage.setItem('valuesFilterSort', newValue);
-                }}
-                options={[
-                  { value: 'name-all-items', label: 'All Items' },
-                  { value: 'favorites', label: 'My Favorites' },
-                  { value: 'name-limited-items', label: 'Limited Items' },
-                  { value: 'name-seasonal-items', label: 'Seasonal Items' },
-                  { value: 'name-vehicles', label: 'Vehicles' },
-                  { value: 'name-spoilers', label: 'Spoilers' },
-                  { value: 'name-rims', label: 'Rims' },
-                  { value: 'name-body-colors', label: 'Body Colors' },
-                  { value: 'name-hyperchromes', label: 'HyperChromes' },
-                  { value: 'name-textures', label: 'Body Textures' },
-                  { value: 'name-tire-stickers', label: 'Tire Stickers' },
-                  { value: 'name-tire-styles', label: 'Tire Styles' },
-                  { value: 'name-drifts', label: 'Drifts' },
-                  { value: 'name-furnitures', label: 'Furniture' },
-                  { value: 'name-horns', label: 'Horns' },
-                  { value: 'name-weapon-skins', label: 'Weapon Skins' },
-                ]}
-                classNamePrefix="react-select"
-                className="w-full"
-                isClearable={true}
-                styles={{
-                  control: (base) => ({
-                    ...base,
-                    backgroundColor: '#37424D',
-                    borderColor: '#2E3944',
-                    color: '#D3D9D4',
-                  }),
-                  singleValue: (base) => ({ ...base, color: '#D3D9D4' }),
-                  menu: (base) => ({ ...base, backgroundColor: '#37424D', color: '#D3D9D4', zIndex: 3000 }),
-                  option: (base, state) => ({
-                    ...base,
-                    backgroundColor: state.isSelected ? '#5865F2' : state.isFocused ? '#2E3944' : '#37424D',
-                    color: state.isSelected || state.isFocused ? '#FFFFFF' : '#D3D9D4',
-                    '&:active': {
-                      backgroundColor: '#124E66',
-                      color: '#FFFFFF',
-                    },
-                  }),
-                  clearIndicator: (base) => ({
-                    ...base,
-                    color: '#D3D9D4',
-                    '&:hover': {
-                      color: '#FFFFFF',
-                    },
-                  }),
-                }}
-                isSearchable={false}
-              />
-            ) : (
-              <div className="w-full h-10 bg-[#37424D] border border-[#2E3944] rounded-md animate-pulse"></div>
-            )}
-            {/* Sort dropdown */}
-            {selectLoaded ? (
-              <Select
-                value={{ value: valueSort, label: (() => {
-                  switch (valueSort) {
-                    case 'random': return 'Random';
-                    case 'alpha-asc': return 'Name (A to Z)';
-                    case 'alpha-desc': return 'Name (Z to A)';
-                    case 'cash-desc': return 'Cash Value (High to Low)';
-                    case 'cash-asc': return 'Cash Value (Low to High)';
-                    case 'duped-desc': return 'Duped Value (High to Low)';
-                    case 'duped-asc': return 'Duped Value (Low to High)';
-                    case 'demand-desc': return 'Demand (High to Low)';
-                    case 'demand-asc': return 'Demand (Low to High)';
-                    case 'demand-extremely-high': return 'Extremely High Demand';
-                    case 'demand-very-high': return 'Very High Demand';
-                    case 'demand-high': return 'High Demand';
-                    case 'demand-decent': return 'Decent Demand';
-                    case 'demand-medium': return 'Medium Demand';
-                    case 'demand-low': return 'Low Demand';
-                    case 'demand-very-low': return 'Very Low Demand';
-                    case 'demand-close-to-none': return 'Close to None';
-                    case 'last-updated-desc': return 'Last Updated (Newest to Oldest)';
-                    case 'last-updated-asc': return 'Last Updated (Oldest to Newest)';
-                    default: return valueSort;
-                  }
-                })() }}
-                onChange={(option: unknown) => {
-                  if (!option) {
-                    // Reset to original value when cleared
-                    setValueSort("cash-desc");
-                    localStorage.setItem('valuesValueSort', "cash-desc");
-                    return;
-                  }
-                  const newValue = (option as { value: ValueSort }).value;
-                  setValueSort(newValue);
-                  localStorage.setItem('valuesValueSort', newValue);
-                }}
-                options={[
-                  { label: 'Display', options: [
-                    { value: 'random', label: 'Random' },
-                  ]},
-                  { label: 'Alphabetically', options: [
-                    { value: 'alpha-asc', label: 'Name (A to Z)' },
-                    { value: 'alpha-desc', label: 'Name (Z to A)' },
-                  ]},
-                  { label: 'Values', options: [
-                    { value: 'cash-desc', label: 'Cash Value (High to Low)' },
-                    { value: 'cash-asc', label: 'Cash Value (Low to High)' },
-                    { value: 'duped-desc', label: 'Duped Value (High to Low)' },
-                    { value: 'duped-asc', label: 'Duped Value (Low to High)' },
-                  ]},
-                  { label: 'Demand', options: [
-                    { value: 'demand-desc', label: 'Demand (High to Low)' },
-                    { value: 'demand-asc', label: 'Demand (Low to High)' },
-                    { value: 'demand-extremely-high', label: 'Extremely High Demand' },
-                    { value: 'demand-very-high', label: 'Very High Demand' },
-                    { value: 'demand-high', label: 'High Demand' },
-                    { value: 'demand-decent', label: 'Decent Demand' },
-                    { value: 'demand-medium', label: 'Medium Demand' },
-                    { value: 'demand-low', label: 'Low Demand' },
-                    { value: 'demand-very-low', label: 'Very Low Demand' },
-                    { value: 'demand-close-to-none', label: 'Close to None' },
-                  ]},
-                  { label: 'Last Updated', options: [
-                    { value: 'last-updated-desc', label: 'Last Updated (Newest to Oldest)' },
-                    { value: 'last-updated-asc', label: 'Last Updated (Oldest to Newest)' },
-                  ]},
-                ]}
-                classNamePrefix="react-select"
-                className="w-full"
-                isClearable={true}
-                styles={{
-                  control: (base) => ({
-                    ...base,
-                    backgroundColor: '#37424D',
-                    borderColor: '#2E3944',
-                    color: '#D3D9D4',
-                  }),
-                  singleValue: (base) => ({ ...base, color: '#D3D9D4' }),
-                  menu: (base) => ({ ...base, backgroundColor: '#37424D', color: '#D3D9D4', zIndex: 3000 }),
-                  option: (base, state) => ({
-                    ...base,
-                    backgroundColor: state.isSelected ? '#5865F2' : state.isFocused ? '#2E3944' : '#37424D',
-                    color: state.isSelected || state.isFocused ? '#FFFFFF' : '#D3D9D4',
-                    '&:active': {
-                      backgroundColor: '#124E66',
-                      color: '#FFFFFF',
-                    },
-                  }),
-                  clearIndicator: (base) => ({
-                    ...base,
-                    color: '#D3D9D4',
-                    '&:hover': {
-                      color: '#FFFFFF',
-                    },
-                  }),
-                }}
-                isSearchable={false}
-              />
-            ) : (
-              <div className="w-full h-10 bg-[#37424D] border border-[#2E3944] rounded-md animate-pulse"></div>
-            )}
+                    const newValue = (option as { value: FilterSort }).value;
+                    if (newValue === "favorites") {
+                      const storedUser = localStorage.getItem('user');
+                      if (!storedUser) {
+                        toast.error('Please log in to view your favorites');
+                        return;
+                      }
+                    }
+                    setFilterSort(newValue);
+                    localStorage.setItem('valuesFilterSort', newValue);
+                  }}
+                  options={[
+                    { value: 'name-all-items', label: 'All Items' },
+                    { value: 'favorites', label: 'My Favorites' },
+                    { value: 'name-limited-items', label: 'Limited Items' },
+                    { value: 'name-seasonal-items', label: 'Seasonal Items' },
+                    { value: 'name-vehicles', label: 'Vehicles' },
+                    { value: 'name-spoilers', label: 'Spoilers' },
+                    { value: 'name-rims', label: 'Rims' },
+                    { value: 'name-body-colors', label: 'Body Colors' },
+                    { value: 'name-hyperchromes', label: 'HyperChromes' },
+                    { value: 'name-textures', label: 'Body Textures' },
+                    { value: 'name-tire-stickers', label: 'Tire Stickers' },
+                    { value: 'name-tire-styles', label: 'Tire Styles' },
+                    { value: 'name-drifts', label: 'Drifts' },
+                    { value: 'name-furnitures', label: 'Furniture' },
+                    { value: 'name-horns', label: 'Horns' },
+                    { value: 'name-weapon-skins', label: 'Weapon Skins' },
+                  ]}
+                  classNamePrefix="react-select"
+                  className="w-full"
+                  isClearable={true}
+                  styles={{
+                    control: (base) => ({
+                      ...base,
+                      backgroundColor: '#37424D',
+                      borderColor: '#2E3944',
+                      color: '#D3D9D4',
+                    }),
+                    singleValue: (base) => ({ ...base, color: '#D3D9D4' }),
+                    menu: (base) => ({ ...base, backgroundColor: '#37424D', color: '#D3D9D4', zIndex: 3000 }),
+                    option: (base, state) => ({
+                      ...base,
+                      backgroundColor: state.isSelected ? '#5865F2' : state.isFocused ? '#2E3944' : '#37424D',
+                      color: state.isSelected || state.isFocused ? '#FFFFFF' : '#D3D9D4',
+                      '&:active': {
+                        backgroundColor: '#124E66',
+                        color: '#FFFFFF',
+                      },
+                    }),
+                    clearIndicator: (base) => ({
+                      ...base,
+                      color: '#D3D9D4',
+                      '&:hover': {
+                        color: '#FFFFFF',
+                      },
+                    }),
+                  }}
+                  isSearchable={false}
+                />
+              ) : (
+                <div className="w-full h-10 bg-[#37424D] border border-[#2E3944] rounded-md animate-pulse"></div>
+              )}
+
+              {/* Sort dropdown */}
+              {selectLoaded ? (
+                <Select
+                  value={{ value: valueSort, label: (() => {
+                    switch (valueSort) {
+                      case 'random': return 'Random';
+                      case 'alpha-asc': return 'Name (A to Z)';
+                      case 'alpha-desc': return 'Name (Z to A)';
+                      case 'cash-desc': return 'Cash Value (High to Low)';
+                      case 'cash-asc': return 'Cash Value (Low to High)';
+                      case 'duped-desc': return 'Duped Value (High to Low)';
+                      case 'duped-asc': return 'Duped Value (Low to High)';
+                      case 'demand-desc': return 'Demand (High to Low)';
+                      case 'demand-asc': return 'Demand (Low to High)';
+                      case 'demand-extremely-high': return 'Extremely High Demand';
+                      case 'demand-very-high': return 'Very High Demand';
+                      case 'demand-high': return 'High Demand';
+                      case 'demand-decent': return 'Decent Demand';
+                      case 'demand-medium': return 'Medium Demand';
+                      case 'demand-low': return 'Low Demand';
+                      case 'demand-very-low': return 'Very Low Demand';
+                      case 'demand-close-to-none': return 'Close to None';
+                      case 'last-updated-desc': return 'Last Updated (Newest to Oldest)';
+                      case 'last-updated-asc': return 'Last Updated (Oldest to Newest)';
+                      default: return valueSort;
+                    }
+                  })() }}
+                  onChange={(option: unknown) => {
+                    if (!option) {
+                      // Reset to original value when cleared
+                      setValueSort("cash-desc");
+                      localStorage.setItem('valuesValueSort', "cash-desc");
+                      return;
+                    }
+                    const newValue = (option as { value: ValueSort }).value;
+                    setValueSort(newValue);
+                    localStorage.setItem('valuesValueSort', newValue);
+                  }}
+                  options={[
+                    { label: 'Display', options: [
+                      { value: 'random', label: 'Random' },
+                    ]},
+                    { label: 'Alphabetically', options: [
+                      { value: 'alpha-asc', label: 'Name (A to Z)' },
+                      { value: 'alpha-desc', label: 'Name (Z to A)' },
+                    ]},
+                    { label: 'Values', options: [
+                      { value: 'cash-desc', label: 'Cash Value (High to Low)' },
+                      { value: 'cash-asc', label: 'Cash Value (Low to High)' },
+                      { value: 'duped-desc', label: 'Duped Value (High to Low)' },
+                      { value: 'duped-asc', label: 'Duped Value (Low to High)' },
+                    ]},
+                    { label: 'Demand', options: [
+                      { value: 'demand-desc', label: 'Demand (High to Low)' },
+                      { value: 'demand-asc', label: 'Demand (Low to High)' },
+                      { value: 'demand-extremely-high', label: 'Extremely High Demand' },
+                      { value: 'demand-very-high', label: 'Very High Demand' },
+                      { value: 'demand-high', label: 'High Demand' },
+                      { value: 'demand-decent', label: 'Decent Demand' },
+                      { value: 'demand-medium', label: 'Medium Demand' },
+                      { value: 'demand-low', label: 'Low Demand' },
+                      { value: 'demand-very-low', label: 'Very Low Demand' },
+                      { value: 'demand-close-to-none', label: 'Close to None' },
+                    ]},
+                    { label: 'Last Updated', options: [
+                      { value: 'last-updated-desc', label: 'Last Updated (Newest to Oldest)' },
+                      { value: 'last-updated-asc', label: 'Last Updated (Oldest to Newest)' },
+                    ]},
+                  ]}
+                  classNamePrefix="react-select"
+                  className="w-full"
+                  isClearable={true}
+                  styles={{
+                    control: (base) => ({
+                      ...base,
+                      backgroundColor: '#37424D',
+                      borderColor: '#2E3944',
+                      color: '#D3D9D4',
+                    }),
+                    singleValue: (base) => ({ ...base, color: '#D3D9D4' }),
+                    menu: (base) => ({ ...base, backgroundColor: '#37424D', color: '#D3D9D4', zIndex: 3000 }),
+                    option: (base, state) => ({
+                      ...base,
+                      backgroundColor: state.isSelected ? '#5865F2' : state.isFocused ? '#2E3944' : '#37424D',
+                      color: state.isSelected || state.isFocused ? '#FFFFFF' : '#D3D9D4',
+                      '&:active': {
+                        backgroundColor: '#124E66',
+                        color: '#FFFFFF',
+                      },
+                    }),
+                    clearIndicator: (base) => ({
+                      ...base,
+                      color: '#D3D9D4',
+                      '&:hover': {
+                        color: '#FFFFFF',
+                      },
+                    }),
+                  }}
+                  isSearchable={false}
+                />
+              ) : (
+                <div className="w-full h-10 bg-[#37424D] border border-[#2E3944] rounded-md animate-pulse"></div>
+              )}
+            </div>
+
+            {/* Value range slider (always its own row) */}
+            <div className="w-full">
+              <div className="rounded-lg border border-[#2E3944] bg-[#37424D] px-3 py-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-muted">Value Range</span>
+                    <span className="text-[10px] uppercase font-semibold text-white bg-[#5865F2] px-1.5 py-0.5 rounded">New</span>
+                  </div>
+                  <span className="text-[11px] text-muted">0 - {maxValue.toLocaleString()}</span>
+                </div>
+                <div className="px-1">
+                  <Slider
+                    value={maxValue}
+                    onChange={(_, v) => {
+                      const val = Array.isArray(v) ? v[0] : v;
+                      if (typeof val === 'number') {
+                        setMaxValue(val);
+                      }
+                    }}
+                    onChangeCommitted={(_, v) => {
+                      const val = Array.isArray(v) ? v[0] : v;
+                      if (typeof val === 'number') {
+                        setAppliedMaxValue(val);
+                        setAppliedMinValue(0);
+                      }
+                    }}
+                    valueLabelDisplay="off"
+                    min={0}
+                    max={MAX_VALUE_RANGE}
+                    step={50_000}
+                    sx={{ color: '#5865F2', mt: 1 }}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
           {/* Right: Ad */}
           {premiumStatusLoaded && currentUserPremiumType === 0 && (
@@ -666,8 +731,8 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
       <div className="mb-4 flex flex-col gap-4">
         <p className="text-muted">
           {debouncedSearchTerm 
-            ? `Found ${sortedItems.length} ${sortedItems.length === 1 ? 'item' : 'items'} matching "${debouncedSearchTerm}"${filterSort !== "name-all-items" ? ` in ${filterSort.replace("name-", "").replace("-items", "").replace(/-/g, " ")}` : ""}`
-            : `Total ${filterSort !== "name-all-items" ? filterSort.replace("name-", "").replace("-items", "").replace(/-/g, " ") : "Items"}: ${sortedItems.length}`
+            ? `Found ${rangeFilteredItems.length} ${rangeFilteredItems.length === 1 ? 'item' : 'items'} matching "${debouncedSearchTerm}"${filterSort !== "name-all-items" ? ` in ${filterSort.replace("name-", "").replace("-items", "").replace(/-/g, " ")}` : ""}`
+            : `Total ${filterSort !== "name-all-items" ? filterSort.replace("name-", "").replace("-items", "").replace(/-/g, " ") : "Items"}: ${rangeFilteredItems.length}`
           }
         </p>
         {totalPages > 1 && (
@@ -699,13 +764,30 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
         {displayedItems.length === 0 ? (
           <div className="col-span-full mb-4 rounded-lg bg-[#37424D] p-8 text-center">
             <p className="text-lg text-muted">
-              {getNoItemsMessage()}
+              {rangeFilteredItems.length === 0 && sortedItems.length > 0
+                ? `No items found in the selected value range (0 - ${appliedMaxValue.toLocaleString()})`
+                : getNoItemsMessage()}
             </p>
+            {rangeFilteredItems.length === 0 && sortedItems.length > 0 && (
+              <button
+                onClick={() => {
+                  setMaxValue(MAX_VALUE_RANGE);
+                  setAppliedMaxValue(MAX_VALUE_RANGE);
+                  setAppliedMinValue(0);
+                }}
+                className="mt-4 mr-3 rounded-lg border border-[#2E3944] bg-[#124E66] px-6 py-2 text-muted hover:bg-[#1A5F7A] focus:outline-none"
+              >
+                Reset Value Range
+              </button>
+            )}
             <button
               onClick={() => {
                 setFilterSort("name-all-items");
                 setValueSort("cash-desc");
                 setSearchTerm("");
+                setMaxValue(MAX_VALUE_RANGE);
+                setAppliedMinValue(0);
+                setAppliedMaxValue(MAX_VALUE_RANGE);
               }}
               className="mt-4 rounded-lg border border-[#2E3944] bg-[#124E66] px-6 py-2 text-muted hover:bg-[#1A5F7A] focus:outline-none"
             >
@@ -782,7 +864,7 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
       )}
     </>
   );
-} 
+}
 
 // Format the date client-side in the user's local timezone
 function formatClientDate(timestamp: number): string {
