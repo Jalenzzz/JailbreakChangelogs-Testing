@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import XpCalculatorForm from './XpCalculatorForm';
 import XpCalculatorInfo from './XpCalculatorInfo';
 import XpResultsSummary from './XpResultsSummary';
-import { Season, CalculationResults } from '@/types/seasons';
+import { Season, CalculationResults, DoubleXpResult } from '@/types/seasons';
 
 interface XpCalculatorProps {
   season: Season;
@@ -15,11 +15,36 @@ export default function XpCalculator({ season }: XpCalculatorProps) {
   const [currentLevel, setCurrentLevel] = useState(1);
   const [currentXp, setCurrentXp] = useState(0);
   const [results, setResults] = useState<CalculationResults | null>(null);
+  const [isCalculating, setIsCalculating] = useState(false);
+  const resultsRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (results) {
+      const el = document.getElementById('season-progress-summary');
+      if (el) {
+        const yOffset = -80; // adjust offset for fixed header
+        const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      } else if (resultsRef.current) {
+        // fallback
+        resultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }, [results]);
 
   const calculateXp = () => {
+    setIsCalculating(true);
+    // Validate current level input
+    if (!currentLevel) {
+      toast.error('Please enter your current level.');
+      setIsCalculating(false);
+      return;
+    }
+
     // Prevent calculation if user is already at or above target level
     if (currentLevel >= season.xp_data.targetLevel) {
       toast.error(`You cannot calculate progress for level ${currentLevel}. Please enter a level below ${season.xp_data.targetLevel}.`);
+      setIsCalculating(false);
       return;
     }
 
@@ -116,12 +141,11 @@ export default function XpCalculator({ season }: XpCalculatorProps) {
     const achievableWithPass = targetLevelDateWithGamePass < constants.SEASON_ENDS;
 
     // Double XP calculations if needed
-    let doubleXpResults = null;
+    let doubleXpResults: { noPass: DoubleXpResult; withPass: DoubleXpResult } | null = null;
     if (!achievableNoPass || !achievableWithPass) {
       const newDaysNoPass = (targetLevelExp - myExp) / expPerWeek(false) - 1 + (targetLevelExp - myExp) / expPerWeekDouble(false);
-      const newDaysWithPass = (targetLevelExp - myExp) / expPerWeek(true) - 1 + (targetLevelExp - myExp) / expPerWeekDouble(true);
-      
       const newLvlDateNoPass = Math.ceil(newDaysNoPass * 7) * 86400;
+      const newDaysWithPass = (targetLevelExp - myExp) / expPerWeek(true) - 1 + (targetLevelExp - myExp) / expPerWeekDouble(true);
       const newLvlDateWithPass = Math.ceil(newDaysWithPass * 7) * 86400;
       
       doubleXpResults = {
@@ -173,20 +197,29 @@ export default function XpCalculator({ season }: XpCalculatorProps) {
       achievableWithPass,
       doubleXpResults,
       importantDates: {
-        doubleXpStart: new Date(doubleXpStart * 1000).toLocaleDateString("en-US", {
+        doubleXpStart: new Date(doubleXpStart * 1000).toLocaleString(undefined, {
           weekday: "short",
           year: "numeric",
           month: "short",
           day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true
         }),
-        seasonEnds: new Date(constants.SEASON_ENDS * 1000).toLocaleDateString("en-US", {
+        seasonEnds: new Date(constants.SEASON_ENDS * 1000).toLocaleString(undefined, {
           weekday: "short",
           year: "numeric",
           month: "short",
           day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true
         })
       }
     });
+
+    toast.success('Results updated below.');
+    setIsCalculating(false);
   };
 
   return (
@@ -199,9 +232,12 @@ export default function XpCalculator({ season }: XpCalculatorProps) {
         onLevelChange={setCurrentLevel}
         onXpChange={setCurrentXp}
         onCalculate={calculateXp}
+        isCalculating={isCalculating}
       />
 
-      {results && <XpResultsSummary results={results} />}
+      <div ref={resultsRef}>
+        {results && <XpResultsSummary results={results} />}
+      </div>
     </>
   );
 } 

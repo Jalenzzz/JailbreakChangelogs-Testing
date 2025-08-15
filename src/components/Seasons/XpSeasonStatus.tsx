@@ -13,7 +13,7 @@ export default function XpSeasonStatus({ achievableNoPass, achievableWithPass }:
             {achievableNoPass ? '✅' : '❌'}
           </span>
           <span className="text-[#FFFFFF]">
-            Without Game Pass: {achievableNoPass ? 'Achievable before season ends' : 'Not achievable with normal XP'}
+            Without Season Pass: {achievableNoPass ? 'Achievable before season ends' : 'Not achievable with normal XP'}
           </span>
         </div>
         <div className="flex items-center">
@@ -21,7 +21,7 @@ export default function XpSeasonStatus({ achievableNoPass, achievableWithPass }:
             {achievableWithPass ? '✅' : '❌'}
           </span>
           <span className="text-[#FFFFFF]">
-            With Game Pass: {achievableWithPass ? 'Achievable before season ends' : 'Not achievable with normal XP'}
+            With Season Pass: {achievableWithPass ? 'Achievable before season ends' : 'Not achievable with normal XP'}
           </span>
         </div>
       </div>

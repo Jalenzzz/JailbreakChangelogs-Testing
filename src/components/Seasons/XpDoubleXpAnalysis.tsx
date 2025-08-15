@@ -17,7 +17,7 @@ export default function XpDoubleXpAnalysis({ doubleXpResults }: XpDoubleXpAnalys
             {doubleXpResults.noPass.achievable ? '✅' : '❌'}
           </span>
           <span className="text-[#FFFFFF]">
-            Without Game Pass: {doubleXpResults.noPass.achievable ? 'Achievable using Double XP boost' : 'Not achievable even with Double XP'}
+            Without Season Pass: {doubleXpResults.noPass.achievable ? 'Achievable using Double XP boost' : 'Not achievable even with Double XP'}
           </span>
         </div>
         {doubleXpResults.noPass.achievable && (
@@ -30,7 +30,7 @@ export default function XpDoubleXpAnalysis({ doubleXpResults }: XpDoubleXpAnalys
             {doubleXpResults.withPass.achievable ? '✅' : '❌'}
           </span>
           <span className="text-[#FFFFFF]">
-            With Game Pass: {doubleXpResults.withPass.achievable ? 'Achievable using Double XP boost' : 'Not achievable even with Double XP'}
+            With Season Pass: {doubleXpResults.withPass.achievable ? 'Achievable using Double XP boost' : 'Not achievable even with Double XP'}
           </span>
         </div>
         {doubleXpResults.withPass.achievable && (

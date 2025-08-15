@@ -7,6 +7,7 @@ interface XpCalculatorFormProps {
   onLevelChange: (level: number) => void;
   onXpChange: (xp: number) => void;
   onCalculate: () => void;
+  isCalculating?: boolean;
 }
 
 export default function XpCalculatorForm({
@@ -15,7 +16,8 @@ export default function XpCalculatorForm({
   targetLevel,
   onLevelChange,
   onXpChange,
-  onCalculate
+  onCalculate,
+  isCalculating = false
 }: XpCalculatorFormProps) {
   return (
     <div className="mb-8 rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
@@ -83,9 +85,10 @@ export default function XpCalculatorForm({
 
       <button
         onClick={onCalculate}
-        className="w-full rounded-lg bg-[#124E66] px-6 py-3 font-semibold text-[#FFFFFF] transition-colors hover:bg-[#0D3A4A]"
+        disabled={isCalculating}
+        className="w-full rounded-lg bg-[#124E66] px-6 py-3 font-semibold text-[#FFFFFF] transition-colors hover:bg-[#0D3A4A] disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        🚀 Calculate My Progress
+        {isCalculating ? 'Calculating…' : '🚀 Calculate My Progress'}
       </button>
     </div>
   );

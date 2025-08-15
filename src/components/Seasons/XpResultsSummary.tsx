@@ -13,8 +13,8 @@ export default function XpResultsSummary({ results }: XpResultsSummaryProps) {
     if (results.achievableWithPass && results.achievableNoPass) {
       return {
         type: 'success',
-        message: 'Great news! You can reach the target level with or without a Game Pass.',
-        details: 'Consider if the Game Pass is worth the cost for faster progression.',
+        message: 'Great news! You can reach the target level with or without a Season Pass.',
+        details: 'Consider if the Season Pass is worth the cost for faster progression.',
         tips: [
           'Complete daily contracts for consistent XP gains',
           'Log in daily to maximize daily XP bonuses',
@@ -24,8 +24,8 @@ export default function XpResultsSummary({ results }: XpResultsSummaryProps) {
     } else if (results.achievableWithPass && !results.achievableNoPass) {
       return {
         type: 'warning',
-        message: 'You can reach the target level, but only with a Game Pass.',
-        details: 'The Game Pass is essential for your success this season.',
+        message: 'You can reach the target level, but only with a Season Pass.',
+        details: 'The Season Pass is essential for your success this season.',
         tips: [
           'Consider purchasing the Season Pass for guaranteed success',
           'Focus on maximizing daily XP limits',
@@ -35,8 +35,8 @@ export default function XpResultsSummary({ results }: XpResultsSummaryProps) {
     } else if (results.doubleXpResults?.withPass.achievable) {
       return {
         type: 'info',
-        message: 'You can reach the target level using Double XP + Game Pass.',
-        details: 'Focus on maximizing Double XP periods and consider the Game Pass investment.',
+        message: 'You can reach the target level using Double XP + Season Pass.',
+        details: 'Focus on maximizing Double XP periods and consider the Season Pass investment.',
         tips: [
           'Mark Double XP start date on your calendar',
           'Consider the Season Pass for better Double XP gains',
@@ -63,7 +63,7 @@ export default function XpResultsSummary({ results }: XpResultsSummaryProps) {
     <div className="space-y-6">
       {/* Main Summary Card */}
       <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
-        <h3 className="mb-4 text-2xl font-bold text-[#FFFFFF]">🎯 Your Season Progress Summary</h3>
+        <h3 id="season-progress-summary" className="mb-4 text-2xl font-bold text-[#FFFFFF]">🎯 Your Season Progress Summary</h3>
         
         {/* Recommendation */}
         <div className={`mb-6 rounded-lg p-4 ${
@@ -105,7 +105,7 @@ export default function XpResultsSummary({ results }: XpResultsSummaryProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="rounded-lg bg-[#2E3944] p-4">
             <div className="flex items-center justify-between mb-3">
-              <h4 className="font-semibold text-[#FFFFFF]">⏱️ Without Game Pass</h4>
+              <h4 className="font-semibold text-[#FFFFFF]">⏱️ Without Season Pass</h4>
               <span className="text-lg">
                 {getStatusIcon(results.achievableNoPass)}
               </span>
@@ -127,7 +127,7 @@ export default function XpResultsSummary({ results }: XpResultsSummaryProps) {
 
           <div className="rounded-lg bg-[#2E3944] p-4">
             <div className="flex items-center justify-between mb-3">
-              <h4 className="font-semibold text-[#FFFFFF]">🚀 With Game Pass</h4>
+              <h4 className="font-semibold text-[#FFFFFF]">🚀 With Season Pass</h4>
               <span className="text-lg">
                 {getStatusIcon(results.achievableWithPass)}
               </span>
@@ -157,61 +157,69 @@ export default function XpResultsSummary({ results }: XpResultsSummaryProps) {
           {/* Without Game Pass Double XP Check */}
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-lg text-red-400">
-                <FaTimes />
+              <span className="text-lg">
+                {results.achievableNoPass ? <FaCheck className="text-green-400" /> : <FaTimes className="text-red-400" />}
               </span>
-              <span className="text-[#FFFFFF]">Without Game Pass: Not achievable with normal XP</span>
+              <span className="text-[#FFFFFF]">
+                Without Season Pass: {results.achievableNoPass ? 'Achievable with normal XP' : 'Not achievable with normal XP'}
+              </span> 
             </div>
-            <div className="ml-6 rounded-lg bg-[#2E3944] p-3">
-              <div className="flex items-center justify-between">
-                <span className="text-[#FFFFFF]">Double XP Result:</span>
-                <span className="text-lg">
-                  {getStatusIcon(results.doubleXpResults.noPass.achievable)}
-                </span>
-              </div>
-              {results.doubleXpResults.noPass.achievable ? (
-                <div className="text-center mt-2">
-                  <div className="text-green-400 font-medium">Achievable with Double XP</div>
-                  <div className="text-sm text-muted mt-1">
-                    Complete by: {results.doubleXpResults.noPass.completionDate}
+            {!results.achievableNoPass && results.doubleXpResults?.noPass && (
+              <div className="ml-6 rounded-lg bg-[#2E3944] p-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[#FFFFFF]">Double XP Result:</span>
+                  <span className="text-lg">
+                    {results.doubleXpResults.noPass && getStatusIcon(results.doubleXpResults.noPass.achievable)}
+                  </span>
+                </div>
+                {results.doubleXpResults.noPass && results.doubleXpResults.noPass.achievable ? (
+                  <div className="text-center mt-2">
+                    <div className="text-green-400 font-medium">Achievable with Double XP</div>
+                    <div className="text-sm text-muted mt-1">
+                      Complete by: {results.doubleXpResults.noPass.completionDate}
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div className="text-center text-red-400 mt-2">
-                  Not achievable even with Double XP
-                </div>
-              )}
-            </div>
+                ) : (
+                  <div className="text-center text-red-400 mt-2">
+                    Not achievable even with Double XP
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* With Game Pass Double XP Check */}
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-lg text-red-400">
-                <FaTimes />
+              <span className="text-lg">
+                {results.achievableWithPass ? <FaCheck className="text-green-400" /> : <FaTimes className="text-red-400" />}
               </span>
-              <span className="text-[#FFFFFF]">With Game Pass: Not achievable with extra XP</span>
+              <span className="text-[#FFFFFF]">
+                With Season Pass: {results.achievableWithPass ? 'Achievable with normal XP' : 'Not achievable with normal XP'}
+              </span>
             </div>
-            <div className="ml-6 rounded-lg bg-[#2E3944] p-3">
-              <div className="flex items-center justify-between">
-                <span className="text-[#FFFFFF]">Double XP Result:</span>
-                <span className="text-lg">
-                  {getStatusIcon(results.doubleXpResults.withPass.achievable)}
-                </span>
-              </div>
-              {results.doubleXpResults.withPass.achievable ? (
-                <div className="text-center mt-2">
-                  <div className="text-green-400 font-medium">Achievable with Double XP</div>
-                  <div className="text-sm text-muted mt-1">
-                    Complete by: {results.doubleXpResults.withPass.completionDate}
+            {!results.achievableWithPass && results.doubleXpResults?.withPass && (
+              <div className="ml-6 rounded-lg bg-[#2E3944] p-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[#FFFFFF]">Double XP Result:</span>
+                  <span className="text-lg">
+                    {results.doubleXpResults.withPass && getStatusIcon(results.doubleXpResults.withPass.achievable)}
+                  </span>
+                </div>
+                {results.doubleXpResults.withPass && results.doubleXpResults.withPass.achievable ? (
+                  <div className="text-center mt-2">
+                    <div className="text-green-400 font-medium">Achievable with Double XP</div>
+                    <div className="text-sm text-muted mt-1">
+                      Complete by: {results.doubleXpResults.withPass.completionDate}
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div className="text-center text-red-400 mt-2">
-                  Not achievable even with Double XP
-                </div>
-              )}
-            </div>
+                ) : (
+                  <div className="text-center text-red-400 mt-2">
+                    Not achievable even with Double XP
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}
