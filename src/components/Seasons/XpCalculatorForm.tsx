@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 interface XpCalculatorFormProps {
   currentLevel: number;
   currentXp: number;
@@ -18,6 +20,22 @@ export default function XpCalculatorForm({
   return (
     <div className="mb-8 rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
       <h2 className="mb-6 text-2xl font-semibold text-[#FFFFFF]">🎯 XP Progress Calculator</h2>
+      
+      {/* Example image showing how to get XP values */}
+      <div className="mb-6 text-center">
+        <Image 
+          src="/assets/images/Season_Exp.png" 
+          alt="Example showing how to find your current level and XP in Roblox Jailbreak"
+          width={400}
+          height={300}
+          className="mx-auto max-w-sm rounded-lg border border-[#2E3944]"
+          priority
+          unoptimized
+        />
+        <p className="mt-2 text-sm text-muted">
+          💡 Use this image as a reference to find your current level and XP progress
+        </p>
+      </div>
       
       <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>

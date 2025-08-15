@@ -40,7 +40,7 @@ export default async function WillIMakeItPage() {
             Will I Make It to Level 10?
           </h1>
           <p className="text-gray-300 text-lg mb-8">
-            Calculate your chances of reaching level 10 in {season.title}
+            Calculate your chances of reaching level 10 in Season {season.season}: {season.title}
           </p>
         </div>
 
