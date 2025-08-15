@@ -8,6 +8,7 @@ import ImageGallery from '@/components/Seasons/ImageGallery';
 import ChangelogComments from '@/components/PageComments/ChangelogComments';
 import { PUBLIC_API_URL } from "@/utils/api";
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Inter } from "next/font/google";
 import { formatProfileDate } from '@/utils/timestamp';
 import DisplayAd from '@/components/Ads/DisplayAd';
@@ -268,6 +269,27 @@ export default function SeasonPage({ params }: { params: Promise<{ id: string }>
             <p className="mb-4 text-muted">
               {season.description}
             </p>
+            
+            {/* XP Calculator Button - Only show for highest season */}
+            {season.season === LATEST_SEASON && (
+              <div className="mb-6 rounded-lg border border-[#124E66] bg-[#124E66]/10 p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold text-[#FFFFFF] mb-2">🎯 XP Progress Calculator</h3>
+                    <p className="text-muted text-sm">
+                      Calculate how long it will take to reach your target level and see if you can complete the season on time.
+                    </p>
+                  </div>
+                  <Link
+                    href="/seasons/will-i-make-it"
+                    className="rounded-lg bg-[#124E66] px-6 py-3 font-semibold text-[#FFFFFF] transition-colors hover:bg-[#0D3A4A] whitespace-nowrap inline-block text-center"
+                  >
+                    Calculate My Progress
+                  </Link>
+                </div>
+              </div>
+            )}
+            
             <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
               <div className="rounded-lg border border-[#2E3944] bg-[#37424D] p-4">
                 <h3 className="mb-2 font-semibold text-muted">Start Date</h3>

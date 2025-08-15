@@ -419,4 +419,24 @@ export async function fetchDupes() {
     console.error('[SERVER] Error fetching dupes:', err);
     return [];
   }
-} 
+}
+
+export async function fetchLatestSeason() {
+  try {
+    console.log(`[SERVER] Fetching latest season from ${BASE_API_URL}...`);
+    const response = await fetch(`${BASE_API_URL}/seasons/latest`, {
+      next: { revalidate: 300 } // Cache for 5 minutes
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch latest season');
+    }
+    
+    const data = await response.json();
+    console.log(`[SERVER] Successfully fetched latest season: ${data.season}`);
+    return data;
+  } catch (err) {
+    console.error('[SERVER] Error fetching latest season:', err);
+    return null;
+  }
+}
