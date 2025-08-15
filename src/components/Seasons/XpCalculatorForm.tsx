@@ -28,7 +28,7 @@ export default function XpCalculatorForm({
           alt="Example showing how to find your current level and XP in Roblox Jailbreak"
           width={400}
           height={300}
-          className="mx-auto max-w-sm rounded-lg border border-[#2E3944]"
+          className="mx-auto w-full max-w-sm rounded-lg border border-[#2E3944]"
           priority
           unoptimized
         />
@@ -44,11 +44,17 @@ export default function XpCalculatorForm({
             type="number"
             min="1"
             max={targetLevel - 1}
-            value={currentLevel}
+            value={currentLevel || ''}
             onChange={(e) => {
-              const newLevel = parseInt(e.target.value) || 1;
-              if (newLevel >= 1 && newLevel < targetLevel) {
-                onLevelChange(newLevel);
+              const value = e.target.value;
+              if (value === '') {
+                // Allow empty input
+                onLevelChange(0);
+              } else {
+                const newLevel = parseInt(value);
+                if (!isNaN(newLevel) && newLevel >= 1 && newLevel < targetLevel) {
+                  onLevelChange(newLevel);
+                }
               }
             }}
             className="w-full rounded border border-[#2E3944] bg-[#2E3944] px-3 py-2 text-[#FFFFFF] focus:border-[#124E66] focus:outline-none"

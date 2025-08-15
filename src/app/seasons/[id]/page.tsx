@@ -273,7 +273,7 @@ export default function SeasonPage({ params }: { params: Promise<{ id: string }>
             {/* XP Calculator Button - Only show for highest season */}
             {season.season === LATEST_SEASON && (
               <div className="mb-6 rounded-lg border border-[#124E66] bg-[#124E66]/10 p-4">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
                   <div>
                     <h3 className="text-lg font-semibold text-[#FFFFFF] mb-2">🎯 XP Progress Calculator</h3>
                     <p className="text-muted text-sm">
