@@ -14,15 +14,14 @@ interface XpCalculatorProps {
 export default function XpCalculator({ season }: XpCalculatorProps) {
   const [currentLevel, setCurrentLevel] = useState(1);
   const [currentXp, setCurrentXp] = useState(0);
-  const [hasGamePass, setHasGamePass] = useState(false);
   const [results, setResults] = useState<CalculationResults | null>(null);
 
-      const calculateXp = () => {
-      // Prevent calculation if user is already at or above target level
-      if (currentLevel >= season.xp_data.targetLevel) {
-        toast.error(`You cannot calculate progress for level ${currentLevel}. Please enter a level below ${season.xp_data.targetLevel}.`);
-        return;
-      }
+  const calculateXp = () => {
+    // Prevent calculation if user is already at or above target level
+    if (currentLevel >= season.xp_data.targetLevel) {
+      toast.error(`You cannot calculate progress for level ${currentLevel}. Please enter a level below ${season.xp_data.targetLevel}.`);
+      return;
+    }
 
     const xpData = season.xp_data;
     const currentTime = Math.floor(Date.now() / 1000);
@@ -196,11 +195,9 @@ export default function XpCalculator({ season }: XpCalculatorProps) {
       <XpCalculatorForm
         currentLevel={currentLevel}
         currentXp={currentXp}
-        hasGamePass={hasGamePass}
         targetLevel={season.xp_data.targetLevel}
         onLevelChange={setCurrentLevel}
         onXpChange={setCurrentXp}
-        onGamePassChange={setHasGamePass}
         onCalculate={calculateXp}
       />
 

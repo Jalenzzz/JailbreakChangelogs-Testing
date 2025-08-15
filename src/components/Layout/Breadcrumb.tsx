@@ -80,6 +80,13 @@ export default function Breadcrumb({ userData, loading }: BreadcrumbProps) {
       
       // Special handling for season pages
       if (index === 1 && pathSegments[0] === 'seasons' && pathSegments.length === 2) {
+        // Special case for will-i-make-it page
+        if (segment === 'will-i-make-it') {
+          return {
+            label: 'Will I Make It?',
+            href: `/${pathSegments.slice(0, index + 1).join('/')}`
+          };
+        }
         return {
           label: `Season ${segment}`,
           href: `/${pathSegments.slice(0, index + 1).join('/')}`

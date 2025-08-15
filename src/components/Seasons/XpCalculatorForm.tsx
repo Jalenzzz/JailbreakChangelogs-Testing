@@ -1,29 +1,25 @@
 interface XpCalculatorFormProps {
   currentLevel: number;
   currentXp: number;
-  hasGamePass: boolean;
   targetLevel: number;
   onLevelChange: (level: number) => void;
   onXpChange: (xp: number) => void;
-  onGamePassChange: (hasPass: boolean) => void;
   onCalculate: () => void;
 }
 
 export default function XpCalculatorForm({
   currentLevel,
   currentXp,
-  hasGamePass,
   targetLevel,
   onLevelChange,
   onXpChange,
-  onGamePassChange,
   onCalculate
 }: XpCalculatorFormProps) {
   return (
     <div className="mb-8 rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
       <h2 className="mb-6 text-2xl font-semibold text-[#FFFFFF]">🎯 XP Progress Calculator</h2>
       
-      <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-3">
+      <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>
           <label className="mb-2 block text-sm font-medium text-[#FFFFFF]">Current Level</label>
           <input
@@ -57,35 +53,6 @@ export default function XpCalculatorForm({
           />
           <div className="mt-1 text-xs text-muted">
             XP progress within your current level (e.g., 373 XP in level 5)
-          </div>
-        </div>
-        
-        <div>
-          <label className="mb-2 block text-sm font-medium text-[#FFFFFF]">Season Pass</label>
-          <div className="flex items-center space-x-2 mt-2">
-            <label className="flex items-center cursor-pointer">
-              <input
-                type="radio"
-                name="seasonPass"
-                checked={hasGamePass === true}
-                onChange={() => onGamePassChange(true)}
-                className="mr-2"
-              />
-              <span className="text-sm text-[#FFFFFF]">Yes</span>
-            </label>
-            <label className="flex items-center cursor-pointer">
-              <input
-                type="radio"
-                name="seasonPass"
-                checked={hasGamePass === false}
-                onChange={() => onGamePassChange(false)}
-                className="mr-2"
-              />
-              <span className="text-sm text-[#FFFFFF]">No</span>
-            </label>
-          </div>
-          <div className="mt-1 text-xs text-muted">
-            Do you have the Season Pass?
           </div>
         </div>
       </div>
