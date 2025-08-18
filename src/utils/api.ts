@@ -319,6 +319,28 @@ export async function fetchItemsChangelog(id: string) {
   }
 }
 
+export async function fetchItemChanges(id: string) {
+  try {
+    console.log(`[SERVER] Fetching item changes for item ${id} from ${BASE_API_URL}...`);
+    const response = await fetch(`${BASE_API_URL}/item/changes?id=${id}`, {
+      next: { revalidate: 300 }
+    });
+    if (response.status === 404) {
+      console.log(`[SERVER] Item changes ${id} not found`);
+      return [] as unknown[];
+    }
+    if (!response.ok) {
+      throw new Error('Failed to fetch item changes');
+    }
+    const data = await response.json();
+    console.log(`[SERVER] Successfully fetched item changes ${id}`);
+    return data;
+  } catch (err) {
+    console.error('[SERVER] Error fetching item changes:', err);
+    return [] as unknown[];
+  }
+}
+
 export async function fetchTradeAds() {
   try {
     console.log(`[SERVER] Fetching trade ads from ${BASE_API_URL}...`);

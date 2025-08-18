@@ -1,4 +1,4 @@
-import { fetchItem } from '@/utils/api';
+import { fetchItem, fetchItemChanges } from '@/utils/api';
 import ItemDetailsClient from '@/components/Items/ItemDetailsClient';
 import { notFound } from 'next/navigation';
 
@@ -19,6 +19,7 @@ export default async function ItemDetailsPage({ params }: Props) {
   if (!item) {
     notFound();
   }
+  const initialChanges = await fetchItemChanges(String(item.id));
 
-  return <ItemDetailsClient item={item} />;
+  return <ItemDetailsClient item={item} initialChanges={initialChanges} />;
 } 

@@ -21,7 +21,7 @@ import ItemVariantDropdown from "@/components/Items/ItemVariantDropdown";
 import ChangelogComments from '@/components/PageComments/ChangelogComments';
 import ItemValueChart from '@/components/Items/ItemValueChart';
 import SimilarItems from '@/components/Items/SimilarItems';
-import ItemChangelogs from '@/components/Items/ItemChangelogs';
+import ItemChangelogs, { Change as ItemChange } from '@/components/Items/ItemChangelogs';
 
 import { PUBLIC_API_URL } from "@/utils/api";
 import { handleImageError, getItemImagePath, isVideoItem, isHornItem, isDriftItem, getHornAudioPath, getDriftVideoPath, getVideoPath } from "@/utils/images";
@@ -37,11 +37,12 @@ import { getCurrentUserPremiumType } from '@/hooks/useAuth';
 
 interface ItemDetailsClientProps {
   item: ItemDetails;
+  initialChanges?: ItemChange[];
 }
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
-export default function ItemDetailsClient({ item }: ItemDetailsClientProps) {
+export default function ItemDetailsClient({ item, initialChanges }: ItemDetailsClientProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
@@ -582,7 +583,9 @@ export default function ItemDetailsClient({ item }: ItemDetailsClientProps) {
 
               {activeTab === 2 && (
                 <div className="space-y-6">
-                  <ItemChangelogs itemId={String(currentItem.id)} />
+                  <ItemChangelogs 
+                    initialChanges={currentItem.id === item.id ? initialChanges : undefined} 
+                  />
                 </div>
               )}
 

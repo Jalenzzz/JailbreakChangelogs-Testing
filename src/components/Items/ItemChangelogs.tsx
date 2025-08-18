@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { PUBLIC_API_URL } from "@/utils/api";
 import { formatRelativeDate } from '@/utils/timestamp';
 import { convertUrlsToLinks } from '@/utils/urlConverter';
 import { Button, Tooltip, Pagination, Dialog, DialogTitle, DialogContent, DialogActions, Tabs, Tab } from '@mui/material';
@@ -24,7 +23,7 @@ interface ItemChanges {
   [key: string]: ItemChangeValue | undefined;
 }
 
-interface Change {
+export interface Change {
   change_id: number;
   item: string;
   changed_by: string;
@@ -88,7 +87,7 @@ interface Change {
 }
 
 interface ItemChangelogsProps {
-  itemId: string;
+  initialChanges?: Change[];
 }
 
 const MAX_REASON_LENGTH = 200;
@@ -122,10 +121,10 @@ const formatBooleanLikeValue = (value: ItemChangeValue | undefined): string => {
   return String(value);
 };
 
-export default function ItemChangelogs({ itemId }: ItemChangelogsProps) {
-  const [changes, setChanges] = useState<Change[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export default function ItemChangelogs({ initialChanges }: ItemChangelogsProps) {
+  const changes: Change[] = initialChanges ?? [];
+  const loading = false;
+  const error: string | null = null;
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
   const [page, setPage] = useState(1);
   const [filter, setFilter] = useState<'all' | 'suggestions'>('all');
@@ -133,32 +132,6 @@ export default function ItemChangelogs({ itemId }: ItemChangelogsProps) {
   const [votersOpen, setVotersOpen] = useState(false);
   const [votersTab, setVotersTab] = useState<'up' | 'down'>('up');
   const [activeVoters, setActiveVoters] = useState<VoteLists | null>(null);
-
-  useEffect(() => {
-    const fetchChanges = async () => {
-      try {
-        const response = await fetch(`${PUBLIC_API_URL}/item/changes?id=${itemId}`);
-        
-        // Handle 404 as empty changes array
-        if (response.status === 404) {
-          setChanges([]);
-          setLoading(false);
-          return;
-        }
-
-        if (!response.ok) throw new Error('Failed to fetch changes');
-        const data = await response.json();
-        setChanges(data);
-      } catch (err) {
-        console.error('Error fetching changes:', err);
-        setError('Failed to load changelogs');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchChanges();
-  }, [itemId]);
 
   const toggleSortOrder = () => {
     setSortOrder(prev => prev === 'newest' ? 'oldest' : 'newest');
