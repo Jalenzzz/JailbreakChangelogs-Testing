@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
-import { formatRelativeDate } from '@/utils/timestamp';
+import { useEffect, useMemo, useState } from 'react';
 import { convertUrlsToLinks } from '@/utils/urlConverter';
-import { Button, Tooltip, Pagination, Dialog, DialogTitle, DialogContent, DialogActions, Tabs, Tab } from '@mui/material';
+import { Button, Pagination, Dialog, DialogTitle, DialogContent, DialogActions, Tabs, Tab } from '@mui/material';
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
@@ -10,6 +9,8 @@ import { formatCustomDate } from '@/utils/timestamp';
 import { Chip } from '@mui/material';
 import Image from 'next/image';
 import { DefaultAvatar } from '@/utils/avatar';
+import { fetchUsersBatch } from '@/utils/api';
+import type { UserData } from '@/types/auth';
 
 type ItemChangeValue = string | number | boolean | null;
 
@@ -123,16 +124,17 @@ const formatBooleanLikeValue = (value: ItemChangeValue | undefined): string => {
 };
 
 export default function ItemChangelogs({ initialChanges }: ItemChangelogsProps) {
-  const changes: Change[] = initialChanges ?? [];
+  const changes: Change[] = useMemo(() => initialChanges ?? [], [initialChanges]);
   const loading = false;
   const error: string | null = null;
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
   const [page, setPage] = useState(1);
-  const [filter, setFilter] = useState<'all' | 'suggestions'>('all');
+  
   const itemsPerPage = 4;
   const [votersOpen, setVotersOpen] = useState(false);
   const [votersTab, setVotersTab] = useState<'up' | 'down'>('up');
   const [activeVoters, setActiveVoters] = useState<VoteLists | null>(null);
+  const [userMap, setUserMap] = useState<Record<string, UserData>>({});
 
   const toggleSortOrder = () => {
     setSortOrder(prev => prev === 'newest' ? 'oldest' : 'newest');
@@ -145,28 +147,43 @@ export default function ItemChangelogs({ initialChanges }: ItemChangelogsProps) 
       : a.created_at - b.created_at;
   });
 
-  // Filter changes based on selected filter
-  const filteredChanges = sortedChanges.filter(change => {
-    switch (filter) {
-      case 'suggestions':
-        return change.suggestion_data !== undefined;
-      default:
-        return true;
-    }
+  // Determine which changes are displayable (hide only last_updated or no-op changes unless it's a suggestion)
+  const displayableChanges = sortedChanges.filter((change) => {
+    const changeKeys = Object.keys(change.changes.new);
+    if (changeKeys.length === 1 && changeKeys[0] === 'last_updated') return false;
+    const hasMeaningfulChanges = Object.entries(change.changes.old).some(([key, oldValue]) => {
+      if (key === 'last_updated') return false;
+      const newValue = change.changes.new[key];
+      return oldValue !== newValue;
+    });
+    return hasMeaningfulChanges || !!change.suggestion_data;
   });
 
-  // Check if there are any suggestions
-  const hasSuggestions = changes.some(change => change.suggestion_data !== undefined);
+  const suggestionsCount = displayableChanges.reduce((count, c) => count + (c.suggestion_data ? 1 : 0), 0);
+
+  
 
   // Calculate pagination
-  const totalPages = Math.ceil(filteredChanges.length / itemsPerPage);
+  const totalPages = Math.ceil(displayableChanges.length / itemsPerPage);
   const startIndex = (page - 1) * itemsPerPage;
-  const paginatedChanges = filteredChanges.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedChanges = displayableChanges.slice(startIndex, startIndex + itemsPerPage);
 
-  // Reset to first page when filter changes
+  
+
+  // Fetch avatars for users who changed items
   useEffect(() => {
-    setPage(1);
-  }, [filter]);
+    const run = async () => {
+      try {
+        const ids = Array.from(new Set(changes.map((c) => c.changed_by_id))).filter(Boolean);
+        if (ids.length === 0) return;
+        const map = await fetchUsersBatch(ids);
+        setUserMap(map);
+      } catch (error) {
+        console.error('Failed to fetch user batch for changed_by avatars', error);
+      }
+    };
+    run();
+  }, [changes]);
 
   const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -310,114 +327,56 @@ export default function ItemChangelogs({ initialChanges }: ItemChangelogsProps) 
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4">
-        <div className="flex flex-wrap gap-2">
+      <div className="bg-gradient-to-r from-[#2A3441] to-[#1E252B] border border-[#37424D] rounded-lg p-3 mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex items-center gap-2 flex-wrap">
+            <Chip
+              label={`${displayableChanges.length} change${displayableChanges.length !== 1 ? 's' : ''}`}
+              size="small"
+              sx={{
+                backgroundColor: '#5865F2',
+                color: '#FFFFFF',
+                '& .MuiChip-label': { color: '#FFFFFF', fontWeight: 600 },
+              }}
+            />
+            {suggestionsCount > 0 && (
+              <Chip
+                label={`${suggestionsCount} suggestion${suggestionsCount !== 1 ? 's' : ''}`}
+                size="small"
+                sx={{
+                  backgroundColor: '#5865F2',
+                  color: '#FFFFFF',
+                  '& .MuiChip-label': { color: '#FFFFFF', fontWeight: 600 },
+                }}
+              />
+            )}
+          </div>
           <Button
-            variant={filter === 'all' ? 'contained' : 'outlined'}
-            onClick={() => setFilter('all')}
+            variant="outlined"
+            onClick={toggleSortOrder}
+            startIcon={sortOrder === 'newest' ? <ArrowDownIcon className="h-4 w-4" /> : <ArrowUpIcon className="h-4 w-4" />}
             size="small"
             fullWidth
             sx={{
-              backgroundColor: filter === 'all' ? '#5865F2' : 'transparent',
               borderColor: '#5865F2',
-              color: filter === 'all' ? '#FFFFFF' : '#FFFFFF',
+              color: '#5865F2',
+              backgroundColor: '#212A31',
               '&:hover': {
                 borderColor: '#4752C4',
-                backgroundColor: filter === 'all' ? '#4752C4' : 'rgba(88, 101, 242, 0.1)',
+                backgroundColor: '#2B2F4C',
               },
               '@media (min-width: 640px)': {
                 width: 'auto',
               },
             }}
           >
-            All Changes
-          </Button>
-          <Button
-            variant={filter === 'suggestions' ? 'contained' : 'outlined'}
-            onClick={() => setFilter('suggestions')}
-            size="small"
-            fullWidth
-            sx={{
-              backgroundColor: filter === 'suggestions' ? '#5865F2' : 'transparent',
-              borderColor: '#5865F2',
-              color: filter === 'suggestions' ? '#FFFFFF' : '#FFFFFF',
-              '&:hover': {
-                borderColor: '#4752C4',
-                backgroundColor: filter === 'suggestions' ? '#4752C4' : 'rgba(88, 101, 242, 0.1)',
-              },
-              '@media (min-width: 640px)': {
-                width: 'auto',
-              },
-            }}
-          >
-            Suggestions
+            {sortOrder === 'newest' ? 'Newest First' : 'Oldest First'}
           </Button>
         </div>
-        <Button
-          variant="outlined"
-          onClick={toggleSortOrder}
-          startIcon={sortOrder === 'newest' ? <ArrowDownIcon className="h-4 w-4" /> : <ArrowUpIcon className="h-4 w-4" />}
-          size="small"
-          fullWidth
-          sx={{
-            borderColor: '#5865F2',
-            color: '#5865F2',
-            backgroundColor: '#212A31',
-            '&:hover': {
-              borderColor: '#4752C4',
-              backgroundColor: '#2B2F4C',
-            },
-            '@media (min-width: 640px)': {
-              width: 'auto',
-            },
-          }}
-        >
-          {sortOrder === 'newest' ? 'Newest First' : 'Oldest First'}
-        </Button>
       </div>
 
-      {filter === 'suggestions' && !hasSuggestions ? (
-        <div className="rounded-lg bg-gradient-to-br from-[#2A3441] to-[#1E252B] p-8 text-center border border-[#37424D] shadow-lg">
-          <div className="w-16 h-16 bg-gradient-to-br from-[#FFD700]/20 to-[#FFA500]/20 rounded-full flex items-center justify-center mx-auto mb-4 border border-[#FFD700]/30">
-            <svg className="w-8 h-8 text-[#FFD700]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-            </svg>
-          </div>
-          <h3 className="text-xl font-semibold text-white mb-2">No Suggestions Available</h3>
-          <p className="text-[#D3D9D4] text-sm mb-6 max-w-md mx-auto leading-relaxed">
-            No value suggestions have been submitted for this item yet. Be the first to suggest a value change!
-          </p>
-          <div className="bg-gradient-to-r from-[#FFD700]/10 to-[#FFA500]/10 border border-[#FFD700]/20 rounded-lg p-4">
-            <div className="flex items-start gap-3">
-              <svg className="w-5 h-5 text-[#FFD700] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <div className="text-left">
-                <h4 className="text-white font-medium mb-1">Have a suggestion?</h4>
-                <p className="text-[#D3D9D4] text-sm leading-relaxed">
-                  Join{' '}
-                  <a 
-                    href="https://discord.com/invite/baHCsb8N5A"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[#FFD700] hover:text-[#FFA500] hover:underline font-medium transition-colors"
-                  >
-                    Trading Core
-                  </a>
-                  {' '}to suggest value changes and help keep our database accurate.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <>
+      <>
           {paginatedChanges
-            .filter((change) => {
-              // Hide cards where the only change is last_updated
-              const changeKeys = Object.keys(change.changes.new);
-              return !(changeKeys.length === 1 && changeKeys[0] === 'last_updated');
-            })
             .map((change) => {
               // Check if there are any meaningful changes (excluding last_updated)
               const hasMeaningfulChanges = Object.entries(change.changes.old).some(([key, oldValue]) => {
@@ -441,7 +400,7 @@ export default function ItemChangelogs({ initialChanges }: ItemChangelogsProps) 
                             sx={{
                               backgroundColor: '#5865F2',
                               color: 'white',
-                              '& .MuiChip-label': { color: 'white' }
+                              '& .MuiChip-label': { color: 'white', fontWeight: 700 }
                             }}
                           />
                           {change.suggestion_data.metadata?.suggestion_type && (
@@ -459,47 +418,9 @@ export default function ItemChangelogs({ initialChanges }: ItemChangelogsProps) 
                             />
                           )}
                         </>
-                      ) : (
-                        <span className="text-sm text-muted">
-                          Changed by{' '}
-                          <Link
-                            href={`/users/${change.changed_by_id}`}
-                            className="text-blue-400 hover:text-blue-300 hover:underline"
-                          >
-                            {change.changed_by}
-                          </Link>
-                        </span>
-                      )}
+                      ) : null}
                     </div>
-                    <div className="flex flex-col items-end gap-1">
-                      {!change.suggestion_data && (
-                        <Tooltip 
-                          title={formatCustomDate(change.created_at * 1000)}
-                          placement="top"
-                          arrow
-                          slotProps={{
-                            tooltip: {
-                              sx: {
-                                backgroundColor: '#0F1419',
-                                color: '#D3D9D4',
-                                fontSize: '0.75rem',
-                                padding: '8px 12px',
-                                borderRadius: '8px',
-                                border: '1px solid #2E3944',
-                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-                                '& .MuiTooltip-arrow': {
-                                  color: '#0F1419',
-                                }
-                              }
-                            }
-                          }}
-                        >
-                          <span className="text-sm text-muted cursor-help">
-                            {formatRelativeDate(change.created_at * 1000)}
-                          </span>
-                        </Tooltip>
-                      )}
-                    </div>
+                    <div className="flex flex-col items-end gap-1"></div>
                   </div>
 
                   {!change.suggestion_data && (
@@ -512,7 +433,7 @@ export default function ItemChangelogs({ initialChanges }: ItemChangelogsProps) 
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
                           <div className="flex items-center gap-2">
                             {change.suggestion_data.metadata?.avatar && (
-                              <div className="w-5 h-5 rounded-full overflow-hidden bg-[#2E3944] relative flex-shrink-0">
+                              <div className="w-6 h-6 rounded-full overflow-hidden bg-[#2E3944] relative flex-shrink-0">
                                 <DefaultAvatar />
                                 <Image 
                                   src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(change.suggestion_data.metadata.avatar)}`} 
@@ -611,17 +532,6 @@ export default function ItemChangelogs({ initialChanges }: ItemChangelogsProps) 
                           Suggested on {formatCustomDate(change.suggestion_data.created_at * 1000)}
                         </div>
                       </div>
-                      <div className="mt-3">
-                        <span className="text-sm text-muted">
-                          Changed by{' '}
-                          <Link
-                            href={`/users/${change.changed_by_id}`}
-                            className="text-blue-400 hover:text-blue-300 hover:underline"
-                          >
-                            {change.changed_by}
-                          </Link>
-                        </span>
-                      </div>
                       <div className="border-b border-[#2E3944] mb-4"></div>
                     </>
                   )}
@@ -666,6 +576,33 @@ export default function ItemChangelogs({ initialChanges }: ItemChangelogsProps) 
                       );
                     })}
                   </div>
+                  <div className="flex items-center gap-2 pt-4 border-t border-[#2E3944] mt-4">
+                    <div className="w-6 h-6 rounded-full overflow-hidden bg-[#2E3944] relative flex-shrink-0">
+                      <DefaultAvatar />
+                      {userMap[change.changed_by_id]?.avatar && userMap[change.changed_by_id]?.avatar !== 'None' && (
+                        <Image
+                          src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(`https://cdn.discordapp.com/avatars/${change.changed_by_id}/${userMap[change.changed_by_id].avatar}?size=64`)}`}
+                          alt={change.changed_by}
+                          fill
+                          className="object-cover"
+                          unoptimized
+                          onError={(e) => { (e as unknown as { currentTarget: HTMLElement }).currentTarget.style.display = 'none'; }}
+                        />
+                      )}
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-sm text-muted">
+                        Changed by{' '}
+                        <Link
+                          href={`/users/${change.changed_by_id}`}
+                          className="text-blue-400 hover:text-blue-300 hover:underline"
+                        >
+                          {change.changed_by}
+                        </Link>
+                      </span>
+                      <span className="text-xs text-gray-400">on {formatCustomDate(change.created_at * 1000)}</span>
+                    </div>
+                  </div>
                 </div>
               );
             })}
@@ -695,7 +632,6 @@ export default function ItemChangelogs({ initialChanges }: ItemChangelogsProps) 
             </div>
           )}
         </>
-      )}
     </div>
   );
 } 

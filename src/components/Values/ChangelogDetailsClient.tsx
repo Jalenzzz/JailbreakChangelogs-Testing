@@ -481,7 +481,7 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
                         backgroundColor: '#5865F2',
                         color: 'white',
                         fontSize: '0.75rem',
-                        '& .MuiChip-label': { color: 'white' }
+                        '& .MuiChip-label': { color: 'white', fontWeight: 700 }
                       }}
                     />
                   </div>
@@ -538,9 +538,9 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
                     {/* Header: avatar, name, type chip, and votes */}
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2 mb-2">
                       <div className="flex items-center gap-2 min-w-0">
-                        <div className="w-5 h-5 rounded-full overflow-hidden bg-[#2E3944] relative flex-shrink-0">
-                          <DefaultAvatar />
-                          {change.suggestion.metadata?.avatar && (
+                        {change.suggestion.metadata?.avatar && (
+                          <div className="w-6 h-6 rounded-full overflow-hidden bg-[#2E3944] relative flex-shrink-0">
+                            <DefaultAvatar />
                             <Image 
                               src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(change.suggestion.metadata.avatar)}`}
                               alt={`${change.suggestion.suggestor_name}'s avatar`}
@@ -549,8 +549,8 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
                               unoptimized
                               onError={(e) => { (e as unknown as { currentTarget: HTMLElement }).currentTarget.style.display = 'none'; }}
                             />
-                          )}
-                        </div>
+                          </div>
+                        )}
                         <span className="text-sm font-medium text-white truncate">
                           Suggested by{' '}
                           <a
