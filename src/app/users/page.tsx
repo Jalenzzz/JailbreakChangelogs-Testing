@@ -3,9 +3,11 @@ import Breadcrumb from "@/components/Layout/Breadcrumb";
 import { fetchUsersForList } from '@/utils/api';
 import UserSearch from '@/components/Users/UserSearch';
 import OnlineUsers from '@/components/Layout/OnlineUsers';
+import { fetchOnlineUsers, OnlineUser } from '@/utils/api';
 
 export default async function UsersPage() {
   const users = await fetchUsersForList();
+  const online: OnlineUser[] = await fetchOnlineUsers();
 
   return (
     <div className="min-h-screen bg-[#2E3944] px-4 pb-8">
@@ -19,7 +21,7 @@ export default async function UsersPage() {
         <p className="text-sm text-[#FFFFFF] mb-6">Find users by their username or display name</p>
 
         <div className="mb-6">
-          <OnlineUsers max={5} />
+          <OnlineUsers max={5} initial={online} />
         </div>
 
         <UserSearch initialUsers={users} />

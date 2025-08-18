@@ -29,6 +29,17 @@ export const BASE_API_URL =
 
 export const PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+export interface OnlineUser {
+  id: string;
+  username: string;
+  global_name: string;
+  avatar: string;
+  created_at: string;
+  premiumtype: number;
+  usernumber: number;
+  last_seen: number;
+}
+
 export const fetchUsers = async () => {
   const response = await fetch(`${BASE_API_URL}/users/list`, {
     cache: 'no-store',
@@ -460,5 +471,24 @@ export async function fetchLatestSeason() {
   } catch (err) {
     console.error('[SERVER] Error fetching latest season:', err);
     return null;
+  }
+}
+
+export async function fetchOnlineUsers(): Promise<OnlineUser[]> {
+  try {
+    const response = await fetch(`${BASE_API_URL}/users/list/online`, {
+      cache: 'no-store',
+      next: { revalidate: 0 }
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch online users');
+    }
+    const data = await response.json();
+    const list = Array.isArray(data) ? (data as OnlineUser[]) : [];
+    console.log(`[SERVER] Successfully fetched ${list.length} online users`);
+    return list;
+  } catch (err) {
+    console.error('[SERVER] Error fetching online users:', err);
+    return [];
   }
 }
