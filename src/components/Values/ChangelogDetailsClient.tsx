@@ -569,6 +569,10 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
                   {Object.entries(change.changes.old).map(([key, oldValue]) => {
                     if (key === 'last_updated') return null;
                     const newValue = change.changes.new[key];
+                    // Hide rows where both current (old) and suggested (new) are effectively N/A
+                    // Treat null/undefined and the literal string "N/A" (case-insensitive) as N/A
+                    const isNA = (v: unknown) => v == null || (typeof v === 'string' && v.trim().toUpperCase() === 'N/A');
+                    if (isNA(oldValue) && isNA(newValue)) return null;
                     if (oldValue === newValue) return null;
 
                     return (

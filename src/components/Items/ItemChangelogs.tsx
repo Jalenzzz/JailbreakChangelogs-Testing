@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import { PUBLIC_API_URL } from "@/utils/api";
 import { formatRelativeDate } from '@/utils/timestamp';
 import { convertUrlsToLinks } from '@/utils/urlConverter';
-import { Button, Tooltip, Pagination } from '@mui/material';
+import { Button, Tooltip, Pagination, Dialog, DialogTitle, DialogContent, DialogActions, Tabs, Tab } from '@mui/material';
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
+import { formatFullValue } from '@/utils/values';
 import { formatCustomDate } from '@/utils/timestamp';
 import { Chip } from '@mui/material';
 import Image from 'next/image';
@@ -93,6 +94,17 @@ interface ItemChangelogsProps {
 const MAX_REASON_LENGTH = 200;
 const DISCORD_GUILD_ID = '981485815987318824';
 
+type VoteRecord = {
+  id: number;
+  name: string;
+  avatar: string;
+  vote_number: number;
+  vote_type: string;
+  timestamp: number;
+};
+
+type VoteLists = { up: VoteRecord[]; down: VoteRecord[]; upCount: number; downCount: number };
+
 const truncateText = (text: string, maxLength: number) => {
   if (text.length <= maxLength) return { text, isTruncated: false };
   return {
@@ -118,6 +130,9 @@ export default function ItemChangelogs({ itemId }: ItemChangelogsProps) {
   const [page, setPage] = useState(1);
   const [filter, setFilter] = useState<'all' | 'suggestions'>('all');
   const itemsPerPage = 4;
+  const [votersOpen, setVotersOpen] = useState(false);
+  const [votersTab, setVotersTab] = useState<'up' | 'down'>('up');
+  const [activeVoters, setActiveVoters] = useState<VoteLists | null>(null);
 
   useEffect(() => {
     const fetchChanges = async () => {
@@ -236,6 +251,53 @@ export default function ItemChangelogs({ itemId }: ItemChangelogsProps) {
 
   return (
     <div className="space-y-4 mb-8">
+      <Dialog 
+        open={votersOpen} 
+        onClose={() => setVotersOpen(false)} 
+        fullWidth 
+        maxWidth="xs"
+        slotProps={{
+          paper: {
+            sx: {
+              backgroundColor: '#212A31',
+              border: '1px solid #2E3944',
+              borderRadius: '8px',
+            }
+          }
+        }}
+      >
+        <DialogTitle sx={{ bgcolor: '#212A31', color: '#FFFFFF', borderBottom: '1px solid #2E3944' }}>Voters</DialogTitle>
+        <DialogContent dividers sx={{ bgcolor: '#212A31' }}>
+          <Tabs
+            value={votersTab === 'up' ? 0 : 1}
+            onChange={(_, val) => setVotersTab(val === 0 ? 'up' : 'down')}
+            textColor="primary"
+            indicatorColor="primary"
+            variant="fullWidth"
+          >
+            <Tab label={`Upvotes (${activeVoters?.upCount ?? 0})`} />
+            <Tab label={`Downvotes (${activeVoters?.downCount ?? 0})`} />
+          </Tabs>
+          <div className="mt-3 space-y-2">
+            {(votersTab === 'up' ? (activeVoters?.up || []) : (activeVoters?.down || [])).length === 0 ? (
+              <div className="text-sm text-muted">No voters to display.</div>
+            ) : (
+              (votersTab === 'up' ? (activeVoters?.up || []) : (activeVoters?.down || [])).map((voter: VoteRecord) => (
+                <div key={voter.id} className="flex items-center gap-2">
+                  <Image src={voter.avatar} alt={voter.name} width={24} height={24} className="rounded-full" unoptimized />
+                  <div className="flex-1">
+                    <div className="text-sm text-white">{voter.name}</div>
+                    <div className="text-xs text-muted">{new Date(voter.timestamp * 1000).toLocaleString()}</div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </DialogContent>
+        <DialogActions sx={{ bgcolor: '#212A31', borderTop: '1px solid #2E3944' }}>
+          <Button onClick={() => setVotersOpen(false)} variant="contained">Close</Button>
+        </DialogActions>
+      </Dialog>
       {/* Central Changelogs Information Banner */}
       <div className="bg-gradient-to-r from-[#5865F2]/10 to-[#4752C4]/10 border border-[#5865F2]/20 rounded-lg p-4 mb-6">
         <div className="flex items-start gap-3">
@@ -386,15 +448,31 @@ export default function ItemChangelogs({ itemId }: ItemChangelogsProps) {
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 mb-2">
                     <div className="flex items-center gap-2">
                       {change.suggestion_data ? (
-                        <Chip
-                          label={`Suggestion #${change.suggestion_data.id}`}
-                          size="small"
-                          sx={{
-                            backgroundColor: '#5865F2',
-                            color: 'white',
-                            '& .MuiChip-label': { color: 'white' }
-                          }}
-                        />
+                        <>
+                          <Chip
+                            label={`Suggestion #${change.suggestion_data.id}`}
+                            size="small"
+                            sx={{
+                              backgroundColor: '#5865F2',
+                              color: 'white',
+                              '& .MuiChip-label': { color: 'white' }
+                            }}
+                          />
+                          {change.suggestion_data.metadata?.suggestion_type && (
+                            <Chip
+                              label={(() => {
+                                const text = change.suggestion_data!.metadata!.suggestion_type!.replace(/_/g, ' ');
+                                return text.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                              })()}
+                              size="small"
+                              sx={{
+                                backgroundColor: '#124E66',
+                                color: '#FFFFFF',
+                                '& .MuiChip-label': { color: '#FFFFFF', fontWeight: 600 },
+                              }}
+                            />
+                          )}
+                        </>
                       ) : (
                         <span className="text-sm text-muted">
                           Changed by{' '}
@@ -445,122 +523,70 @@ export default function ItemChangelogs({ itemId }: ItemChangelogsProps) {
                   {change.suggestion_data && (
                     <>
                       <div className="bg-[#5865F2]/10 border border-[#5865F2]/20 rounded-lg p-3 mt-2">
-                        {/* Item type and ID info for new format */}
-                        {(change.suggestion_data.data.item_type || change.suggestion_data.data.item_id) && (
-                          <div className="flex items-center gap-2 mb-2 text-xs">
-                            {change.suggestion_data.data.item_type && (
-                              <span className="px-2 py-1 bg-[#5865F2]/20 text-[#5865F2] rounded">
-                                {change.suggestion_data.data.item_type}
-                              </span>
-                            )}
-                            {change.suggestion_data.data.item_id && (
-                              <span className="px-2 py-1 bg-[#37424D] text-gray-300 rounded">
-                                ID: {change.suggestion_data.data.item_id}
-                              </span>
-                            )}
-                          </div>
-                        )}
-                        
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-                          <span className="text-sm font-medium text-white">
-                            Suggested by{' '}
-                            <a
-                              href={`https://discord.com/users/${change.suggestion_data.user_id}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-400 hover:text-blue-300 hover:underline"
-                            >
-                              {change.suggestion_data.suggestor_name}
-                            </a>
+                          <div className="flex items-center gap-2">
                             {change.suggestion_data.metadata?.avatar && (
                               <Image 
                                 src={change.suggestion_data.metadata.avatar} 
                                 alt={`${change.suggestion_data.suggestor_name}'s avatar`}
-                                width={16}
-                                height={16}
-                                className="rounded-full ml-2 inline-block"
+                                width={20}
+                                height={20}
+                                className="rounded-full"
                                 unoptimized
                               />
                             )}
-                          </span>
+                            <span className="text-sm font-medium text-white">
+                              Suggested by{' '}
+                              <a
+                                href={`https://discord.com/users/${change.suggestion_data.user_id}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-400 hover:text-blue-300 hover:underline"
+                              >
+                                {change.suggestion_data.suggestor_name}
+                              </a>
+                            </span>
+                          </div>
                           <div className="flex items-center justify-center text-xs">
                             <div className="flex items-center justify-center rounded-full border border-gray-600 overflow-hidden">
-                              <Tooltip 
-                                  title={
-                                    change.suggestion_data.vote_data.voters ? (
-                                      <div className="space-y-1">
-                                        <div className="font-medium">Upvotes ({change.suggestion_data.vote_data.upvotes}):</div>
-                                        {change.suggestion_data.vote_data.voters
-                                          .filter(voter => voter.vote_type === 'upvote')
-                                          .map(voter => (
-                                            <div key={voter.id} className="flex items-center gap-2">
-                                              <Image src={voter.avatar} alt={voter.name} width={16} height={16} className="rounded-full" unoptimized />
-                                              <span className="text-xs">{voter.name}</span>
-                                            </div>
-                                          ))}
-                                      </div>
-                                    ) : (
-                                      `${change.suggestion_data.vote_data.upvotes} upvote${change.suggestion_data.vote_data.upvotes !== 1 ? 's' : ''}`
-                                    )
-                                  }
-                                arrow
-                                placement="top"
-                                slotProps={{
-                                  tooltip: {
-                                    sx: {
-                                      bgcolor: '#1A2228',
-                                      border: '1px solid #2E3944',
-                                        maxWidth: '300px',
-                                      '& .MuiTooltip-arrow': {
-                                        color: '#1A2228',
-                                      },
-                                    },
-                                  },
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const voters = change.suggestion_data?.vote_data.voters || [];
+                                  const up = voters.filter(v => v.vote_type === 'upvote');
+                                  const down = voters.filter(v => v.vote_type === 'downvote');
+                                  const upCount = change.suggestion_data?.vote_data.upvotes || 0;
+                                  const downCount = change.suggestion_data?.vote_data.downvotes || 0;
+                                  if (up.length === 0 && down.length === 0) return;
+                                  setActiveVoters({ up, down, upCount, downCount });
+                                  setVotersTab('up');
+                                  setVotersOpen(true);
                                 }}
+                                className="flex items-center justify-center gap-1 bg-green-500/10 border-r border-gray-600 px-2 py-1 hover:bg-green-500/20 focus:outline-none"
+                                aria-label="View voters"
                               >
-                                <div className="flex items-center justify-center gap-1 bg-green-500/10 border-r border-gray-600 px-2 py-1 cursor-help">
-                                  <span className="text-green-400 font-medium">↑</span>
-                                  <span className="text-green-400 font-semibold">{change.suggestion_data.vote_data.upvotes}</span>
-                                </div>
-                              </Tooltip>
-                              <Tooltip 
-                                  title={
-                                    change.suggestion_data.vote_data.voters ? (
-                                      <div className="space-y-1">
-                                        <div className="font-medium">Downvotes ({change.suggestion_data.vote_data.downvotes}):</div>
-                                        {change.suggestion_data.vote_data.voters
-                                          .filter(voter => voter.vote_type === 'downvote')
-                                          .map(voter => (
-                                            <div key={voter.id} className="flex items-center gap-2">
-                                              <Image src={voter.avatar} alt={voter.name} width={16} height={16} className="rounded-full" unoptimized />
-                                              <span className="text-xs">{voter.name}</span>
-                                            </div>
-                                          ))}
-                                      </div>
-                                    ) : (
-                                      `${change.suggestion_data.vote_data.downvotes} downvote${change.suggestion_data.vote_data.downvotes !== 1 ? 's' : ''}`
-                                    )
-                                  }
-                                arrow
-                                placement="top"
-                                slotProps={{
-                                  tooltip: {
-                                    sx: {
-                                      bgcolor: '#1A2228',
-                                      border: '1px solid #2E3944',
-                                        maxWidth: '300px',
-                                      '& .MuiTooltip-arrow': {
-                                        color: '#1A2228',
-                                      },
-                                    },
-                                  },
+                                <span className="text-green-400 font-medium">↑</span>
+                                <span className="text-green-400 font-semibold">{change.suggestion_data.vote_data.upvotes}</span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const voters = change.suggestion_data?.vote_data.voters || [];
+                                  const up = voters.filter(v => v.vote_type === 'upvote');
+                                  const down = voters.filter(v => v.vote_type === 'downvote');
+                                  const upCount = change.suggestion_data?.vote_data.upvotes || 0;
+                                  const downCount = change.suggestion_data?.vote_data.downvotes || 0;
+                                  if (up.length === 0 && down.length === 0) return;
+                                  setActiveVoters({ up, down, upCount, downCount });
+                                  setVotersTab('down');
+                                  setVotersOpen(true);
                                 }}
+                                className="flex items-center justify-center gap-1 bg-red-500/10 px-2 py-1 hover:bg-red-500/20 focus:outline-none"
+                                aria-label="View voters"
                               >
-                                <div className="flex items-center justify-center gap-1 bg-red-500/10 px-2 py-1 cursor-help">
-                                  <span className="text-red-400 font-medium">↓</span>
-                                  <span className="text-red-400 font-semibold">{change.suggestion_data.vote_data.downvotes}</span>
-                                </div>
-                              </Tooltip>
+                                <span className="text-red-400 font-medium">↓</span>
+                                <span className="text-red-400 font-semibold">{change.suggestion_data.vote_data.downvotes}</span>
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -591,98 +617,9 @@ export default function ItemChangelogs({ itemId }: ItemChangelogsProps) {
                           })()}
                         </div>
                         
-                        {/* Display suggestion details based on available data */}
-                        {(() => {
-                          // Collect all meaningful suggestion fields
-                          const suggestionFields = [];
-                          
-                          // Handle old format value
-                          if (change.suggestion_data.data.current_value && change.suggestion_data.data.suggested_value) {
-                            suggestionFields.push({
-                              label: 'Value',
-                              old: change.suggestion_data.data.current_value,
-                              new: change.suggestion_data.data.suggested_value
-                            });
-                          }
-                          
-                          // Handle new format cash value
-                          if (change.suggestion_data.data.current_cash_value && change.suggestion_data.data.suggested_cash_value) {
-                            suggestionFields.push({
-                              label: 'Cash Value',
-                              old: change.suggestion_data.data.current_cash_value,
-                              new: change.suggestion_data.data.suggested_cash_value
-                            });
-                          }
-                          
-                          // Handle new format duped value
-                          if (change.suggestion_data.data.current_duped_value && change.suggestion_data.data.suggested_duped_value) {
-                            suggestionFields.push({
-                              label: 'Duped Value',
-                              old: change.suggestion_data.data.current_duped_value,
-                              new: change.suggestion_data.data.suggested_duped_value
-                            });
-                          }
-                          
-                          // Handle new format notes
-                          if (change.suggestion_data.data.current_notes && change.suggestion_data.data.suggested_notes) {
-                            suggestionFields.push({
-                              label: 'Notes',
-                              old: change.suggestion_data.data.current_notes,
-                              new: change.suggestion_data.data.suggested_notes
-                            });
-                          }
-                          
-                          // Handle old format demand/trend/notes only if they have meaningful values
-                          if (change.suggestion_data.data.current_demand !== null && change.suggestion_data.data.suggested_demand !== null) {
-                            suggestionFields.push({
-                              label: 'Demand',
-                              old: change.suggestion_data.data.current_demand,
-                              new: change.suggestion_data.data.suggested_demand
-                            });
-                          }
-                          
-                          if (change.suggestion_data.data.current_trend !== null && change.suggestion_data.data.suggested_trend !== null) {
-                            suggestionFields.push({
-                              label: 'Trend',
-                              old: change.suggestion_data.data.current_trend,
-                              new: change.suggestion_data.data.suggested_trend
-                            });
-                          }
-                          
-                          if (change.suggestion_data.data.current_note !== null && change.suggestion_data.data.suggested_note !== null) {
-                            suggestionFields.push({
-                              label: 'Note',
-                              old: change.suggestion_data.data.current_note,
-                              new: change.suggestion_data.data.suggested_note
-                            });
-                          }
-                          
-                          // Only show the section if there are meaningful fields to display
-                          if (suggestionFields.length === 0) return null;
-                          
-                          return (
-                            <div className="bg-[#2A3441]/50 rounded-lg p-2 mb-2">
-                              <div className="text-xs text-gray-400 mb-1">Suggestion Details:</div>
-                              <div className="space-y-1">
-                                {suggestionFields.map((field, index) => (
-                                  <div key={index} className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-                                    <span className="text-xs text-gray-400 flex-shrink-0">{field.label}:</span>
-                                    <span className="text-xs text-gray-300 line-through">{field.old}</span>
-                                    <span className="text-xs text-gray-300">→</span>
-                                    <span className="text-xs text-white font-medium">{field.new}</span>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          );
-                        })()}
+                        {/* Suggestion details removed; changes will be shown in the unified list below */}
                         <div className="text-xs text-gray-400">
                           Suggested on {formatCustomDate(change.suggestion_data.created_at * 1000)}
-                          {change.suggestion_data.metadata?.suggestion_type && (
-                            <span className="ml-2 px-2 py-1 bg-[#5865F2]/20 text-[#5865F2] rounded text-xs">
-                              {change.suggestion_data.metadata.suggestion_type.replace(/_/g, ' ')}
-                            </span>
-                          )}
                         </div>
                       </div>
                       <div className="mt-3">
@@ -704,53 +641,37 @@ export default function ItemChangelogs({ itemId }: ItemChangelogsProps) {
                     {Object.entries(change.changes.old).map(([key, oldValue]) => {
                       if (key === 'last_updated') return null;
                       const newValue = change.changes.new[key];
+                      const isNA = (v: unknown) => v == null || (typeof v === 'string' && v.trim().toUpperCase() === 'N/A');
+                      // Hide rows where both sides are effectively N/A
+                      if (isNA(oldValue) && isNA(newValue)) return null;
                       if (oldValue === newValue) return null;
+
+                      const formatValue = (k: string, v: unknown): string => {
+                        if (k === 'cash_value' || k === 'duped_value') {
+                          return formatFullValue(String(v));
+                        }
+                        if (typeof v === 'boolean' || v === 1 || v === 0 || k.startsWith('is_')) {
+                          return formatBooleanLikeValue(v as ItemChangeValue | undefined);
+                        }
+                        const str = v === '' || v === null || v === undefined ? 'N/A' : String(v);
+                        return str;
+                      };
 
                       return (
                         <div key={key} className="flex items-start gap-2 overflow-hidden">
                           <div className="flex-1 min-w-0">
-                            <div className="text-sm text-white capitalize">
-                              {key.replace(/_/g, ' ')}
+                            <div className="text-sm text-[#D3D9D4] capitalize">
+                              {key.replace(/_/g, ' ')}:
                             </div>
-                            {change.suggestion_data ? (
-                              <div className="flex flex-col gap-1 mt-1">
-                                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-                                  <span className="text-sm text-white flex-shrink-0">Old:</span>
-                                  <span className="text-muted line-through break-words overflow-hidden" style={{ wordBreak: 'break-all', overflowWrap: 'break-word' }}>
-                                    {typeof oldValue === 'boolean' || oldValue === 1 || oldValue === 0 || key.startsWith('is_')
-                                      ? formatBooleanLikeValue(oldValue)
-                                      : convertUrlsToLinks(oldValue === "" || oldValue === null || oldValue === undefined ? "N/A" : String(oldValue))}
-                                  </span>
-                                </div>
-                                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-                                  <span className="text-sm text-white flex-shrink-0">New:</span>
-                                  <span className="text-muted break-words overflow-hidden" style={{ wordBreak: 'break-all', overflowWrap: 'break-word' }}>
-                                    {typeof newValue === 'boolean' || newValue === 1 || newValue === 0 || key.startsWith('is_')
-                                      ? formatBooleanLikeValue(newValue)
-                                      : convertUrlsToLinks(newValue === "" || newValue === null || newValue === undefined ? "N/A" : String(newValue))}
-                                  </span>
-                                </div>
-                              </div>
-                            ) : (
-                              <div className="flex flex-col gap-1 mt-1">
-                                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-                                  <span className="text-sm text-white flex-shrink-0">Old:</span>
-                                  <span className="text-muted line-through break-words overflow-hidden" style={{ wordBreak: 'break-all', overflowWrap: 'break-word' }}>
-                                    {typeof oldValue === 'boolean' || oldValue === 1 || oldValue === 0 || key.startsWith('is_')
-                                      ? formatBooleanLikeValue(oldValue)
-                                      : convertUrlsToLinks(oldValue === "" || oldValue === null || oldValue === undefined ? "N/A" : String(oldValue))}
-                                  </span>
-                                </div>
-                                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-                                  <span className="text-sm text-white flex-shrink-0">New:</span>
-                                  <span className="text-muted break-words overflow-hidden" style={{ wordBreak: 'break-all', overflowWrap: 'break-word' }}>
-                                    {typeof newValue === 'boolean' || newValue === 1 || newValue === 0 || key.startsWith('is_')
-                                      ? formatBooleanLikeValue(newValue)
-                                      : convertUrlsToLinks(newValue === "" || newValue === null || newValue === undefined ? "N/A" : String(newValue))}
-                                  </span>
-                                </div>
-                              </div>
-                            )}
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="text-sm text-[#D3D9D4] line-through break-words overflow-hidden" style={{ wordBreak: 'break-all', overflowWrap: 'break-word' }}>
+                                {convertUrlsToLinks(formatValue(key, oldValue))}
+                              </span>
+                              <span className="text-[#D3D9D4]">→</span>
+                              <span className="text-sm text-white font-medium break-words overflow-hidden" style={{ wordBreak: 'break-all', overflowWrap: 'break-word' }}>
+                                {convertUrlsToLinks(formatValue(key, newValue))}
+                              </span>
+                            </div>
                           </div>
                         </div>
                       );
