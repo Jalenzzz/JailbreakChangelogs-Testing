@@ -233,7 +233,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
     <div className="space-y-4" data-component="available-items-grid">
       <div className="bg-[#212A31] rounded-lg p-4 border border-[#2E3944]">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-muted font-medium">Tradable Items</h3>
+          <h3 className="text-muted font-medium">Tradable Items ({filteredItems.length})</h3>
         </div>
 
         {/* Ad Placement: Above the grid, only for non-premium users */}
