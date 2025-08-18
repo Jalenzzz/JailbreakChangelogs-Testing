@@ -9,6 +9,7 @@ import { formatFullValue } from '@/utils/values';
 import { formatCustomDate } from '@/utils/timestamp';
 import { Chip } from '@mui/material';
 import Image from 'next/image';
+import { DefaultAvatar } from '@/utils/avatar';
 
 type ItemChangeValue = string | number | boolean | null;
 
@@ -257,7 +258,19 @@ export default function ItemChangelogs({ initialChanges }: ItemChangelogsProps) 
             ) : (
               (votersTab === 'up' ? (activeVoters?.up || []) : (activeVoters?.down || [])).map((voter: VoteRecord) => (
                 <div key={voter.id} className="flex items-center gap-2">
-                  <Image src={voter.avatar} alt={voter.name} width={24} height={24} className="rounded-full" unoptimized />
+                  <div className="w-6 h-6 rounded-full overflow-hidden bg-[#2E3944] relative flex-shrink-0">
+                    <DefaultAvatar />
+                    {voter.avatar && voter.avatar !== 'None' && (
+                      <Image 
+                        src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(voter.avatar)}`}
+                        alt={voter.name} 
+                        fill 
+                        className="object-cover"
+                        unoptimized 
+                        onError={(e) => { (e as unknown as { currentTarget: HTMLElement }).currentTarget.style.display = 'none'; }}
+                      />
+                    )}
+                  </div>
                   <div className="flex-1">
                     <div className="text-sm text-white">{voter.name}</div>
                     <div className="text-xs text-muted">{new Date(voter.timestamp * 1000).toLocaleString()}</div>
@@ -499,14 +512,17 @@ export default function ItemChangelogs({ initialChanges }: ItemChangelogsProps) 
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
                           <div className="flex items-center gap-2">
                             {change.suggestion_data.metadata?.avatar && (
-                              <Image 
-                                src={change.suggestion_data.metadata.avatar} 
-                                alt={`${change.suggestion_data.suggestor_name}'s avatar`}
-                                width={20}
-                                height={20}
-                                className="rounded-full"
-                                unoptimized
-                              />
+                              <div className="w-5 h-5 rounded-full overflow-hidden bg-[#2E3944] relative flex-shrink-0">
+                                <DefaultAvatar />
+                                <Image 
+                                  src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(change.suggestion_data.metadata.avatar)}`} 
+                                  alt={`${change.suggestion_data.suggestor_name}'s avatar`}
+                                  fill
+                                  className="object-cover"
+                                  unoptimized
+                                  onError={(e) => { (e as unknown as { currentTarget: HTMLElement }).currentTarget.style.display = 'none'; }}
+                                />
+                              </div>
                             )}
                             <span className="text-sm font-medium text-white">
                               Suggested by{' '}
@@ -637,11 +653,11 @@ export default function ItemChangelogs({ initialChanges }: ItemChangelogsProps) 
                               {key.replace(/_/g, ' ')}:
                             </div>
                             <div className="flex items-center gap-2 mt-1">
-                              <span className="text-sm text-[#D3D9D4] line-through break-words overflow-hidden" style={{ wordBreak: 'break-all', overflowWrap: 'break-word' }}>
+                              <span className="text-sm text-[#D3D9D4] line-through break-words overflow-hidden" style={{ wordBreak: 'normal', overflowWrap: 'anywhere' }}>
                                 {convertUrlsToLinks(formatValue(key, oldValue))}
                               </span>
                               <span className="text-[#D3D9D4]">→</span>
-                              <span className="text-sm text-white font-medium break-words overflow-hidden" style={{ wordBreak: 'break-all', overflowWrap: 'break-word' }}>
+                              <span className="text-sm text-white font-medium break-words overflow-hidden" style={{ wordBreak: 'normal', overflowWrap: 'anywhere' }}>
                                 {convertUrlsToLinks(formatValue(key, newValue))}
                               </span>
                             </div>

@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Pagination, Chip, Dialog, DialogTitle, DialogContent, DialogActions, Tabs, Tab, Button } from '@mui/material';
+import { Pagination, Chip, Dialog, DialogTitle, DialogContent, DialogActions, Tabs, Tab, Button, useMediaQuery } from '@mui/material';
 import { Masonry } from '@mui/lab';
 import { ThemeProvider } from '@mui/material/styles';
 import { darkTheme } from '@/theme/darkTheme';
 import Image from 'next/image';
+import { DefaultAvatar } from '@/utils/avatar';
 import Link from 'next/link';
 import { getItemImagePath, handleImageError, isVideoItem, getVideoPath } from '@/utils/images';
 import { getItemTypeColor } from '@/utils/badgeColors';
@@ -151,6 +152,8 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
   const [votersTab, setVotersTab] = useState<'up' | 'down'>('up');
   const [activeVoters, setActiveVoters] = useState<VoteLists | null>(null);
   const itemsPerPage = 12;
+  const isAtLeast1024 = useMediaQuery('(min-width:1024px)');
+  const isAtLeast1440 = useMediaQuery('(min-width:1440px)');
 
   useEffect(() => {
     // Get current user's premium type
@@ -436,7 +439,19 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
               ) : (
                 (votersTab === 'up' ? (activeVoters?.up || []) : (activeVoters?.down || [])).map((voter: VoteRecord) => (
                   <div key={voter.id} className="flex items-center gap-2">
-                    <Image src={voter.avatar} alt={voter.name} width={24} height={24} className="rounded-full" unoptimized />
+                    <div className="w-6 h-6 rounded-full overflow-hidden bg-[#2E3944] relative flex-shrink-0">
+                      <DefaultAvatar />
+                      {voter.avatar && voter.avatar !== 'None' && (
+                        <Image 
+                          src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(voter.avatar)}`}
+                          alt={voter.name} 
+                          fill 
+                          className="object-cover"
+                          unoptimized 
+                          onError={(e) => { (e as unknown as { currentTarget: HTMLElement }).currentTarget.style.display = 'none'; }}
+                        />
+                      )}
+                    </div>
                     <div className="flex-1">
                       <div className="text-sm text-white">{voter.name}</div>
                       <div className="text-xs text-muted">{new Date(voter.timestamp * 1000).toLocaleString()}</div>
@@ -453,7 +468,7 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
 
         {/* Changes Grid */}
         {paginatedChanges.length > 0 ? (
-          <Masonry columns={{ xs: 1, sm: 2, md: 3 }} spacing={2} sx={{ mx: 'auto', maxWidth: { xs: 640, sm: 'none' } }}>
+          <Masonry columns={isAtLeast1440 ? 3 : isAtLeast1024 ? 2 : 1} spacing={2} sx={{ mx: 'auto', maxWidth: { xs: 640, sm: 'none' } }}>
             {paginatedChanges.map((change) => (
               <div key={change.change_id} className="bg-[#212A31] rounded-lg p-4 border border-[#37424D] relative">
                 {/* Suggestion # Pill - Responsive placement */}
@@ -523,16 +538,19 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
                     {/* Header: avatar, name, type chip, and votes */}
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2 mb-2">
                       <div className="flex items-center gap-2 min-w-0">
-                        {change.suggestion.metadata?.avatar && (
-                          <Image 
-                            src={change.suggestion.metadata.avatar} 
-                            alt={`${change.suggestion.suggestor_name}'s avatar`}
-                            width={20}
-                            height={20}
-                            className="rounded-full"
-                            unoptimized
-                          />
-                        )}
+                        <div className="w-5 h-5 rounded-full overflow-hidden bg-[#2E3944] relative flex-shrink-0">
+                          <DefaultAvatar />
+                          {change.suggestion.metadata?.avatar && (
+                            <Image 
+                              src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(change.suggestion.metadata.avatar)}`}
+                              alt={`${change.suggestion.suggestor_name}'s avatar`}
+                              fill
+                              className="object-cover"
+                              unoptimized
+                              onError={(e) => { (e as unknown as { currentTarget: HTMLElement }).currentTarget.style.display = 'none'; }}
+                            />
+                          )}
+                        </div>
                         <span className="text-sm font-medium text-white truncate">
                           Suggested by{' '}
                           <a
@@ -641,13 +659,13 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
                           </div>
                           <div className="flex flex-col gap-1 mt-1">
                             <div className="flex items-center gap-2">
-                              <span className="text-sm text-[#D3D9D4] line-through break-words overflow-hidden" style={{ wordBreak: 'break-all', overflowWrap: 'break-word' }}>
+                              <span className="text-sm text-[#D3D9D4] line-through break-words overflow-hidden" style={{ wordBreak: 'normal', overflowWrap: 'anywhere' }}>
                                 {key === 'cash_value' || key === 'duped_value' 
                                   ? formatFullValue(oldValue as string)
                                   : String(oldValue || 'N/A')}
                               </span>
                               <span className="text-[#D3D9D4]">→</span>
-                              <span className="text-sm text-white font-medium break-words overflow-hidden" style={{ wordBreak: 'break-all', overflowWrap: 'break-word' }}>
+                              <span className="text-sm text-white font-medium break-words overflow-hidden" style={{ wordBreak: 'normal', overflowWrap: 'anywhere' }}>
                                 {key === 'cash_value' || key === 'duped_value' 
                                   ? formatFullValue(newValue as string)
                                   : String(newValue || 'N/A')}
