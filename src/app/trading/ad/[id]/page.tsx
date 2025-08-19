@@ -50,11 +50,29 @@ async function TradeDetailsWrapper({ params }: { params: Promise<{ id: string }>
     }
     return match.demand;
   };
+  const findTrend = (id: number, subName?: string): string | undefined => {
+    const match = items.find(i => i.id === id);
+    if (!match) return undefined;
+    if (subName && Array.isArray(match.children)) {
+      const child = match.children.find(c => c.sub_name === subName);
+      const childTrend = child?.data?.trend;
+      if (childTrend && childTrend !== 'N/A') return childTrend;
+    }
+    return match.trend ?? undefined;
+  };
 
   const enriched: TradeAd = {
     ...tradeWithUser,
-    offering: tradeWithUser.offering.map((it: TradeItem) => ({ ...it, demand: it.demand ?? it.data?.demand ?? findDemand(it.id, it.sub_name) })),
-    requesting: tradeWithUser.requesting.map((it: TradeItem) => ({ ...it, demand: it.demand ?? it.data?.demand ?? findDemand(it.id, it.sub_name) })),
+    offering: tradeWithUser.offering.map((it: TradeItem) => ({
+      ...it,
+      demand: it.demand ?? it.data?.demand ?? findDemand(it.id, it.sub_name),
+      trend: it.trend ?? it.data?.trend ?? findTrend(it.id, it.sub_name),
+    })),
+    requesting: tradeWithUser.requesting.map((it: TradeItem) => ({
+      ...it,
+      demand: it.demand ?? it.data?.demand ?? findDemand(it.id, it.sub_name),
+      trend: it.trend ?? it.data?.trend ?? findTrend(it.id, it.sub_name),
+    })),
   };
 
   // Hide if no roblox_id or roblox_username

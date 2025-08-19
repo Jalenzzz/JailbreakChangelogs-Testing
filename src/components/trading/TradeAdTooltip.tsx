@@ -12,7 +12,7 @@ interface TradeAdTooltipProps {
 export const TradeAdTooltip: React.FC<TradeAdTooltipProps> = ({ item }) => {
   const categoryIcon = getCategoryIcon(item.type);
   const demand = (item.demand ?? item.data?.demand ?? 'N/A');
-  const trend = item.trend ?? null;
+  const trend = (item.trend ?? item.data?.trend ?? null);
   
   return (
     <div className="p-2">

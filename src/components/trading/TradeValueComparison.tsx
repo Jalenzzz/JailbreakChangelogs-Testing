@@ -48,7 +48,7 @@ const getItemData = (item: TradeItem): TradeItem => {
       is_limited: item.data.is_limited ?? 0,
       name: 'sub_name' in item ? `${item.data.name} (${item.sub_name})` : item.data.name,
       base_name: item.data.name,
-      trend: item.trend ?? null
+      trend: (item.trend ?? item.data?.trend ?? null)
     };
   }
   return item;
