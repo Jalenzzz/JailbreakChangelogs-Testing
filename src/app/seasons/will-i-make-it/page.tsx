@@ -5,9 +5,6 @@ import XpCalculator from '@/components/Seasons/XpCalculator';
 import XpImportantDates from '@/components/Seasons/XpImportantDates';
 import { Season } from '@/types/seasons';
 
-// Cache the page for 2 minutes
-export const revalidate = 120;
-
 export default async function WillIMakeItPage() {
   let season: Season | null = null;
   let error: string | null = null;

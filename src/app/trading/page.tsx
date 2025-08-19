@@ -6,9 +6,6 @@ import { fetchTradeAds, fetchUsersBatch, fetchItems } from '@/utils/api';
 import type { TradeAd } from '@/types/trading';
 import Loading from './loading';
 
-// ISR configuration - cache for 5 minutes
-export const revalidate = 300;
-
 // Force dynamic rendering for this route
 export const dynamic = 'force-dynamic';
 
