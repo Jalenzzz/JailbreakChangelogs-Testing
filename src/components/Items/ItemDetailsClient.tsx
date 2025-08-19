@@ -446,6 +446,36 @@ export default function ItemDetailsClient({ item, initialChanges }: ItemDetailsC
                     <>Last updated: Never</>
                   )}
                 </div>
+
+                {/* Official Metrics from Badimo dataset */}
+                {currentItem.metadata && Object.keys(currentItem.metadata).length > 0 && (
+                  <div className="mt-3">
+                    <div className="inline-flex items-center gap-2 px-2 py-1 rounded-md border border-[#5865F2]/30 bg-[#5865F2]/10">
+                      <span className="text-xs font-semibold text-[#8BA2FF] uppercase tracking-wide">Official Metrics</span>
+                      <span className="text-[10px] text-[#D3D9D4]/70">by Badimo</span>
+                    </div>
+                    <div className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                      {typeof currentItem.metadata.TimesTraded === 'number' && (
+                        <div className="rounded-md border border-[#37424D] bg-[#212A31] p-3">
+                          <div className="text-xs text-[#9CA3AF]">Times Traded</div>
+                          <div className="text-white text-lg font-semibold">{currentItem.metadata.TimesTraded.toLocaleString()}</div>
+                        </div>
+                      )}
+                      {typeof currentItem.metadata.UniqueCirculation === 'number' && (
+                        <div className="rounded-md border border-[#37424D] bg-[#212A31] p-3">
+                          <div className="text-xs text-[#9CA3AF]">Unique Circulation</div>
+                          <div className="text-white text-lg font-semibold">{currentItem.metadata.UniqueCirculation.toLocaleString()}</div>
+                        </div>
+                      )}
+                      {typeof currentItem.metadata.DemandMultiple === 'number' && (
+                        <div className="rounded-md border border-[#37424D] bg-[#212A31] p-3">
+                          <div className="text-xs text-[#9CA3AF]">Demand Multiple</div>
+                          <div className="text-white text-lg font-semibold">{currentItem.metadata.DemandMultiple.toLocaleString()}</div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>

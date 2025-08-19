@@ -155,6 +155,19 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
   const isAtLeast1024 = useMediaQuery('(min-width:1024px)');
   const isAtLeast1440 = useMediaQuery('(min-width:1440px)');
 
+  // Decide which field the suggestion_type applies to
+  const doesSuggestionTypeApplyToKey = (suggestionType?: string, changeKey?: string) => {
+    if (!suggestionType || !changeKey) return false;
+    const st = suggestionType.toLowerCase();
+    const key = changeKey.toLowerCase();
+    if (st === 'cash_value') return key === 'cash_value';
+    if (st === 'duped_value') return key === 'duped_value';
+    if (st === 'notes') return key === 'notes' || key === 'note';
+    if (st === 'demand') return key === 'demand';
+    if (st === 'trend') return key === 'trend';
+    return false;
+  };
+
   useEffect(() => {
     // Get current user's premium type
     setCurrentUserPremiumType(getCurrentUserPremiumType());
@@ -178,10 +191,13 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
       return matchesType;
     }
 
-    const searchLower = searchQuery.toLowerCase();
+    const searchLower = searchQuery.trim().toLowerCase();
     
     // Search in item name
     if (change.item.name.toLowerCase().includes(searchLower)) return true;
+    
+    // Search in item type
+    if (change.item.type.toLowerCase().includes(searchLower)) return true;
     
     // Search in changed_by name
     if (change.changed_by.toLowerCase().includes(searchLower)) return true;
@@ -216,6 +232,7 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
     if (change.suggestion?.data) {
       const suggestionData = change.suggestion.data;
       const suggestionFields = [
+        suggestionData.item_name,
         suggestionData.current_value,
         suggestionData.suggested_value,
         suggestionData.current_cash_value,
@@ -263,6 +280,12 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
     setSelectedType('');
     setPage(1);
   };
+
+  // Truncate very long queries for display purposes
+  const MAX_QUERY_DISPLAY_LENGTH = 120;
+  const displayQuery = searchQuery.length > MAX_QUERY_DISPLAY_LENGTH
+    ? `${searchQuery.slice(0, MAX_QUERY_DISPLAY_LENGTH)}...`
+    : searchQuery;
 
   if (!changelog) {
     return (
@@ -405,6 +428,14 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
           </div>
         </div>
 
+        <div className="mb-2">
+          <p className="text-muted">
+            {searchQuery
+              ? `Found ${filteredChanges.length} ${filteredChanges.length === 1 ? 'change' : 'changes'} matching "${displayQuery}"${selectedType ? ` in ${selectedType}` : ''}`
+              : `Total ${selectedType ? `${selectedType} changes` : 'Changes'}: ${filteredChanges.length}`}
+          </p>
+        </div>
+
         {/* Voters Dialog */}
         <Dialog 
           open={votersOpen} 
@@ -453,7 +484,16 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
                       )}
                     </div>
                     <div className="flex-1">
-                      <div className="text-sm text-white">{voter.name}</div>
+                      <div className="text-sm text-white">
+                        <a
+                          href={`https://discord.com/users/${voter.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-400 hover:text-blue-300 hover:underline"
+                        >
+                          {voter.name}
+                        </a>
+                      </div>
                       <div className="text-xs text-muted">{new Date(voter.timestamp * 1000).toLocaleString()}</div>
                     </div>
                   </div>
@@ -562,21 +602,7 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
                             {change.suggestion.suggestor_name}
                           </a>
                         </span>
-                        {change.suggestion.metadata?.suggestion_type && (
-                          <Chip
-                            label={(() => {
-                              const text = change.suggestion!.metadata!.suggestion_type!.replace(/_/g, ' ');
-                              return text.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-                            })()}
-                            size="small"
-                            sx={{
-                              backgroundColor: '#124E66',
-                              color: '#FFFFFF',
-                              '& .MuiChip-label': { color: '#FFFFFF', fontWeight: 600 },
-                              ml: 0.5
-                            }}
-                          />
-                        )}
+                        
                       </div>
                       <div className="flex items-center justify-center text-xs">
                         <div className="flex items-center justify-center rounded-full border border-gray-600 overflow-hidden">
@@ -655,7 +681,27 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
                       <div key={key} className="flex items-start gap-2">
                         <div className="flex-1 min-w-0">
                           <div className="text-sm text-[#D3D9D4] capitalize">
-                            {key.replace(/_/g, ' ')}:
+                            {doesSuggestionTypeApplyToKey(change.suggestion?.metadata?.suggestion_type, key) ? (
+                              <Chip
+                                label={(() => {
+                                  const text = change.suggestion!.metadata!.suggestion_type!.replace(/_/g, ' ');
+                                  return text
+                                    .split(' ')
+                                    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                                    .join(' ');
+                                })()}
+                                size="small"
+                                sx={{
+                                  backgroundColor: '#124E66',
+                                  color: '#FFFFFF',
+                                  '& .MuiChip-label': { color: '#FFFFFF', fontWeight: 600 },
+                                }}
+                              />
+                            ) : (
+                              <>
+                                {key.replace(/_/g, ' ')}:
+                              </>
+                            )}
                           </div>
                           <div className="flex flex-col gap-1 mt-1">
                             <div className="flex items-center gap-2">
@@ -711,7 +757,7 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
           <div className="text-center text-white py-8">
             <p className="text-lg font-medium mb-2">No changes found</p>
             <p className="text-[#D3D9D4] text-sm">
-              {searchQuery && `No changes match "${searchQuery}"`}
+              {searchQuery && `No changes match "${displayQuery}"`}
               {searchQuery && selectedType && ' and '}
               {selectedType && `No changes found for item type "${selectedType}"`}
               {!searchQuery && !selectedType && 'No changes available in this changelog'}

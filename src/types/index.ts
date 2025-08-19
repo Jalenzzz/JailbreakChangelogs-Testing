@@ -138,6 +138,11 @@ export interface ItemDetails {
   health: number;
   tradable: boolean | number;
   last_updated: number;
+  metadata?: {
+    TimesTraded?: number;
+    UniqueCirculation?: number;
+    DemandMultiple?: number;
+  };
   children?: Array<{
     id: number;
     parent: number;

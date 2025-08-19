@@ -51,6 +51,10 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
   const [currentUserPremiumType, setCurrentUserPremiumType] = useState<number>(0);
   const [premiumStatusLoaded, setPremiumStatusLoaded] = useState(false);
+  const MAX_QUERY_DISPLAY_LENGTH = 120;
+  const displaySearchTerm = debouncedSearchTerm && debouncedSearchTerm.length > MAX_QUERY_DISPLAY_LENGTH
+    ? `${debouncedSearchTerm.slice(0, MAX_QUERY_DISPLAY_LENGTH)}...`
+    : debouncedSearchTerm;
   const MAX_VALUE_RANGE = 100_000_000;
   const MIN_VALUE_DISTANCE = 4_000_000; // Enforce a larger gap between thumbs
   const [rangeValue, setRangeValue] = useState<number[]>([0, MAX_VALUE_RANGE]);
@@ -237,13 +241,13 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
   const getNoItemsMessage = () => {
     const hasCategoryFilter = filterSort !== "name-all-items";
     const hasDemandFilter = valueSort.startsWith('demand-') && valueSort !== 'demand-desc' && valueSort !== 'demand-asc';
-    const hasSearchTerm = debouncedSearchTerm;
+    const hasSearchTerm = !!debouncedSearchTerm;
     
     let message = "No items found";
     
     // Build the message based on what filters are applied
     if (hasSearchTerm) {
-      message += ` matching "${debouncedSearchTerm}"`;
+      message += ` matching "${displaySearchTerm}"`;
     }
     
     if (hasCategoryFilter && hasDemandFilter) {
@@ -754,7 +758,7 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
       <div className="mb-4 flex flex-col gap-4">
         <p className="text-muted">
           {debouncedSearchTerm 
-            ? `Found ${rangeFilteredItems.length} ${rangeFilteredItems.length === 1 ? 'item' : 'items'} matching "${debouncedSearchTerm}"${filterSort !== "name-all-items" ? ` in ${filterSort.replace("name-", "").replace("-items", "").replace(/-/g, " ")}` : ""}`
+            ? `Found ${rangeFilteredItems.length} ${rangeFilteredItems.length === 1 ? 'item' : 'items'} matching "${displaySearchTerm}"${filterSort !== "name-all-items" ? ` in ${filterSort.replace("name-", "").replace("-items", "").replace(/-/g, " ")}` : ""}`
             : `Total ${filterSort !== "name-all-items" ? filterSort.replace("name-", "").replace("-items", "").replace(/-/g, " ") : "Items"}: ${rangeFilteredItems.length}`
           }
         </p>

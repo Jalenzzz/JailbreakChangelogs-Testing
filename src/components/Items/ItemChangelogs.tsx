@@ -123,6 +123,19 @@ const formatBooleanLikeValue = (value: ItemChangeValue | undefined): string => {
   return String(value);
 };
 
+// Determine which field the suggestion_type applies to (match Values changelogs behavior)
+const doesSuggestionTypeApplyToKey = (suggestionType?: string, changeKey?: string) => {
+  if (!suggestionType || !changeKey) return false;
+  const st = suggestionType.toLowerCase();
+  const key = changeKey.toLowerCase();
+  if (st === 'cash_value') return key === 'cash_value';
+  if (st === 'duped_value') return key === 'duped_value';
+  if (st === 'notes') return key === 'notes' || key === 'note';
+  if (st === 'demand') return key === 'demand';
+  if (st === 'trend') return key === 'trend';
+  return false;
+};
+
 export default function ItemChangelogs({ initialChanges }: ItemChangelogsProps) {
   const changes: Change[] = useMemo(() => initialChanges ?? [], [initialChanges]);
   const loading = false;
@@ -289,7 +302,16 @@ export default function ItemChangelogs({ initialChanges }: ItemChangelogsProps) 
                     )}
                   </div>
                   <div className="flex-1">
-                    <div className="text-sm text-white">{voter.name}</div>
+                    <div className="text-sm text-white">
+                      <a
+                        href={`https://discord.com/users/${voter.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-400 hover:text-blue-300 hover:underline"
+                      >
+                        {voter.name}
+                      </a>
+                    </div>
                     <div className="text-xs text-muted">{new Date(voter.timestamp * 1000).toLocaleString()}</div>
                   </div>
                 </div>
@@ -403,20 +425,6 @@ export default function ItemChangelogs({ initialChanges }: ItemChangelogsProps) 
                               '& .MuiChip-label': { color: 'white', fontWeight: 700 }
                             }}
                           />
-                          {change.suggestion_data.metadata?.suggestion_type && (
-                            <Chip
-                              label={(() => {
-                                const text = change.suggestion_data!.metadata!.suggestion_type!.replace(/_/g, ' ');
-                                return text.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-                              })()}
-                              size="small"
-                              sx={{
-                                backgroundColor: '#124E66',
-                                color: '#FFFFFF',
-                                '& .MuiChip-label': { color: '#FFFFFF', fontWeight: 600 },
-                              }}
-                            />
-                          )}
                         </>
                       ) : null}
                     </div>
@@ -560,7 +568,24 @@ export default function ItemChangelogs({ initialChanges }: ItemChangelogsProps) 
                         <div key={key} className="flex items-start gap-2 overflow-hidden">
                           <div className="flex-1 min-w-0">
                             <div className="text-sm text-[#D3D9D4] capitalize">
-                              {key.replace(/_/g, ' ')}:
+                              {doesSuggestionTypeApplyToKey(change.suggestion_data?.metadata?.suggestion_type, key) ? (
+                                <Chip
+                                  label={(() => {
+                                    const text = change.suggestion_data!.metadata!.suggestion_type!.replace(/_/g, ' ');
+                                    return text.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                                  })()}
+                                  size="small"
+                                  sx={{
+                                    backgroundColor: '#124E66',
+                                    color: '#FFFFFF',
+                                    '& .MuiChip-label': { color: '#FFFFFF', fontWeight: 600 },
+                                  }}
+                                />
+                              ) : (
+                                <>
+                                  {key.replace(/_/g, ' ')}:
+                                </>
+                              )}
                             </div>
                             <div className="flex items-center gap-2 mt-1">
                               <span className="text-sm text-[#D3D9D4] line-through break-words overflow-hidden" style={{ wordBreak: 'normal', overflowWrap: 'anywhere' }}>

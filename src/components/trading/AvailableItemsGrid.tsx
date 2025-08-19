@@ -60,6 +60,13 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
   const router = useRouter();
   const ITEMS_PER_PAGE = windowWidth === 1024 ? 25 : 24;
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
+  const MAX_QUERY_DISPLAY_LENGTH = 120;
+  const displayDebouncedSearchQuery = debouncedSearchQuery && debouncedSearchQuery.length > MAX_QUERY_DISPLAY_LENGTH
+    ? `${debouncedSearchQuery.slice(0, MAX_QUERY_DISPLAY_LENGTH)}...`
+    : debouncedSearchQuery;
+  const displaySearchQuery = searchQuery.length > MAX_QUERY_DISPLAY_LENGTH
+    ? `${searchQuery.slice(0, MAX_QUERY_DISPLAY_LENGTH)}...`
+    : searchQuery;
 
   useEffect(() => {
     setSelectLoaded(true);
@@ -277,7 +284,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
           </div>
           {debouncedSearchQuery && (
             <div className="mt-2 text-sm text-muted">
-              Found {filteredItems.length} {filteredItems.length === 1 ? 'item' : 'items'} matching &quot;{debouncedSearchQuery}&quot;
+              Found {filteredItems.length} {filteredItems.length === 1 ? 'item' : 'items'} matching &quot;{displayDebouncedSearchQuery}&quot;
             </div>
           )}
         </div>
@@ -473,7 +480,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
             <div className="col-span-full text-center py-8">
               <p className="text-muted">
                 {searchQuery 
-                  ? `No items found matching "${searchQuery}"${filterSort !== "name-all-items" ? ` in ${filterSort.replace("name-", "").replace("-items", "").replace(/-/g, " ")}` : ""}`
+                  ? `No items found matching "${displaySearchQuery}"${filterSort !== "name-all-items" ? ` in ${filterSort.replace("name-", "").replace("-items", "").replace(/-/g, " ")}` : ""}`
                   : `No items found${filterSort !== "name-all-items" ? ` in ${filterSort.replace("name-", "").replace("-items", "").replace(/-/g, " ")}` : ""}`
               }
               </p>
