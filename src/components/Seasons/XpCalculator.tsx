@@ -128,15 +128,6 @@ export default function XpCalculator({ season }: XpCalculatorProps) {
 
     // Check if achievable
     const doubleXpStart = constants.SEASON_ENDS - constants.DOUBLE_XP_TIME;
-    
-    // Debug logging
-    console.log('Debug - Current time:', new Date(currentTime * 1000).toISOString());
-    console.log('Debug - Season ends:', new Date(constants.SEASON_ENDS * 1000).toISOString());
-    console.log('Debug - No pass completion:', new Date(targetLevelDateNoGamePass * 1000).toISOString());
-    console.log('Debug - With pass completion:', new Date(targetLevelDateWithGamePass * 1000).toISOString());
-    console.log('Debug - No pass achievable:', targetLevelDateNoGamePass < doubleXpStart);
-    console.log('Debug - With pass achievable:', targetLevelDateWithGamePass < doubleXpStart);
-    
     const achievableNoPass = targetLevelDateNoGamePass < constants.SEASON_ENDS;
     const achievableWithPass = targetLevelDateWithGamePass < constants.SEASON_ENDS;
 

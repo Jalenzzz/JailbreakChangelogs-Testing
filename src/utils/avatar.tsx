@@ -226,7 +226,6 @@ export const UserAvatar = ({
             fill
             priority
             draggable={false}
-            unoptimized={avatarSource.unoptimized}
             onError={avatarSource.onError}
             onLoad={() => {
               setIsLoading(false);
