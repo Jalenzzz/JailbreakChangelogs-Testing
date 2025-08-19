@@ -1,0 +1,27 @@
+[build]
+builder = "railpack"
+buildCommand = "pnpm build"
+
+[deploy]
+startCommand = "pnpm start"
+healthcheckPath = "/"
+healthcheckTimeout = 30
+restartPolicyType = "on_failure"
+maxRestartRetries = 10
+
+# Cron job to clean Next.js image cache every 15 minutes
+[cron]
+schedule = "*/15 * * * *"
+command = "pnpm exec next-image-cache-cleaner --fromEnv"
+
+# Environment variables that might be needed
+[variables]
+NODE_ENV = "production"
+PORT = "8080"
+NEXT_TELEMETRY_DISABLED = "1"
+
+# Next Image Cache Cleaner configuration
+NICC_IMAGE_CACHE_DIRECTORY = "/app/.next/cache/images"
+NICC_MAX_CAPACITY = "102400"
+NICC_FULLNESS_PERCENT = "0.8"
+NICC_LOG_LEVEL = "info"
