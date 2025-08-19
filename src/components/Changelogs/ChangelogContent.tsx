@@ -3,11 +3,29 @@ import Image from "next/image";
 import { ArrowRightIcon, ArrowTurnDownRightIcon } from "@heroicons/react/24/outline";
 import { Inter } from "next/font/google";
 import { parseMarkdown } from '@/utils/changelogs';
-import ChangelogMediaEmbed from './ChangelogMediaEmbed';
-import ChangelogComments from '../PageComments/ChangelogComments';
-import ChangelogQuickNav from './ChangelogQuickNav';
-import DisplayAd from '../Ads/DisplayAd';
 import { getCurrentUserPremiumType } from '@/hooks/useAuth';
+import dynamic from 'next/dynamic';
+
+// Dynamic imports for heavy components
+const ChangelogMediaEmbed = dynamic(() => import('./ChangelogMediaEmbed'), {
+  loading: () => <div className="h-32 bg-[#212A31] rounded animate-pulse" />,
+  ssr: true
+});
+
+const ChangelogComments = dynamic(() => import('../PageComments/ChangelogComments'), {
+  loading: () => <div className="h-64 bg-[#212A31] rounded animate-pulse" />,
+  ssr: true
+});
+
+const ChangelogQuickNav = dynamic(() => import('./ChangelogQuickNav'), {
+  loading: () => <div className="h-16 bg-[#212A31] rounded animate-pulse" />,
+  ssr: true
+});
+
+const DisplayAd = dynamic(() => import('../Ads/DisplayAd'), {
+  loading: () => <div className="h-48 bg-[#212A31] rounded animate-pulse" />,
+  ssr: false
+});
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 

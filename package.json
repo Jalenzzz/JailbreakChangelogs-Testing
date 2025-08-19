@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev --turbopack --port 5500",
     "build": "next build --turbopack",
+    "build:analyze": "ANALYZE=true next build --turbopack",
+    "build:perf": "node scripts/build-performance.js",
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
@@ -43,6 +45,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
+    "@next/bundle-analyzer": "^15.4.7",
     "@tailwindcss/postcss": "^4.1.12",
     "@types/node": "^24.2.1",
     "@types/react": "^19.1.10",

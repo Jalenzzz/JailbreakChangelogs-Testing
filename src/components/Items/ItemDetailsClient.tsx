@@ -19,7 +19,12 @@ import CreatorLink from "@/components/Items/CreatorLink";
 import ItemValues from "@/components/Items/ItemValues";
 import ItemVariantDropdown from "@/components/Items/ItemVariantDropdown";
 import ChangelogComments from '@/components/PageComments/ChangelogComments';
-import ItemValueChart from '@/components/Items/ItemValueChart';
+import dynamic from 'next/dynamic';
+
+const ItemValueChart = dynamic(() => import('@/components/Items/ItemValueChart'), {
+  loading: () => <div className="h-[350px] bg-[#212A31] rounded animate-pulse" />,
+  ssr: false
+});
 import SimilarItems from '@/components/Items/SimilarItems';
 import ItemChangelogs, { Change as ItemChange } from '@/components/Items/ItemChangelogs';
 

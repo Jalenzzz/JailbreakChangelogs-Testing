@@ -14,11 +14,53 @@ import {
 } from '@/utils/changelogs';
 import { useDebounce } from '@/hooks/useDebounce';
 import { darkTheme } from '@/theme/darkTheme';
-import ChangelogHeader from '@/components/Changelogs/ChangelogHeader';
-import ChangelogNavigation from '@/components/Changelogs/ChangelogNavigation';
-import ChangelogDatePicker from '@/components/Changelogs/ChangelogDatePicker';
-import ChangelogContent from '@/components/Changelogs/ChangelogContent';
 import { Skeleton } from '@mui/material';
+import dynamic from 'next/dynamic';
+
+// Dynamic imports for heavy components
+const ChangelogHeader = dynamic(() => import('@/components/Changelogs/ChangelogHeader'), {
+  loading: () => <div className="h-16 bg-[#212A31] rounded animate-pulse mb-4" />,
+  ssr: true
+});
+
+const ChangelogNavigation = dynamic(() => import('@/components/Changelogs/ChangelogNavigation'), {
+  loading: () => <div className="h-20 bg-[#212A31] rounded animate-pulse mb-4" />,
+  ssr: true
+});
+
+const ChangelogDatePicker = dynamic(() => import('@/components/Changelogs/ChangelogDatePicker'), {
+  loading: () => <div className="h-64 bg-[#212A31] rounded animate-pulse" />,
+  ssr: false
+});
+
+const ChangelogContent = dynamic(() => import('@/components/Changelogs/ChangelogContent'), {
+  loading: () => (
+    <div className="grid grid-cols-1 gap-8 sm:grid-cols-12">
+      <div className="sm:col-span-12 lg:col-span-8">
+        <Skeleton variant="text" height={80} sx={{ bgcolor: '#37424D', mb: 4 }} />
+        <div className="space-y-8">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="space-y-4">
+              <Skeleton variant="text" width="60%" height={40} sx={{ bgcolor: '#37424D' }} />
+              <div className="space-y-2">
+                {[...Array(4)].map((_, j) => (
+                  <div key={j} className="flex items-start gap-2">
+                    <Skeleton variant="circular" width={24} height={24} sx={{ bgcolor: '#37424D', mt: 0.5 }} />
+                    <Skeleton variant="text" width={`${j === 0 ? '90%' : j === 1 ? '85%' : j === 2 ? '75%' : '80%'}`} height={24} sx={{ bgcolor: '#37424D' }} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="sm:col-span-12 lg:col-span-4 space-y-8">
+        <Skeleton variant="rectangular" height={200} sx={{ bgcolor: '#37424D', borderRadius: '8px' }} />
+      </div>
+    </div>
+  ),
+  ssr: true
+});
 
 interface Changelog {
   id: number;

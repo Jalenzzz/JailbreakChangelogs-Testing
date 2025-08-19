@@ -1,8 +1,21 @@
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   allowedDevOrigins: ["127.0.0.1"],
   experimental: {
     webpackMemoryOptimizations: true,
+    optimizePackageImports: ['@mui/material', '@mui/icons-material', '@heroicons/react', 'react-icons'],
+  },
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
+      },
+    },
   },
   eslint: {
     ignoreDuringBuilds: true,
@@ -83,4 +96,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withBundleAnalyzer(nextConfig);

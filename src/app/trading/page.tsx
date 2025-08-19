@@ -9,6 +9,9 @@ import Loading from './loading';
 // ISR configuration - cache for 5 minutes
 export const revalidate = 300;
 
+// Force dynamic rendering for this route
+export const dynamic = 'force-dynamic';
+
 export default function TradingPage() {
   return (
     <main className="container mx-auto px-4 sm:px-6 lg:px-8">
