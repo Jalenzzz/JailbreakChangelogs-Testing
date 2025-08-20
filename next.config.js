@@ -32,7 +32,16 @@ const nextConfig = {
         protocol: "https",
         hostname: "cdn.discordapp.com",
         pathname: "/avatars/**",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.discordapp.com",
         pathname: "/guild-tag-badges/**",
+      },
+      {
+        protocol: "http",
+        hostname: "proxy.jailbreakchangelogs.xyz",
+        pathname: "/**",
       },
       {
         protocol: "https",

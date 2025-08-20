@@ -32,7 +32,6 @@ export default function XpCalculatorForm({
           height={300}
           className="mx-auto w-full max-w-sm rounded-lg border border-[#2E3944]"
           priority
-          unoptimized
         />
         <p className="mt-2 text-sm text-muted">
           💡 Use this image as a reference to find your current level and XP progress

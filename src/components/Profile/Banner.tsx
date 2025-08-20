@@ -47,12 +47,16 @@ export const Banner = ({ userId, username, banner, customBanner, settings }: Ban
   };
 
   const getBannerSource = () => {
-    // If primary banner failed to load, use fallback
+    // Calculate the background index for this user
+    const seed = calculateSeed(userId);
+    const index = seed % BACKGROUND_COUNT;
+    const calculatedBackground = BACKGROUNDS[index];
+
+    // If primary banner failed to load, use calculated fallback
     if (primaryBannerFailed) {
       return {
-        src: fallbackBanner || '/assets/backgrounds/background1.webp',
+        src: fallbackBanner || calculatedBackground,
         alt: "Profile banner",
-        unoptimized: true
       };
     }
 
@@ -63,15 +67,13 @@ export const Banner = ({ userId, username, banner, customBanner, settings }: Ban
         return {
           src: getBannerUrl(userId, banner),
           alt: "Profile banner",
-          unoptimized: true,
           onError: handleBannerError
         };
       }
-      // If no Discord banner available, use the stable fallback
+      // If no Discord banner available, use the calculated fallback
       return {
-        src: fallbackBanner || '/assets/backgrounds/background1.webp',
+        src: fallbackBanner || calculatedBackground,
         alt: "Profile banner",
-        unoptimized: true
       };
     }
 
@@ -80,16 +82,14 @@ export const Banner = ({ userId, username, banner, customBanner, settings }: Ban
       return {
         src: customBanner,
         alt: "Profile banner",
-        unoptimized: true,
         onError: handleBannerError
       };
     }
 
-    // Default to the stable fallback
+    // Default to the calculated fallback
     return {
-      src: fallbackBanner || '/assets/backgrounds/background1.webp',
+      src: fallbackBanner || calculatedBackground,
       alt: "Profile banner",
-      unoptimized: true
     };
   };
 

@@ -21,6 +21,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import dynamic from 'next/dynamic';
 import DisplayAd from "@/components/Ads/DisplayAd";
 import { getCurrentUserPremiumType } from '@/hooks/useAuth';
+import { getDemandColor } from '@/utils/badgeColors';
 import React from "react";
 
 const Select = dynamic(() => import('react-select'), { ssr: false });
@@ -348,28 +349,6 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
             </h3>
             <div className="mb-4 flex flex-wrap gap-2">
               {demandOrder.map((demand) => {
-                const getDemandColor = (demand: string): string => {
-                  switch(demand) {
-                    case 'Close to none':
-                      return 'bg-gray-500/80';
-                    case 'Very Low':
-                      return 'bg-orange-500/80';
-                    case 'Low':
-                      return 'bg-orange-400/80';
-                    case 'Medium':
-                      return 'bg-yellow-500/80';
-                    case 'Decent':
-                      return 'bg-green-500/80';
-                    case 'High':
-                      return 'bg-blue-500/80';
-                    case 'Very High':
-                      return 'bg-purple-500/80';
-                    case 'Extremely High':
-                      return 'bg-pink-500/80';
-                    default:
-                      return 'bg-gray-500/80';
-                  }
-                };
                 const getDemandValue = (demand: string): string => {
                   switch(demand) {
                     case 'Close to none':

@@ -73,6 +73,7 @@ export interface Change {
         id: number;
         name: string;
         avatar: string;
+        avatar_hash?: string;
         vote_number: number;
         vote_type: string;
         timestamp: number;
@@ -83,6 +84,7 @@ export interface Change {
       avatar?: string;
       guild_id?: number;
       channel_id?: number;
+      avatar_hash?: string;
       suggestion_type?: string;
     };
   };
@@ -99,6 +101,7 @@ type VoteRecord = {
   id: number;
   name: string;
   avatar: string;
+  avatar_hash?: string;
   vote_number: number;
   vote_type: string;
   timestamp: number;
@@ -288,19 +291,18 @@ export default function ItemChangelogs({ initialChanges }: ItemChangelogsProps) 
             ) : (
               (votersTab === 'up' ? (activeVoters?.up || []) : (activeVoters?.down || [])).map((voter: VoteRecord) => (
                 <div key={voter.id} className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full overflow-hidden bg-[#2E3944] relative flex-shrink-0">
-                    <DefaultAvatar />
-                    {voter.avatar && voter.avatar !== 'None' && (
-                      <Image 
-                        src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(voter.avatar)}`}
-                        alt={voter.name} 
-                        fill 
-                        className="object-cover"
-                        unoptimized 
-                        onError={(e) => { (e as unknown as { currentTarget: HTMLElement }).currentTarget.style.display = 'none'; }}
-                      />
-                    )}
-                  </div>
+                      <div className="w-6 h-6 rounded-full overflow-hidden bg-[#2E3944] relative flex-shrink-0">
+                      <DefaultAvatar />
+                      {voter.avatar_hash && (
+                        <Image 
+                          src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(`https://cdn.discordapp.com/avatars/${voter.id}/${voter.avatar_hash}?size=128`)}`}
+                          alt={voter.name} 
+                          fill 
+                          className="object-cover"
+                          onError={(e) => { (e as unknown as { currentTarget: HTMLElement }).currentTarget.style.display = 'none'; }}
+                        />
+                      )}
+                    </div>
                   <div className="flex-1">
                     <div className="text-sm text-white">
                       <a
@@ -440,15 +442,14 @@ export default function ItemChangelogs({ initialChanges }: ItemChangelogsProps) 
                       <div className="bg-[#5865F2]/10 border border-[#5865F2]/20 rounded-lg p-3 mt-2">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
                           <div className="flex items-center gap-2">
-                            {change.suggestion_data.metadata?.avatar && (
+                            {change.suggestion_data.metadata?.avatar_hash && (
                               <div className="w-6 h-6 rounded-full overflow-hidden bg-[#2E3944] relative flex-shrink-0">
                                 <DefaultAvatar />
                                 <Image 
-                                  src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(change.suggestion_data.metadata.avatar)}`} 
+                                  src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(`https://cdn.discordapp.com/avatars/${change.suggestion_data.user_id}/${change.suggestion_data.metadata.avatar_hash}?size=128`)}`} 
                                   alt={`${change.suggestion_data.suggestor_name}'s avatar`}
                                   fill
                                   className="object-cover"
-                                  unoptimized
                                   onError={(e) => { (e as unknown as { currentTarget: HTMLElement }).currentTarget.style.display = 'none'; }}
                                 />
                               </div>
@@ -610,7 +611,6 @@ export default function ItemChangelogs({ initialChanges }: ItemChangelogsProps) 
                           alt={change.changed_by}
                           fill
                           className="object-cover"
-                          unoptimized
                           onError={(e) => { (e as unknown as { currentTarget: HTMLElement }).currentTarget.style.display = 'none'; }}
                         />
                       )}

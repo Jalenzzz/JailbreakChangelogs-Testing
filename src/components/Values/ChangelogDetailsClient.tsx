@@ -78,6 +78,7 @@ interface SuggestionData {
       id: number;
       name: string;
       avatar: string;
+      avatar_hash?: string;
       vote_number: number;
       vote_type: string;
       timestamp: number;
@@ -88,6 +89,7 @@ interface SuggestionData {
     avatar?: string;
     guild_id?: number;
     channel_id?: number;
+    avatar_hash?: string;
     suggestion_type?: string;
   };
 }
@@ -105,11 +107,11 @@ interface ChangeData {
   changed_by_id: string;
 }
 
-// Voter types and helpers (mirroring ItemChangelogs)
 type VoteRecord = {
   id: number;
   name: string;
   avatar: string;
+  avatar_hash?: string;
   vote_number: number;
   vote_type: string;
   timestamp: number;
@@ -472,13 +474,12 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
                   <div key={voter.id} className="flex items-center gap-2">
                     <div className="w-6 h-6 rounded-full overflow-hidden bg-[#2E3944] relative flex-shrink-0">
                       <DefaultAvatar />
-                      {voter.avatar && voter.avatar !== 'None' && (
+                      {voter.avatar_hash && (
                         <Image 
-                          src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(voter.avatar)}`}
+                          src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(`https://cdn.discordapp.com/avatars/${voter.id}/${voter.avatar_hash}?size=128`)}`}
                           alt={voter.name} 
                           fill 
                           className="object-cover"
-                          unoptimized 
                           onError={(e) => { (e as unknown as { currentTarget: HTMLElement }).currentTarget.style.display = 'none'; }}
                         />
                       )}
@@ -546,7 +547,6 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
                         height={64}
                         className="w-full h-full object-cover"
                         onError={handleImageError}
-                        unoptimized
                       />
                     )}
                   </div>
@@ -578,15 +578,14 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
                     {/* Header: avatar, name, type chip, and votes */}
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2 mb-2">
                       <div className="flex items-center gap-2 min-w-0">
-                        {change.suggestion.metadata?.avatar && (
+                        {change.suggestion.metadata?.avatar_hash && (
                           <div className="w-6 h-6 rounded-full overflow-hidden bg-[#2E3944] relative flex-shrink-0">
                             <DefaultAvatar />
                             <Image 
-                              src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(change.suggestion.metadata.avatar)}`}
+                              src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(`https://cdn.discordapp.com/avatars/${change.suggestion.user_id}/${change.suggestion.metadata.avatar_hash}?size=128`)}`}
                               alt={`${change.suggestion.suggestor_name}'s avatar`}
                               fill
                               className="object-cover"
-                              unoptimized
                               onError={(e) => { (e as unknown as { currentTarget: HTMLElement }).currentTarget.style.display = 'none'; }}
                             />
                           </div>
@@ -736,7 +735,6 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
                       width={24}
                       height={24}
                       className="w-full h-full object-cover"
-                      unoptimized
                     />
                   </div>
                   <span className="text-sm text-[#D3D9D4]">

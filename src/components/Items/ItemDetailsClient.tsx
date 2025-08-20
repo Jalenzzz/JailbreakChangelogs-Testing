@@ -297,7 +297,6 @@ export default function ItemDetailsClient({ item, initialChanges }: ItemDetailsC
                       alt={item.name}
                       width={854}
                       height={480}
-                      unoptimized
                       priority
                       className={`h-full w-full object-cover transition-opacity duration-300 ${
                         isHovered ? "opacity-0" : "opacity-100"
@@ -321,7 +320,6 @@ export default function ItemDetailsClient({ item, initialChanges }: ItemDetailsC
                     alt={item.name}
                     width={854}
                     height={480}
-                    unoptimized
                     priority
                     className="h-full w-full object-cover"
                     onError={handleImageError}
@@ -455,29 +453,29 @@ export default function ItemDetailsClient({ item, initialChanges }: ItemDetailsC
                 {/* Official Metrics from Badimo dataset */}
                 {currentItem.metadata && Object.keys(currentItem.metadata).length > 0 && (
                   <div className="mt-3">
-                    <div className="inline-flex items-center gap-2 px-2 py-1 rounded-md border border-[#5865F2]/30 bg-[#5865F2]/10">
-                      <span className="text-xs font-semibold text-[#8BA2FF] uppercase tracking-wide">Official Metrics</span>
-                      <span className="text-[10px] text-[#D3D9D4]/70">by Badimo</span>
-                    </div>
-                    <div className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-2">
-                      {typeof currentItem.metadata.TimesTraded === 'number' && (
-                        <div className="rounded-md border border-[#37424D] bg-[#212A31] p-3">
-                          <div className="text-xs text-[#9CA3AF]">Times Traded</div>
-                          <div className="text-white text-lg font-semibold">{currentItem.metadata.TimesTraded.toLocaleString()}</div>
-                        </div>
-                      )}
-                      {typeof currentItem.metadata.UniqueCirculation === 'number' && (
-                        <div className="rounded-md border border-[#37424D] bg-[#212A31] p-3">
-                          <div className="text-xs text-[#9CA3AF]">Unique Circulation</div>
-                          <div className="text-white text-lg font-semibold">{currentItem.metadata.UniqueCirculation.toLocaleString()}</div>
-                        </div>
-                      )}
-                      {typeof currentItem.metadata.DemandMultiple === 'number' && (
-                        <div className="rounded-md border border-[#37424D] bg-[#212A31] p-3">
-                          <div className="text-xs text-[#9CA3AF]">Demand Multiple</div>
-                          <div className="text-white text-lg font-semibold">{currentItem.metadata.DemandMultiple.toLocaleString()}</div>
-                        </div>
-                      )}
+                    <div className="px-2 py-1 rounded-md border border-[#5865F2]/30 bg-[#5865F2]/10">
+                      <div className="text-xs font-semibold text-[#8BA2FF] uppercase tracking-wide">Official Trading Metrics</div>
+                      <div className="text-xs text-[#D3D9D4]/70">by Badimo • last 30 days</div>
+                      <div className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        {typeof currentItem.metadata.TimesTraded === 'number' && (
+                          <div className="rounded-md border border-[#5865F2]/30 bg-[#1A1F2E] p-3">
+                            <div className="text-xs text-[#8BA2FF]">Times Traded</div>
+                            <div className="text-white text-lg font-semibold">{currentItem.metadata.TimesTraded.toLocaleString()}</div>
+                          </div>
+                        )}
+                        {typeof currentItem.metadata.UniqueCirculation === 'number' && (
+                          <div className="rounded-md border border-[#5865F2]/30 bg-[#1A1F2E] p-3">
+                            <div className="text-xs text-[#8BA2FF]">Unique Circulation</div>
+                            <div className="text-white text-lg font-semibold">{currentItem.metadata.UniqueCirculation.toLocaleString()}</div>
+                          </div>
+                        )}
+                        {typeof currentItem.metadata.DemandMultiple === 'number' && (
+                          <div className="rounded-md border border-[#5865F2]/30 bg-[#1A1F2E] p-3">
+                            <div className="text-xs text-[#8BA2FF]">Demand Multiple</div>
+                            <div className="text-white text-lg font-semibold">{currentItem.metadata.DemandMultiple.toLocaleString()}</div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 )}
