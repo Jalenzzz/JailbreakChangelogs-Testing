@@ -59,13 +59,9 @@ export const getDemandColor = (demand: string): string => {
 
 export const getTrendColor = (trend: string): string => {
   switch (trend) {
-    case 'Stable':
-      return 'bg-slate-600 text-white';
-    case 'Rising':
-    case 'Hyped':
-      return 'bg-teal-600 text-white';
-    case 'Dropping':
     case 'Avoided':
+      return 'bg-red-600 text-white';
+    case 'Dropping':
       return 'bg-rose-600 text-white';
     case 'Unstable':
       return 'bg-amber-600 text-white';
@@ -73,8 +69,14 @@ export const getTrendColor = (trend: string): string => {
       return 'bg-violet-600 text-white';
     case 'Projected':
       return 'bg-indigo-600 text-white';
+    case 'Stable':
+      return 'bg-gray-500 text-white';
     case 'Recovering':
       return 'bg-orange-600 text-white';
+    case 'Rising':
+      return 'bg-blue-500 text-white';
+    case 'Hyped':
+      return 'bg-pink-500 text-white';
     default:
       return 'bg-gray-600 text-white';
   }

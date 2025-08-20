@@ -346,7 +346,7 @@ const SimilarItems = ({ currentItem }: SimilarItemsProps) => {
               : sortBy === 'trading_metrics'
               ? "No items with similar trading metrics were found. This item might have unique trading patterns, or other items in this category don't have trading metrics data. Try switching to 'Sort by Similarity' to see items with similar values and demand."
               : sortBy === 'trend'
-              ? "No items with similar trends were found. This item might have a unique market trend, or other items in this category don't have trend data. Try switching to 'Sort by Similarity' to see items with similar values and demand."
+              ? "No items with similar trends were found. Other items in this category don't have Official Trend data. Try switching to 'Sort by Similarity' to see items with similar values and demand."
               : "We couldn't find any items similar to this one. This might be a unique item or there may not be enough data to calculate similarities."
             }
           </p>

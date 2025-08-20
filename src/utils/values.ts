@@ -12,6 +12,18 @@ export const demandOrder = [
   "Extremely High",
 ] as const;
 
+export const trendOrder = [
+  "Avoided",
+  "Dropping",
+  "Unstable",
+  "Hoarded",
+  "Projected",
+  "Stable",
+  "Recovering",
+  "Rising",
+  "Hyped",
+] as const;
+
 const parseCashValue = (value: string | null): number => {
   if (value === null || value === "N/A") return -1;
   const num = parseFloat(value.replace(/[^0-9.]/g, ""));
@@ -30,6 +42,12 @@ export const sortByCashValue = (a: string, b: string, order: 'asc' | 'desc' = 'd
 export const sortByDemand = (a: string, b: string, order: 'asc' | 'desc' = 'desc'): number => {
   const aIndex = demandOrder.indexOf(a as typeof demandOrder[number]);
   const bIndex = demandOrder.indexOf(b as typeof demandOrder[number]);
+  return order === 'desc' ? bIndex - aIndex : aIndex - bIndex;
+};
+
+export const sortByTrend = (a: string | null, b: string | null, order: 'asc' | 'desc' = 'desc'): number => {
+  const aIndex = a ? trendOrder.indexOf(a as typeof trendOrder[number]) : -1;
+  const bIndex = b ? trendOrder.indexOf(b as typeof trendOrder[number]) : -1;
   return order === 'desc' ? bIndex - aIndex : aIndex - bIndex;
 };
 
@@ -94,6 +112,27 @@ export const getEffectiveDemand = (item: Item): string => {
   
   // Fall back to parent item's demand
   return item.demand;
+};
+
+// Helper function to get the effective trend for an item (considering variants)
+export const getEffectiveTrend = (item: Item): string | null => {
+  // If item has children (variants), use the default variant (2023) if available
+  if (item.children && item.children.length > 0) {
+    // Sort children by sub_name in descending order to find the most recent
+    const sortedChildren = [...item.children].sort((a, b) => {
+      return parseInt(b.sub_name) - parseInt(a.sub_name);
+    });
+    
+    // Find the 2023 variant (default) or use the most recent if 2023 doesn't exist
+    const defaultVariant = sortedChildren.find(child => child.sub_name === '2023') || sortedChildren[0];
+    
+    if (defaultVariant) {
+      return defaultVariant.data.trend || null;
+    }
+  }
+  
+  // Fall back to parent item's trend
+  return item.trend;
 };
 
 export const filterByType = async (items: Item[], filterSort: FilterSort): Promise<Item[]> => {
@@ -228,6 +267,26 @@ export const sortAndFilterItems = async (
     result = result.filter(item => getEffectiveDemand(item) === formattedDemand);
   }
 
+  // Apply trend filtering if a specific trend level is selected
+  if (valueSort.startsWith('trend-')) {
+    // Map the valueSort to the exact trend string from trendOrder
+    const trendMap: Record<string, string> = {
+      'trend-stable': 'Stable',
+      'trend-rising': 'Rising',
+      'trend-hyped': 'Hyped',
+      'trend-avoided': 'Avoided',
+      'trend-dropping': 'Dropping',
+      'trend-unstable': 'Unstable',
+      'trend-hoarded': 'Hoarded',
+      'trend-projected': 'Projected',
+      'trend-recovering': 'Recovering'
+    };
+    
+    const formattedTrend = trendMap[valueSort];
+    
+    result = result.filter(item => getEffectiveTrend(item) === formattedTrend);
+  }
+
   // Apply value sorting
   switch (valueSort) {
     case "random":
@@ -277,7 +336,7 @@ export const sortAndFilterItems = async (
         return aTime - bTime;
       });
       break;
-    // For demand filter cases, we already filtered above, so just sort by name
+    // For demand filter cases, we already filtered above, so sort by cash value (high to low)
     case "demand-close-to-none":
     case "demand-very-low":
     case "demand-low":
@@ -286,7 +345,19 @@ export const sortAndFilterItems = async (
     case "demand-high":
     case "demand-very-high":
     case "demand-extremely-high":
-      result = result.sort((a, b) => a.name.localeCompare(b.name));
+      result = result.sort((a, b) => sortByCashValue(getEffectiveCashValue(a), getEffectiveCashValue(b), 'desc'));
+      break;
+    // For trend filter cases, we already filtered above, so sort by cash value (high to low)
+    case "trend-stable":
+    case "trend-rising":
+    case "trend-hyped":
+    case "trend-avoided":
+    case "trend-dropping":
+    case "trend-unstable":
+    case "trend-hoarded":
+    case "trend-projected":
+    case "trend-recovering":
+      result = result.sort((a, b) => sortByCashValue(getEffectiveCashValue(a), getEffectiveCashValue(b), 'desc'));
       break;
   }
 
