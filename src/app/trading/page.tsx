@@ -6,7 +6,6 @@ import { fetchTradeAds, fetchUsersBatch, fetchItems } from '@/utils/api';
 import type { TradeAd } from '@/types/trading';
 import Loading from './loading';
 
-// Force dynamic rendering for this route
 export const dynamic = 'force-dynamic';
 
 export default function TradingPage() {
