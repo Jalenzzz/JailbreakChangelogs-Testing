@@ -16,6 +16,7 @@ import ReactMarkdown from 'react-markdown';
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import DisplayAd from '@/components/Ads/DisplayAd';
 import { getCurrentUserPremiumType } from '@/hooks/useAuth';
+import ChangelogDetailsHeader from './ChangelogDetailsHeader';
 
 interface Item {
   id: number;
@@ -303,53 +304,8 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
         {/* Header with Side-by-Side Layout */}
         <div className={`grid gap-6 ${premiumStatusLoaded && currentUserPremiumType === 0 ? 'grid-cols-1 lg:grid-cols-3' : 'grid-cols-1'}`}>
           {/* Changelog Info - Takes up full width for premium users, 2/3 for non-premium */}
-          <div className={`${premiumStatusLoaded && currentUserPremiumType === 0 ? 'lg:col-span-2' : ''} bg-gradient-to-r from-[#2A3441] to-[#1E252B] rounded-lg p-6 border border-[#37424D]`}>
-            <h1 className="text-3xl font-bold text-white mb-2">
-              Changelog #{changelog.id}
-            </h1>
-            <p className="text-[#D3D9D4] mb-4">
-              {changelog.change_count} change{changelog.change_count !== 1 ? 's' : ''} • Posted on {formatMessageDate(changelog.created_at * 1000)}
-            </p>
-            
-            {/* Contributors */}
-            <div className="mt-4">
-              <h3 className="text-sm font-medium text-[#D3D9D4] mb-2">Contributors:</h3>
-              <div className="flex flex-wrap gap-2">
-                {(() => {
-                  const allContributors = new Map<string, string>();
-                  
-                  changelog.change_data.forEach(change => {
-                    if (change.changed_by && change.changed_by_id) {
-                      allContributors.set(change.changed_by, change.changed_by_id);
-                    }
-                    
-                    if (change.suggestion?.suggestor_name && change.suggestion.user_id) {
-                      allContributors.set(change.suggestion.suggestor_name, String(change.suggestion.user_id));
-                    }
-                  });
-                  
-                  const sortedContributors = Array.from(allContributors.entries()).sort(([a], [b]) => 
-                    a.toLowerCase().localeCompare(b.toLowerCase())
-                  );
-                  
-                  return sortedContributors.map(([contributorName, discordId], index) => (
-                    <span key={contributorName}>
-                      <a
-                        href={`https://discord.com/users/${discordId}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[#40C0E7] hover:text-[#2B9CD9] hover:underline text-sm"
-                      >
-                        {contributorName}
-                      </a>
-                      {index < sortedContributors.length - 1 && (
-                        <span className="text-[#D3D9D4] text-sm">,</span>
-                      )}
-                    </span>
-                  ));
-                })()}
-              </div>
-            </div>
+          <div className={`${premiumStatusLoaded && currentUserPremiumType === 0 ? 'lg:col-span-2' : ''}`}>
+            <ChangelogDetailsHeader changelog={changelog} userData={userData} />
           </div>
 
           {/* Ad - Takes up 1/3 of the space, only show for non-premium users */}
