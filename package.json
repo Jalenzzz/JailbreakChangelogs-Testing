@@ -8,7 +8,7 @@
     "build:analyze": "ANALYZE=true next build --turbopack",
     "build:perf": "node scripts/build-performance.js",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "type-check": "tsc --noEmit",
     "check": "pnpm type-check && pnpm lint"
   },
