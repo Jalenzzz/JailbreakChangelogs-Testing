@@ -105,7 +105,7 @@ const ChangelogNavigation: React.FC<ChangelogNavigationProps> = ({
               : "Select a changelog"}
             classNamePrefix="react-select"
             className="w-full"
-            isClearable={true}
+            isClearable={false}
             styles={{
               control: (base) => ({
                 ...base,

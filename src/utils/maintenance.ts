@@ -31,7 +31,7 @@ export async function getMaintenanceMetadata(): Promise<Metadata | null> {
         url: 'https://jailbreakchangelogs.xyz',
         images: [
           {
-            url: "https://assets.jailbreakchangelogs.xyz/assets/backgrounds/background16.webp",
+            url: "/assets/images/background16.webp",
             width: 1200,
             height: 630,
             alt: "Jailbreak Changelogs Maintenance Banner",
@@ -43,7 +43,7 @@ export async function getMaintenanceMetadata(): Promise<Metadata | null> {
         title: "Under Maintenance",
         description: "Jailbreak Changelogs is currently under maintenance. We'll be back soon!",
         images: [
-          "https://assets.jailbreakchangelogs.xyz/assets/backgrounds/background16.webp"
+          "/assets/images/background16.webp"
         ],
       },
     };

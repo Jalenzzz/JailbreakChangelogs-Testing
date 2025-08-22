@@ -2,17 +2,11 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { fetchChangelogList } from '@/utils/api';
+import { fetchChangelogList, Changelog } from '@/utils/api';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
-
-interface Changelog {
-  id: number;
-  title: string;
-  image_url: string;
-}
 
 const TimelineContent: React.FC = () => {
   const [changelogs, setChangelogs] = useState<Changelog[]>([]);

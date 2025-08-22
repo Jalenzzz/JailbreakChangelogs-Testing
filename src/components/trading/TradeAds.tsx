@@ -263,14 +263,12 @@ export default function TradeAds({ initialTradeAds, initialItems = [] }: TradeAd
             <p className="text-muted/70 mb-8">This page seems empty at the moment.</p>
             <div className="flex justify-center gap-4">
               <Button
-                variant="outlined"
+                variant="contained"
                 onClick={refreshTradeAds}
                 sx={{
-                  borderColor: '#5865F2',
-                  color: '#5865F2',
+                  backgroundColor: '#5865F2',
                   '&:hover': {
-                    borderColor: '#4752C4',
-                    backgroundColor: '#2B2F4C',
+                    backgroundColor: '#4752C4',
                   },
                 }}
               >

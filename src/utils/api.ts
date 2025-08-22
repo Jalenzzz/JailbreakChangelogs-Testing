@@ -12,7 +12,7 @@ interface User {
   };
 }
 
-interface Changelog {
+export interface Changelog {
   id: number;
   title: string;
   sections: string;
@@ -285,6 +285,12 @@ export async function fetchChangelogList(): Promise<Changelog[]> {
 export async function fetchChangelog(id: string): Promise<Changelog> {
   const response = await fetch(`${BASE_API_URL}/changelogs/get?id=${id}`);
   if (!response.ok) throw new Error('Failed to fetch changelog');
+  return response.json();
+}
+
+export async function fetchLatestChangelog(): Promise<Changelog> {
+  const response = await fetch(`${BASE_API_URL}/changelogs/latest`);
+  if (!response.ok) throw new Error('Failed to fetch latest changelog');
   return response.json();
 }
 

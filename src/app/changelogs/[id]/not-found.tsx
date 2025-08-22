@@ -4,7 +4,7 @@ import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
-export default function TradingAdNotFound() {
+export default function ChangelogNotFound() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#2e3944] text-[#D3D9D4] bg-[url('https://assets.jailbreakchangelogs.xyz/assets/backgrounds/background16.webp')] bg-cover bg-no-repeat bg-center relative">
       {/* Dark overlay for better text readability */}
@@ -16,17 +16,17 @@ export default function TradingAdNotFound() {
             <div className={`${inter.className} font-bold text-9xl text-[#5865F2]`}>
               404
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">Trade Ad Not Found</h1>
+            <h1 className="text-2xl font-bold text-white mb-2">Changelog Not Found</h1>
             <p className="text-muted">
-              The trade ad you&apos;re looking for doesn&apos;t exist or may have been removed.
+              The changelog you&apos;re looking for doesn&apos;t exist or may have been removed.
             </p>
           </div>
           <div className="space-y-3">
             <Link
-              href="/trading"
+              href="/changelogs"
               className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#5865F2] hover:bg-[#4752C4] text-white rounded-lg transition-colors font-medium"
             >
-              Browse All Trade Ads
+              Browse All Changelogs
             </Link>
             <Link
               href="/"
@@ -40,4 +40,4 @@ export default function TradingAdNotFound() {
       </div>
     </div>
   );
-} 
+}
