@@ -1,6 +1,6 @@
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import React, { useState, useEffect, useCallback } from 'react';
-import { Box, CircularProgress, Typography, TextField, Button, IconButton, Pagination, Menu, MenuItem, Skeleton, Tooltip } from '@mui/material';
+import { Box, CircularProgress, Typography, TextField, Button, IconButton, Pagination, Menu, MenuItem, Tooltip } from '@mui/material';
 import { PUBLIC_API_URL } from "@/utils/api";
 import { UserAvatar } from '@/utils/avatar';
 import { PencilIcon, TrashIcon, ArrowUpIcon, ArrowDownIcon, EllipsisHorizontalIcon, ChatBubbleLeftIcon, FlagIcon } from '@heroicons/react/24/outline';
@@ -78,18 +78,18 @@ const CommentSkeleton = () => {
       {[1, 2, 3].map((index) => (
         <div key={index} className="bg-[#2E3944] p-3 sm:p-6 rounded-lg border border-[#2E3944]">
           <div className="flex items-start gap-2 sm:gap-3">
-            <Skeleton variant="circular" width={40} height={40} sx={{ bgcolor: '#1E2328' }} />
+            <div className="w-10 h-10 bg-[#1E2328] rounded-full animate-pulse" />
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between mb-1">
                 <div className="flex flex-col">
-                  <Skeleton variant="text" width={120} height={24} sx={{ bgcolor: '#1E2328' }} />
-                  <Skeleton variant="text" width={80} height={16} sx={{ bgcolor: '#1E2328' }} />
+                  <div className="w-30 h-6 bg-[#1E2328] rounded animate-pulse mb-1" />
+                  <div className="w-20 h-4 bg-[#1E2328] rounded animate-pulse" />
                 </div>
               </div>
               <div className="space-y-2">
-                <Skeleton variant="text" width="100%" height={20} sx={{ bgcolor: '#1E2328' }} />
-                <Skeleton variant="text" width="90%" height={20} sx={{ bgcolor: '#1E2328' }} />
-                <Skeleton variant="text" width="80%" height={20} sx={{ bgcolor: '#1E2328' }} />
+                <div className="w-full h-5 bg-[#1E2328] rounded animate-pulse" />
+                <div className="w-[90%] h-5 bg-[#1E2328] rounded animate-pulse" />
+                <div className="w-[80%] h-5 bg-[#1E2328] rounded animate-pulse" />
               </div>
             </div>
           </div>
@@ -584,20 +584,15 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
       <div className="bg-[#212A31] rounded-lg p-3 sm:p-6 border border-[#5865F2]">
         <div className="flex flex-col gap-4">
           <div>
-            <Skeleton
-              variant="text"
-              width={320}
-              height={32}
-              sx={{ bgcolor: '#1E2328', borderRadius: '8px', marginBottom: '16px' }}
-            />
+            <div className="w-80 h-8 bg-[#1E2328] rounded animate-pulse mb-4" />
           </div>
           
           {/* Comment Form Skeleton */}
           <div className="mb-6 sm:mb-8">
-            <Skeleton variant="rounded" height={100} sx={{ bgcolor: '#1E2328' }} />
+            <div className="w-full h-24 bg-[#1E2328] rounded animate-pulse" />
             <div className="flex justify-between items-center mt-2">
-              <Skeleton variant="rounded" width={120} height={36} sx={{ bgcolor: '#1E2328' }} />
-              <Skeleton variant="rounded" width={120} height={36} sx={{ bgcolor: '#1E2328' }} />
+              <div className="w-30 h-9 bg-[#1E2328] rounded animate-pulse" />
+              <div className="w-30 h-9 bg-[#1E2328] rounded animate-pulse" />
             </div>
           </div>
 
@@ -815,8 +810,8 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                               <div className="flex items-center gap-2 flex-wrap">
                                 {loadingUserData[comment.user_id] ? (
                                   <>
-                                    <Skeleton variant="text" width={120} height={20} sx={{ bgcolor: '#1E2328' }} />
-                                    <Skeleton variant="text" width={80} height={16} sx={{ bgcolor: '#1E2328' }} />
+                                    <div className="w-30 h-5 bg-[#1E2328] rounded animate-pulse" />
+                                    <div className="w-20 h-4 bg-[#1E2328] rounded animate-pulse" />
                                   </>
                                 ) : hideRecent ? (
                                   <div className="flex items-center gap-2">
@@ -993,9 +988,9 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                             <div>
                               {loadingUserData[comment.user_id] ? (
                                 <div className="space-y-2">
-                                  <Skeleton variant="text" width="100%" height={20} sx={{ bgcolor: '#1E2328' }} />
-                                  <Skeleton variant="text" width="90%" height={20} sx={{ bgcolor: '#1E2328' }} />
-                                  <Skeleton variant="text" width="80%" height={20} sx={{ bgcolor: '#1E2328' }} />
+                                  <div className="w-full h-5 bg-[#1E2328] rounded animate-pulse" />
+                                  <div className="w-[90%] h-5 bg-[#1E2328] rounded animate-pulse" />
+                                  <div className="w-[80%] h-5 bg-[#1E2328] rounded animate-pulse" />
                                 </div>
                               ) : (
                                 <>

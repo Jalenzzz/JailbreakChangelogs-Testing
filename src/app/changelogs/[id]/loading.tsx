@@ -1,16 +1,18 @@
 import Breadcrumb from '@/components/Layout/Breadcrumb';
-import SeasonHeader from '@/components/Seasons/SeasonHeader';
+import ChangelogHeader from '@/components/Changelogs/ChangelogHeader';
 
 export default function Loading() {
   return (
     <main className="min-h-screen bg-[#2E3944]">
       <div className="container mx-auto mb-8 px-4 sm:px-6">
         <Breadcrumb loading={true} />
-        <SeasonHeader currentSeason={null} nextSeason={null} />
+        <ChangelogHeader />
         
-        {/* Season Navigation skeleton */}
+        {/* Navigation skeleton */}
         <div className="mb-8 grid grid-cols-1 gap-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="h-12 bg-[#37424D] rounded-lg animate-pulse"></div>
+            <div className="h-12 bg-[#37424D] rounded-lg animate-pulse"></div>
             <div className="h-12 bg-[#37424D] rounded-lg animate-pulse"></div>
             <div className="h-12 bg-[#37424D] rounded-lg animate-pulse"></div>
             <div className="h-12 bg-[#37424D] rounded-lg animate-pulse"></div>
@@ -22,9 +24,6 @@ export default function Loading() {
           <div className="sm:col-span-12 xl:col-span-8">
             <div className="h-8 bg-[#37424D] rounded w-1/2 mb-4 animate-pulse"></div>
             <div className="h-4 bg-[#37424D] rounded w-full mb-4 animate-pulse"></div>
-            
-
-            
             <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="rounded-lg border border-[#2E3944] bg-[#37424D] p-4">
@@ -80,4 +79,4 @@ export default function Loading() {
       </div>
     </main>
   );
-} 
+}

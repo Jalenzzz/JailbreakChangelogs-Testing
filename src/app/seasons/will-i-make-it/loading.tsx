@@ -39,7 +39,7 @@ export default function Loading() {
             <div className="h-12 bg-[#37424D] rounded-lg animate-pulse"></div>
             <div className="h-12 bg-[#37424D] rounded-lg animate-pulse"></div>
           </div>
-          <div className="h-12 bg-[#FFB636] rounded-lg w-1/4 animate-pulse"></div>
+
         </div>
       </div>
     </div>

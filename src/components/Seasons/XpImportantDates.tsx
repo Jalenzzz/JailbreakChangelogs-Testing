@@ -118,28 +118,30 @@ export default function XpImportantDates({ season, title, startDate, endDate, do
       </div>
 
       <div className="space-y-4">
-        {/* Double XP Countdown */}
-        <div className="rounded-lg border border-[#2E3944] bg-[#37424D] p-4">
-          <div className="flex flex-col gap-3">
-            <div className="text-center">
-              <span 
-                className="text-lg font-semibold text-muted" 
-              >
-                {doubleXpStatus}
-              </span>
-            </div>
-            {doubleXpTimeLeft && (
+        {/* Double XP Countdown - Only show when Double XP hasn't started yet */}
+        {doubleXpStatus !== 'Double XP is now active!' && (
+          <div className="rounded-lg border border-[#2E3944] bg-[#37424D] p-4">
+            <div className="flex flex-col gap-3">
               <div className="text-center">
                 <span 
-                  className="text-3xl font-mono font-bold" 
-                  style={{ color: getStatusColor(doubleXpStatus) }}
+                  className="text-lg font-semibold text-muted" 
                 >
-                  {doubleXpTimeLeft}
+                  {doubleXpStatus}
                 </span>
               </div>
-            )}
+              {doubleXpTimeLeft && (
+                <div className="text-center">
+                  <span 
+                    className="text-3xl font-mono font-bold" 
+                    style={{ color: getStatusColor(doubleXpStatus) }}
+                  >
+                    {doubleXpTimeLeft}
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Season End Countdown */}
         <div className="rounded-lg border border-[#2E3944] bg-[#37424D] p-4">

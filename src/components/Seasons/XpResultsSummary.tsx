@@ -167,7 +167,7 @@ export default function XpResultsSummary({ results }: XpResultsSummaryProps) {
             {!results.achievableNoPass && results.doubleXpResults?.noPass && (
               <div className="ml-6 rounded-lg bg-[#2E3944] p-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[#FFFFFF]">Double XP Result:</span>
+                  <span className="text-[#FFFFFF]">Without Season Pass + Double XP:</span>
                   <span className="text-lg">
                     {results.doubleXpResults.noPass && getStatusIcon(results.doubleXpResults.noPass.achievable)}
                   </span>
@@ -201,7 +201,7 @@ export default function XpResultsSummary({ results }: XpResultsSummaryProps) {
             {!results.achievableWithPass && results.doubleXpResults?.withPass && (
               <div className="ml-6 rounded-lg bg-[#2E3944] p-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[#FFFFFF]">Double XP Result:</span>
+                  <span className="text-[#FFFFFF]">With Season Pass + Double XP:</span>
                   <span className="text-lg">
                     {results.doubleXpResults.withPass && getStatusIcon(results.doubleXpResults.withPass.achievable)}
                   </span>

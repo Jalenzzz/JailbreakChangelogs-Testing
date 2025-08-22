@@ -19,6 +19,26 @@ export interface Changelog {
   image_url: string;
 }
 
+export interface Reward {
+  id: number;
+  season_number: number;
+  item: string;
+  requirement: string;
+  link: string;
+  exclusive: string;
+  bonus: string;
+}
+
+export interface Season {
+  season: number;
+  title: string;
+  description: string;
+  is_current: number;
+  start_date: number;
+  end_date: number;
+  rewards: Reward[];
+}
+
 import { Item, ItemDetails } from "@/types";
 import { UserData } from "@/types/auth";
 
@@ -428,6 +448,38 @@ export async function fetchLatestSeason() {
     return data;
   } catch (err) {
     console.error('[SERVER] Error fetching latest season:', err);
+    return null;
+  }
+}
+
+export async function fetchSeasonsList() {
+  try {
+    const response = await fetch(`${BASE_API_URL}/seasons/list`);
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch seasons list');
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error('[SERVER] Error fetching seasons list:', err);
+    return [];
+  }
+}
+
+export async function fetchSeason(id: string) {
+  try {
+    const response = await fetch(`${BASE_API_URL}/seasons/get?id=${id}`);
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch season');
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error('[SERVER] Error fetching season:', err);
     return null;
   }
 }
