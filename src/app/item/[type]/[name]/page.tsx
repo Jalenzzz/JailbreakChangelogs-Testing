@@ -1,6 +1,7 @@
-import { fetchItem, fetchItemChanges, fetchItemsByType } from '@/utils/api';
+import { fetchItem, fetchItemChanges, fetchItemsByType, fetchItemFavorites, fetchUsersBatch } from '@/utils/api';
 import ItemDetailsClient from '@/components/Items/ItemDetailsClient';
 import { notFound } from 'next/navigation';
+import type { Change } from '@/components/Items/ItemChangelogs';
 
 interface Props {
   params: Promise<{
@@ -17,12 +18,20 @@ export default async function ItemDetailsPage({ params }: Props) {
     notFound();
   }
   
-  const initialChanges = await fetchItemChanges(String(item.id));
+  const initialChanges = await fetchItemChanges(String(item.id)) as Change[];
+  
+  // Fetch user data for item changes server-side
+  const userIds = Array.from(new Set(initialChanges.map((change: Change) => change.changed_by_id))).filter(Boolean) as string[];
+  const userMap = await fetchUsersBatch(userIds);
+  
   const similarItemsPromise = fetchItemsByType(item.type);
+  const favoriteCount = await fetchItemFavorites(String(item.id));
 
   return <ItemDetailsClient 
     item={item} 
     initialChanges={initialChanges}
+    initialUserMap={userMap}
     similarItemsPromise={similarItemsPromise}
+    initialFavoriteCount={favoriteCount}
   />;
 } 

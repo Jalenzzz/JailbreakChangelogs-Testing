@@ -1,5 +1,5 @@
 import { Item, FilterSort, ValueSort } from "@/types";
-import { fetchUserFavorites } from "@/utils/api";
+
 
 export const demandOrder = [
   "Close to none",
@@ -135,7 +135,7 @@ export const getEffectiveTrend = (item: Item): string | null => {
   return item.trend;
 };
 
-export const filterByType = async (items: Item[], filterSort: FilterSort): Promise<Item[]> => {
+export const filterByType = async (items: Item[], filterSort: FilterSort, userFavorites?: Array<{ item_id: string }>): Promise<Item[]> => {
   switch (filterSort) {
     case "name-limited-items":
       return items.filter((item) => item.is_limited === 1);
@@ -166,29 +166,20 @@ export const filterByType = async (items: Item[], filterSort: FilterSort): Promi
     case "name-weapon-skins":
       return items.filter((item) => item.type.toLowerCase() === "weapon skin");
     case "favorites":
-      const storedUser = localStorage.getItem('user');
-      if (storedUser) {
-        const userData = JSON.parse(storedUser);
-        try {
-          const favorites = await fetchUserFavorites(userData.id);
-          if (favorites !== null && Array.isArray(favorites)) {
-            // Create a Set of both direct IDs and parent IDs from variants
-            const favoriteIds = new Set(
-              favorites.map(fav => {
-                const itemId = String(fav.item_id);
-                // If it's a variant (contains hyphen), get both the full ID and parent ID
-                if (itemId.includes('-')) {
-                  const [parentId] = itemId.split('-');
-                  return [itemId, parentId];
-                }
-                return [itemId];
-              }).flat()
-            );
-            return items.filter(item => favoriteIds.has(String(item.id)));
-          }
-        } catch (error) {
-          console.error('Error fetching favorites:', error);
-        }
+      if (userFavorites && Array.isArray(userFavorites)) {
+        // Create a Set of both direct IDs and parent IDs from variants
+        const favoriteIds = new Set(
+          userFavorites.map(fav => {
+            const itemId = String(fav.item_id);
+            // If it's a variant (contains hyphen), get both the full ID and parent ID
+            if (itemId.includes('-')) {
+              const [parentId] = itemId.split('-');
+              return [itemId, parentId];
+            }
+            return [itemId];
+          }).flat()
+        );
+        return items.filter(item => favoriteIds.has(String(item.id)));
       }
       return [];
     default:
@@ -200,12 +191,13 @@ export const sortAndFilterItems = async (
   items: Item[],
   filterSort: FilterSort,
   valueSort: ValueSort,
-  searchTerm: string = ""
+  searchTerm: string = "",
+  userFavorites?: Array<{ item_id: string }>
 ): Promise<Item[]> => {
   let result = [...items];
 
   // Apply filter based on filterSort
-  result = await filterByType(result, filterSort);
+  result = await filterByType(result, filterSort, userFavorites);
 
   // Apply search filter
   if (searchTerm) {

@@ -18,17 +18,27 @@ import Breadcrumb from "@/components/Layout/Breadcrumb";
 import CreatorLink from "@/components/Items/CreatorLink";
 import ItemValues from "@/components/Items/ItemValues";
 import ItemVariantDropdown from "@/components/Items/ItemVariantDropdown";
-import ChangelogComments from '@/components/PageComments/ChangelogComments';
 import dynamic from 'next/dynamic';
+import { Change as ItemChange } from '@/components/Items/ItemChangelogs';
 
 const ItemValueChart = dynamic(() => import('@/components/Items/ItemValueChart'), {
   loading: () => <div className="h-[350px] bg-[#212A31] rounded animate-pulse" />,
   ssr: false
 });
-import SimilarItems from '@/components/Items/SimilarItems';
-import ItemChangelogs, { Change as ItemChange } from '@/components/Items/ItemChangelogs';
 
-import { PUBLIC_API_URL, fetchItemFavorites, fetchUserFavorites } from "@/utils/api";
+const ItemChangelogs = dynamic(() => import('@/components/Items/ItemChangelogs'), {
+  loading: () => <div className="h-[350px] bg-[#212A31] rounded animate-pulse" />,
+  ssr: false
+});
+
+const ChangelogComments = dynamic(() => import('@/components/PageComments/ChangelogComments'), {
+  loading: () => <div className="h-[350px] bg-[#212A31] rounded animate-pulse" />,
+  ssr: false
+});
+
+import SimilarItems from '@/components/Items/SimilarItems';
+
+import { PUBLIC_API_URL, fetchUserFavorites } from "@/utils/api";
 import { handleImageError, getItemImagePath, isVideoItem, isHornItem, isDriftItem, getHornAudioPath, getDriftVideoPath, getVideoPath } from "@/utils/images";
 import { formatCustomDate } from "@/utils/timestamp";
 import { useOptimizedRealTimeRelativeDate } from "@/hooks/useSharedTimer";
@@ -39,20 +49,23 @@ import { convertUrlsToLinks } from "@/utils/urlConverter";
 import { ItemDetails, DupedOwner } from '@/types';
 import DisplayAd from "@/components/Ads/DisplayAd";
 import { getCurrentUserPremiumType } from '@/hooks/useAuth';
+import type { UserData } from '@/types/auth';
 
 interface ItemDetailsClientProps {
   item: ItemDetails;
   initialChanges?: ItemChange[];
+  initialUserMap?: Record<string, UserData>;
   similarItemsPromise?: Promise<ItemDetails[] | null>;
+  initialFavoriteCount?: number | null;
 }
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
-export default function ItemDetailsClient({ item, initialChanges, similarItemsPromise }: ItemDetailsClientProps) {
+export default function ItemDetailsClient({ item, initialChanges, initialUserMap, similarItemsPromise, initialFavoriteCount }: ItemDetailsClientProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
-  const [favoriteCount, setFavoriteCount] = useState(0);
+  const [favoriteCount, setFavoriteCount] = useState(initialFavoriteCount || 0);
   const [selectedVariant, setSelectedVariant] = useState<ItemDetails | null>(null);
   const [visibleLength, setVisibleLength] = useState(500);
   const [activeTab, setActiveTab] = useState(0);
@@ -140,10 +153,7 @@ export default function ItemDetailsClient({ item, initialChanges, similarItemsPr
         }
       }
 
-      const count = await fetchItemFavorites(String(item.id));
-      if (count !== null) {
-        setFavoriteCount(Number(count));
-      }
+
     };
 
     checkFavoriteStatus();
@@ -614,7 +624,8 @@ export default function ItemDetailsClient({ item, initialChanges, similarItemsPr
               {activeTab === 2 && (
                 <div className="space-y-6">
                   <ItemChangelogs 
-                    initialChanges={currentItem.id === item.id ? initialChanges : undefined} 
+                    initialChanges={currentItem.id === item.id ? initialChanges : undefined}
+                    initialUserMap={initialUserMap}
                   />
                 </div>
               )}

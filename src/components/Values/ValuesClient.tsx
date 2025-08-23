@@ -11,7 +11,7 @@ import { sortAndFilterItems } from "@/utils/values";
 import toast from 'react-hot-toast';
 import SearchParamsHandler from "@/components/SearchParamsHandler";
 import CategoryIcons from "@/components/Items/CategoryIcons";
-import { PUBLIC_API_URL, fetchUserFavorites } from "@/utils/api";
+import { fetchUserFavorites, fetchRandomItem } from "@/utils/api";
 import { useRouter } from "next/navigation";
 import { useDebounce } from "@/hooks/useDebounce";
 import TradingGuides from "./TradingGuides";
@@ -78,9 +78,7 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
   const handleRandomItem = async () => {
     try {
       const loadingToast = toast.loading('Finding a random item...');
-      const response = await fetch(`${PUBLIC_API_URL}/items/random`);
-      if (!response.ok) throw new Error('Failed to fetch random item');
-      const item = await response.json();
+      const item = await fetchRandomItem();
       toast.dismiss(loadingToast);
       toast.success(`Redirecting to ${item.name} ${item.type}...`);
       router.push(`/item/${item.type.toLowerCase()}/${item.name}`);
@@ -112,38 +110,39 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
     }
   };
 
-  // Load favorites
-  useEffect(() => {
-    const loadFavorites = async () => {
-      const storedUser = localStorage.getItem('user');
-      if (storedUser) {
-        try {
-          const userData = JSON.parse(storedUser);
+  // Load favorites only when user selects favorites filter
+  const loadFavorites = async () => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        const userData = JSON.parse(storedUser);
+        if (userData && userData.id) {
           const favoritesData = await fetchUserFavorites(userData.id);
           if (favoritesData !== null && Array.isArray(favoritesData)) {
-            // Extract parent IDs from favorites (take first part before hyphen if exists)
-            const favoriteIds = favoritesData.map(fav => {
-              const itemId = String(fav.item_id);
-              return itemId.includes('-') ? Number(itemId.split('-')[0]) : Number(itemId);
-            });
-            setFavorites(favoriteIds);
+            setFavorites(favoritesData);
           }
-        } catch (err) {
-          console.error('Error loading favorites:', err);
         }
+      } catch (err) {
+        console.error('Error loading favorites:', err);
       }
-    };
+    }
+  };
 
-    loadFavorites();
-  }, []);
+  // Load favorites only when favorites filter is selected
+  useEffect(() => {
+    if (filterSort === 'favorites') {
+      loadFavorites();
+    }
+  }, [filterSort]);
 
   useEffect(() => {
     const updateSortedItems = async () => {
-      const sorted = await sortAndFilterItems(items, filterSort, valueSort, debouncedSearchTerm);
+      const favoritesData = favorites.map(id => ({ item_id: String(id) }));
+      const sorted = await sortAndFilterItems(items, filterSort, valueSort, debouncedSearchTerm, favoritesData);
       setSortedItems(sorted);
     };
     updateSortedItems();
-  }, [items, debouncedSearchTerm, filterSort, valueSort]);
+  }, [items, debouncedSearchTerm, filterSort, valueSort, favorites]);
 
 
 

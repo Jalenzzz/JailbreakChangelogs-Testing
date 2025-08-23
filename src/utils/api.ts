@@ -522,10 +522,10 @@ export async function fetchItemFavorites(id: string) {
 
 export async function fetchUserFavorites(userId: string) {
   try {
-    const response = await fetch(`${BASE_API_URL}/favorites/get?user=${userId}`);
+    const response = await fetch(`${PUBLIC_API_URL}/favorites/get?user=${userId}`);
     
     if (response.status === 404) {
-      console.log(`[SERVER] User favorites ${userId} not found`);
+      console.log(`[CLIENT] User favorites ${userId} not found`);
       return null;
     }
     
@@ -536,17 +536,33 @@ export async function fetchUserFavorites(userId: string) {
     const data = await response.json();
     return data;
   } catch (err) {
-    console.error('[SERVER] Error fetching user favorites:', err);
+    console.error('[CLIENT] Error fetching user favorites:', err);
     return null;
+  }
+}
+
+export async function fetchRandomItem() {
+  try {
+    const response = await fetch(`${BASE_API_URL}/items/random`);
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch random item');
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error('[SERVER] Error fetching random item:', err);
+    throw err;
   }
 }
 
 export async function fetchItemHistory(id: string) {
   try {
-    const response = await fetch(`${BASE_API_URL}/item/history?id=${id}`);
+    const response = await fetch(`${PUBLIC_API_URL}/item/history?id=${id}`);
     
     if (response.status === 404) {
-      console.log(`[SERVER] Value history for Item ${id} not found`);
+      console.log(`[CLIENT] Value history for Item ${id} not found`);
       return null;
     }
     
@@ -557,7 +573,7 @@ export async function fetchItemHistory(id: string) {
     const data = await response.json();
     return data;
   } catch (err) {
-    console.error('[SERVER] Error fetching item history:', err);
+    console.error('[CLIENT] Error fetching item history:', err);
     return null;
   }
 }

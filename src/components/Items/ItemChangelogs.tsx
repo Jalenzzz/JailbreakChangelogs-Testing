@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { convertUrlsToLinks } from '@/utils/urlConverter';
 import { Button, Pagination, Dialog, DialogTitle, DialogContent, DialogActions, Tabs, Tab } from '@mui/material';
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline';
@@ -9,7 +9,6 @@ import { formatCustomDate } from '@/utils/timestamp';
 import { Chip } from '@mui/material';
 import Image from 'next/image';
 import { DefaultAvatar } from '@/utils/avatar';
-import { fetchUsersBatch } from '@/utils/api';
 import type { UserData } from '@/types/auth';
 
 type ItemChangeValue = string | number | boolean | null;
@@ -92,6 +91,7 @@ export interface Change {
 
 interface ItemChangelogsProps {
   initialChanges?: Change[];
+  initialUserMap?: Record<string, UserData>;
 }
 
 const MAX_REASON_LENGTH = 200;
@@ -139,7 +139,7 @@ const doesSuggestionTypeApplyToKey = (suggestionType?: string, changeKey?: strin
   return false;
 };
 
-export default function ItemChangelogs({ initialChanges }: ItemChangelogsProps) {
+export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemChangelogsProps) {
   const changes: Change[] = useMemo(() => initialChanges ?? [], [initialChanges]);
   const loading = false;
   const error: string | null = null;
@@ -150,7 +150,7 @@ export default function ItemChangelogs({ initialChanges }: ItemChangelogsProps) 
   const [votersOpen, setVotersOpen] = useState(false);
   const [votersTab, setVotersTab] = useState<'up' | 'down'>('up');
   const [activeVoters, setActiveVoters] = useState<VoteLists | null>(null);
-  const [userMap, setUserMap] = useState<Record<string, UserData>>({});
+  const userMap = initialUserMap || {};
 
   const toggleSortOrder = () => {
     setSortOrder(prev => prev === 'newest' ? 'oldest' : 'newest');
@@ -186,20 +186,7 @@ export default function ItemChangelogs({ initialChanges }: ItemChangelogsProps) 
 
   
 
-  // Fetch avatars for users who changed items
-  useEffect(() => {
-    const run = async () => {
-      try {
-        const ids = Array.from(new Set(changes.map((c) => c.changed_by_id))).filter(Boolean);
-        if (ids.length === 0) return;
-        const map = await fetchUsersBatch(ids);
-        setUserMap(map);
-      } catch (error) {
-        console.error('Failed to fetch user batch for changed_by avatars', error);
-      }
-    };
-    run();
-  }, [changes]);
+
 
   const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
