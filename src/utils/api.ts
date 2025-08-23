@@ -339,7 +339,7 @@ export async function fetchItemChanges(id: string) {
   try {
     const response = await fetch(`${BASE_API_URL}/item/changes?id=${id}`);
     if (response.status === 404) {
-      console.log(`[SERVER] Item changes ${id} not found`);
+      console.log(`[SERVER] Item changes for item ${id} not found`);
       return [] as unknown[];
     }
     if (!response.ok) {
@@ -496,5 +496,89 @@ export async function fetchOnlineUsers(): Promise<OnlineUser[]> {
   } catch (err) {
     console.error('[SERVER] Error fetching online users:', err);
     return [];
+  }
+}
+
+export async function fetchItemFavorites(id: string) {
+  try {
+    const response = await fetch(`${BASE_API_URL}/item/favorites?id=${id}`);
+    
+    if (response.status === 404) {
+      console.log(`[SERVER] Item favorites ${id} not found`);
+      return null;
+    }
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch item favorites');
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error('[SERVER] Error fetching item favorites:', err);
+    return null;
+  }
+}
+
+export async function fetchUserFavorites(userId: string) {
+  try {
+    const response = await fetch(`${BASE_API_URL}/favorites/get?user=${userId}`);
+    
+    if (response.status === 404) {
+      console.log(`[SERVER] User favorites ${userId} not found`);
+      return null;
+    }
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch user favorites');
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error('[SERVER] Error fetching user favorites:', err);
+    return null;
+  }
+}
+
+export async function fetchItemHistory(id: string) {
+  try {
+    const response = await fetch(`${BASE_API_URL}/item/history?id=${id}`);
+    
+    if (response.status === 404) {
+      console.log(`[SERVER] Value history for Item ${id} not found`);
+      return null;
+    }
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch item history');
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error('[SERVER] Error fetching item history:', err);
+    return null;
+  }
+}
+
+export async function fetchItemsByType(type: string) {
+  try {
+    const response = await fetch(`${BASE_API_URL}/items/get?type=${encodeURIComponent(type)}`);
+    
+    if (response.status === 404) {
+      console.log(`[SERVER] Items with type ${type} not found`);
+      return null;
+    }
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch items by type');
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error('[SERVER] Error fetching items by type:', err);
+    return null;
   }
 }

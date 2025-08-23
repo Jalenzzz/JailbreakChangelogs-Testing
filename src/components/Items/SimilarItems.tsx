@@ -1,5 +1,5 @@
-import { useEffect, useState, useCallback } from 'react';
-import { PUBLIC_API_URL } from "@/utils/api";
+import { useEffect, useState, useCallback, use, useMemo } from 'react';
+
 import { ItemDetails } from '@/types';
 import { demandOrder } from '@/utils/values';
 import Image from 'next/image';
@@ -14,6 +14,7 @@ const Select = dynamic(() => import('react-select'), { ssr: false });
 
 interface SimilarItemsProps {
   currentItem: ItemDetails;
+  similarItemsPromise?: Promise<ItemDetails[] | null>;
 }
 
 type SortCriteria = 'similarity' | 'creator' | 'trading_metrics' | 'trend';
@@ -25,7 +26,11 @@ interface SortOption {
 
 
 
-const SimilarItems = ({ currentItem }: SimilarItemsProps) => {
+const SimilarItems = ({ currentItem, similarItemsPromise }: SimilarItemsProps) => {
+  // Use server-side data at the top level
+  const serverItems = similarItemsPromise ? use(similarItemsPromise) : null;
+  const typeItems: ItemDetails[] = useMemo(() => serverItems || [], [serverItems]);
+  
   const [similarItems, setSimilarItems] = useState<ItemDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<SortCriteria>('similarity');
@@ -162,72 +167,58 @@ const SimilarItems = ({ currentItem }: SimilarItemsProps) => {
   }, []);
 
   useEffect(() => {
-    const fetchAndCalculateSimilarItems = async () => {
-      try {
-        // Fetch only items of the same type
-        const response = await fetch(`${PUBLIC_API_URL}/items/get?type=${encodeURIComponent(currentItem.type)}`);
-        if (!response.ok) throw new Error('Failed to fetch items');
-        const typeItems: ItemDetails[] = await response.json();
+    // Calculate similarity scores and sort based on selected criteria
+    const itemsWithScores = typeItems
+      .filter(item => item.id !== currentItem.id) // Exclude current item
+      .map(item => ({
+        item,
+        similarityScore: calculateSimilarityScore(currentItem, item),
+        tradingMetricsScore: calculateTradingMetricsScore(currentItem, item),
+        trendScore: calculateTrendSimilarityScore(currentItem, item)
+      }));
 
-        // Calculate similarity scores and sort based on selected criteria
-        const itemsWithScores = typeItems
-          .filter(item => item.id !== currentItem.id) // Exclude current item
-          .map(item => ({
-            item,
-            similarityScore: calculateSimilarityScore(currentItem, item),
-            tradingMetricsScore: calculateTradingMetricsScore(currentItem, item),
-            trendScore: calculateTrendSimilarityScore(currentItem, item)
-          }));
-
-        let sortedItems: ItemDetails[] = [];
-        switch (sortBy) {
-          case 'creator':
-            // Check if current item has an unknown creator
-            if (currentItem.creator === "N/A") {
-              sortedItems = [];
-            } else {
-              sortedItems = itemsWithScores
-                .filter(({ item }) => {
-                  // Extract creator name without ID for comparison, handling both formats
-                  const currentCreatorName = currentItem.creator.split(/[ (]/)[0].toLowerCase();
-                  const itemCreatorName = item.creator.split(/[ (]/)[0].toLowerCase();
-                  return currentCreatorName === itemCreatorName;
-                })
-                .sort((a, b) => {
-                  // Sort by similarity score within the same creator
-                  return b.similarityScore - a.similarityScore;
-                })
-                .map(({ item }) => item);
-            }
-            break;
-          case 'trading_metrics':
-            sortedItems = itemsWithScores
-              .filter(({ tradingMetricsScore }) => tradingMetricsScore > 0) // Only include items with trading metrics
-              .sort((a, b) => b.tradingMetricsScore - a.tradingMetricsScore)
-              .map(({ item }) => item);
-            break;
-          case 'trend':
-            sortedItems = itemsWithScores
-              .filter(({ trendScore }) => trendScore > 0) // Only include items with trends
-              .sort((a, b) => b.trendScore - a.trendScore)
-              .map(({ item }) => item);
-            break;
-          default: // 'similarity'
-            sortedItems = itemsWithScores
-              .sort((a, b) => b.similarityScore - a.similarityScore)
-              .map(({ item }) => item);
+    let sortedItems: ItemDetails[] = [];
+    switch (sortBy) {
+      case 'creator':
+        // Check if current item has an unknown creator
+        if (currentItem.creator === "N/A") {
+          sortedItems = [];
+        } else {
+          sortedItems = itemsWithScores
+            .filter(({ item }) => {
+              // Extract creator name without ID for comparison, handling both formats
+              const currentCreatorName = currentItem.creator.split(/[ (]/)[0].toLowerCase();
+              const itemCreatorName = item.creator.split(/[ (]/)[0].toLowerCase();
+              return currentCreatorName === itemCreatorName;
+            })
+            .sort((a, b) => {
+              // Sort by similarity score within the same creator
+              return b.similarityScore - a.similarityScore;
+            })
+            .map(({ item }) => item);
         }
+        break;
+      case 'trading_metrics':
+        sortedItems = itemsWithScores
+          .filter(({ tradingMetricsScore }) => tradingMetricsScore > 0) // Only include items with trading metrics
+          .sort((a, b) => b.tradingMetricsScore - a.tradingMetricsScore)
+          .map(({ item }) => item);
+        break;
+      case 'trend':
+        sortedItems = itemsWithScores
+          .filter(({ trendScore }) => trendScore > 0) // Only include items with trends
+          .sort((a, b) => b.trendScore - a.trendScore)
+          .map(({ item }) => item);
+        break;
+      default: // 'similarity'
+        sortedItems = itemsWithScores
+          .sort((a, b) => b.similarityScore - a.similarityScore)
+          .map(({ item }) => item);
+    }
 
-        setSimilarItems(sortedItems.slice(0, 6)); // Get top 6
-      } catch (error) {
-        console.error('Error fetching similar items:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAndCalculateSimilarItems();
-  }, [currentItem, sortBy, calculateSimilarityScore, calculateTradingMetricsScore, calculateTrendSimilarityScore]);
+    setSimilarItems(sortedItems.slice(0, 6)); // Get top 6
+    setLoading(false);
+  }, [currentItem, sortBy, calculateSimilarityScore, calculateTradingMetricsScore, calculateTrendSimilarityScore, typeItems]);
 
   const parseValue = (value: string): number => {
     if (value === "N/A") return 0;

@@ -28,7 +28,7 @@ const ItemValueChart = dynamic(() => import('@/components/Items/ItemValueChart')
 import SimilarItems from '@/components/Items/SimilarItems';
 import ItemChangelogs, { Change as ItemChange } from '@/components/Items/ItemChangelogs';
 
-import { PUBLIC_API_URL } from "@/utils/api";
+import { PUBLIC_API_URL, fetchItemFavorites, fetchUserFavorites } from "@/utils/api";
 import { handleImageError, getItemImagePath, isVideoItem, isHornItem, isDriftItem, getHornAudioPath, getDriftVideoPath, getVideoPath } from "@/utils/images";
 import { formatCustomDate } from "@/utils/timestamp";
 import { useOptimizedRealTimeRelativeDate } from "@/hooks/useSharedTimer";
@@ -43,11 +43,12 @@ import { getCurrentUserPremiumType } from '@/hooks/useAuth';
 interface ItemDetailsClientProps {
   item: ItemDetails;
   initialChanges?: ItemChange[];
+  similarItemsPromise?: Promise<ItemDetails[] | null>;
 }
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
-export default function ItemDetailsClient({ item, initialChanges }: ItemDetailsClientProps) {
+export default function ItemDetailsClient({ item, initialChanges, similarItemsPromise }: ItemDetailsClientProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
@@ -125,26 +126,22 @@ export default function ItemDetailsClient({ item, initialChanges }: ItemDetailsC
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
         const userData = JSON.parse(storedUser);
-        const favoritesResponse = await fetch(`${PUBLIC_API_URL}/favorites/get?user=${userData.id}`);
-        if (favoritesResponse.ok) {
-          const favoritesData = await favoritesResponse.json();
-          if (Array.isArray(favoritesData)) {
-            const isItemFavorited = favoritesData.some(fav => {
-              const favoriteId = String(fav.item_id);
-              if (favoriteId.includes('-')) {
-                const [parentId] = favoriteId.split('-');
-                return Number(parentId) === item.id;
-              }
-              return Number(favoriteId) === item.id;
-            });
-            setIsFavorited(isItemFavorited);
-          }
+        const favoritesData = await fetchUserFavorites(userData.id);
+        if (favoritesData !== null && Array.isArray(favoritesData)) {
+          const isItemFavorited = favoritesData.some(fav => {
+            const favoriteId = String(fav.item_id);
+            if (favoriteId.includes('-')) {
+              const [parentId] = favoriteId.split('-');
+              return Number(parentId) === item.id;
+            }
+            return Number(favoriteId) === item.id;
+          });
+          setIsFavorited(isItemFavorited);
         }
       }
 
-      const countResponse = await fetch(`${PUBLIC_API_URL}/item/favorites?id=${item.id}&nocache=true`);
-      if (countResponse.ok) {
-        const count = await countResponse.json();
+      const count = await fetchItemFavorites(String(item.id));
+      if (count !== null) {
         setFavoriteCount(Number(count));
       }
     };
@@ -791,7 +788,7 @@ export default function ItemDetailsClient({ item, initialChanges }: ItemDetailsC
 
               {activeTab === 4 && (
                 <div className="space-y-6">
-                  <SimilarItems currentItem={currentItem} />
+                  <SimilarItems currentItem={currentItem} similarItemsPromise={similarItemsPromise} />
                 </div>
               )}
 

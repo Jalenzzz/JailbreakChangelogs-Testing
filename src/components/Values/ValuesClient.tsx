@@ -11,7 +11,7 @@ import { sortAndFilterItems } from "@/utils/values";
 import toast from 'react-hot-toast';
 import SearchParamsHandler from "@/components/SearchParamsHandler";
 import CategoryIcons from "@/components/Items/CategoryIcons";
-import { PUBLIC_API_URL } from "@/utils/api";
+import { PUBLIC_API_URL, fetchUserFavorites } from "@/utils/api";
 import { useRouter } from "next/navigation";
 import { useDebounce } from "@/hooks/useDebounce";
 import TradingGuides from "./TradingGuides";
@@ -119,17 +119,14 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
       if (storedUser) {
         try {
           const userData = JSON.parse(storedUser);
-          const response = await fetch(`${PUBLIC_API_URL}/favorites/get?user=${userData.id}`);
-          if (response.ok) {
-            const favoritesData = await response.json();
-            if (Array.isArray(favoritesData)) {
-              // Extract parent IDs from favorites (take first part before hyphen if exists)
-              const favoriteIds = favoritesData.map(fav => {
-                const itemId = String(fav.item_id);
-                return itemId.includes('-') ? Number(itemId.split('-')[0]) : Number(itemId);
-              });
-              setFavorites(favoriteIds);
-            }
+          const favoritesData = await fetchUserFavorites(userData.id);
+          if (favoritesData !== null && Array.isArray(favoritesData)) {
+            // Extract parent IDs from favorites (take first part before hyphen if exists)
+            const favoriteIds = favoritesData.map(fav => {
+              const itemId = String(fav.item_id);
+              return itemId.includes('-') ? Number(itemId.split('-')[0]) : Number(itemId);
+            });
+            setFavorites(favoriteIds);
           }
         } catch (err) {
           console.error('Error loading favorites:', err);

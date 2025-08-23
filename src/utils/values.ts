@@ -1,5 +1,5 @@
 import { Item, FilterSort, ValueSort } from "@/types";
-import { PUBLIC_API_URL } from "@/utils/api";
+import { fetchUserFavorites } from "@/utils/api";
 
 export const demandOrder = [
   "Close to none",
@@ -170,9 +170,8 @@ export const filterByType = async (items: Item[], filterSort: FilterSort): Promi
       if (storedUser) {
         const userData = JSON.parse(storedUser);
         try {
-          const response = await fetch(`${PUBLIC_API_URL}/favorites/get?user=${userData.id}`);
-          const favorites = await response.json();
-          if (Array.isArray(favorites)) {
+          const favorites = await fetchUserFavorites(userData.id);
+          if (favorites !== null && Array.isArray(favorites)) {
             // Create a Set of both direct IDs and parent IDs from variants
             const favoriteIds = new Set(
               favorites.map(fav => {
