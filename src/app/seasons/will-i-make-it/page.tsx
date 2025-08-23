@@ -3,6 +3,7 @@ import Breadcrumb from '@/components/Layout/Breadcrumb';
 import { fetchLatestSeason } from '@/utils/api';
 import XpCalculator from '@/components/Seasons/XpCalculator';
 import XpImportantDates from '@/components/Seasons/XpImportantDates';
+import XpLevelRequirements from '@/components/Seasons/XpLevelRequirements';
 import { Season } from '@/types/seasons';
 
 export default async function WillIMakeItPage() {
@@ -53,7 +54,11 @@ export default async function WillIMakeItPage() {
           />
         </div>
 
+        {/* Main XP Calculator - Primary Feature */}
         <XpCalculator season={season} />
+
+        {/* XP Requirements by Level - Reference Information */}
+        <XpLevelRequirements season={season} />
       </div>
     </div>
   );
