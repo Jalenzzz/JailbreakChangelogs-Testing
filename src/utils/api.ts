@@ -598,3 +598,46 @@ export async function fetchItemsByType(type: string) {
     return null;
   }
 }
+
+export interface CommentData {
+  id: number;
+  author: string;
+  content: string;
+  date: string;
+  item_id: number;
+  item_type: string;
+  user_id: string;
+  edited_at: string | null;
+  owner: string;
+}
+
+export async function fetchComments(type: string, id: string, itemType?: string) {
+  try {
+    const commentType = type === 'item' ? itemType : type;
+    const response = await fetch(`${BASE_API_URL}/comments/get?type=${commentType}&id=${id}&nocache=true`);
+    
+    if (response.status === 404) {
+      console.log(`[SERVER] Comments for ${commentType} ${id} not found`);
+      return { comments: [], userMap: {} };
+    }
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch comments');
+    }
+    
+    const data = await response.json();
+    const commentsArray = Array.isArray(data) ? data : [];
+    
+    // Fetch user data for comments server-side
+    if (commentsArray.length > 0) {
+      const userIds = Array.from(new Set(commentsArray.map(comment => comment.user_id))).filter(Boolean) as string[];
+      const userMap = await fetchUsersBatch(userIds);
+      return { comments: commentsArray, userMap };
+    }
+    
+    return { comments: commentsArray, userMap: {} };
+  } catch (err) {
+    console.error('[SERVER] Error fetching comments:', err);
+    return { comments: [], userMap: {} };
+  }
+}

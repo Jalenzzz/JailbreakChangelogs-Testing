@@ -1,4 +1,4 @@
-import { fetchSeasonsList, Season } from '@/utils/api';
+import { fetchSeasonsList, Season, fetchComments } from '@/utils/api';
 import SeasonDetailsClient from '@/components/Seasons/SeasonDetailsClient';
 import { notFound, redirect } from 'next/navigation';
 
@@ -17,9 +17,10 @@ export default async function SeasonDetailsPage({ params }: Props) {
   
   try {
     const seasonListPromise = fetchSeasonsList();
+    const commentsDataPromise = fetchComments('season', id);
     
-    // Wait for the season list to resolve
-    const seasonList = await seasonListPromise;
+    // Wait for both promises to resolve
+    const [seasonList, commentsData] = await Promise.all([seasonListPromise, commentsDataPromise]);
     
     // Find the current season in the list, handling leading zeros
     const currentSeason = seasonList.find((season: Season) => season.season.toString() === id || season.season === parseInt(id));
@@ -45,6 +46,8 @@ export default async function SeasonDetailsPage({ params }: Props) {
         currentSeason={currentSeason}
         seasonId={id}
         latestSeasonNumber={LATEST_SEASON}
+        initialComments={commentsData.comments}
+        initialUserMap={commentsData.userMap}
       />
     );
   } catch (error) {

@@ -14,7 +14,8 @@ import { darkTheme } from '@/theme/darkTheme';
 import { Skeleton } from '@mui/material';
 import dynamic from 'next/dynamic';
 import Breadcrumb from "@/components/Layout/Breadcrumb";
-import { Changelog } from '@/utils/api';
+import { Changelog, CommentData } from '@/utils/api';
+import { UserData } from '@/types/auth';
 
 // Dynamic imports for heavy components
 const ChangelogHeader = dynamic(() => import('@/components/Changelogs/ChangelogHeader'), {
@@ -79,12 +80,16 @@ interface ChangelogDetailsClientProps {
   changelogList: Changelog[];
   currentChangelog: Changelog;
   changelogId: string;
+  initialComments?: CommentData[];
+  initialUserMap?: Record<string, UserData>;
 }
 
 export default function ChangelogDetailsClient({ 
   changelogList, 
   currentChangelog, 
-  changelogId 
+  changelogId,
+  initialComments = [],
+  initialUserMap = {}
 }: ChangelogDetailsClientProps) {
   const router = useRouter();
   
@@ -316,6 +321,8 @@ export default function ChangelogDetailsClient({
             changelogId={changelog.id}
             onChangelogSelect={handleChangelogSelect}
             changelogList={changelogList}
+            initialComments={initialComments}
+            initialUserMap={initialUserMap}
           />
         </div>
       </main>

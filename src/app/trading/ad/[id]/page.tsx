@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import { notFound } from 'next/navigation';
-import { fetchTradeAd, fetchUsersBatch } from '@/utils/api';
+import { fetchTradeAd, fetchUsersBatch, fetchComments } from '@/utils/api';
 import { fetchItems } from '@/utils/api';
 import type { Item } from '@/types';
 import TradeDetailsClient from './TradeDetailsClient';
@@ -79,5 +79,7 @@ async function TradeDetailsWrapper({ params }: { params: Promise<{ id: string }>
     notFound();
   }
 
-  return <TradeDetailsClient trade={enriched} />;
+  const commentsData = await fetchComments('trade', id);
+
+  return <TradeDetailsClient trade={enriched} initialComments={commentsData.comments} initialUserMap={commentsData.userMap} />;
 } 

@@ -12,7 +12,8 @@ import { Inter } from "next/font/google";
 import { formatProfileDate } from '@/utils/timestamp';
 import DisplayAd from '@/components/Ads/DisplayAd';
 import { getCurrentUserPremiumType } from '@/hooks/useAuth';
-import { Season } from '@/utils/api';
+import { Season, CommentData } from '@/utils/api';
+import { UserData } from '@/types/auth';
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
@@ -21,12 +22,16 @@ interface SeasonDetailsClientProps {
   currentSeason: Season;
   seasonId: string;
   latestSeasonNumber: number;
+  initialComments?: CommentData[];
+  initialUserMap?: Record<string, UserData>;
 }
 
 export default function SeasonDetailsClient({ 
   seasonList, 
   currentSeason, 
-  latestSeasonNumber 
+  latestSeasonNumber,
+  initialComments = [],
+  initialUserMap = {}
 }: SeasonDetailsClientProps) {
   const router = useRouter();
   
@@ -248,6 +253,8 @@ export default function SeasonDetailsClient({
               changelogId={season.season} 
               changelogTitle={season.title}
               type="season"
+              initialComments={initialComments}
+              initialUserMap={initialUserMap}
             />
           </div>
         </div>

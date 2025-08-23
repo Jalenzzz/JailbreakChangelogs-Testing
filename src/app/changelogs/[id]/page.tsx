@@ -1,4 +1,4 @@
-import { fetchChangelogList } from '@/utils/api';
+import { fetchChangelogList, fetchComments } from '@/utils/api';
 import ChangelogDetailsClient from '@/components/Changelogs/ChangelogDetailsClient';
 import { notFound } from 'next/navigation';
 
@@ -15,9 +15,10 @@ export default async function ChangelogDetailsPage({ params }: Props) {
   
   try {
     const changelogListPromise = fetchChangelogList();
+    const commentsDataPromise = fetchComments('changelog', id);
     
-    // Wait for the changelog list to resolve
-    const changelogList = await changelogListPromise;
+    // Wait for both promises to resolve
+    const [changelogList, commentsData] = await Promise.all([changelogListPromise, commentsDataPromise]);
     
     // Sort changelogs by newest first (highest ID first)
     const sortedChangelogList = [...changelogList].sort((a, b) => b.id - a.id);
@@ -34,6 +35,8 @@ export default async function ChangelogDetailsPage({ params }: Props) {
         changelogList={sortedChangelogList}
         currentChangelog={currentChangelog}
         changelogId={id}
+        initialComments={commentsData.comments}
+        initialUserMap={commentsData.userMap}
       />
     );
   } catch (error) {

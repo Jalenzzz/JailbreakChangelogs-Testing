@@ -1,4 +1,4 @@
-import { fetchItem, fetchItemChanges, fetchItemsByType, fetchItemFavorites, fetchUsersBatch } from '@/utils/api';
+import { fetchItem, fetchItemChanges, fetchItemsByType, fetchItemFavorites, fetchUsersBatch, fetchComments } from '@/utils/api';
 import ItemDetailsClient from '@/components/Items/ItemDetailsClient';
 import { notFound } from 'next/navigation';
 import type { Change } from '@/components/Items/ItemChangelogs';
@@ -26,6 +26,7 @@ export default async function ItemDetailsPage({ params }: Props) {
   
   const similarItemsPromise = fetchItemsByType(item.type);
   const favoriteCount = await fetchItemFavorites(String(item.id));
+  const commentsData = await fetchComments('item', String(item.id), item.type);
 
   return <ItemDetailsClient 
     item={item} 
@@ -33,5 +34,7 @@ export default async function ItemDetailsPage({ params }: Props) {
     initialUserMap={userMap}
     similarItemsPromise={similarItemsPromise}
     initialFavoriteCount={favoriteCount}
+    initialComments={commentsData.comments}
+    initialCommentUserMap={commentsData.userMap}
   />;
 } 

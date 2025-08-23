@@ -38,7 +38,7 @@ const ChangelogComments = dynamic(() => import('@/components/PageComments/Change
 
 import SimilarItems from '@/components/Items/SimilarItems';
 
-import { PUBLIC_API_URL, fetchUserFavorites } from "@/utils/api";
+import { PUBLIC_API_URL, fetchUserFavorites, CommentData } from "@/utils/api";
 import { handleImageError, getItemImagePath, isVideoItem, isHornItem, isDriftItem, getHornAudioPath, getDriftVideoPath, getVideoPath } from "@/utils/images";
 import { formatCustomDate } from "@/utils/timestamp";
 import { useOptimizedRealTimeRelativeDate } from "@/hooks/useSharedTimer";
@@ -57,11 +57,13 @@ interface ItemDetailsClientProps {
   initialUserMap?: Record<string, UserData>;
   similarItemsPromise?: Promise<ItemDetails[] | null>;
   initialFavoriteCount?: number | null;
+  initialComments?: CommentData[];
+  initialCommentUserMap?: Record<string, UserData>;
 }
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
-export default function ItemDetailsClient({ item, initialChanges, initialUserMap, similarItemsPromise, initialFavoriteCount }: ItemDetailsClientProps) {
+export default function ItemDetailsClient({ item, initialChanges, initialUserMap, similarItemsPromise, initialFavoriteCount, initialComments = [], initialCommentUserMap = {} }: ItemDetailsClientProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
@@ -809,6 +811,8 @@ export default function ItemDetailsClient({ item, initialChanges, initialUserMap
                   changelogTitle={item.name}
                   type="item"
                   itemType={item.type}
+                  initialComments={initialComments}
+                  initialUserMap={initialCommentUserMap}
                 />
               )}
             </div>
