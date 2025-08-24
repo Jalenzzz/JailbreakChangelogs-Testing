@@ -140,6 +140,16 @@ export default function Breadcrumb({ userData, loading }: BreadcrumbProps) {
           };
         }
       }
+
+      // Special handling for inventory-checker route
+      if (pathSegments[0] === 'inventory-checker') {
+        if (index === 0) {
+          return {
+            label: "Inventory Checker",
+            href: "/inventory-checker"
+          };
+        }
+      }
       
       return {
         label: segment.charAt(0).toUpperCase() + segment.slice(1),

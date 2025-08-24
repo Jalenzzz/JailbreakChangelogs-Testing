@@ -641,3 +641,109 @@ export async function fetchComments(type: string, id: string, itemType?: string)
     return { comments: [], userMap: {} };
   }
 }
+
+export async function fetchInventoryData(robloxId: string) {
+  console.log('[SERVER] fetchInventoryData called with robloxId:', robloxId);
+  try {
+    const response = await fetch(`https://jailbreak-data.jakobiis.xyz/jailbreak-data/user?id=${robloxId}`, {
+      next: { revalidate: 300 }, // Cache for 5 minutes
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0'
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch inventory data: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error('[SERVER] Error fetching inventory data:', err);
+    return null;
+  }
+}
+
+export async function fetchRobloxUser(robloxId: string) {
+  try {
+    const response = await fetch(`https://users.roblox.com/v1/users/${robloxId}`, {
+      next: { revalidate: 3600 }, // Cache for 1 hour (Roblox user data changes less frequently)
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0'
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch Roblox user: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error(`[SERVER] Error fetching Roblox user ${robloxId}:`, err);
+    return null;
+  }
+}
+
+export async function fetchRobloxAvatars(userIds: string[]) {
+  try {
+    // Validate input
+    if (!userIds || userIds.length === 0) {
+      console.log('[SERVER] fetchRobloxAvatars: No userIds provided, returning empty data');
+      return { data: [] };
+    }
+    
+    // Filter out any invalid IDs
+    const validUserIds = userIds.filter(id => id && typeof id === 'string' && /^\d+$/.test(id));
+    
+    if (validUserIds.length === 0) {
+      console.warn('[SERVER] fetchRobloxAvatars: No valid userIds found after filtering, returning empty data');
+      return { data: [] };
+    }
+    
+    // Roblox API has a limit on how many user IDs can be requested at once
+    // Let's batch them into chunks of 50 (safe limit)
+    const batchSize = 50;
+    const allAvatarData: Array<{ state: string; imageUrl?: string; targetId: number }> = [];
+    
+    for (let i = 0; i < validUserIds.length; i += batchSize) {
+      const batch = validUserIds.slice(i, i + batchSize);
+      const batchNumber = Math.floor(i / batchSize) + 1;
+  
+      try {
+        const response = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${batch.join(',')}&size=420x420&format=Webp&isCircular=true`, {
+          next: { revalidate: 3600 }, // Cache for 1 hour
+          headers: {
+            'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0'
+          }
+        });
+        
+        if (!response.ok) {
+          console.error(`[SERVER] fetchRobloxAvatars: Batch ${batchNumber} failed with status ${response.status} ${response.statusText}`);
+          continue; // Skip this batch and continue with others
+        }
+        
+        const data = await response.json();
+        if (data && data.data && Array.isArray(data.data)) {
+          allAvatarData.push(...data.data);
+         
+        } else {
+          console.warn(`[SERVER] fetchRobloxAvatars: Batch ${batchNumber} returned invalid data structure:`, data);
+        }
+      } catch (batchErr) {
+        console.error(`[SERVER] fetchRobloxAvatars: Error processing batch ${batchNumber}:`, batchErr);
+        continue; // Skip this batch and continue with others
+      }
+      
+      // Add a small delay between batches to be respectful to the API
+      if (i + batchSize < validUserIds.length) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+    }
+    
+    return { data: allAvatarData };
+  } catch (err) {
+    console.error('[SERVER] fetchRobloxAvatars: Unexpected error:', err);
+    return null;
+  }
+}
