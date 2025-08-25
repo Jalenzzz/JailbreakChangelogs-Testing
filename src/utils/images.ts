@@ -2,7 +2,7 @@
 export const IMAGE_PATHS = {
   BASE: "https://assets.jailbreakchangelogs.xyz/assets/images/items",
   VALUES: "https://assets.jailbreakchangelogs.xyz/assets/images/items/480p",
-  PLACEHOLDER: "/assets/images/placeholder.png",
+  PLACEHOLDER: "/assets/images/Placeholder.webp",
 } as const;
 
 // Type mappings for image paths

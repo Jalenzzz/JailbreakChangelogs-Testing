@@ -1,0 +1,226 @@
+import { Suspense } from 'react';
+import { fetchRobloxUser, fetchRobloxAvatars } from '@/utils/api';
+import InventoryCheckerClient from './InventoryCheckerClient';
+
+interface InventoryItem {
+  tradePopularMetric: number | null;
+  level: number | null;
+  timesTraded: number;
+  id: string;
+  categoryTitle: string;
+  info: Array<{
+    title: string;
+    value: string;
+  }>;
+  uniqueCirculation: number;
+  season: number | null;
+  title: string;
+  isOriginalOwner: boolean;
+  history?: Array<{
+    UserId: number;
+    TradeTime: number;
+  }>;
+}
+
+interface InventoryData {
+  user_id: string;
+  data: InventoryItem[];
+  item_count: number;
+  level: number;
+  money: number;
+  xp: number;
+  gamepasses: string[];
+  has_season_pass: boolean;
+  job_id: string;
+  bot_id: string;
+  scan_count: number;
+  created_at: number;
+  updated_at: number;
+}
+
+interface UserDataStreamerProps {
+  robloxId: string;
+  inventoryData: InventoryData;
+}
+
+// Loading component for user data
+function UserDataLoadingFallback({ robloxId, inventoryData }: UserDataStreamerProps) {
+  return (
+    <div className="space-y-6">
+      {/* Search Form */}
+      <div className="bg-[#212A31] rounded-lg border border-[#2E3944] p-6">
+        <form className="flex gap-4">
+          <div className="flex-1">
+            <input
+              type="text"
+              value={robloxId}
+              readOnly
+              className="w-full px-3 py-2 border border-[#2E3944] bg-[#37424D] rounded-lg shadow-sm text-muted"
+            />
+          </div>
+          <button
+            disabled
+            className="bg-[#2E3944] text-white font-medium py-2 px-6 rounded-lg flex items-center gap-2"
+          >
+            <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Loading User Data...
+          </button>
+        </form>
+      </div>
+
+      {/* User Stats with Inventory Data */}
+      <div className="bg-[#212A31] rounded-lg border border-[#2E3944] p-6">
+        <h2 className="text-xl font-semibold mb-4 text-muted">User Information</h2>
+        
+        {/* Roblox User Profile - Loading State */}
+        <div className="flex items-center gap-4 mb-6 p-4 bg-[#2E3944] rounded-lg border border-[#37424D]">
+          <div className="w-16 h-16 bg-[#37424D] rounded-full animate-pulse"></div>
+          <div className="flex-1">
+            <div className="h-6 bg-[#37424D] rounded animate-pulse mb-2"></div>
+            <div className="h-4 bg-[#37424D] rounded animate-pulse w-1/3"></div>
+            <div className="h-4 bg-[#37424D] rounded animate-pulse w-1/4 mt-2"></div>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="text-center">
+            <div className="text-sm text-muted">Total Items</div>
+            <div className="text-2xl font-bold text-white">{inventoryData.data.length}</div>
+          </div>
+          <div className="text-center">
+            <div className="text-sm text-muted">Original Items</div>
+            <div className="text-2xl font-bold text-[#4ade80]">{inventoryData.data.filter((item: InventoryItem) => item.isOriginalOwner).length}</div>
+          </div>
+          <div className="text-center">
+            <div className="text-sm text-muted">Non-Original</div>
+            <div className="text-2xl font-bold text-[#ff6b6b]">{inventoryData.data.filter((item: InventoryItem) => !item.isOriginalOwner).length}</div>
+          </div>
+          <div className="text-center">
+            <div className="text-sm text-muted">Level</div>
+            <div className="text-2xl font-bold text-white">{inventoryData.level}</div>
+          </div>
+          <div className="text-center">
+            <div className="text-sm text-muted">Money</div>
+            <div className="text-2xl font-bold text-[#4ade80]">${inventoryData.money.toLocaleString()}</div>
+          </div>
+          <div className="text-center">
+            <div className="text-sm text-muted">XP</div>
+            <div className="text-2xl font-bold text-white">{inventoryData.xp.toLocaleString()}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Inventory Items - Show with loading state for user data */}
+      <div className="bg-[#212A31] rounded-lg border border-[#2E3944] p-6">
+        <h2 className="text-xl font-semibold text-muted mb-4">Inventory Items</h2>
+        
+        <div className="flex justify-center items-center py-8">
+          <div className="flex flex-col items-center gap-4">
+            <svg className="animate-spin h-8 w-8 text-[#5865F2]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <p className="text-muted text-sm">Loading user profiles and avatars...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Component that fetches user data in parallel with optimized batching
+async function UserDataFetcher({ robloxId, inventoryData }: UserDataStreamerProps) {
+  // Extract unique owner IDs from inventory data
+  const uniqueOwnerIds = Array.from(new Set(
+    inventoryData.data
+      .filter((item: { info: Array<{ title: string; value: string }> }) => 
+        item.info.some((info: { title: string }) => info.title === 'Original Owner'))
+      .map((item: { info: Array<{ title: string; value: string }> }) => {
+        const ownerInfo = item.info.find((info: { title: string }) => info.title === 'Original Owner');
+        return ownerInfo?.value;
+      })
+      .filter((value: string | undefined): value is string => Boolean(value))
+  ));
+
+  // Add the main user ID to the list
+  const allUserIds = [...new Set([...uniqueOwnerIds, robloxId])];
+  
+  // Separate numeric and non-numeric IDs
+  const numericUserIds = allUserIds.filter((userId): userId is string => 
+    typeof userId === 'string' && /^\d+$/.test(userId)
+  );
+  const nonNumericUserIds = allUserIds.filter((userId): userId is string => 
+    typeof userId === 'string' && !/^\d+$/.test(userId)
+  );
+
+  // Start fetching user data and avatars in parallel immediately
+  const userDataPromise = Promise.all(
+    numericUserIds.map(async (userId) => {
+      try {
+        const userData = await fetchRobloxUser(userId);
+        return { userId, userData };
+      } catch (error) {
+        console.error(`Failed to fetch user data for ${userId}:`, error);
+        return { userId, userData: null };
+      }
+    })
+  );
+
+  const avatarDataPromise = numericUserIds.length > 0 
+    ? fetchRobloxAvatars(numericUserIds).catch(error => {
+        console.error('Failed to fetch avatar data:', error);
+        return { data: [] };
+      })
+    : Promise.resolve({ data: [] });
+
+  // Wait for both promises to complete
+  const [userDataResults, avatarData] = await Promise.all([
+    userDataPromise,
+    avatarDataPromise
+  ]);
+
+  // Build the user data objects
+  const robloxUsers: Record<string, { displayName?: string; name?: string }> = {};
+  const robloxAvatars: Record<string, string> = {};
+
+  // Add user data from API calls
+  userDataResults.forEach(({ userId, userData }) => {
+    if (userData) {
+      robloxUsers[userId] = userData;
+    }
+  });
+
+  // Add non-numeric usernames as-is
+  nonNumericUserIds.forEach((userId) => {
+    robloxUsers[userId] = { displayName: userId, name: userId };
+  });
+
+  // Process avatar data
+  if (avatarData && avatarData.data && Array.isArray(avatarData.data)) {
+    avatarData.data.forEach((avatar: { state: string; imageUrl?: string; targetId: number }) => {
+      if (avatar.state === 'Completed' && avatar.imageUrl) {
+        robloxAvatars[avatar.targetId.toString()] = avatar.imageUrl;
+      }
+    });
+  }
+
+  return (
+    <InventoryCheckerClient 
+      initialData={inventoryData} 
+      robloxId={robloxId} 
+      robloxUsers={robloxUsers} 
+      robloxAvatars={robloxAvatars} 
+    />
+  );
+}
+
+export default function UserDataStreamer({ robloxId, inventoryData }: UserDataStreamerProps) {
+  return (
+    <Suspense fallback={<UserDataLoadingFallback robloxId={robloxId} inventoryData={inventoryData} />}>
+      <UserDataFetcher robloxId={robloxId} inventoryData={inventoryData} />
+    </Suspense>
+  );
+}

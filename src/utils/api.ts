@@ -48,6 +48,7 @@ export const BASE_API_URL =
     : process.env.RAILWAY_INTERNAL_API_URL;
 
 export const PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
+export const INVENTORY_API_URL = process.env.NEXT_PUBLIC_INVENTORY_API_URL;
 export interface OnlineUser {
   id: string;
   username: string;
@@ -645,7 +646,7 @@ export async function fetchComments(type: string, id: string, itemType?: string)
 export async function fetchInventoryData(robloxId: string) {
   console.log('[SERVER] fetchInventoryData called with robloxId:', robloxId);
   try {
-    const response = await fetch(`https://jailbreak-data.jakobiis.xyz/jailbreak-data/user?id=${robloxId}`, {
+    const response = await fetch(`${INVENTORY_API_URL}/user?id=${robloxId}`, {
       next: { revalidate: 300 }, // Cache for 5 minutes
       headers: {
         'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0'
@@ -667,7 +668,7 @@ export async function fetchInventoryData(robloxId: string) {
 
 export async function fetchRobloxUser(robloxId: string) {
   try {
-    const response = await fetch(`https://users.roblox.com/v1/users/${robloxId}`, {
+    const response = await fetch(`https://users.roproxy.com/v1/users/${robloxId}`, {
       next: { revalidate: 3600 }, // Cache for 1 hour (Roblox user data changes less frequently)
       headers: {
         'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0'
@@ -712,7 +713,7 @@ export async function fetchRobloxAvatars(userIds: string[]) {
       const batchNumber = Math.floor(i / batchSize) + 1;
   
       try {
-        const response = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${batch.join(',')}&size=420x420&format=Webp&isCircular=true`, {
+        const response = await fetch(`https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${batch.join(',')}&size=420x420&format=Webp&isCircular=true`, {
           next: { revalidate: 3600 }, // Cache for 1 hour
           headers: {
             'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0'
