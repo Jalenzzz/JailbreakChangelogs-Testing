@@ -4,8 +4,10 @@ import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Pagination } from '@mui/material';
+import { Masonry } from '@mui/lab';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
+import { useDebounce } from '@/hooks/useDebounce';
 import { getItemImagePath, isVideoItem, isDriftItem, getDriftVideoPath, getVideoPath } from '@/utils/images';
 
 const Select = dynamic(() => import('react-select'), { ssr: false });
@@ -47,9 +49,10 @@ interface InventoryCheckerClientProps {
   robloxId?: string;
   robloxUsers?: Record<string, { displayName?: string; name?: string }>;
   robloxAvatars?: Record<string, string>;
+  error?: string;
 }
 
-export default function InventoryCheckerClient({ initialData, robloxId, robloxUsers, robloxAvatars }: InventoryCheckerClientProps) {
+export default function InventoryCheckerClient({ initialData, robloxId, robloxUsers, robloxAvatars, error }: InventoryCheckerClientProps) {
   const [searchId, setSearchId] = useState(robloxId || '');
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -57,7 +60,11 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
   const [page, setPage] = useState(1);
   const [showOnlyOriginal, setShowOnlyOriginal] = useState(false);
   const [selectLoaded, setSelectLoaded] = useState(false);
+  const [isFiltering, setIsFiltering] = useState(false);
   const router = useRouter();
+  
+  const MAX_SEARCH_LENGTH = 50;
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
   
 
 
@@ -65,7 +72,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
   useEffect(() => {
     setSelectLoaded(true);
   }, []);
-  
+
   // Gamepass mapping with links and image names
   const gamepassData = {
     'PremiumGarage': {
@@ -102,33 +109,13 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
     }
   };
   
-  const itemsPerPage = 18; // Show 18 items per page for inventory
-
-
+  const itemsPerPage = 20; // Show 18 items per page for inventory
 
   // Function to find the best CDN image name match
   const findBestCDNMatch = (itemName: string, itemType: string): string => {
     // If it's a HyperChrome, handle the special case
     if (itemType === 'hyperchromes' && itemName.includes('Lvl')) {
       return itemName.replace(/Lvl(\d+)/, 'Level $1');
-    }
-    
-    // Specific mappings for common items that need special handling
-    const specificMappings: Record<string, string> = {
-      'cybertruck': 'Cyber Truck',
-      'model3': 'Model 3',
-      'modelS': 'Model S',
-      'modelX': 'Model X',
-      'modelY': 'Model Y',
-      'roadster': 'Roadster',
-      'semi': 'Semi',
-      'falcon': 'Falcon',
-      'falcons': 'Falcons',
-    };
-    
-    // Check if we have a specific mapping first
-    if (specificMappings[itemName.toLowerCase()]) {
-      return specificMappings[itemName.toLowerCase()];
     }
     
     // Common patterns for adding spaces
@@ -153,12 +140,12 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
     router.push(`/inventory-checker?id=${searchId.trim()}`);
   };
 
-  // Reset loading state when new data is received
+  // Reset loading state when new data is received or when there's an error
   useEffect(() => {
-    if (initialData) {
+    if (initialData || error) {
       setIsLoading(false);
     }
-  }, [initialData]);
+  }, [initialData, error]);
 
   const formatNumber = (num: number) => {
     return new Intl.NumberFormat().format(num);
@@ -183,10 +170,21 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
     });
   };
 
+  // Handle filter toggle with artificial delay
+  const handleOriginalFilterToggle = (checked: boolean) => {
+    setIsFiltering(true);
+    setShowOnlyOriginal(checked);
+    
+    // Add artificial delay to show loading state
+    setTimeout(() => {
+      setIsFiltering(false);
+    }, 300); // 300ms delay
+  };
+
   // Reset page when search term, filter, or categories change
   useEffect(() => {
     setPage(1);
-  }, [searchTerm, showOnlyOriginal, selectedCategories]);
+  }, [debouncedSearchTerm, showOnlyOriginal, selectedCategories]);
 
   // Filter inventory items based on search term, original owner filter, and category filter
   const filteredItems = useMemo(() => {
@@ -207,8 +205,8 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
     }
 
     // Apply search filter
-    if (searchTerm.trim()) {
-      const searchLower = searchTerm.toLowerCase().trim();
+    if (debouncedSearchTerm.trim()) {
+      const searchLower = debouncedSearchTerm.toLowerCase().trim();
       items = items.filter((item) => {
         // Search in item title
         if (item.title.toLowerCase().includes(searchLower)) return true;
@@ -231,7 +229,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
     }
 
     return items;
-  }, [initialData, searchTerm, showOnlyOriginal, selectedCategories]);
+  }, [initialData, debouncedSearchTerm, showOnlyOriginal, selectedCategories]);
 
   // Get unique categories from the data
   const availableCategories = useMemo(() => {
@@ -294,12 +292,19 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
           </div>
           <button
             type="submit"
-            disabled={isLoading || !searchId.trim()}
+            disabled={isLoading}
             className="w-full bg-[#5865F2] hover:bg-[#4752C4] disabled:bg-[#2E3944] text-white font-medium py-2 px-4 rounded-lg transition-colors"
           >
             {isLoading ? 'Searching...' : 'Check Inventory'}
           </button>
         </form>
+        
+        {/* Error Message */}
+        {error && (
+          <div className="mt-4 p-3 bg-red-900/30 border border-red-500/50 rounded-lg">
+            <p className="text-red-300 text-sm whitespace-pre-line">{error}</p>
+          </div>
+        )}
       </div>
     );
   }
@@ -328,7 +333,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
           </div>
           <button
             type="submit"
-            disabled={isLoading || !searchId.trim()}
+            disabled={isLoading}
             className="bg-[#5865F2] hover:bg-[#4752C4] disabled:bg-[#2E3944] text-white font-medium py-2 px-6 rounded-lg transition-colors flex items-center gap-2"
           >
             {isLoading && (
@@ -340,6 +345,13 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
             {isLoading ? 'Searching...' : 'Search'}
           </button>
         </form>
+        
+        {/* Error Message */}
+        {error && (
+          <div className="mt-4 p-3 bg-red-900/30 border border-red-500/50 rounded-lg">
+            <p className="text-red-300 text-sm">{error}</p>
+          </div>
+        )}
       </div>
 
       {/* User Stats */}
@@ -379,6 +391,8 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
             </div>
           </div>
         )}
+        
+
         
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <div className="text-center">
@@ -471,7 +485,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
             <input
               type="checkbox"
               checked={showOnlyOriginal}
-              onChange={(e) => setShowOnlyOriginal(e.target.checked)}
+              onChange={(e) => handleOriginalFilterToggle(e.target.checked)}
               className="w-4 h-4 text-[#5865F2] bg-[#37424D] border-[#2E3944] rounded focus:ring-[#5865F2] focus:ring-2"
             />
             <span className="text-sm text-muted whitespace-nowrap">Original Items Only</span>
@@ -486,6 +500,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                   placeholder="Search items..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
+                  maxLength={MAX_SEARCH_LENGTH}
                   className="w-full px-3 py-2 pl-10 pr-10 border border-[#2E3944] bg-[#37424D] rounded-lg shadow-sm focus:outline-none focus:border-[#5865F2] text-muted placeholder-[#D3D9D4]"
                 />
                 <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]" />
@@ -557,15 +572,15 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
           </div>
         </div>
         
-        {filteredItems.length === 0 && (searchTerm || selectedCategories.length > 0) && (
+        {filteredItems.length === 0 && (debouncedSearchTerm || selectedCategories.length > 0) && (
           <div className="text-center py-8 text-muted">
-            <p>
+            <p className="break-words">
               No items found
-              {searchTerm && ` matching &quot;${searchTerm}&quot;`}
+              {debouncedSearchTerm && ` matching "${debouncedSearchTerm}"`}
               {selectedCategories.length > 0 && ` in selected categories`}
             </p>
             <div className="flex flex-wrap justify-center gap-2 mt-2">
-              {searchTerm && (
+              {debouncedSearchTerm && (
                 <button
                   onClick={() => setSearchTerm("")}
                   className="text-[#5865F2] hover:text-[#4752C4] hover:underline"
@@ -585,8 +600,8 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
           </div>
         )}
         
-        {/* Filter Summary */}
-        {(searchTerm || selectedCategories.length > 0 || showOnlyOriginal) && (
+        {/* Filter Summary - Only show when there are items */}
+        {(debouncedSearchTerm || selectedCategories.length > 0 || showOnlyOriginal) && filteredItems.length > 0 && (
           <div className="mb-4 p-3 bg-[#2E3944] rounded-lg border border-[#37424D]">
             <div className="flex flex-wrap items-center gap-2 text-sm text-muted">
               <span className="font-medium">Active filters:</span>
@@ -600,9 +615,9 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                   Category: {selectedCategories[0]}
                 </span>
               )}
-              {searchTerm && (
-                <span className="px-2 py-1 bg-[#5865F2] text-white rounded-md text-xs">
-                  Search: &quot;{searchTerm}&quot;
+              {debouncedSearchTerm && (
+                <span className="px-2 py-1 bg-[#5865F2] text-white rounded-md text-xs break-words">
+                  Search: &quot;{debouncedSearchTerm}&quot;
                 </span>
               )}
               <span className="text-xs opacity-75">
@@ -637,7 +652,26 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
           </div>
         )}
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Loading Spinner */}
+        {isFiltering && (
+          <div className="flex justify-center items-center py-12">
+            <div className="flex flex-col items-center gap-4">
+              <svg className="animate-spin h-8 w-8 text-[#5865F2]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <p className="text-muted text-sm">Filtering items...</p>
+            </div>
+          </div>
+        )}
+        
+        {/* Items Grid - Only show when not filtering */}
+        {!isFiltering && (
+          <Masonry
+            columns={{ xs: 1, sm: 2, md: 3, lg: 4, xl: 5 }}
+            spacing={2}
+            sx={{ width: 'auto', margin: 0 }}
+          >
           {paginatedItems.map((item) => {
             const isOriginalOwner = item.isOriginalOwner;
             const originalOwnerInfo = item.info.find(info => info.title === 'Original Owner');
@@ -645,7 +679,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
             return (
               <div
                 key={item.id}
-                className={`text-white rounded-lg p-4 border-2 relative ${
+                className={`text-white rounded-lg p-3 border-2 relative ${
                   isOriginalOwner 
                     ? 'bg-yellow-600/30 backdrop-blur-sm border-yellow-400' // Gold glass background with gold border for original owner items
                     : 'bg-gray-700 border-gray-800'   // Dark gray background with gray border for non-original items
@@ -663,7 +697,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                 
                 {/* Item Image - Skip for certain types */}
                 {!['Brakes'].includes(item.categoryTitle) && (
-                  <div className="relative w-full h-32 mb-4 rounded-lg overflow-hidden bg-[#212A31]">
+                  <div className="relative w-full h-40 mb-3 rounded-lg overflow-hidden bg-[#212A31]">
                     {isVideoItem(item.title) ? (
                       <video
                         src={getVideoPath(item.categoryTitle, item.title)}
@@ -682,7 +716,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                           className="object-cover"
                           onError={(e) => {
                             const img = e.currentTarget;
-                            img.src = "https://assets.jailbreakchangelogs.xyz/assets/logos/JBCL_Long_Dark_Background.webp";
+                            img.src = "/assets/images/JBCL_Long_Dark_Background.png";
                             img.onerror = null;
                           }}
                         />
@@ -725,7 +759,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                           className="object-cover"
                           onError={(e) => {
                             const img = e.currentTarget;
-                            img.src = "https://assets.jailbreakchangelogs.xyz/assets/logos/JBCL_Long_Dark_Background.webp";
+                            img.src = "/assets/images/JBCL_Long_Dark_Background.png";
                             img.onerror = null;
                           }}
                         />
@@ -734,7 +768,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                 )}
                 
                 {/* Statistics */}
-                <div className="space-y-3 text-center">
+                <div className="space-y-2 text-center">
                   <div>
                     <div className="text-sm opacity-90">MONTHLY TRADED</div>
                     <div className="text-xl font-bold">{formatNumber(item.timesTraded)}</div>
@@ -748,22 +782,24 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                     <div className="text-xl font-bold italic">
                       {originalOwnerInfo ? (
                         <div className="flex items-center justify-center gap-2">
-                          {robloxAvatars && robloxAvatars[originalOwnerInfo.value] && (
+                          {/* Show avatar for original owner - use main user's avatar if isOriginalOwner is true */}
+                          {(isOriginalOwner && robloxAvatars && robloxAvatars[initialData.user_id]) || 
+                           (!isOriginalOwner && robloxAvatars && robloxAvatars[originalOwnerInfo.value]) ? (
                             <Image
-                              src={robloxAvatars[originalOwnerInfo.value]}
+                              src={isOriginalOwner ? robloxAvatars[initialData.user_id] : robloxAvatars[originalOwnerInfo.value]}
                               alt="Original Owner Avatar"
                               width={24}
                               height={24}
                               className="rounded-full bg-[#212A31] border border-[#2E3944]"
                             />
-                          )}
+                          ) : null}
                           <a
-                            href={`https://www.roblox.com/users/${originalOwnerInfo.value}/profile`}
+                            href={`https://www.roblox.com/users/${isOriginalOwner ? initialData.user_id : originalOwnerInfo.value}/profile`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-300 hover:text-blue-400 hover:underline transition-colors"
                           >
-                            {getRobloxUserDisplay(originalOwnerInfo.value)}
+                            {isOriginalOwner ? getRobloxUserDisplay(initialData.user_id) : getRobloxUserDisplay(originalOwnerInfo.value)}
                           </a>
                         </div>
                       ) : (
@@ -797,7 +833,8 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
               </div>
             );
           })}
-        </div>
+        </Masonry>
+        )}
         
         {/* Pagination */}
         {totalPages > 1 && (

@@ -653,6 +653,7 @@ export async function fetchInventoryData(robloxId: string) {
     });
     
     if (!response.ok) {
+      console.error(`[SERVER] Inventory API returned ${response.status} for ID: ${robloxId}`);
       throw new Error(`Failed to fetch inventory data: ${response.status}`);
     }
     
