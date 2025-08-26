@@ -1012,7 +1012,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                         </div>
                         
                         <div className="space-y-3">
-                          {trades.map((trade, index) => (
+                          {trades.map((trade) => (
                             <div
                               key={`${trade.fromUser.UserId}-${trade.toUser.UserId}-${trade.toUser.TradeTime}`}
                               className="p-3 bg-[#2E3944] rounded-lg border border-[#37424D]"
