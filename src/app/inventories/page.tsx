@@ -12,8 +12,8 @@ export default async function InventoryCheckerPage() {
     fetchUserScansLeaderboard()
   ]);
 
-  // Fetch Roblox data for the top 10 players (excluding first 5 bots)
-  const topPlayers = leaderboard?.slice(5, 15) || [];
+  // Fetch Roblox data for all remaining players (excluding first 5 bots)
+  const topPlayers = leaderboard?.slice(5) || [];
   const playerIds = topPlayers.map(player => player.user_id);
   
   const robloxUsers: Record<string, { displayName?: string; name?: string }> = {};
@@ -27,17 +27,21 @@ export default async function InventoryCheckerPage() {
       ]);
 
       // Process user data
-      if (userDataResult && userDataResult.data && Array.isArray(userDataResult.data)) {
-        userDataResult.data.forEach((userData: { id: number; name: string; displayName: string }) => {
-          robloxUsers[userData.id.toString()] = userData;
+      if (userDataResult && typeof userDataResult === 'object') {
+        Object.values(userDataResult).forEach((userData) => {
+          const user = userData as { id: number; name: string; displayName: string; hasVerifiedBadge: boolean };
+          if (user && user.id) {
+            robloxUsers[user.id.toString()] = user;
+          }
         });
       }
 
       // Process avatar data
-      if (avatarData && avatarData.data && Array.isArray(avatarData.data)) {
-        avatarData.data.forEach((avatar: { state: string; imageUrl?: string; targetId: number }) => {
-          if (avatar.state === 'Completed' && avatar.imageUrl) {
-            robloxAvatars[avatar.targetId.toString()] = avatar.imageUrl;
+      if (avatarData && typeof avatarData === 'object') {
+        Object.values(avatarData).forEach((avatar) => {
+          const avatarData = avatar as { targetId: number; state: string; imageUrl?: string; version: string };
+          if (avatarData && avatarData.targetId && avatarData.state === 'Completed' && avatarData.imageUrl) {
+            robloxAvatars[avatarData.targetId.toString()] = avatarData.imageUrl;
           }
         });
       }
@@ -81,8 +85,8 @@ export default async function InventoryCheckerPage() {
         <div className="mt-8">
           <h2 className="text-xl font-bold mb-4 text-gray-300">Most Scanned Players</h2>
           <div className="bg-[#212A31] rounded-lg p-4 shadow-sm border border-[#2E3944]">
-            <div className="space-y-3">
-              {leaderboard.slice(5, 15).map((user, index) => {
+            <div className="max-h-[32rem] overflow-y-auto space-y-3 pr-2">
+              {leaderboard.slice(5).map((user, index) => {
                 const robloxUser = robloxUsers[user.user_id];
                 const avatarUrl = robloxAvatars[user.user_id];
                 const displayName = robloxUser?.displayName || robloxUser?.name || `User ${user.user_id}`;

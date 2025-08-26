@@ -8,6 +8,7 @@ import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import localFont from 'next/font/local';
 import { useDebounce } from '@/hooks/useDebounce';
+import { useLockBodyScroll } from '@/hooks/useLockBodyScroll';
 import { getItemImagePath, isVideoItem, isDriftItem, getDriftVideoPath, getVideoPath, handleImageError } from '@/utils/images';
 
 
@@ -79,18 +80,16 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
   const robloxUsers = initialRobloxUsers || {};
   const robloxAvatars = initialRobloxAvatars || {};
   const router = useRouter();
-  
   const MAX_SEARCH_LENGTH = 50;
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
   
-
-
   // Set selectLoaded to true after mount to ensure client-side rendering
   useEffect(() => {
     setSelectLoaded(true);
   }, []);
 
-
+  // Lock body scroll when history modal is open
+  useLockBodyScroll(showHistoryModal);
 
   // Gamepass mapping with links and image names
   const gamepassData = {
@@ -1032,10 +1031,14 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                         </div>
                         
                         <div className="space-y-3">
-                          {trades.map((trade) => (
+                          {trades.map((trade, index) => (
                             <div
                               key={`${trade.fromUser.UserId}-${trade.toUser.UserId}-${trade.toUser.TradeTime}`}
-                              className="p-3 bg-[#2E3944] rounded-lg border border-[#37424D]"
+                              className={`p-3 rounded-lg border ${
+                                index === trades.length - 1 
+                                  ? 'bg-[#1A5F7A] border-[#124E66] shadow-lg' 
+                                  : 'bg-[#2E3944] border-[#37424D]'
+                              }`}
                             >
                               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                                 <div className="flex items-center gap-3">

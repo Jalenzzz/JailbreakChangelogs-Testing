@@ -169,16 +169,16 @@ async function UserDataFetcher({ robloxId, inventoryData }: UserDataStreamerProp
   const userDataPromise = numericUserIds.length > 0 
     ? fetchRobloxUsersBatch(numericUserIds).catch(error => {
         console.error('Failed to fetch user data:', error);
-        return { data: [] };
+        return {};
       })
-    : Promise.resolve({ data: [] });
+    : Promise.resolve({});
 
   const avatarDataPromise = numericUserIds.length > 0 
     ? fetchRobloxAvatars(numericUserIds).catch(error => {
         console.error('Failed to fetch avatar data:', error);
-        return { data: [] };
+        return {};
       })
-    : Promise.resolve({ data: [] });
+    : Promise.resolve({});
 
   // Wait for both promises to complete
   const [userDataResult, avatarData] = await Promise.all([
@@ -191,9 +191,12 @@ async function UserDataFetcher({ robloxId, inventoryData }: UserDataStreamerProp
   const robloxAvatars: Record<string, string> = {};
 
   // Add user data from API calls
-  if (userDataResult && userDataResult.data && Array.isArray(userDataResult.data)) {
-    userDataResult.data.forEach((userData: { id: number; name: string; displayName: string }) => {
-      robloxUsers[userData.id.toString()] = userData;
+  if (userDataResult && typeof userDataResult === 'object') {
+    Object.values(userDataResult).forEach((userData) => {
+      const user = userData as { id: number; name: string; displayName: string; hasVerifiedBadge: boolean };
+      if (user && user.id) {
+        robloxUsers[user.id.toString()] = user;
+      }
     });
   }
 
@@ -203,10 +206,11 @@ async function UserDataFetcher({ robloxId, inventoryData }: UserDataStreamerProp
   });
 
   // Process avatar data
-  if (avatarData && avatarData.data && Array.isArray(avatarData.data)) {
-    avatarData.data.forEach((avatar: { state: string; imageUrl?: string; targetId: number }) => {
-      if (avatar.state === 'Completed' && avatar.imageUrl) {
-        robloxAvatars[avatar.targetId.toString()] = avatar.imageUrl;
+  if (avatarData && typeof avatarData === 'object') {
+    Object.values(avatarData).forEach((avatar) => {
+      const avatarData = avatar as { targetId: number; state: string; imageUrl?: string; version: string };
+      if (avatarData && avatarData.targetId && avatarData.state === 'Completed' && avatarData.imageUrl) {
+        robloxAvatars[avatarData.targetId.toString()] = avatarData.imageUrl;
       }
     });
   }

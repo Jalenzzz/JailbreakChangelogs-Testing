@@ -686,49 +686,29 @@ export async function fetchRobloxUsersBatch(userIds: string[]) {
       return { data: [] };
     }
     
-    // Roblox API has a limit on how many user IDs can be requested at once
-    // Let's batch them into chunks of 100 (safe limit for batch requests)
-    const batchSize = 100;
-    const allUserData: Array<{ hasVerifiedBadge: boolean; id: number; name: string; displayName: string }> = [];
-    
-    for (let i = 0; i < validUserIds.length; i += batchSize) {
-      const batch = validUserIds.slice(i, i + batchSize);
-      const batchNumber = Math.floor(i / batchSize) + 1;
-  
-      try {
-        const response = await fetch('https://users.roproxy.com/v1/users', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0'
-          },
-          body: JSON.stringify({ userIds: batch }),
-          next: { revalidate: 3600 } // Cache for 1 hour
-        });
-        
-        if (!response.ok) {
-          console.error(`[SERVER] fetchRobloxUsersBatch: Batch ${batchNumber} failed with status ${response.status} ${response.statusText}`);
-          continue; // Skip this batch and continue with others
+    try {
+      const response = await fetch(`${INVENTORY_API_URL}/proxy/users?userIds=${validUserIds.join(',')}`, {
+        headers: {
+          'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0'
         }
-        
-        const data = await response.json();
-        if (data && data.data && Array.isArray(data.data)) {
-          allUserData.push(...data.data);
-        } else {
-          console.warn(`[SERVER] fetchRobloxUsersBatch: Batch ${batchNumber} returned invalid data structure:`, data);
-        }
-      } catch (batchErr) {
-        console.error(`[SERVER] fetchRobloxUsersBatch: Error processing batch ${batchNumber}:`, batchErr);
-        continue; // Skip this batch and continue with others
+      });
+      
+      if (!response.ok) {
+        console.error(`[SERVER] fetchRobloxUsersBatch: Failed with status ${response.status} ${response.statusText}`);
+        return { data: [] };
       }
       
-      // Add a small delay between batches to be respectful to the API
-      if (i + batchSize < validUserIds.length) {
-        await new Promise(resolve => setTimeout(resolve, 100));
+      const data = await response.json();
+      if (data && typeof data === 'object') {
+        return data;
+      } else {
+        console.warn('[SERVER] fetchRobloxUsersBatch: Returned invalid data structure:', data);
+        return {};
       }
+    } catch (err) {
+      console.error('[SERVER] fetchRobloxUsersBatch: Error fetching users:', err);
+      return { data: [] };
     }
-    
-    return { data: allUserData };
   } catch (err) {
     console.error('[SERVER] fetchRobloxUsersBatch: Unexpected error:', err);
     return null;
@@ -758,7 +738,7 @@ export async function fetchRobloxAvatars(userIds: string[]) {
     // Validate input
     if (!userIds || userIds.length === 0) {
       console.log('[SERVER] fetchRobloxAvatars: No userIds provided, returning empty data');
-      return { data: [] };
+      return {};
     }
     
     // Filter out any invalid IDs
@@ -766,49 +746,32 @@ export async function fetchRobloxAvatars(userIds: string[]) {
     
     if (validUserIds.length === 0) {
       console.warn('[SERVER] fetchRobloxAvatars: No valid userIds found after filtering, returning empty data');
-      return { data: [] };
+      return {};
     }
     
-    // Roblox API has a limit on how many user IDs can be requested at once
-    // Let's batch them into chunks of 50 (safe limit)
-    const batchSize = 50;
-    const allAvatarData: Array<{ state: string; imageUrl?: string; targetId: number }> = [];
-    
-    for (let i = 0; i < validUserIds.length; i += batchSize) {
-      const batch = validUserIds.slice(i, i + batchSize);
-      const batchNumber = Math.floor(i / batchSize) + 1;
-  
-      try {
-        const response = await fetch(`https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${batch.join(',')}&size=420x420&format=Webp&isCircular=true`, {
-          next: { revalidate: 3600 }, // Cache for 1 hour
-          headers: {
-            'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0'
-          }
-        });
-        
-        if (!response.ok) {
-          console.error(`[SERVER] fetchRobloxAvatars: Batch ${batchNumber} failed with status ${response.status} ${response.statusText}`);
-          continue; // Skip this batch and continue with others
+    try {
+      const response = await fetch(`${INVENTORY_API_URL}/proxy/users/avatar-headshot?userIds=${validUserIds.join(',')}`, {
+        headers: {
+          'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0'
         }
-        
-        const data = await response.json();
-        if (data && data.data && Array.isArray(data.data)) {
-          allAvatarData.push(...data.data);
-        } else {
-          console.warn(`[SERVER] fetchRobloxAvatars: Batch ${batchNumber} returned invalid data structure:`, data);
-        }
-      } catch (batchErr) {
-        console.error(`[SERVER] fetchRobloxAvatars: Error processing batch ${batchNumber}:`, batchErr);
-        continue; // Skip this batch and continue with others
+      });
+      
+      if (!response.ok) {
+        console.error(`[SERVER] fetchRobloxAvatars: Failed with status ${response.status} ${response.statusText}`);
+        return {};
       }
       
-      // Add a small delay between batches to be respectful to the API
-      if (i + batchSize < validUserIds.length) {
-        await new Promise(resolve => setTimeout(resolve, 100));
+      const data = await response.json();
+      if (data && typeof data === 'object') {
+        return data;
+      } else {
+        console.warn('[SERVER] fetchRobloxAvatars: Returned invalid data structure:', data);
+        return {};
       }
+    } catch (err) {
+      console.error('[SERVER] fetchRobloxAvatars: Error fetching avatars:', err);
+      return {};
     }
-    
-    return { data: allAvatarData };
   } catch (err) {
     console.error('[SERVER] fetchRobloxAvatars: Unexpected error:', err);
     return null;
