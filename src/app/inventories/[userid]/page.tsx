@@ -4,8 +4,7 @@ import InventoryCheckerClient from '../InventoryCheckerClient';
 import InventoryDataStreamer from '../InventoryDataStreamer';
 import Breadcrumb from '@/components/Layout/Breadcrumb';
 
-// ISR Configuration - revalidate every 5 minutes
-export const revalidate = 300;
+export const dynamic = 'force-dynamic';
 
 interface InventoryCheckerPageProps {
   params: Promise<{

@@ -647,7 +647,6 @@ export async function fetchInventoryData(robloxId: string) {
   console.log('[SERVER] fetchInventoryData called with robloxId:', robloxId);
   try {
     const response = await fetch(`${INVENTORY_API_URL}/user?id=${robloxId}`, {
-      next: { revalidate: 300 }, // Cache for 5 minutes
       headers: {
         'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0'
       }
