@@ -434,7 +434,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4">
           <div className="text-center">
             <div className="text-sm text-muted">Total Items</div>
-            <div className="text-2xl font-bold text-white">{formatNumber(initialData.data.length)}</div>
+            <div className="text-2xl font-bold text-white">{formatNumber(initialData.item_count)}</div>
           </div>
           <div className="text-center">
             <div className="text-sm text-muted">Original Items</div>
@@ -742,7 +742,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                 </span>
               )}
               <span className="text-xs opacity-75">
-                Showing {filteredItems.length} of {initialData?.data?.length || 0} items
+                Showing {filteredItems.length} of {initialData?.item_count || 0} items
               </span>
             </div>
           </div>

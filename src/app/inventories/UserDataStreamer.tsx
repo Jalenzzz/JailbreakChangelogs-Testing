@@ -88,7 +88,7 @@ function UserDataLoadingFallback({ robloxId, inventoryData }: UserDataStreamerPr
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <div className="text-center">
             <div className="text-sm text-muted">Total Items</div>
-            <div className="text-2xl font-bold text-white">{inventoryData.data.length}</div>
+            <div className="text-2xl font-bold text-white">{inventoryData.item_count}</div>
           </div>
           <div className="text-center">
             <div className="text-sm text-muted">Original Items</div>
