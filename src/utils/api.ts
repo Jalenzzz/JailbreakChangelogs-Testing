@@ -697,7 +697,7 @@ export async function fetchRobloxUsersBatch(userIds: string[]) {
       const batchNumber = Math.floor(i / batchSize) + 1;
   
       try {
-        const response = await fetch('https://users.roblox.com/v1/users', {
+        const response = await fetch('https://users.roproxy.com/v1/users', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

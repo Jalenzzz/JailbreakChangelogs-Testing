@@ -1060,56 +1060,116 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                 </div>
               ) : selectedItem.history && selectedItem.history.length > 0 ? (
                 <div className="space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-muted mb-4">
-                    <span>Total Trades: {selectedItem.history.length}</span>
-                    <span>Most Recent: {formatDate(selectedItem.history[selectedItem.history.length - 1].TradeTime)}</span>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    {selectedItem.history.slice().reverse().map((trade, index) => (
-                      <div
-                        key={`${trade.UserId}-${trade.TradeTime}`}
-                        className="p-3 bg-[#2E3944] rounded-lg border border-[#37424D]"
-                      >
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 bg-[#5865F2] rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                              {selectedItem.history!.length - index}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <div className="flex items-center gap-2 flex-wrap">
-                                {robloxAvatars && robloxAvatars[trade.UserId.toString()] && (
-                                  <Image
-                                    src={robloxAvatars[trade.UserId.toString()]}
-                                    alt="User Avatar"
-                                    width={24}
-                                    height={24}
-                                    className="rounded-full bg-[#212A31] border border-[#2E3944] flex-shrink-0"
-                                  />
-                                )}
-                                <a
-                                  href={`https://www.roblox.com/users/${trade.UserId}/profile`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-blue-300 hover:text-blue-400 hover:underline transition-colors font-medium truncate"
-                                >
-                                  {robloxUsers && robloxUsers[trade.UserId.toString()]
-                                    ? (robloxUsers[trade.UserId.toString()].displayName || robloxUsers[trade.UserId.toString()].name || trade.UserId.toString())
-                                    : trade.UserId.toString()}
-                                </a>
-                              </div>
-                              <p className="text-sm text-muted opacity-75 mt-1">
-                                {formatDate(trade.TradeTime)}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="text-right sm:text-left sm:ml-auto">
-                            <div className="text-sm text-muted">Trade #{selectedItem.history!.length - index}</div>
-                          </div>
+                  {(() => {
+                    // Process history to show actual trades between users
+                    const history = selectedItem.history.slice().reverse();
+                    
+                    // If there's only one history entry, hide it (user obtained the item)
+                    if (history.length === 1) {
+                      return (
+                        <div className="text-center py-8">
+                          <p className="text-muted">This item has no trade history.</p>
                         </div>
-                      </div>
-                    ))}
-                  </div>
+                      );
+                    }
+                    
+                    // Group history into trades between users
+                    const trades = [];
+                    for (let i = 0; i < history.length - 1; i++) {
+                      const toUser = history[i];
+                      const fromUser = history[i + 1];
+                      trades.push({
+                        fromUser,
+                        toUser,
+                        tradeNumber: history.length - i - 1
+                      });
+                    }
+                    
+                    return (
+                      <>
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-muted mb-4">
+                          <span>Total Trades: {trades.length}</span>
+                          <span>Most Recent: {formatDate(history[history.length - 1].TradeTime)}</span>
+                        </div>
+                        
+                        <div className="space-y-3">
+                          {trades.map((trade, index) => (
+                            <div
+                              key={`${trade.fromUser.UserId}-${trade.toUser.UserId}-${trade.toUser.TradeTime}`}
+                              className="p-3 bg-[#2E3944] rounded-lg border border-[#37424D]"
+                            >
+                              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-8 h-8 bg-[#5865F2] rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                                    {trade.tradeNumber}
+                                  </div>
+                                  <div className="min-w-0 flex-1">
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                      {/* From User */}
+                                      <div className="flex items-center gap-2">
+                                        {robloxAvatars && robloxAvatars[trade.fromUser.UserId.toString()] && (
+                                          <Image
+                                            src={robloxAvatars[trade.fromUser.UserId.toString()]}
+                                            alt="User Avatar"
+                                            width={24}
+                                            height={24}
+                                            className="rounded-full bg-[#212A31] border border-[#2E3944] flex-shrink-0"
+                                          />
+                                        )}
+                                        <a
+                                          href={`https://www.roblox.com/users/${trade.fromUser.UserId}/profile`}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="text-blue-300 hover:text-blue-400 hover:underline transition-colors font-medium truncate"
+                                        >
+                                          {robloxUsers && robloxUsers[trade.fromUser.UserId.toString()]
+                                            ? (robloxUsers[trade.fromUser.UserId.toString()].displayName || robloxUsers[trade.fromUser.UserId.toString()].name || trade.fromUser.UserId.toString())
+                                            : trade.fromUser.UserId.toString()}
+                                        </a>
+                                      </div>
+                                      
+                                      {/* Trade Arrow */}
+                                      <span className="text-muted text-sm">→</span>
+                                      
+                                      {/* To User */}
+                                      <div className="flex items-center gap-2">
+                                        {robloxAvatars && robloxAvatars[trade.toUser.UserId.toString()] && (
+                                          <Image
+                                            src={robloxAvatars[trade.toUser.UserId.toString()]}
+                                            alt="User Avatar"
+                                            width={24}
+                                            height={24}
+                                            className="rounded-full bg-[#212A31] border border-[#2E3944] flex-shrink-0"
+                                          />
+                                        )}
+                                        <a
+                                          href={`https://www.roblox.com/users/${trade.toUser.UserId}/profile`}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="text-blue-300 hover:text-blue-400 hover:underline transition-colors font-medium truncate"
+                                        >
+                                          {robloxUsers && robloxUsers[trade.toUser.UserId.toString()]
+                                            ? (robloxUsers[trade.toUser.UserId.toString()].displayName || robloxUsers[trade.toUser.UserId.toString()].name || trade.toUser.UserId.toString())
+                                            : trade.toUser.UserId.toString()}
+                                        </a>
+                                      </div>
+
+                                    </div>
+                                    <p className="text-sm text-muted opacity-75 mt-1">
+                                      {formatDate(trade.toUser.TradeTime)}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="text-right sm:text-left sm:ml-auto">
+                                  <div className="text-sm text-muted">Trade #{trade.tradeNumber}</div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    );
+                  })()}
                 </div>
               ) : (
                 <div className="text-center py-8">
@@ -1133,3 +1193,4 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
     </div>
   );
 }
+
