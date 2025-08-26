@@ -69,7 +69,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [sortOrder, setSortOrder] = useState<'alpha-asc' | 'alpha-desc' | 'traded-desc' | 'unique-desc' | 'created-asc' | 'created-desc'>('alpha-asc');
+  const [sortOrder, setSortOrder] = useState<'alpha-asc' | 'alpha-desc' | 'traded-desc' | 'unique-desc' | 'created-asc' | 'created-desc' | 'random' | 'duplicates'>('random');
   const [page, setPage] = useState(1);
   const [showOnlyOriginal, setShowOnlyOriginal] = useState(false);
   const [selectLoaded, setSelectLoaded] = useState(false);
@@ -228,6 +228,12 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
     // Apply sorting
     items = items.sort((a, b) => {
       switch (sortOrder) {
+        case 'random':
+          return Math.random() - 0.5;
+        case 'duplicates':
+          const categoryCompare = a.categoryTitle.localeCompare(b.categoryTitle);
+          if (categoryCompare !== 0) return categoryCompare;
+          return a.title.localeCompare(b.title);
         case 'alpha-asc':
           return a.title.localeCompare(b.title);
         case 'alpha-desc':
@@ -247,7 +253,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
           if (!aCreatedAtDesc || !bCreatedAtDesc) return 0;
           return new Date(bCreatedAtDesc).getTime() - new Date(aCreatedAtDesc).getTime();
         default:
-          return a.title.localeCompare(b.title);
+          return Math.random() - 0.5;
       }
     });
 
@@ -326,8 +332,14 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
           <button
             type="submit"
             disabled={isLoading || externalIsLoading}
-            className="w-full bg-[#5865F2] hover:bg-[#4752C4] disabled:bg-[#2E3944] text-white font-medium py-2 px-4 rounded-lg transition-colors"
+            className="w-full bg-[#5865F2] hover:bg-[#4752C4] disabled:bg-[#2E3944] text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
           >
+            {(isLoading || externalIsLoading) && (
+              <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            )}
             {isLoading || externalIsLoading ? 'Searching...' : 'Check Inventory'}
           </button>
         </form>
@@ -353,7 +365,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
       
       {/* Search Form */}
       <div className="bg-[#212A31] rounded-lg border border-[#2E3944] p-6">
-        <form onSubmit={handleSearch} className="flex gap-4">
+        <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
             <input
               type="text"
@@ -367,7 +379,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
           <button
             type="submit"
             disabled={isLoading || externalIsLoading}
-            className="bg-[#5865F2] hover:bg-[#4752C4] disabled:bg-[#2E3944] text-white font-medium py-2 px-6 rounded-lg transition-colors flex items-center gap-2"
+            className="bg-[#5865F2] hover:bg-[#4752C4] disabled:bg-[#2E3944] text-white font-medium py-2 px-6 rounded-lg transition-colors flex items-center gap-2 sm:w-auto w-full"
           >
             {(isLoading || externalIsLoading) && (
               <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -393,27 +405,27 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
         
         {/* Roblox User Profile */}
         {initialData?.user_id && (
-          <div className="flex items-center gap-4 mb-6 p-4 bg-[#2E3944] rounded-lg border border-[#37424D]">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6 p-4 bg-[#2E3944] rounded-lg border border-[#37424D]">
             {robloxAvatars && robloxAvatars[initialData.user_id] ? (
               <Image
                 src={robloxAvatars[initialData.user_id]}
                 alt="Roblox Avatar"
                 width={64}
                 height={64}
-                className="rounded-full bg-[#212A31]"
+                className="rounded-full bg-[#212A31] flex-shrink-0"
               />
             ) : (
-              <div className="w-16 h-16 bg-[#37424D] rounded-full flex items-center justify-center">
+              <div className="w-16 h-16 bg-[#37424D] rounded-full flex items-center justify-center flex-shrink-0">
                 <svg className="w-8 h-8 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
             )}
-            <div className="flex-1">
-              <h3 className="text-lg font-bold text-muted">
+            <div className="flex-1 min-w-0">
+              <h3 className="text-lg font-bold text-muted break-words">
                 {robloxUsers[initialData.user_id]?.displayName || robloxUsers[initialData.user_id]?.name || initialData.user_id}
               </h3>
-              <p className="text-sm text-muted opacity-75">
+              <p className="text-sm text-muted opacity-75 break-words">
                 @{robloxUsers[initialData.user_id]?.name || initialData.user_id}
               </p>
               <a
@@ -618,24 +630,32 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                       value: sortOrder, 
                       label: (() => {
                         switch (sortOrder) {
+                          case 'random': return 'Random Order';
+                          case 'duplicates': return 'Group Duplicates';
                           case 'alpha-asc': return 'Name (A to Z)';
                           case 'alpha-desc': return 'Name (Z to A)';
                           case 'traded-desc': return 'Monthly Traded (High to Low)';
                           case 'unique-desc': return 'Monthly Unique (High to Low)';
                           case 'created-asc': return 'Created On (Oldest to Newest)';
                           case 'created-desc': return 'Created On (Newest to Oldest)';
-                          default: return 'Name (A to Z)';
+                          default: return 'Random Order';
                         }
                       })()
                     }}
                     onChange={(option) => {
                       if (!option) {
-                        setSortOrder('alpha-asc');
+                        setSortOrder('random');
                         return;
                       }
-                      setSortOrder((option as { value: 'alpha-asc' | 'alpha-desc' | 'traded-desc' | 'unique-desc' | 'created-asc' | 'created-desc' }).value);
+                      setSortOrder((option as { value: 'alpha-asc' | 'alpha-desc' | 'traded-desc' | 'unique-desc' | 'created-asc' | 'created-desc' | 'random' | 'duplicates' }).value);
                     }}
                     options={[
+                      { label: 'Random', options: [
+                        { value: 'random', label: 'Random Order' },
+                      ]},
+                      { label: 'Duplicates', options: [
+                        { value: 'duplicates', label: 'Group Duplicates' },
+                      ]},
                       { label: 'Alphabetically', options: [
                         { value: 'alpha-asc', label: 'Name (A to Z)' },
                         { value: 'alpha-desc', label: 'Name (Z to A)' },
@@ -645,8 +665,8 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                         { value: 'unique-desc', label: 'Monthly Unique (High to Low)' },
                       ]},
                       { label: 'Date', options: [
-                        { value: 'created-asc', label: 'Created On (Oldest to Newest)' },
                         { value: 'created-desc', label: 'Created On (Newest to Oldest)' },
+                        { value: 'created-asc', label: 'Created On (Oldest to Newest)' },
                       ]},
                     ]}
                     classNamePrefix="react-select"
@@ -788,7 +808,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
         
         {/* Items Grid - Only show when not filtering */}
         {!isFiltering && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {paginatedItems.map((item) => {
             const isOriginalOwner = item.isOriginalOwner;
             const originalOwnerInfo = item.info.find(info => info.title === 'Original Owner');
@@ -877,7 +897,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                     <div className="text-sm opacity-90">ORIGINAL OWNER</div>
                     <div className="text-xl font-bold italic">
                       {originalOwnerInfo ? (
-                        <div className="flex items-center justify-center gap-2">
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
                           {/* Show avatar for original owner - use main user's avatar if isOriginalOwner is true */}
                           {(isOriginalOwner && robloxAvatars && robloxAvatars[initialData?.user_id]) || 
                            (!isOriginalOwner && robloxAvatars && robloxAvatars[originalOwnerInfo.value]) ? (
@@ -886,14 +906,14 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                               alt="Original Owner Avatar"
                               width={24}
                               height={24}
-                              className="rounded-full bg-[#212A31] border border-[#2E3944]"
+                              className="rounded-full bg-[#212A31] border border-[#2E3944] flex-shrink-0"
                             />
                           ) : null}
                           <a
                             href={`https://www.roblox.com/users/${isOriginalOwner ? initialData?.user_id : originalOwnerInfo.value}/profile`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-300 hover:text-blue-400 hover:underline transition-colors"
+                            className="text-blue-300 hover:text-blue-400 hover:underline transition-colors text-center break-words"
                           >
                             {isOriginalOwner ? getRobloxUserDisplay(initialData?.user_id || '') : getRobloxUserDisplay(originalOwnerInfo.value)}
                           </a>

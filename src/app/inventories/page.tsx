@@ -89,7 +89,7 @@ export default async function InventoryCheckerPage() {
                 const username = robloxUser?.name || user.user_id;
                 
                 return (
-                  <div key={user.user_id} className="flex items-center justify-between p-3 rounded-lg bg-[#2E3944] border border-[#37424D]">
+                  <div key={user.user_id} className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 rounded-lg bg-[#2E3944] border border-[#37424D]">
                     <div className="flex items-center gap-3">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
                         index === 0 ? 'bg-yellow-500 text-black' :
@@ -120,20 +120,22 @@ export default async function InventoryCheckerPage() {
                           </div>
                         )}
                       </div>
-                      
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
+                    </div>
+                    
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start gap-2">
+                        <div className="flex-1 min-w-0">
                           <a
                             href={`https://www.roblox.com/users/${user.user_id}/profile`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-400 font-medium hover:text-blue-300 transition-colors"
+                            className="text-blue-400 font-medium hover:text-blue-300 transition-colors break-words"
                           >
                             {displayName}
                           </a>
-                          <CopyButton text={user.user_id} />
+                          <div className="text-sm text-gray-400 break-words">@{username} • {user.upsert_count.toLocaleString()} scans</div>
                         </div>
-                        <div className="text-sm text-gray-400">@{username} • {user.upsert_count.toLocaleString()} scans</div>
+                        <CopyButton text={user.user_id} className="flex-shrink-0 mt-1" />
                       </div>
                     </div>
                   </div>

@@ -12,7 +12,7 @@ function InventoryLoadingFallback({ robloxId }: { robloxId: string }) {
   return (
     <div className="space-y-6">
       <div className="bg-[#212A31] rounded-lg border border-[#2E3944] p-6">
-        <form className="flex gap-4">
+        <form className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
             <input
               type="text"
@@ -23,7 +23,7 @@ function InventoryLoadingFallback({ robloxId }: { robloxId: string }) {
           </div>
           <button
             disabled
-            className="bg-[#2E3944] text-white font-medium py-2 px-6 rounded-lg flex items-center gap-2"
+            className="bg-[#2E3944] text-white font-medium py-2 px-6 rounded-lg flex items-center gap-2 sm:w-auto w-full"
           >
             <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
