@@ -1,7 +1,51 @@
 import InventoryCheckerClient from './InventoryCheckerClient';
 import Breadcrumb from '@/components/Layout/Breadcrumb';
+import { fetchItemCountStats, fetchUserScansLeaderboard, fetchRobloxUsersBatch, fetchRobloxAvatars } from '@/utils/api';
+import Image from 'next/image';
+import CopyButton from './CopyButton';
 
-export default function InventoryCheckerPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function InventoryCheckerPage() {
+  const [stats, leaderboard] = await Promise.all([
+    fetchItemCountStats(),
+    fetchUserScansLeaderboard()
+  ]);
+
+  // Fetch Roblox data for the top 10 players (excluding first 5 bots)
+  const topPlayers = leaderboard?.slice(5, 15) || [];
+  const playerIds = topPlayers.map(player => player.user_id);
+  
+  const robloxUsers: Record<string, { displayName?: string; name?: string }> = {};
+  const robloxAvatars: Record<string, string> = {};
+  
+  if (playerIds.length > 0) {
+    try {
+      const [userDataResult, avatarData] = await Promise.all([
+        fetchRobloxUsersBatch(playerIds),
+        fetchRobloxAvatars(playerIds)
+      ]);
+
+      // Process user data
+      if (userDataResult && userDataResult.data && Array.isArray(userDataResult.data)) {
+        userDataResult.data.forEach((userData: { id: number; name: string; displayName: string }) => {
+          robloxUsers[userData.id.toString()] = userData;
+        });
+      }
+
+      // Process avatar data
+      if (avatarData && avatarData.data && Array.isArray(avatarData.data)) {
+        avatarData.data.forEach((avatar: { state: string; imageUrl?: string; targetId: number }) => {
+          if (avatar.state === 'Completed' && avatar.imageUrl) {
+            robloxAvatars[avatar.targetId.toString()] = avatar.imageUrl;
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Failed to fetch Roblox data for leaderboard:', error);
+    }
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <Breadcrumb />
@@ -9,7 +53,96 @@ export default function InventoryCheckerPage() {
       <p className="text-gray-600 dark:text-gray-400 mb-4">
         Enter a Roblox ID to check their Jailbreak inventory.
       </p>
+      
+      {stats && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div className="bg-[#212A31] rounded-lg p-4 shadow-sm border border-[#2E3944]">
+            <div className="text-2xl font-bold text-blue-400">
+              {stats.item_count_str}
+            </div>
+            <div className="text-sm text-gray-400">
+              Items Tracked
+            </div>
+          </div>
+          <div className="bg-[#212A31] rounded-lg p-4 shadow-sm border border-[#2E3944]">
+            <div className="text-2xl font-bold text-green-400">
+              {stats.user_count_str}
+            </div>
+            <div className="text-sm text-gray-400">
+              Users Scanned
+            </div>
+          </div>
+        </div>
+      )}
+      
       <InventoryCheckerClient />
+      
+      {leaderboard && leaderboard.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-xl font-bold mb-4 text-gray-300">Most Scanned Players</h2>
+          <div className="bg-[#212A31] rounded-lg p-4 shadow-sm border border-[#2E3944]">
+            <div className="space-y-3">
+              {leaderboard.slice(5, 15).map((user, index) => {
+                const robloxUser = robloxUsers[user.user_id];
+                const avatarUrl = robloxAvatars[user.user_id];
+                const displayName = robloxUser?.displayName || robloxUser?.name || `User ${user.user_id}`;
+                const username = robloxUser?.name || user.user_id;
+                
+                return (
+                  <div key={user.user_id} className="flex items-center justify-between p-3 rounded-lg bg-[#2E3944] border border-[#37424D]">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                        index === 0 ? 'bg-yellow-500 text-black' :
+                        index === 1 ? 'bg-gray-400 text-black' :
+                        index === 2 ? 'bg-amber-600 text-white' :
+                        'bg-[#37424D] text-gray-300'
+                      }`}>
+                        {index + 1}
+                      </div>
+                      
+                      {/* Avatar */}
+                      <div className="w-10 h-10 rounded-full overflow-hidden bg-[#37424D] flex-shrink-0">
+                        {avatarUrl ? (
+                          <Image
+                            src={avatarUrl}
+                            alt={`${displayName}'s avatar`}
+                            width={40}
+                            height={40}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <div className="w-6 h-6 bg-[#5865F2] rounded-full flex items-center justify-center">
+                              <span className="text-white text-xs font-bold">
+                                {displayName.charAt(0).toUpperCase()}
+                              </span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <a
+                            href={`https://www.roblox.com/users/${user.user_id}/profile`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-400 font-medium hover:text-blue-300 transition-colors"
+                          >
+                            {displayName}
+                          </a>
+                          <CopyButton text={user.user_id} />
+                        </div>
+                        <div className="text-sm text-gray-400">@{username} • {user.upsert_count.toLocaleString()} scans</div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

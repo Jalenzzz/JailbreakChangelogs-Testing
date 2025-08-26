@@ -814,3 +814,47 @@ export async function fetchRobloxAvatars(userIds: string[]) {
     return null;
   }
 }
+
+export interface ItemCountStats {
+  item_count: number;
+  item_count_str: string;
+  user_count: number;
+  user_count_str: string;
+}
+
+export interface UserScan {
+  user_id: string;
+  upsert_count: number;
+}
+
+export async function fetchItemCountStats(): Promise<ItemCountStats | null> {
+  try {
+    const response = await fetch(`${INVENTORY_API_URL}/items/count`);
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch item count stats');
+    }
+    
+    const data = await response.json();
+    return data as ItemCountStats;
+  } catch (err) {
+    console.error('[SERVER] Error fetching item count stats:', err);
+    return null;
+  }
+}
+
+export async function fetchUserScansLeaderboard(): Promise<UserScan[]> {
+  try {
+    const response = await fetch(`${INVENTORY_API_URL}/users/scans`);
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch user scans leaderboard');
+    }
+    
+    const data = await response.json();
+    return data as UserScan[];
+  } catch (err) {
+    console.error('[SERVER] Error fetching user scans leaderboard:', err);
+    return [];
+  }
+}
