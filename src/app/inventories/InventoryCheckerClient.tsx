@@ -4,13 +4,12 @@ import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Pagination } from '@mui/material';
-import { Masonry } from '@mui/lab';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import localFont from 'next/font/local';
 import { useDebounce } from '@/hooks/useDebounce';
 import { getItemImagePath, isVideoItem, isDriftItem, getDriftVideoPath, getVideoPath, handleImageError } from '@/utils/images';
-import { fetchRobloxUser, fetchRobloxAvatars } from '@/utils/api';
+import { fetchRobloxUsersBatch, fetchRobloxAvatars } from '@/utils/api';
 
 const bangers = localFont({
   src: '../../../public/fonts/Bangers.ttf',
@@ -130,16 +129,13 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
     }
   };
   
-  const itemsPerPage = 20; // Show 18 items per page for inventory
-
-
-
+  const itemsPerPage = 20; // Show 20 items per page for inventory
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchId.trim()) return;
 
     setIsLoading(true);
-    router.push(`/inventory-checker?id=${searchId.trim()}`);
+    router.push(`/inventories/${searchId.trim()}`);
   };
 
   // Reset loading state when new data is received or when there's an error
@@ -308,25 +304,31 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
       const newUsers: Record<string, { displayName?: string; name?: string }> = {};
       const numericUserIds: string[] = [];
       
-      for (const userId of newUserIds) {
-        if (/^\d+$/.test(userId)) {
-          numericUserIds.push(userId);
-          const userData = await fetchRobloxUser(userId);
-          if (userData) {
-            newUsers[userId] = userData;
-          }
-        } else {
-          // For usernames, just store the username as-is
-          newUsers[userId] = { displayName: userId, name: userId };
+      // Separate numeric and non-numeric user IDs
+      const numericIds = newUserIds.filter(id => /^\d+$/.test(id));
+      const nonNumericIds = newUserIds.filter(id => !/^\d+$/.test(id));
+      
+      // Fetch user data for numeric IDs using batch
+      if (numericIds.length > 0) {
+        const userDataResult = await fetchRobloxUsersBatch(numericIds);
+        if (userDataResult && userDataResult.data && Array.isArray(userDataResult.data)) {
+          userDataResult.data.forEach((userData: { id: number; name: string; displayName: string }) => {
+            newUsers[userData.id.toString()] = userData;
+          });
         }
       }
+      
+      // For non-numeric usernames, just store the username as-is
+      nonNumericIds.forEach((userId) => {
+        newUsers[userId] = { displayName: userId, name: userId };
+      });
       
       // Update users state
       setRobloxUsers(prev => ({ ...prev, ...newUsers }));
       
       // Fetch avatars for numeric user IDs
-      if (numericUserIds.length > 0) {
-        const avatarData = await fetchRobloxAvatars(numericUserIds);
+      if (numericIds.length > 0) {
+        const avatarData = await fetchRobloxAvatars(numericIds);
         if (avatarData && avatarData.data && Array.isArray(avatarData.data)) {
           const newAvatars: Record<string, string> = {};
           avatarData.data.forEach((avatar: { state: string; imageUrl?: string; targetId: number }) => {
@@ -500,9 +502,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
           </div>
         )}
         
-
-        
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4">
           <div className="text-center">
             <div className="text-sm text-muted">Total Items</div>
             <div className="text-2xl font-bold text-white">{formatNumber(initialData.data.length)}</div>
@@ -520,13 +520,19 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
             <div className={`text-2xl font-bold ${getLevelColor(initialData.level)}`}>{initialData.level}</div>
           </div>
           <div className="text-center">
-            <div className="text-sm text-muted">Money</div>
-            <div className="text-2xl font-bold text-[#4ade80]">{formatMoney(initialData.money)}</div>
-          </div>
-          <div className="text-center">
             <div className="text-sm text-muted">XP</div>
             <div className="text-2xl font-bold text-white">{formatNumber(initialData.xp)}</div>
           </div>
+          <div className="text-center hidden lg:block">
+            <div className="text-sm text-muted">Money</div>
+            <div className="text-2xl font-bold text-[#4ade80]">{formatMoney(initialData.money)}</div>
+          </div>
+        </div>
+        
+        {/* Money gets its own row for mobile and tablet */}
+        <div className="mt-4 text-center lg:hidden">
+          <div className="text-sm text-muted">Money</div>
+          <div className="text-2xl font-bold text-[#4ade80]">{formatMoney(initialData.money)}</div>
         </div>
         
         {initialData.gamepasses.length > 0 && (
@@ -853,11 +859,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
         
         {/* Items Grid - Only show when not filtering */}
         {!isFiltering && (
-          <Masonry
-            columns={{ xs: 1, sm: 2, md: 3, lg: 4, xl: 5 }}
-            spacing={2}
-            sx={{ width: 'auto', margin: 0 }}
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {paginatedItems.map((item) => {
             const isOriginalOwner = item.isOriginalOwner;
             const originalOwnerInfo = item.info.find(info => info.title === 'Original Owner');
@@ -865,7 +867,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
             return (
               <div
                 key={item.id}
-                className={`text-white rounded-lg p-3 border-2 relative cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg ${
+                className={`text-white rounded-lg p-3 border-2 relative cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg min-h-[400px] flex flex-col ${
                   isOriginalOwner 
                     ? 'bg-yellow-600/30 backdrop-blur-sm border-yellow-400'
                     : 'bg-gray-700 border-gray-800'
@@ -882,10 +884,10 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                   </h2>
                 </div>
                 
-                {/* Item Image - Skip for certain types */}
-                {!['Brakes'].includes(item.categoryTitle) && (
-                  <div className="relative w-full h-40 mb-3 rounded-lg overflow-hidden bg-[#212A31]">
-                    {isVideoItem(item.title) ? (
+                {/* Item Image - Always show container for consistent layout */}
+                <div className="relative w-full h-40 mb-3 rounded-lg overflow-hidden bg-[#212A31]">
+                  {!['Brakes'].includes(item.categoryTitle) ? (
+                    isVideoItem(item.title) ? (
                       <video
                         src={getVideoPath(item.categoryTitle, item.title)}
                         className="w-full h-full object-cover"
@@ -912,19 +914,28 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                         />
                       </div>
                     ) : (
-                                              <Image
-                          src={getItemImagePath(item.categoryTitle, item.title, true)}
-                          alt={item.title}
-                          fill
-                          className="object-cover"
-                          onError={handleImageError}
-                        />
-                    )}
-                  </div>
-                )}
+                      <Image
+                        src={getItemImagePath(item.categoryTitle, item.title, true)}
+                        alt={item.title}
+                        fill
+                        className="object-cover"
+                        onError={handleImageError}
+                      />
+                    )
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <div className="text-center text-gray-400">
+                        <svg className="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <p className="text-sm">No Image</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
                 
                 {/* Statistics */}
-                <div className="space-y-2 text-center">
+                <div className="space-y-2 text-center flex-1 flex flex-col justify-center">
                   <div>
                     <div className="text-sm opacity-90">MONTHLY TRADED</div>
                     <div className="text-xl font-bold">{formatNumber(item.timesTraded)}</div>
@@ -971,25 +982,23 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                   </div>
                 </div>
                 
-                {/* Season and Level badges - only show if they exist */}
-                {(item.season || item.level) && (
-                  <div className="flex justify-center gap-2 mt-3 pt-3 border-t border-white/20">
-                    {item.season && (
-                      <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center border-2 border-blue-400 shadow-lg">
-                        <span className="text-white text-xs font-bold">S{item.season}</span>
-                      </div>
-                    )}
-                    {item.level && (
-                      <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center border-2 border-green-400 shadow-lg">
-                        <span className="text-white text-xs font-bold">L{item.level}</span>
-                      </div>
-                    )}
-                  </div>
-                )}
+                {/* Season and Level badges - always show container for consistent layout */}
+                <div className="flex justify-center gap-2 mt-3 pt-3 border-t border-white/20 min-h-[40px]">
+                  {item.season && (
+                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center border-2 border-blue-400 shadow-lg">
+                      <span className="text-white text-xs font-bold">S{item.season}</span>
+                    </div>
+                  )}
+                  {item.level && (
+                    <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center border-2 border-green-400 shadow-lg">
+                      <span className="text-white text-xs font-bold">L{item.level}</span>
+                    </div>
+                  )}
+                </div>
               </div>
             );
           })}
-        </Masonry>
+        </div>
         )}
         
         {/* Pagination */}
@@ -1023,14 +1032,14 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-[#212A31] rounded-lg border border-[#2E3944] max-w-2xl w-full max-h-[80vh] overflow-hidden">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-[#2E3944]">
-              <div>
-                <h2 className="text-xl font-semibold text-muted">Trade History</h2>
-                <p className="text-sm text-muted opacity-75">{selectedItem.title}</p>
+            <div className="flex items-start sm:items-center justify-between p-4 sm:p-6 border-b border-[#2E3944] gap-4">
+              <div className="min-w-0 flex-1">
+                <h2 className="text-lg sm:text-xl font-semibold text-muted">Trade History</h2>
+                <p className="text-sm text-muted opacity-75 truncate">{selectedItem.title}</p>
               </div>
               <button
                 onClick={closeHistoryModal}
-                className="text-muted hover:text-white transition-colors"
+                className="text-muted hover:text-white transition-colors flex-shrink-0"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -1038,7 +1047,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
               </button>
             </div>
 
-            {/* Modal Content */}
+            {/* Modal Content */} 
             <div className="p-6 overflow-y-auto max-h-[60vh]">
               {isLoadingUserData ? (
                 <div className="flex justify-center items-center py-12">
@@ -1052,7 +1061,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                 </div>
               ) : selectedItem.history && selectedItem.history.length > 0 ? (
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between text-sm text-muted mb-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-muted mb-4">
                     <span>Total Trades: {selectedItem.history.length}</span>
                     <span>Most Recent: {formatDate(selectedItem.history[selectedItem.history.length - 1].TradeTime)}</span>
                   </div>
@@ -1061,41 +1070,43 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                     {selectedItem.history.slice().reverse().map((trade, index) => (
                       <div
                         key={`${trade.UserId}-${trade.TradeTime}`}
-                        className="flex items-center justify-between p-3 bg-[#2E3944] rounded-lg border border-[#37424D]"
+                        className="p-3 bg-[#2E3944] rounded-lg border border-[#37424D]"
                       >
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-[#5865F2] rounded-full flex items-center justify-center text-white text-sm font-bold">
-                            {selectedItem.history!.length - index}
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              {robloxAvatars && robloxAvatars[trade.UserId.toString()] && (
-                                <Image
-                                  src={robloxAvatars[trade.UserId.toString()]}
-                                  alt="User Avatar"
-                                  width={24}
-                                  height={24}
-                                  className="rounded-full bg-[#212A31] border border-[#2E3944]"
-                                />
-                              )}
-                              <a
-                                href={`https://www.roblox.com/users/${trade.UserId}/profile`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-300 hover:text-blue-400 hover:underline transition-colors font-medium"
-                              >
-                                {robloxUsers && robloxUsers[trade.UserId.toString()]
-                                  ? (robloxUsers[trade.UserId.toString()].displayName || robloxUsers[trade.UserId.toString()].name || trade.UserId.toString())
-                                  : trade.UserId.toString()}
-                              </a>
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-[#5865F2] rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                              {selectedItem.history!.length - index}
                             </div>
-                            <p className="text-sm text-muted opacity-75">
-                              {formatDate(trade.TradeTime)}
-                            </p>
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                {robloxAvatars && robloxAvatars[trade.UserId.toString()] && (
+                                  <Image
+                                    src={robloxAvatars[trade.UserId.toString()]}
+                                    alt="User Avatar"
+                                    width={24}
+                                    height={24}
+                                    className="rounded-full bg-[#212A31] border border-[#2E3944] flex-shrink-0"
+                                  />
+                                )}
+                                <a
+                                  href={`https://www.roblox.com/users/${trade.UserId}/profile`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-blue-300 hover:text-blue-400 hover:underline transition-colors font-medium truncate"
+                                >
+                                  {robloxUsers && robloxUsers[trade.UserId.toString()]
+                                    ? (robloxUsers[trade.UserId.toString()].displayName || robloxUsers[trade.UserId.toString()].name || trade.UserId.toString())
+                                    : trade.UserId.toString()}
+                                </a>
+                              </div>
+                              <p className="text-sm text-muted opacity-75 mt-1">
+                                {formatDate(trade.TradeTime)}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-sm text-muted">Trade #{selectedItem.history!.length - index}</div>
+                          <div className="text-right sm:text-left sm:ml-auto">
+                            <div className="text-sm text-muted">Trade #{selectedItem.history!.length - index}</div>
+                          </div>
                         </div>
                       </div>
                     ))}

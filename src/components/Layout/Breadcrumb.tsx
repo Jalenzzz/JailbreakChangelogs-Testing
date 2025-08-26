@@ -141,12 +141,28 @@ export default function Breadcrumb({ userData, loading }: BreadcrumbProps) {
         }
       }
 
-      // Special handling for inventory-checker route
+      // Special handling for inventories route
+      if (pathSegments[0] === 'inventories') {
+        if (index === 0) {
+          return {
+            label: "Inventory Checker",
+            href: "/inventories"
+          };
+        }
+        if (index === 1) {
+          return {
+            label: `User ${segment}`,
+            href: `/${pathSegments.slice(0, index + 1).join('/')}`
+          };
+        }
+      }
+      
+      // Special handling for inventory-checker route (legacy)
       if (pathSegments[0] === 'inventory-checker') {
         if (index === 0) {
           return {
             label: "Inventory Checker",
-            href: "/inventory-checker"
+            href: "/inventories"
           };
         }
       }

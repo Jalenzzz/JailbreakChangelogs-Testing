@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { fetchRobloxUser, fetchRobloxAvatars } from '@/utils/api';
+import { fetchRobloxUsersBatch, fetchRobloxAvatars } from '@/utils/api';
 import InventoryCheckerClient from './InventoryCheckerClient';
 
 interface InventoryItem {
@@ -157,17 +157,12 @@ async function UserDataFetcher({ robloxId, inventoryData }: UserDataStreamerProp
   );
 
   // Start fetching user data and avatars in parallel immediately
-  const userDataPromise = Promise.all(
-    numericUserIds.map(async (userId) => {
-      try {
-        const userData = await fetchRobloxUser(userId);
-        return { userId, userData };
-      } catch (error) {
-        console.error(`Failed to fetch user data for ${userId}:`, error);
-        return { userId, userData: null };
-      }
-    })
-  );
+  const userDataPromise = numericUserIds.length > 0 
+    ? fetchRobloxUsersBatch(numericUserIds).catch(error => {
+        console.error('Failed to fetch user data:', error);
+        return { data: [] };
+      })
+    : Promise.resolve({ data: [] });
 
   const avatarDataPromise = numericUserIds.length > 0 
     ? fetchRobloxAvatars(numericUserIds).catch(error => {
@@ -177,7 +172,7 @@ async function UserDataFetcher({ robloxId, inventoryData }: UserDataStreamerProp
     : Promise.resolve({ data: [] });
 
   // Wait for both promises to complete
-  const [userDataResults, avatarData] = await Promise.all([
+  const [userDataResult, avatarData] = await Promise.all([
     userDataPromise,
     avatarDataPromise
   ]);
@@ -187,11 +182,11 @@ async function UserDataFetcher({ robloxId, inventoryData }: UserDataStreamerProp
   const robloxAvatars: Record<string, string> = {};
 
   // Add user data from API calls
-  userDataResults.forEach(({ userId, userData }) => {
-    if (userData) {
-      robloxUsers[userId] = userData;
-    }
-  });
+  if (userDataResult && userDataResult.data && Array.isArray(userDataResult.data)) {
+    userDataResult.data.forEach((userData: { id: number; name: string; displayName: string }) => {
+      robloxUsers[userData.id.toString()] = userData;
+    });
+  }
 
   // Add non-numeric usernames as-is
   nonNumericUserIds.forEach((userId) => {

@@ -5,6 +5,8 @@ import UserSearch from '@/components/Users/UserSearch';
 import OnlineUsers from '@/components/Layout/OnlineUsers';
 import { fetchOnlineUsers, OnlineUser } from '@/utils/api';
 
+export const dynamic = 'force-dynamic';
+
 export default async function UsersPage() {
   const users = await fetchUsersForList();
   const online: OnlineUser[] = await fetchOnlineUsers();

@@ -386,6 +386,9 @@ export default function Header() {
       <ListItem component={Link} href="/trading" onClick={handleDrawerToggle} sx={{ pl: 4 }}>
         <ListItemText primary="Trade Ads" />
       </ListItem>
+      <ListItem component={Link} href="/inventories" onClick={handleDrawerToggle} sx={{ pl: 4 }}>
+        <ListItemText primary="Inventory Calculator" />
+      </ListItem>
       <ListItem>
         <Typography 
           sx={{ 
@@ -591,6 +594,15 @@ export default function Header() {
                             transition={{ duration: 0.2, delay: 0.2 }}
                           >
                             <Link href="/trading" className="rounded-lg px-4 py-2 text-base text-[#D3D9D4] hover:bg-[#2E3944] transition-colors font-bold hover:text-white block" onClick={handleNavMenuClose}>Trade Ads</Link>
+                          </motion.div>
+                          <motion.div
+                            variants={{
+                              hidden: { opacity: 0, x: -10 },
+                              visible: { opacity: 1, x: 0 }
+                            }}
+                            transition={{ duration: 0.2, delay: 0.25 }}
+                          >
+                            <Link href="/inventories" className="rounded-lg px-4 py-2 text-base text-[#D3D9D4] hover:bg-[#2E3944] transition-colors font-bold hover:text-white block" onClick={handleNavMenuClose}>Inventory Calculator</Link>
                           </motion.div>
                         </motion.div>
                       </motion.div>

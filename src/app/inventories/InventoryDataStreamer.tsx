@@ -57,9 +57,20 @@ function InventoryLoadingFallback({ robloxId }: { robloxId: string }) {
 
 // Component that fetches inventory data
 async function InventoryDataFetcher({ robloxId }: { robloxId: string }) {
-  const inventoryData = await fetchInventoryData(robloxId);
+  const result = await fetchInventoryData(robloxId);
 
-  if (!inventoryData) {
+  // Check if the result contains an error
+  if (result && 'error' in result) {
+    return (
+      <InventoryCheckerClient 
+        robloxId={robloxId} 
+        error={result.message} 
+      />
+    );
+  }
+
+  // Check if no data was returned
+  if (!result) {
     return (
       <InventoryCheckerClient 
         robloxId={robloxId} 
@@ -69,8 +80,8 @@ async function InventoryDataFetcher({ robloxId }: { robloxId: string }) {
   }
 
   return (
-    <Suspense fallback={<InventoryCheckerClient robloxId={robloxId} initialData={inventoryData} isLoading={true} />}>
-      <UserDataStreamer robloxId={robloxId} inventoryData={inventoryData} />
+    <Suspense fallback={<InventoryCheckerClient robloxId={robloxId} initialData={result} isLoading={true} />}>
+      <UserDataStreamer robloxId={robloxId} inventoryData={result} />
     </Suspense>
   );
 }

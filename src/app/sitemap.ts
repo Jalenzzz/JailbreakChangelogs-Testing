@@ -95,6 +95,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
       changeFrequency: 'daily' as const,
     },
+    {
+      url: `${BASE_URL}/inventories`,
+      lastModified: new Date().toISOString(),
+      priority: 0.8,
+      changeFrequency: 'daily' as const,
+    },
   ]
 
   // Sitemap URLs for each content type
