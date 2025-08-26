@@ -145,8 +145,17 @@ async function UserDataFetcher({ robloxId, inventoryData }: UserDataStreamerProp
       .filter((value: string | undefined): value is string => Boolean(value))
   ));
 
+  // Extract unique user IDs from trade history
+  const tradeHistoryUserIds = Array.from(new Set(
+    inventoryData.data
+      .filter((item: { history?: Array<{ UserId: number }> }) => item.history && item.history.length > 0)
+      .flatMap((item: { history?: Array<{ UserId: number }> }) => 
+        item.history ? item.history.map(trade => trade.UserId.toString()) : []
+      )
+  ));
+
   // Add the main user ID to the list
-  const allUserIds = [...new Set([...uniqueOwnerIds, robloxId])];
+  const allUserIds = [...new Set([...uniqueOwnerIds, ...tradeHistoryUserIds, robloxId])];
   
   // Separate numeric and non-numeric IDs
   const numericUserIds = allUserIds.filter((userId): userId is string => 

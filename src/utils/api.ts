@@ -752,21 +752,7 @@ export async function fetchRobloxUser(robloxId: string) {
   }
 }
 
-// Helper function to check if an avatar URL is accessible using HEAD request
-async function isAvatarAccessible(avatarUrl: string): Promise<boolean> {
-  try {
-    const response = await fetch(avatarUrl, {
-      method: 'HEAD',
-      headers: {
-        'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0'
-      }
-    });
-    return response.ok;
-  } catch (error) {
-    console.warn(`[SERVER] Avatar HEAD request failed for ${avatarUrl}:`, error);
-    return false;
-  }
-}
+
 
 export async function fetchRobloxAvatars(userIds: string[]) {
   try {
@@ -808,21 +794,7 @@ export async function fetchRobloxAvatars(userIds: string[]) {
         
         const data = await response.json();
         if (data && data.data && Array.isArray(data.data)) {
-          // Filter out avatars that are not accessible using HEAD requests
-          const validatedAvatars = await Promise.all(
-            data.data.map(async (avatar: { state: string; imageUrl?: string; targetId: number }) => {
-              if (avatar.state === 'Completed' && avatar.imageUrl) {
-                const isAccessible = await isAvatarAccessible(avatar.imageUrl);
-                if (!isAccessible) {
-                  console.warn(`[SERVER] Avatar not accessible for user ${avatar.targetId}, removing from results`);
-                  return { ...avatar, state: 'Failed', imageUrl: undefined };
-                }
-              }
-              return avatar;
-            })
-          );
-          
-          allAvatarData.push(...validatedAvatars);
+          allAvatarData.push(...data.data);
         } else {
           console.warn(`[SERVER] fetchRobloxAvatars: Batch ${batchNumber} returned invalid data structure:`, data);
         }

@@ -9,7 +9,7 @@ import dynamic from 'next/dynamic';
 import localFont from 'next/font/local';
 import { useDebounce } from '@/hooks/useDebounce';
 import { getItemImagePath, isVideoItem, isDriftItem, getDriftVideoPath, getVideoPath, handleImageError } from '@/utils/images';
-import { fetchRobloxUsersBatch, fetchRobloxAvatars } from '@/utils/api';
+
 
 const bangers = localFont({
   src: '../../../public/fonts/Bangers.ttf',
@@ -76,9 +76,8 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
   const [isFiltering, setIsFiltering] = useState(false);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
-  const [robloxUsers, setRobloxUsers] = useState<Record<string, { displayName?: string; name?: string }>>(initialRobloxUsers || {});
-  const [robloxAvatars, setRobloxAvatars] = useState<Record<string, string>>(initialRobloxAvatars || {});
-  const [isLoadingUserData, setIsLoadingUserData] = useState(false);
+  const robloxUsers = initialRobloxUsers || {};
+  const robloxAvatars = initialRobloxAvatars || {};
   const router = useRouter();
   
   const MAX_SEARCH_LENGTH = 50;
@@ -271,78 +270,9 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
     setPage(value);
   };
 
-  const handleItemClick = async (item: InventoryItem) => {
+  const handleItemClick = (item: InventoryItem) => {
     setSelectedItem(item);
     setShowHistoryModal(true);
-    
-    // Fetch Roblox data for this item's trade history if not already loaded
-    if (item.history && item.history.length > 0) {
-      await fetchRobloxDataForItem(item);
-    }
-  };
-
-  const fetchRobloxDataForItem = async (item: InventoryItem) => {
-    if (!item.history || item.history.length === 0) return;
-    
-    setIsLoadingUserData(true);
-    
-    try {
-      // Get unique user IDs from this item's trade history only (not main user or original owners)
-      const userIds = Array.from(new Set(
-        item.history.map(trade => trade.UserId.toString())
-      ));
-      
-      // Filter out already loaded users
-      const newUserIds = userIds.filter(id => !robloxUsers[id]);
-      
-      if (newUserIds.length === 0) {
-        setIsLoadingUserData(false);
-        return;
-      }
-      
-      // Fetch user data for new users
-      const newUsers: Record<string, { displayName?: string; name?: string }> = {};
-      
-      // Separate numeric and non-numeric user IDs
-      const numericIds = newUserIds.filter(id => /^\d+$/.test(id));
-      const nonNumericIds = newUserIds.filter(id => !/^\d+$/.test(id));
-      
-      // Fetch user data for numeric IDs using batch
-      if (numericIds.length > 0) {
-        const userDataResult = await fetchRobloxUsersBatch(numericIds);
-        if (userDataResult && userDataResult.data && Array.isArray(userDataResult.data)) {
-          userDataResult.data.forEach((userData: { id: number; name: string; displayName: string }) => {
-            newUsers[userData.id.toString()] = userData;
-          });
-        }
-      }
-      
-      // For non-numeric usernames, just store the username as-is
-      nonNumericIds.forEach((userId) => {
-        newUsers[userId] = { displayName: userId, name: userId };
-      });
-      
-      // Update users state
-      setRobloxUsers(prev => ({ ...prev, ...newUsers }));
-      
-      // Fetch avatars for numeric user IDs
-      if (numericIds.length > 0) {
-        const avatarData = await fetchRobloxAvatars(numericIds);
-        if (avatarData && avatarData.data && Array.isArray(avatarData.data)) {
-          const newAvatars: Record<string, string> = {};
-          avatarData.data.forEach((avatar: { state: string; imageUrl?: string; targetId: number }) => {
-            if (avatar.state === 'Completed' && avatar.imageUrl) {
-              newAvatars[avatar.targetId.toString()] = avatar.imageUrl;
-            }
-          });
-          setRobloxAvatars(prev => ({ ...prev, ...newAvatars }));
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching Roblox data:', error);
-    } finally {
-      setIsLoadingUserData(false);
-    }
   };
 
   const closeHistoryModal = () => {
@@ -1048,17 +978,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
 
             {/* Modal Content */} 
             <div className="p-6 overflow-y-auto max-h-[60vh]">
-              {isLoadingUserData ? (
-                <div className="flex justify-center items-center py-12">
-                  <div className="flex flex-col items-center gap-4">
-                    <svg className="animate-spin h-8 w-8 text-[#5865F2]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <p className="text-muted text-sm">Loading user data...</p>
-                  </div>
-                </div>
-              ) : selectedItem.history && selectedItem.history.length > 0 ? (
+              {selectedItem.history && selectedItem.history.length > 0 ? (
                 <div className="space-y-4">
                   {(() => {
                     // Process history to show actual trades between users
@@ -1089,7 +1009,6 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                       <>
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-muted mb-4">
                           <span>Total Trades: {trades.length}</span>
-                          <span>Most Recent: {formatDate(history[history.length - 1].TradeTime)}</span>
                         </div>
                         
                         <div className="space-y-3">
@@ -1100,9 +1019,6 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                             >
                               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                                 <div className="flex items-center gap-3">
-                                  <div className="w-8 h-8 bg-[#5865F2] rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                                    {trade.tradeNumber}
-                                  </div>
                                   <div className="min-w-0 flex-1">
                                     <div className="flex items-center gap-2 flex-wrap">
                                       {/* From User */}

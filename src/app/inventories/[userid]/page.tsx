@@ -8,13 +8,13 @@ import Breadcrumb from '@/components/Layout/Breadcrumb';
 export const revalidate = 300;
 
 interface InventoryCheckerPageProps {
-  params: {
+  params: Promise<{
     userid: string;
-  };
+  }>;
 }
 
 export default async function InventoryCheckerPage({ params }: InventoryCheckerPageProps) {
-  const { userid } = params;
+  const { userid } = await params;
 
   // Validate that userid is a valid number
   const robloxId = parseInt(userid);
