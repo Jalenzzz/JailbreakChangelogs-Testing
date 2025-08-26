@@ -8,7 +8,7 @@ export default function NotFound() {
       <div className="text-center py-12">
         <h1 className="text-3xl font-bold mb-4">User Not Found</h1>
         <p className="text-gray-600 dark:text-gray-400 mb-6">
-          The Roblox user ID you're looking for doesn't exist or is invalid.
+          The Roblox user ID you&apos;re looking for doesn&apos;t exist or is invalid.
         </p>
         <Link
           href="/inventories"

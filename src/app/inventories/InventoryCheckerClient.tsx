@@ -302,7 +302,6 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
       
       // Fetch user data for new users
       const newUsers: Record<string, { displayName?: string; name?: string }> = {};
-      const numericUserIds: string[] = [];
       
       // Separate numeric and non-numeric user IDs
       const numericIds = newUserIds.filter(id => /^\d+$/.test(id));

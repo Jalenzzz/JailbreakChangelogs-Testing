@@ -1,23 +1,53 @@
-"use client";
+'use client';
 
+import { useEffect, useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { canBypassMaintenance } from '@/utils/maintenance';
 import Image from 'next/image';
 import localFont from 'next/font/local';
-import Header from './Header';
 
 const bangers = localFont({
   src: '../../../public/fonts/Bangers.ttf',
 });
 
 export default function Maintenance() {
+  const { isAuthenticated, user, isLoading } = useAuth();
+  const [shouldShowMaintenance, setShouldShowMaintenance] = useState(true);
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (isAuthenticated && user) {
+        const canBypass = canBypassMaintenance();
+        if (canBypass) {
+          setShouldShowMaintenance(false);
+          window.location.href = '/';
+          return;
+        }
+      }
+      setShouldShowMaintenance(true);
+    }
+  }, [isAuthenticated, user, isLoading]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#2E3944] flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+          <p className="text-white">Checking access...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!shouldShowMaintenance) {
+    return null;
+  }
+
   return (
-    <div className="min-h-screen bg-[#2e3944] text-[#D3D9D4] bg-[url('https://assets.jailbreakchangelogs.xyz/assets/backgrounds/background16.webp')] bg-cover bg-no-repeat bg-center relative">
-      {/* Header for login functionality */}
-      <Header />
-      
-      {/* Overlay for readability */}
+    <div className="min-h-screen flex items-center justify-center bg-[#2e3944] text-[#D3D9D4] bg-[url('https://assets.jailbreakchangelogs.xyz/assets/backgrounds/background16.webp')] bg-cover bg-no-repeat bg-center relative">
       <div className="absolute inset-0 bg-black/70 z-[1]" />
       
-      <div className="container mx-auto max-w-2xl relative z-[2] px-4 flex items-center justify-center min-h-screen">
+      <div className="container mx-auto max-w-2xl relative z-[2] px-4">
         <div className="text-center flex flex-col items-center gap-4 px-8 py-8 rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] bg-[rgba(30,30,30,0.35)] backdrop-blur-xl border border-white/[0.12]">
           <Image
             src="https://assets.jailbreakchangelogs.xyz/assets/logos/JBCL_Short_Transparent.webp"
