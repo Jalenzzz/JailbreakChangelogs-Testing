@@ -3,7 +3,6 @@ import Breadcrumb from '@/components/Layout/Breadcrumb';
 import { fetchItemCountStats, fetchUserScansLeaderboard, fetchRobloxUsersBatchLeaderboard, fetchRobloxAvatars } from '@/utils/api';
 import Image from 'next/image';
 import CopyButton from './CopyButton';
-import { RobloxUser } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,7 +16,7 @@ export default async function InventoryCheckerPage() {
   const topPlayers = leaderboard?.slice(5) || [];
   const playerIds = topPlayers.map(player => player.user_id);
   
-  const robloxUsers: Record<string, RobloxUser> = {};
+  const robloxUsers: Record<string, { displayName?: string; name?: string }> = {};
   const robloxAvatars: Record<string, string> = {};
   
   if (playerIds.length > 0) {
@@ -30,14 +29,9 @@ export default async function InventoryCheckerPage() {
       // Process user data
       if (userDataResult && typeof userDataResult === 'object') {
         Object.values(userDataResult).forEach((userData) => {
-          const user = userData as { id: number; name: string; displayName: string; username: string; hasVerifiedBadge: boolean };
+          const user = userData as { id: number; name: string; displayName: string; hasVerifiedBadge: boolean };
           if (user && user.id) {
-            robloxUsers[user.id.toString()] = {
-              id: user.id,
-              name: user.name,
-              displayName: user.displayName,
-              username: user.username
-            };
+            robloxUsers[user.id.toString()] = user;
           }
         });
       }

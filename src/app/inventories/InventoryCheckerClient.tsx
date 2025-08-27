@@ -460,14 +460,14 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
         <form onSubmit={handleSearch} className="space-y-4">
           <div>
             <label htmlFor="robloxId" className="block text-sm font-medium text-muted mb-2">
-              Roblox ID
+              Username or Roblox ID
             </label>
             <input
               type="text"
               id="robloxId"
               value={searchId}
               onChange={(e) => setSearchId(e.target.value)}
-              placeholder="Enter Roblox ID or username (e.g., 1910948809 or v3kmw)"
+              placeholder="Enter username or Roblox ID (e.g., v3kmw or 1910948809)"
               className="w-full px-3 py-2 border border-[#2E3944] bg-[#37424D] rounded-lg shadow-sm focus:outline-none focus:border-[#5865F2] text-muted placeholder-[#D3D9D4]"
               required
             />
@@ -510,11 +510,15 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
       <div className="bg-[#212A31] rounded-lg border border-[#2E3944] p-6">
         <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
+            <label htmlFor="searchInput" className="block text-sm font-medium text-muted mb-2">
+              Username or Roblox ID
+            </label>
             <input
               type="text"
+              id="searchInput"
               value={searchId}
               onChange={(e) => setSearchId(e.target.value)}
-              placeholder="Enter Roblox ID or username (e.g., 1910948809 or TurtleTrevor123)"
+              placeholder="Enter username or Roblox ID (e.g., v3kmw or 1910948809)"
               className="w-full px-3 py-2 border border-[#2E3944] bg-[#37424D] rounded-lg shadow-sm focus:outline-none focus:border-[#5865F2] text-muted placeholder-[#D3D9D4]"
               required
             />
