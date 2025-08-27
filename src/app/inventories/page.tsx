@@ -1,8 +1,9 @@
 import InventoryCheckerClient from './InventoryCheckerClient';
 import Breadcrumb from '@/components/Layout/Breadcrumb';
-import { fetchItemCountStats, fetchUserScansLeaderboard, fetchRobloxUsersBatch, fetchRobloxAvatars } from '@/utils/api';
+import { fetchItemCountStats, fetchUserScansLeaderboard, fetchRobloxUsersBatchLeaderboard, fetchRobloxAvatars } from '@/utils/api';
 import Image from 'next/image';
 import CopyButton from './CopyButton';
+import { RobloxUser } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,22 +17,27 @@ export default async function InventoryCheckerPage() {
   const topPlayers = leaderboard?.slice(5) || [];
   const playerIds = topPlayers.map(player => player.user_id);
   
-  const robloxUsers: Record<string, { displayName?: string; name?: string }> = {};
+  const robloxUsers: Record<string, RobloxUser> = {};
   const robloxAvatars: Record<string, string> = {};
   
   if (playerIds.length > 0) {
     try {
       const [userDataResult, avatarData] = await Promise.all([
-        fetchRobloxUsersBatch(playerIds),
+        fetchRobloxUsersBatchLeaderboard(playerIds),
         fetchRobloxAvatars(playerIds)
       ]);
 
       // Process user data
       if (userDataResult && typeof userDataResult === 'object') {
         Object.values(userDataResult).forEach((userData) => {
-          const user = userData as { id: number; name: string; displayName: string; hasVerifiedBadge: boolean };
+          const user = userData as { id: number; name: string; displayName: string; username: string; hasVerifiedBadge: boolean };
           if (user && user.id) {
-            robloxUsers[user.id.toString()] = user;
+            robloxUsers[user.id.toString()] = {
+              id: user.id,
+              name: user.name,
+              displayName: user.displayName,
+              username: user.username
+            };
           }
         });
       }
@@ -55,7 +61,7 @@ export default async function InventoryCheckerPage() {
       <Breadcrumb />
       <h1 className="text-3xl font-bold mb-6">Inventory Checker</h1>
       <p className="text-gray-600 dark:text-gray-400 mb-4">
-        Enter a Roblox ID to check their Jailbreak inventory.
+        Enter a Roblox ID or username to check their Jailbreak inventory.
       </p>
       
       {stats && (

@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { fetchInventoryData } from '@/utils/api';
+import { fetchInventoryData, fetchRobloxUserByUsername } from '@/utils/api';
 import InventoryCheckerClient from './InventoryCheckerClient';
 import UserDataStreamer from './UserDataStreamer';
 
@@ -57,13 +57,43 @@ function InventoryLoadingFallback({ robloxId }: { robloxId: string }) {
 
 // Component that fetches inventory data
 async function InventoryDataFetcher({ robloxId }: { robloxId: string }) {
-  const result = await fetchInventoryData(robloxId);
+  // Check if the input is a username (not a number) or a Roblox ID
+  const isUsername = !/^\d+$/.test(robloxId);
+  
+  let actualRobloxId = robloxId;
+  
+  // If it's a username, try to get the Roblox ID first
+  if (isUsername) {
+    try {
+      const userData = await fetchRobloxUserByUsername(robloxId);
+      if (userData && userData.id) {
+        actualRobloxId = userData.id.toString();
+      } else {
+        return (
+          <InventoryCheckerClient 
+            robloxId={robloxId} 
+            error={`Username "${robloxId}" not found. Please check the spelling and try again.`} 
+          />
+        );
+      }
+    } catch (error) {
+      console.error('Error fetching user by username:', error);
+      return (
+        <InventoryCheckerClient 
+          robloxId={robloxId} 
+          error={`Failed to find user "${robloxId}". Please check the spelling and try again.`} 
+        />
+      );
+    }
+  }
+
+  const result = await fetchInventoryData(actualRobloxId);
 
   // Check if the result contains an error
   if (result && 'error' in result) {
     return (
       <InventoryCheckerClient 
-        robloxId={robloxId} 
+        robloxId={actualRobloxId} 
         error={result.message} 
       />
     );
@@ -73,15 +103,15 @@ async function InventoryDataFetcher({ robloxId }: { robloxId: string }) {
   if (!result) {
     return (
       <InventoryCheckerClient 
-        robloxId={robloxId} 
+        robloxId={actualRobloxId} 
         error="Failed to fetch inventory data. Please try again." 
       />
     );
   }
 
   return (
-    <Suspense fallback={<InventoryCheckerClient robloxId={robloxId} initialData={result} isLoading={true} />}>
-      <UserDataStreamer robloxId={robloxId} inventoryData={result} />
+    <Suspense fallback={<InventoryCheckerClient robloxId={actualRobloxId} initialData={result} isLoading={true} />}>
+      <UserDataStreamer robloxId={actualRobloxId} inventoryData={result} />
     </Suspense>
   );
 }

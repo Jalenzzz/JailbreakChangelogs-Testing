@@ -112,6 +112,13 @@ export interface Item {
   }[];
 }
 
+export interface RobloxUser {
+  id: number;
+  name: string;
+  displayName: string;
+  username: string;
+}
+
 export interface ItemsResponse {
   items: Item[];
   total: number;

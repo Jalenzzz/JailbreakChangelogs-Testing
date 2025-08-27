@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Pagination } from '@mui/material';
@@ -10,6 +10,8 @@ import localFont from 'next/font/local';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useLockBodyScroll } from '@/hooks/useLockBodyScroll';
 import { getItemImagePath, isVideoItem, isDriftItem, getDriftVideoPath, getVideoPath, handleImageError } from '@/utils/images';
+import { fetchMissingRobloxData, fetchOriginalOwnerAvatars } from './actions';
+import { RobloxUser } from '@/types';
 
 
 const bangers = localFont({
@@ -59,7 +61,7 @@ interface InventoryData {
 interface InventoryCheckerClientProps {
   initialData?: InventoryData;
   robloxId?: string;
-  robloxUsers?: Record<string, { displayName?: string; name?: string }>;
+  robloxUsers?: Record<string, RobloxUser>;
   robloxAvatars?: Record<string, string>;
   error?: string;
   isLoading?: boolean;
@@ -70,18 +72,87 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [sortOrder, setSortOrder] = useState<'alpha-asc' | 'alpha-desc' | 'traded-desc' | 'unique-desc' | 'created-asc' | 'created-desc' | 'random' | 'duplicates'>('random');
+  const [sortOrder, setSortOrder] = useState<'alpha-asc' | 'alpha-desc' | 'traded-desc' | 'unique-desc' | 'created-asc' | 'created-desc' | 'random' | 'duplicates'>('created-desc');
   const [page, setPage] = useState(1);
   const [showOnlyOriginal, setShowOnlyOriginal] = useState(false);
   const [selectLoaded, setSelectLoaded] = useState(false);
   const [isFiltering, setIsFiltering] = useState(false);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
-  const robloxUsers = initialRobloxUsers || {};
-  const robloxAvatars = initialRobloxAvatars || {};
+  const [robloxUsers, setRobloxUsers] = useState<Record<string, RobloxUser>>(initialRobloxUsers || {});
+  const [robloxAvatars, setRobloxAvatars] = useState(initialRobloxAvatars || {});
+
+
   const router = useRouter();
   const MAX_SEARCH_LENGTH = 50;
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
+
+  // Helper function to get user display name with progressive loading
+  const getUserDisplay = useCallback((userId: string) => {
+    const user = robloxUsers[userId] || initialRobloxUsers?.[userId];
+    return user?.displayName || user?.name || userId;
+  }, [robloxUsers, initialRobloxUsers]);
+
+  // Helper function to get user avatar with progressive loading
+  const getUserAvatar = useCallback((userId: string) => {
+    const avatar = robloxAvatars[userId] || initialRobloxAvatars?.[userId];
+    return avatar && typeof avatar === 'string' && avatar.trim() !== '' ? avatar : null;
+  }, [robloxAvatars, initialRobloxAvatars]);
+
+  // Progressive loading of missing user data
+  const fetchMissingUserData = useCallback(async (userIds: string[]) => {
+    const missingIds = userIds.filter(id => 
+      !robloxUsers[id] && !initialRobloxUsers?.[id]
+    );
+    
+    if (missingIds.length === 0) return;
+    
+    try {
+      const result = await fetchMissingRobloxData(missingIds);
+      
+      // Update state with new user data
+      if (result.userData && typeof result.userData === 'object') {
+        setRobloxUsers(prev => ({ ...prev, ...result.userData }));
+      }
+      
+      // Update state with new avatar data
+      if (result.avatarData && typeof result.avatarData === 'object') {
+        setRobloxAvatars(prev => ({ ...prev, ...result.avatarData }));
+      }
+      
+
+    } catch (error) {
+      console.error('Failed to fetch missing user data:', error);
+    }
+  }, [robloxUsers, initialRobloxUsers, setRobloxUsers, setRobloxAvatars]);
+
+  // Fetch avatars for original owners separately (for inventories with 1000 items or less)
+  const fetchOriginalOwnerAvatarsData = useCallback(async (userIds: string[]) => {
+    const missingIds = userIds.filter(id => 
+      !robloxAvatars[id] && !initialRobloxAvatars?.[id]
+    );
+    
+    if (missingIds.length === 0) return;
+    
+    console.log('[DEBUG] Fetching avatars for user IDs:', missingIds);
+    
+    try {
+      const avatarData = await fetchOriginalOwnerAvatars(missingIds);
+      
+      console.log('[DEBUG] Received avatar data:', avatarData);
+      
+      // Update state with new avatar data
+      if (avatarData && typeof avatarData === 'object') {
+        setRobloxAvatars(prev => {
+          const newState = { ...prev, ...avatarData };
+          console.log('[DEBUG] Updated avatar state:', newState);
+          return newState;
+        });
+      }
+    } catch (error) {
+      console.error('Failed to fetch original owner avatars:', error);
+    }
+  }, [robloxAvatars, initialRobloxAvatars, setRobloxAvatars]);
   
   // Set selectLoaded to true after mount to ensure client-side rendering
   useEffect(() => {
@@ -91,6 +162,32 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
   // Lock body scroll when history modal is open
   useLockBodyScroll(showHistoryModal);
 
+  // Progressive loading for trade history users when modal opens
+  useEffect(() => {
+    if (selectedItem?.history && selectedItem.history.length > 0) {
+      const userIdsToLoad: string[] = [];
+      
+      // Extract all unique user IDs from trade history
+      selectedItem.history.forEach(trade => {
+        if (trade.UserId) {
+          const userId = trade.UserId.toString();
+          if (!getUserDisplay(userId) || getUserDisplay(userId) === userId) {
+            userIdsToLoad.push(userId);
+          }
+        }
+      });
+      
+      // Fetch missing user data if any
+      if (userIdsToLoad.length > 0) {
+        fetchMissingUserData(userIdsToLoad);
+      }
+    }
+  }, [selectedItem?.id, selectedItem?.history, fetchMissingUserData, getUserDisplay]);
+
+
+
+
+  
   // Gamepass mapping with links and image names
   const gamepassData = {
     'PremiumGarage': {
@@ -271,6 +368,58 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
   const startIndex = (page - 1) * itemsPerPage;
   const paginatedItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
 
+  // Progressive loading for current page items
+  useEffect(() => {
+    if (!paginatedItems || paginatedItems.length === 0) return;
+
+    const userIdsToLoad: string[] = [];
+    const avatarIdsToLoad: string[] = [];
+
+    paginatedItems.forEach(item => {
+      const originalOwnerInfo = item.info.find(info => info.title === 'Original Owner');
+      
+      // Add original owner ID if missing
+      if (originalOwnerInfo?.value && /^\d+$/.test(originalOwnerInfo.value)) {
+        const ownerId = originalOwnerInfo.value;
+        if (!getUserDisplay(ownerId) || getUserDisplay(ownerId) === ownerId) {
+          userIdsToLoad.push(ownerId);
+        }
+        
+        // Fetch avatars for original owners as well
+        if (!getUserAvatar(ownerId)) {
+          avatarIdsToLoad.push(ownerId);
+        }
+      }
+      
+      // Add trade history user IDs if missing
+      if (item.history && item.history.length > 0) {
+        item.history.forEach(trade => {
+          if (trade.UserId) {
+            const tradeUserId = trade.UserId.toString();
+            if (!getUserDisplay(tradeUserId) || getUserDisplay(tradeUserId) === tradeUserId) {
+              userIdsToLoad.push(tradeUserId);
+            }
+            
+            // Fetch avatars for all trade history users
+            if (!getUserAvatar(tradeUserId)) {
+              avatarIdsToLoad.push(tradeUserId);
+            }
+          }
+        });
+      }
+    });
+
+    // Fetch missing user data if any
+    if (userIdsToLoad.length > 0) {
+      fetchMissingUserData(userIdsToLoad);
+    }
+    
+    // Fetch avatars for original owners and trade history users
+    if (avatarIdsToLoad.length > 0) {
+      fetchOriginalOwnerAvatarsData(avatarIdsToLoad);
+    }
+  }, [paginatedItems, initialData?.item_count, fetchMissingUserData, fetchOriginalOwnerAvatarsData, getUserDisplay, getUserAvatar, initialData]);
+
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
@@ -300,14 +449,9 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
     }
   };
 
-  // Helper function to get Roblox user display name
+  // Helper function to get Roblox user display name (now uses progressive loading)
   const getRobloxUserDisplay = (robloxId: string) => {
-    if (!robloxUsers || !robloxUsers[robloxId]) {
-      return robloxId;
-    }
-    
-    const user = robloxUsers[robloxId];
-    return user.displayName || user.name || robloxId;
+    return getUserDisplay(robloxId);
   };
 
   if (!initialData || isLoading || externalIsLoading) {
@@ -323,7 +467,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
               id="robloxId"
               value={searchId}
               onChange={(e) => setSearchId(e.target.value)}
-              placeholder="Enter Roblox ID (e.g., 1910948809)"
+              placeholder="Enter Roblox ID or username (e.g., 1910948809 or v3kmw)"
               className="w-full px-3 py-2 border border-[#2E3944] bg-[#37424D] rounded-lg shadow-sm focus:outline-none focus:border-[#5865F2] text-muted placeholder-[#D3D9D4]"
               required
             />
@@ -358,7 +502,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
       {/* Descriptive Text */}
       <div>
         <p className="text-gray-600 dark:text-gray-400 mb-4">
-          Enter a Roblox ID to check their Jailbreak inventory.
+          Enter a Roblox ID or username to check their Jailbreak inventory.
         </p>
       </div>
       
@@ -370,7 +514,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
               type="text"
               value={searchId}
               onChange={(e) => setSearchId(e.target.value)}
-              placeholder="Enter Roblox ID (e.g., 1910948809)"
+              placeholder="Enter Roblox ID or username (e.g., 1910948809 or TurtleTrevor123)"
               className="w-full px-3 py-2 border border-[#2E3944] bg-[#37424D] rounded-lg shadow-sm focus:outline-none focus:border-[#5865F2] text-muted placeholder-[#D3D9D4]"
               required
             />
@@ -402,12 +546,14 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
       <div className="bg-[#212A31] rounded-lg border border-[#2E3944] p-6">
         <h2 className="text-xl font-semibold mb-4 text-muted">User Information</h2>
         
+
+        
         {/* Roblox User Profile */}
         {initialData?.user_id && (
           <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6 p-4 bg-[#2E3944] rounded-lg border border-[#37424D]">
-            {robloxAvatars && robloxAvatars[initialData.user_id] ? (
+            {getUserAvatar(initialData.user_id) ? (
               <Image
-                src={robloxAvatars[initialData.user_id]}
+                src={getUserAvatar(initialData.user_id)!}
                 alt="Roblox Avatar"
                 width={64}
                 height={64}
@@ -422,10 +568,10 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
             )}
             <div className="flex-1 min-w-0">
               <h3 className="text-lg font-bold text-muted break-words">
-                {robloxUsers[initialData.user_id]?.displayName || robloxUsers[initialData.user_id]?.name || initialData.user_id}
+                {getUserDisplay(initialData.user_id)}
               </h3>
               <p className="text-sm text-muted opacity-75 break-words">
-                @{robloxUsers[initialData.user_id]?.name || initialData.user_id}
+                @{getUserDisplay(initialData.user_id)}
               </p>
               <a
                 href={`https://www.roblox.com/users/${initialData.user_id}/profile`}
@@ -897,17 +1043,23 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                     <div className="text-xl font-bold italic">
                       {originalOwnerInfo ? (
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
-                          {/* Show avatar for original owner - use main user's avatar if isOriginalOwner is true */}
-                          {(isOriginalOwner && robloxAvatars && robloxAvatars[initialData?.user_id]) || 
-                           (!isOriginalOwner && robloxAvatars && robloxAvatars[originalOwnerInfo.value]) ? (
-                            <Image
-                              src={isOriginalOwner ? robloxAvatars[initialData?.user_id] : robloxAvatars[originalOwnerInfo.value]}
-                              alt="Original Owner Avatar"
-                              width={24}
-                              height={24}
-                              className="rounded-full bg-[#212A31] border border-[#2E3944] flex-shrink-0"
-                            />
-                          ) : null}
+                          {/* Always show avatar container - use placeholder when no avatar available */}
+                          <div className="w-6 h-6 rounded-full bg-[#212A31] border border-[#2E3944] flex-shrink-0 flex items-center justify-center">
+                            {((isOriginalOwner && getUserAvatar(initialData?.user_id || '')) || 
+                             (!isOriginalOwner && getUserAvatar(originalOwnerInfo.value))) ? (
+                              <Image
+                                src={isOriginalOwner ? getUserAvatar(initialData?.user_id || '')! : getUserAvatar(originalOwnerInfo.value)!}
+                                alt="Original Owner Avatar"
+                                width={24}
+                                height={24}
+                                className="rounded-full"
+                              />
+                            ) : (
+                              <svg className="w-3 h-3 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                              </svg>
+                            )}
+                          </div>
                           <a
                             href={`https://www.roblox.com/users/${isOriginalOwner ? initialData?.user_id : originalOwnerInfo.value}/profile`}
                             target="_blank"
@@ -1031,39 +1183,44 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                         </div>
                         
                         <div className="space-y-3">
-                          {trades.map((trade, index) => (
-                            <div
-                              key={`${trade.fromUser.UserId}-${trade.toUser.UserId}-${trade.toUser.TradeTime}`}
-                              className={`p-3 rounded-lg border ${
-                                index === trades.length - 1 
-                                  ? 'bg-[#1A5F7A] border-[#124E66] shadow-lg' 
-                                  : 'bg-[#2E3944] border-[#37424D]'
-                              }`}
-                            >
+                          {trades.map((trade, index) => {
+                            return (
+                              <div
+                                key={`${trade.fromUser.UserId}-${trade.toUser.UserId}-${trade.toUser.TradeTime}`}
+                                className={`p-3 rounded-lg border ${
+                                  index === trades.length - 1 
+                                    ? 'bg-[#1A5F7A] border-[#124E66] shadow-lg' 
+                                    : 'bg-[#2E3944] border-[#37424D]'
+                                }`}
+                              >
                               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                                 <div className="flex items-center gap-3">
                                   <div className="min-w-0 flex-1">
                                     <div className="flex items-center gap-2 flex-wrap">
                                       {/* From User */}
                                       <div className="flex items-center gap-2">
-                                        {robloxAvatars && robloxAvatars[trade.fromUser.UserId.toString()] && (
-                                          <Image
-                                            src={robloxAvatars[trade.fromUser.UserId.toString()]}
-                                            alt="User Avatar"
-                                            width={24}
-                                            height={24}
-                                            className="rounded-full bg-[#212A31] border border-[#2E3944] flex-shrink-0"
-                                          />
-                                        )}
+                                        <div className="w-6 h-6 rounded-full bg-[#212A31] border border-[#2E3944] flex-shrink-0 flex items-center justify-center">
+                                          {getUserAvatar(trade.fromUser.UserId.toString()) ? (
+                                            <Image
+                                              src={getUserAvatar(trade.fromUser.UserId.toString())!}
+                                              alt="User Avatar"
+                                              width={24}
+                                              height={24}
+                                              className="rounded-full"
+                                            />
+                                          ) : (
+                                            <svg className="w-3 h-3 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                            </svg>
+                                          )}
+                                        </div>
                                         <a
                                           href={`https://www.roblox.com/users/${trade.fromUser.UserId}/profile`}
                                           target="_blank"
                                           rel="noopener noreferrer"
                                           className="text-blue-300 hover:text-blue-400 hover:underline transition-colors font-medium truncate"
                                         >
-                                          {robloxUsers && robloxUsers[trade.fromUser.UserId.toString()]
-                                            ? (robloxUsers[trade.fromUser.UserId.toString()].displayName || robloxUsers[trade.fromUser.UserId.toString()].name || trade.fromUser.UserId.toString())
-                                            : trade.fromUser.UserId.toString()}
+                                          {getUserDisplay(trade.fromUser.UserId.toString())}
                                         </a>
                                       </div>
                                       
@@ -1072,24 +1229,28 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                                       
                                       {/* To User */}
                                       <div className="flex items-center gap-2">
-                                        {robloxAvatars && robloxAvatars[trade.toUser.UserId.toString()] && (
-                                          <Image
-                                            src={robloxAvatars[trade.toUser.UserId.toString()]}
-                                            alt="User Avatar"
-                                            width={24}
-                                            height={24}
-                                            className="rounded-full bg-[#212A31] border border-[#2E3944] flex-shrink-0"
-                                          />
-                                        )}
+                                        <div className="w-6 h-6 rounded-full bg-[#212A31] border border-[#2E3944] flex-shrink-0 flex items-center justify-center">
+                                          {getUserAvatar(trade.toUser.UserId.toString()) ? (
+                                            <Image
+                                              src={getUserAvatar(trade.toUser.UserId.toString())!}
+                                              alt="User Avatar"
+                                              width={24}
+                                              height={24}
+                                              className="rounded-full"
+                                            />
+                                          ) : (
+                                            <svg className="w-3 h-3 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                            </svg>
+                                          )}
+                                        </div>
                                         <a
                                           href={`https://www.roblox.com/users/${trade.toUser.UserId}/profile`}
                                           target="_blank"
                                           rel="noopener noreferrer"
                                           className="text-blue-300 hover:text-blue-400 hover:underline transition-colors font-medium truncate"
                                         >
-                                          {robloxUsers && robloxUsers[trade.toUser.UserId.toString()]
-                                            ? (robloxUsers[trade.toUser.UserId.toString()].displayName || robloxUsers[trade.toUser.UserId.toString()].name || trade.toUser.UserId.toString())
-                                            : trade.toUser.UserId.toString()}
+                                          {getUserDisplay(trade.toUser.UserId.toString())}
                                         </a>
                                       </div>
 
@@ -1104,7 +1265,8 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
                                 </div>
                               </div>
                             </div>
-                          ))}
+                          );
+                        })}
                         </div>
                       </>
                     );

@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { fetchRobloxUsersBatch, fetchRobloxAvatars } from '@/utils/api';
 import InventoryCheckerClient from './InventoryCheckerClient';
+import { RobloxUser } from '@/types';
 
 interface InventoryItem {
   tradePopularMetric: number | null;
@@ -133,81 +134,42 @@ function UserDataLoadingFallback({ robloxId, inventoryData }: UserDataStreamerPr
 
 // Component that fetches user data in parallel with optimized batching
 async function UserDataFetcher({ robloxId, inventoryData }: UserDataStreamerProps) {
-  // Extract unique owner IDs from inventory data
-  const uniqueOwnerIds = Array.from(new Set(
-    inventoryData.data
-      .filter((item: { info: Array<{ title: string; value: string }> }) => 
-        item.info.some((info: { title: string }) => info.title === 'Original Owner'))
-      .map((item: { info: Array<{ title: string; value: string }> }) => {
-        const ownerInfo = item.info.find((info: { title: string }) => info.title === 'Original Owner');
-        return ownerInfo?.value;
-      })
-      .filter((value: string | undefined): value is string => Boolean(value))
-  ));
-
-  // Extract unique user IDs from trade history
-  const tradeHistoryUserIds = Array.from(new Set(
-    inventoryData.data
-      .filter((item: { history?: Array<{ UserId: number }> }) => item.history && item.history.length > 0)
-      .flatMap((item: { history?: Array<{ UserId: number }> }) => 
-        item.history ? item.history.map(trade => trade.UserId.toString()) : []
-      )
-  ));
-
-  // Add the main user ID to the list
-  const allUserIds = [...new Set([...uniqueOwnerIds, ...tradeHistoryUserIds, robloxId])];
+  // For progressive loading, we'll fetch the main user's data server-side
+  // and let the client handle the rest progressively
   
-  // Separate numeric and non-numeric IDs
-  const numericUserIds = allUserIds.filter((userId): userId is string => 
-    typeof userId === 'string' && /^\d+$/.test(userId)
-  );
-  const nonNumericUserIds = allUserIds.filter((userId): userId is string => 
-    typeof userId === 'string' && !/^\d+$/.test(userId)
-  );
+  // Get the main user's data
+  const mainUserData = await fetchRobloxUsersBatch([robloxId]).catch(error => {
+    console.error('Failed to fetch main user data:', error);
+    return {};
+  });
+  
+  const mainUserAvatar = await fetchRobloxAvatars([robloxId]).catch(error => {
+    console.error('Failed to fetch main user avatar:', error);
+    return {};
+  });
 
-  // Start fetching user data and avatars in parallel immediately
-  const userDataPromise = numericUserIds.length > 0 
-    ? fetchRobloxUsersBatch(numericUserIds).catch(error => {
-        console.error('Failed to fetch user data:', error);
-        return {};
-      })
-    : Promise.resolve({});
-
-  const avatarDataPromise = numericUserIds.length > 0 
-    ? fetchRobloxAvatars(numericUserIds).catch(error => {
-        console.error('Failed to fetch avatar data:', error);
-        return {};
-      })
-    : Promise.resolve({});
-
-  // Wait for both promises to complete
-  const [userDataResult, avatarData] = await Promise.all([
-    userDataPromise,
-    avatarDataPromise
-  ]);
-
-  // Build the user data objects
-  const robloxUsers: Record<string, { displayName?: string; name?: string }> = {};
+  // Build the user data objects with just the main user
+  const robloxUsers: Record<string, RobloxUser> = {};
   const robloxAvatars: Record<string, string> = {};
 
-  // Add user data from API calls
-  if (userDataResult && typeof userDataResult === 'object') {
-    Object.values(userDataResult).forEach((userData) => {
-      const user = userData as { id: number; name: string; displayName: string; hasVerifiedBadge: boolean };
+  // Add main user data
+  if (mainUserData && typeof mainUserData === 'object') {
+    Object.values(mainUserData).forEach((userData) => {
+      const user = userData as { id: number; name: string; displayName: string; username: string; hasVerifiedBadge: boolean };
       if (user && user.id) {
-        robloxUsers[user.id.toString()] = user;
+        robloxUsers[user.id.toString()] = {
+          id: user.id,
+          name: user.name,
+          displayName: user.displayName,
+          username: user.username
+        };
       }
     });
   }
 
-  // Add non-numeric usernames as-is
-  nonNumericUserIds.forEach((userId) => {
-    robloxUsers[userId] = { displayName: userId, name: userId };
-  });
-
-  // Process avatar data
-  if (avatarData && typeof avatarData === 'object') {
-    Object.values(avatarData).forEach((avatar) => {
+  // Add main user avatar
+  if (mainUserAvatar && typeof mainUserAvatar === 'object') {
+    Object.values(mainUserAvatar).forEach((avatar) => {
       const avatarData = avatar as { targetId: number; state: string; imageUrl?: string; version: string };
       if (avatarData && avatarData.targetId && avatarData.state === 'Completed' && avatarData.imageUrl) {
         robloxAvatars[avatarData.targetId.toString()] = avatarData.imageUrl;
@@ -220,7 +182,7 @@ async function UserDataFetcher({ robloxId, inventoryData }: UserDataStreamerProp
       initialData={inventoryData} 
       robloxId={robloxId} 
       robloxUsers={robloxUsers} 
-      robloxAvatars={robloxAvatars} 
+      robloxAvatars={robloxAvatars}
     />
   );
 }

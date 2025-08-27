@@ -15,9 +15,13 @@ interface InventoryCheckerPageProps {
 export default async function InventoryCheckerPage({ params }: InventoryCheckerPageProps) {
   const { userid } = await params;
 
-  // Validate that userid is a valid number
+  // Allow both usernames and numeric IDs
+  // Let InventoryDataStreamer handle the username resolution
+  const isNumeric = /^\d+$/.test(userid);
   const robloxId = parseInt(userid);
-  if (isNaN(robloxId) || robloxId <= 0) {
+  
+  // Only validate numeric IDs, allow usernames to pass through
+  if (isNumeric && (isNaN(robloxId) || robloxId <= 0)) {
     notFound();
   }
 

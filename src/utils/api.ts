@@ -39,7 +39,7 @@ export interface Season {
   rewards: Reward[];
 }
 
-import { Item, ItemDetails } from "@/types";
+import { Item, ItemDetails, RobloxUser } from "@/types";
 import { UserData } from "@/types/auth";
 
 export const BASE_API_URL =
@@ -686,6 +686,92 @@ export async function fetchRobloxUsersBatch(userIds: string[]) {
       return { data: [] };
     }
     
+    // Chunk the requests to avoid 414 errors (max 500 IDs per request)
+    const CHUNK_SIZE = 500;
+    const chunks = [];
+    for (let i = 0; i < validUserIds.length; i += CHUNK_SIZE) {
+      chunks.push(validUserIds.slice(i, i + CHUNK_SIZE));
+    }
+    
+    const allData = [];
+    
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i];
+      try {
+        const response = await fetch(`${INVENTORY_API_URL}/proxy/users?userIds=${chunk.join(',')}`, {
+          headers: {
+            'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0'
+          }
+        });
+        
+        if (!response.ok) {
+          console.error(`[SERVER] fetchRobloxUsersBatch: Failed with status ${response.status} ${response.statusText} for chunk`);
+          continue;
+        }
+        
+        const data = await response.json();
+        if (data && data.data && Array.isArray(data.data)) {
+          allData.push(...data.data);
+        } else if (data && typeof data === 'object') {
+          // If the API returns the object directly (not wrapped in data array)
+          allData.push(data);
+        }
+      } catch (err) {
+        console.error('[SERVER] fetchRobloxUsersBatch: Error fetching chunk:', err);
+        continue;
+      }
+    }
+    
+    // The API returns an object with user IDs as keys, so we need to merge all chunks
+    const userDataObject: Record<string, RobloxUser> = {};
+    
+    allData.forEach((chunkData) => {
+      if (chunkData && typeof chunkData === 'object') {
+        Object.assign(userDataObject, chunkData);
+      }
+    });
+    
+    return userDataObject;
+  } catch (err) {
+    console.error('[SERVER] fetchRobloxUsersBatch: Unexpected error:', err);
+    return null;
+  }
+}
+
+export async function fetchRobloxUser(robloxId: string): Promise<RobloxUser | null> {
+  try {
+    // Use the batch endpoint for single user as well
+    const result = await fetchRobloxUsersBatch([robloxId]);
+    
+    if (!result || typeof result !== 'object' || !(robloxId in result)) {
+      throw new Error(`Failed to fetch Roblox user: ${robloxId}`);
+    }
+    
+    return (result as Record<string, RobloxUser>)[robloxId];
+  } catch (err) {
+    console.error(`[SERVER] Error fetching Roblox user ${robloxId}:`, err);
+    return null;
+  }
+}
+
+export async function fetchRobloxUsersBatchLeaderboard(userIds: string[]) {
+  try {
+    // Validate input
+    if (!userIds || userIds.length === 0) {
+      console.log('[SERVER] fetchRobloxUsersBatchLeaderboard: No userIds provided, returning empty data');
+      return {};
+    }
+    
+    // Filter out any invalid IDs
+    const validUserIds = userIds
+      .filter(id => id && typeof id === 'string' && /^\d+$/.test(id))
+      .map(id => parseInt(id, 10));
+    
+    if (validUserIds.length === 0) {
+      console.warn('[SERVER] fetchRobloxUsersBatchLeaderboard: No valid userIds found after filtering, returning empty data');
+      return {};
+    }
+    
     try {
       const response = await fetch(`${INVENTORY_API_URL}/proxy/users?userIds=${validUserIds.join(',')}`, {
         headers: {
@@ -694,39 +780,23 @@ export async function fetchRobloxUsersBatch(userIds: string[]) {
       });
       
       if (!response.ok) {
-        console.error(`[SERVER] fetchRobloxUsersBatch: Failed with status ${response.status} ${response.statusText}`);
-        return { data: [] };
+        console.error(`[SERVER] fetchRobloxUsersBatchLeaderboard: Failed with status ${response.status} ${response.statusText}`);
+        return {};
       }
       
       const data = await response.json();
       if (data && typeof data === 'object') {
         return data;
       } else {
-        console.warn('[SERVER] fetchRobloxUsersBatch: Returned invalid data structure:', data);
+        console.warn('[SERVER] fetchRobloxUsersBatchLeaderboard: Returned invalid data structure:', data);
         return {};
       }
     } catch (err) {
-      console.error('[SERVER] fetchRobloxUsersBatch: Error fetching users:', err);
-      return { data: [] };
+      console.error('[SERVER] fetchRobloxUsersBatchLeaderboard: Error fetching users:', err);
+      return {};
     }
   } catch (err) {
-    console.error('[SERVER] fetchRobloxUsersBatch: Unexpected error:', err);
-    return null;
-  }
-}
-
-export async function fetchRobloxUser(robloxId: string) {
-  try {
-    // Use the batch endpoint for single user as well
-    const result = await fetchRobloxUsersBatch([robloxId]);
-    
-    if (!result || !result.data || result.data.length === 0) {
-      throw new Error(`Failed to fetch Roblox user: ${robloxId}`);
-    }
-    
-    return result.data[0];
-  } catch (err) {
-    console.error(`[SERVER] Error fetching Roblox user ${robloxId}:`, err);
+    console.error('[SERVER] fetchRobloxUsersBatchLeaderboard: Unexpected error:', err);
     return null;
   }
 }
@@ -749,29 +819,40 @@ export async function fetchRobloxAvatars(userIds: string[]) {
       return {};
     }
     
-    try {
-      const response = await fetch(`${INVENTORY_API_URL}/proxy/users/avatar-headshot?userIds=${validUserIds.join(',')}`, {
-        headers: {
-          'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0'
-        }
-      });
-      
-      if (!response.ok) {
-        console.error(`[SERVER] fetchRobloxAvatars: Failed with status ${response.status} ${response.statusText}`);
-        return {};
-      }
-      
-      const data = await response.json();
-      if (data && typeof data === 'object') {
-        return data;
-      } else {
-        console.warn('[SERVER] fetchRobloxAvatars: Returned invalid data structure:', data);
-        return {};
-      }
-    } catch (err) {
-      console.error('[SERVER] fetchRobloxAvatars: Error fetching avatars:', err);
-      return {};
+    // Chunk the requests to avoid 414 errors (max 500 IDs per request)
+    const CHUNK_SIZE = 500;
+    const chunks = [];
+    for (let i = 0; i < validUserIds.length; i += CHUNK_SIZE) {
+      chunks.push(validUserIds.slice(i, i + CHUNK_SIZE));
     }
+    
+    const allData = {};
+    
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i];
+      try {
+        const response = await fetch(`${INVENTORY_API_URL}/proxy/users/avatar-headshot?userIds=${chunk.join(',')}`, {
+          headers: {
+            'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0'
+          }
+        });
+        
+        if (!response.ok) {
+          console.error(`[SERVER] fetchRobloxAvatars: Failed with status ${response.status} ${response.statusText} for chunk`);
+          continue;
+        }
+        
+        const data = await response.json();
+        if (data && typeof data === 'object') {
+          Object.assign(allData, data);
+        }
+      } catch (err) {
+        console.error('[SERVER] fetchRobloxAvatars: Error fetching chunk:', err);
+        continue;
+      }
+    }
+    
+    return allData;
   } catch (err) {
     console.error('[SERVER] fetchRobloxAvatars: Unexpected error:', err);
     return null;
@@ -819,5 +900,38 @@ export async function fetchUserScansLeaderboard(): Promise<UserScan[]> {
   } catch (err) {
     console.error('[SERVER] Error fetching user scans leaderboard:', err);
     return [];
+  }
+}
+
+export async function fetchRobloxUserByUsername(username: string) {
+  try {
+    const response = await fetch(`${INVENTORY_API_URL}/proxy/users`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0'
+      },
+      body: JSON.stringify({
+        usernames: [username],
+        excludeBannedUsers: false
+      })
+    });
+    
+    if (!response.ok) {
+      console.error(`[SERVER] fetchRobloxUserByUsername: Failed with status ${response.status} ${response.statusText}`);
+      return null;
+    }
+    
+    const data = await response.json();
+    
+    if (data && data.data && Array.isArray(data.data) && data.data.length > 0) {
+      return data.data[0];
+    } else {
+      console.warn('[SERVER] fetchRobloxUserByUsername: No user found for username:', username);
+      return null;
+    }
+  } catch (err) {
+    console.error('[SERVER] fetchRobloxUserByUsername: Error fetching user by username:', err);
+    return null;
   }
 }
