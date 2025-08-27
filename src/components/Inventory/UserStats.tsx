@@ -100,6 +100,12 @@ export default function UserStats({ initialData, robloxUsers, robloxAvatars }: U
     return user?.displayName || user?.name || userId;
   };
 
+  // Helper function to get username
+  const getUsername = (userId: string) => {
+    const user = robloxUsers[userId];
+    return user?.name || userId;
+  };
+
   // Helper function to get user avatar
   const getUserAvatar = (userId: string) => {
     const avatar = robloxAvatars[userId];
@@ -133,7 +139,7 @@ export default function UserStats({ initialData, robloxUsers, robloxAvatars }: U
               {getUserDisplay(initialData.user_id)}
             </h3>
             <p className="text-sm text-muted opacity-75 break-words">
-              @{getUserDisplay(initialData.user_id)}
+              @{getUsername(initialData.user_id)}
             </p>
             <a
               href={`https://www.roblox.com/users/${initialData.user_id}/profile`}

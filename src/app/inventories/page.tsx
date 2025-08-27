@@ -132,15 +132,21 @@ async function LeaderboardUser({ user, index }: { user: UserScan; index: number 
       <div className="flex-1 min-w-0">
         <div className="flex items-start gap-2">
           <div className="flex-1 min-w-0">
+            <div className="text-blue-400 font-medium break-words">
+              {displayName}
+            </div>
+            <div className="text-sm text-gray-400 break-words">@{username} • {user.upsert_count.toLocaleString()} scans</div>
             <a
               href={`https://www.roblox.com/users/${user.user_id}/profile`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-400 font-medium hover:text-blue-300 transition-colors break-words"
+              className="inline-flex items-center gap-1 text-blue-300 hover:text-blue-400 text-xs mt-1 transition-colors"
             >
-              {displayName}
+              View Roblox Profile
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
             </a>
-            <div className="text-sm text-gray-400 break-words">@{username} • {user.upsert_count.toLocaleString()} scans</div>
           </div>
           <CopyButton text={user.user_id} className="flex-shrink-0 mt-1" />
         </div>
@@ -171,15 +177,15 @@ function BasicLeaderboardUser({ user, index }: { user: UserScan; index: number }
         </div>
       </div>
       
-      <div className="flex-1 min-w-0">
-        <div className="flex items-start gap-2">
-          <div className="flex-1 min-w-0">
-            <div className="text-blue-400 font-medium">User {user.user_id}</div>
-            <div className="text-sm text-gray-400">{user.upsert_count.toLocaleString()} scans</div>
-          </div>
-          <CopyButton text={user.user_id} className="flex-shrink-0 mt-1" />
-        </div>
-      </div>
+             <div className="flex-1 min-w-0">
+         <div className="flex items-start gap-2">
+           <div className="flex-1 min-w-0">
+             <div className="text-blue-400 font-medium">User {user.user_id}</div>
+             <div className="text-sm text-gray-400">@{user.user_id} • {user.upsert_count.toLocaleString()} scans</div>
+           </div>
+           <CopyButton text={user.user_id} className="flex-shrink-0 mt-1" />
+         </div>
+       </div>
     </div>
   );
 }

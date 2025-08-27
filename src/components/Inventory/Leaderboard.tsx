@@ -218,3 +218,5 @@ export default function Leaderboard({ leaderboard }: LeaderboardProps) {
     </div>
   );
 }
+
+

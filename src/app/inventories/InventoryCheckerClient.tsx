@@ -50,14 +50,15 @@ interface InventoryData {
 interface InventoryCheckerClientProps {
   initialData?: InventoryData;
   robloxId?: string;
+  originalSearchTerm?: string;
   robloxUsers?: Record<string, RobloxUser>;
   robloxAvatars?: Record<string, string>;
   error?: string;
   isLoading?: boolean;
 }
 
-export default function InventoryCheckerClient({ initialData, robloxId, robloxUsers: initialRobloxUsers, robloxAvatars: initialRobloxAvatars, error, isLoading: externalIsLoading }: InventoryCheckerClientProps) {
-  const [searchId, setSearchId] = useState(robloxId || '');
+export default function InventoryCheckerClient({ initialData, robloxId, originalSearchTerm, robloxUsers: initialRobloxUsers, robloxAvatars: initialRobloxAvatars, error, isLoading: externalIsLoading }: InventoryCheckerClientProps) {
+  const [searchId, setSearchId] = useState(originalSearchTerm || robloxId || '');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
@@ -196,7 +197,6 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
         isLoading={isLoading}
         externalIsLoading={externalIsLoading || false}
         error={error}
-        isCompact={true}
       />
     );
   }
@@ -218,7 +218,6 @@ export default function InventoryCheckerClient({ initialData, robloxId, robloxUs
         isLoading={isLoading}
         externalIsLoading={externalIsLoading || false}
         error={error}
-        isCompact={false}
       />
 
       {/* User Stats */}
