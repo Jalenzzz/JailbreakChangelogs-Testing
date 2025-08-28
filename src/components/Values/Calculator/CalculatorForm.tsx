@@ -728,7 +728,13 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
     setRequestingItems(offeringItems);
   };
 
-  const handleClearSides = () => {
+  const handleClearSides = (event?: React.MouseEvent) => {
+    // If Shift key is held down, clear both sides immediately without showing modal
+    if (event?.shiftKey) {
+      handleStartNew();
+      return;
+    }
+    
     setShowClearConfirmModal(true);
   };
 
@@ -854,7 +860,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
               Swap Sides
             </Button>
           </Tooltip>
-          <Tooltip title="Clear all items">
+          <Tooltip title="Clear all items (hold Shift to clear both sides instantly)">
             <Button
               variant="contained"
               onClick={handleClearSides}
