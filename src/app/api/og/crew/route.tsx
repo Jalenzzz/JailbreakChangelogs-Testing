@@ -87,7 +87,7 @@ export async function GET(request: Request) {
 
   // Determine background image: crew flag or fallback to random background
   let bannerUrl: string;
-  const crewFlagUrl = "https://assets.jailbreakchangelogs.xyz/assets/images/Flag_transparent.png";
+  const crewFlagUrl = "https://assets.jailbreakchangelogs.xyz/assets/images/crews/flags/Flag_2.png";
   
   const isFlagAccessible = await isImageAccessible(crewFlagUrl);
   if (isFlagAccessible) {

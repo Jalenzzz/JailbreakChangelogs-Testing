@@ -126,7 +126,7 @@ export default function CrewDetails({ crew, rank }: CrewDetailsProps) {
           {/* Crew Flag with Owner Avatar */}
           <div className="relative w-40 h-28 sm:w-48 sm:h-32 rounded overflow-hidden flex-shrink-0">
             <Image
-              src="/assets/images/Flag_white_bg.webp"
+              src="https://assets.jailbreakchangelogs.xyz/assets/images/crews/flags/Flag_3.png"
               alt="Crew flag"
               width={192}
               height={128}
