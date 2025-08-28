@@ -387,7 +387,32 @@ export default function Header() {
         <ListItemText primary="Trade Ads" />
       </ListItem>
       <ListItem component={Link} href="/inventories" onClick={handleDrawerToggle} sx={{ pl: 4 }}>
-        <ListItemText primary="Inventory Calculator" />
+        <ListItemText 
+          primary={
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+              <span>Inventory Calculator</span>
+              <Box 
+                sx={{ 
+                  mt: 0.5, 
+                  px: 2.5, 
+                  py: 0.5, 
+                  fontSize: '0.75rem', 
+                  fontWeight: 'medium',
+                  background: 'linear-gradient(90deg, rgba(245, 158, 11, 0.2) 0%, rgba(249, 115, 22, 0.2) 100%)',
+                  color: '#fbbf24',
+                  borderRadius: '9999px',
+                  textTransform: 'uppercase',
+                  border: '1px solid rgba(251, 191, 36, 0.3)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                Beta
+              </Box>
+            </Box>
+          } 
+        />
       </ListItem>
       <ListItem>
         <Typography 
@@ -527,7 +552,7 @@ export default function Header() {
                   <AnimatePresence>
                     {navMenuOpen && (
                       <motion.div
-                        className="absolute left-1/2 -translate-x-1/2 mt-0 min-w-[260px] rounded-2xl bg-[#2e3944] shadow-2xl border border-[#2E3944] z-50"
+                        className="absolute left-1/2 -translate-x-1/2 mt-0 min-w-[260px] rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] bg-[rgba(30,30,30,0.35)] backdrop-blur-xl border border-white/[0.12] z-50"
                         style={{
                           top: '100%',
                         }}
@@ -602,7 +627,14 @@ export default function Header() {
                             }}
                             transition={{ duration: 0.2, delay: 0.25 }}
                           >
-                            <Link href="/inventories" className="rounded-lg px-4 py-2 text-base text-[#D3D9D4] hover:bg-[#2E3944] transition-colors font-bold hover:text-white block" onClick={handleNavMenuClose}>Inventory Calculator</Link>
+                            <Link href="/inventories" className="rounded-lg px-4 py-2 text-base text-[#D3D9D4] hover:bg-[#2E3944] transition-colors font-bold hover:text-white block" onClick={handleNavMenuClose}>
+                              <div className="flex flex-col items-start">
+                                <span>Inventory Calculator</span>
+                                <span className="mt-1 px-2.5 py-0.5 text-xs font-medium bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-200 border border-amber-400/30 rounded-full">
+                                  Beta
+                                </span>
+                              </div>
+                            </Link>
                           </motion.div>
                         </motion.div>
                       </motion.div>
@@ -648,7 +680,7 @@ export default function Header() {
                   <AnimatePresence>
                     {communityMenuOpen && (
                       <motion.div
-                        className="absolute left-1/2 -translate-x-1/2 mt-0 min-w-[260px] rounded-2xl bg-[#2e3944] shadow-2xl border border-[#2E3944] z-50"
+                        className="absolute left-1/2 -translate-x-1/2 mt-0 min-w-[260px] rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] bg-[rgba(30,30,30,0.35)] backdrop-blur-xl border border-white/[0.12] z-50"
                         style={{
                           top: '100%',
                         }}
@@ -811,7 +843,7 @@ export default function Header() {
                       <AnimatePresence>
                         {Boolean(anchorEl) && (
                           <motion.div
-                            className="absolute right-0 mt-0 min-w-[280px] rounded-2xl bg-[#2e3944] shadow-2xl border border-[#2E3944] z-50"
+                            className="absolute right-0 mt-0 min-w-[280px] rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] bg-[rgba(30,30,30,0.35)] backdrop-blur-xl border border-white/[0.12] z-50"
                             style={{
                               top: '100%',
                             }}

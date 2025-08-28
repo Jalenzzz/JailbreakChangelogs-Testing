@@ -4,6 +4,7 @@ import { fetchItemCountStats, fetchUserScansLeaderboard, fetchRobloxUsersBatchLe
 import Image from 'next/image';
 import CopyButton from './CopyButton';
 import { Suspense } from 'react';
+import ExperimentalFeatureBanner from '@/components/UI/ExperimentalFeatureBanner';
 
 export const dynamic = 'force-dynamic';
 
@@ -195,6 +196,9 @@ export default function InventoryCheckerPage() {
     <div className="container mx-auto px-4 py-8">
       <Breadcrumb />
       <h1 className="text-3xl font-bold mb-6">Inventory Checker</h1>
+      
+      <ExperimentalFeatureBanner className="mb-6" />
+      
       <p className="text-gray-600 dark:text-gray-400 mb-4">
         Enter a Roblox ID or username to check their Jailbreak inventory.
       </p>
