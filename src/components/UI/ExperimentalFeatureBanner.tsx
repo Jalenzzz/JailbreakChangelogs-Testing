@@ -25,7 +25,7 @@ export default function ExperimentalFeatureBanner({ className = '' }: Experiment
           <div className="flex-1 min-w-0 text-center sm:text-left">
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-3">
               <h3 className="text-base font-semibold text-amber-100">Experimental Feature</h3>
-              <span className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 px-2.5 py-0.5 text-xs font-medium text-amber-200 border border-amber-400/30 w-fit mx-auto sm:mx-0">
+              <span className="text-[10px] uppercase font-semibold text-amber-200 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-400/30 px-1.5 py-0.5 rounded w-fit mx-auto sm:mx-0">
                 Beta
               </span>
             </div>

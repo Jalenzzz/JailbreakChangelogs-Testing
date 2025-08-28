@@ -116,7 +116,7 @@ export default function CrewLeaderboard({ leaderboard }: CrewLeaderboardProps) {
     <div className="mt-8">
       <h2 className="text-xl font-bold mb-4 text-gray-300">Crew Leaderboard ({leaderboard.length})</h2>
       <div className="bg-[#212A31] rounded-lg p-4 shadow-sm border border-[#2E3944]">
-        <div className="max-h-[32rem] overflow-y-auto space-y-3 pr-2">
+        <div className="max-h-[48rem] overflow-y-auto space-y-3 pr-2">
           {visibleCrews.map((crew, index) => (
             <CrewLeaderboardEntry 
               key={crew.ClanId} 

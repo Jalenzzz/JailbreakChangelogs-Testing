@@ -391,25 +391,7 @@ export default function Header() {
           primary={
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
               <span>Inventory Calculator</span>
-              <Box 
-                sx={{ 
-                  mt: 0.5, 
-                  px: 2.5, 
-                  py: 0.5, 
-                  fontSize: '0.75rem', 
-                  fontWeight: 'medium',
-                  background: 'linear-gradient(90deg, rgba(245, 158, 11, 0.2) 0%, rgba(249, 115, 22, 0.2) 100%)',
-                  color: '#fbbf24',
-                  borderRadius: '9999px',
-                  textTransform: 'uppercase',
-                  border: '1px solid rgba(251, 191, 36, 0.3)',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                Beta
-              </Box>
+              <span className="text-[10px] uppercase font-semibold text-amber-200 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-400/30 px-1.5 py-0.5 rounded">Beta</span>
             </Box>
           } 
         />
@@ -432,7 +414,14 @@ export default function Header() {
         <ListItemText primary="User Search" />
       </ListItem>
       <ListItem component={Link} href="/crews" onClick={handleDrawerToggle} sx={{ pl: 4 }}>
-        <ListItemText primary="Crew Leaderboard" />
+        <ListItemText 
+          primary={
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+              <span>Crew Leaderboard</span>
+              <span className="text-[10px] uppercase font-semibold text-white bg-[#5865F2] px-1.5 py-0.5 rounded">New</span>
+            </Box>
+          } 
+        />
       </ListItem>
       <ListItem component={Link} href="/servers" onClick={handleDrawerToggle} sx={{ pl: 4 }}>
         <ListItemText primary="Private Servers" />
@@ -633,9 +622,7 @@ export default function Header() {
                             <Link href="/inventories" className="rounded-lg px-4 py-2 text-base text-[#D3D9D4] hover:bg-[#2E3944] transition-colors font-bold hover:text-white block" onClick={handleNavMenuClose}>
                               <div className="flex flex-col items-start">
                                 <span>Inventory Calculator</span>
-                                <span className="mt-1 px-2.5 py-0.5 text-xs font-medium bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-200 border border-amber-400/30 rounded-full">
-                                  Beta
-                                </span>
+                                <span className="text-[10px] uppercase font-semibold text-amber-200 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-400/30 px-1.5 py-0.5 rounded">Beta</span>
                               </div>
                             </Link>
                           </motion.div>
@@ -722,7 +709,12 @@ export default function Header() {
                             }}
                             transition={{ duration: 0.2, delay: 0.05 }}
                           >
-                            <Link href="/crews" className="rounded-lg px-4 py-2 text-base text-[#D3D9D4] hover:bg-[#2E3944] transition-colors font-bold hover:text-white block" onClick={handleCommunityMenuClose}>Crew Leaderboard</Link>
+                            <Link href="/crews" className="rounded-lg px-4 py-2 text-base text-[#D3D9D4] hover:bg-[#2E3944] transition-colors font-bold hover:text-white block" onClick={handleCommunityMenuClose}>
+                              <div className="flex flex-col items-start">
+                                <span>Crew Leaderboard</span>
+                                <span className="text-[10px] uppercase font-semibold text-white bg-[#5865F2] px-1.5 py-0.5 rounded">New</span>
+                              </div>
+                            </Link>
                           </motion.div>
                           <motion.div
                             variants={{

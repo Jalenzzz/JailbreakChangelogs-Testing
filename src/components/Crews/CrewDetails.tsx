@@ -103,13 +103,13 @@ export default function CrewDetails({ crew, rank }: CrewDetailsProps) {
     const diffMs = now - lastBattle;
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     const diffHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
     
     if (diffDays > 0) {
-      return `${diffDays}d ${diffHours}h ago`;
+      return `${diffDays}d ago`;
     } else if (diffHours > 0) {
       return `${diffHours}h ago`;
     } else {
-      const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
       return `${diffMinutes}m ago`;
     }
   };
@@ -152,9 +152,12 @@ export default function CrewDetails({ crew, rank }: CrewDetailsProps) {
                 #{rank}
               </div>
             </div>
-            <h2 className={`${bangers.className} text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-white mb-2 break-words`}>
-              {getUsername(crew.OwnerUserId.toString())}&apos;s {crew.ClanName}
-            </h2>
+            <div className="flex items-center gap-3 mb-2">
+              <h2 className={`${bangers.className} text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-white break-words`}>
+                {getUsername(crew.OwnerUserId.toString())}&apos;s {crew.ClanName}
+              </h2>
+              <span className="text-[10px] uppercase font-semibold text-white bg-[#5865F2] px-1.5 py-0.5 rounded">New</span>
+            </div>
           </div>
         </div>
       </div>

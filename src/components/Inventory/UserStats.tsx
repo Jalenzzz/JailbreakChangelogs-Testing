@@ -68,6 +68,11 @@ const formatNumber = (num: number) => {
 };
 
 const formatMoney = (money: number) => {
+  if (money >= 1000000) {
+    return `$${(money / 1000000).toFixed(1)}M`;
+  } else if (money >= 1000) {
+    return `$${(money / 1000).toFixed(1)}K`;
+  }
   return `$${money.toLocaleString()}`;
 };
 
