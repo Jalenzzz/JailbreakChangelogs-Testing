@@ -903,6 +903,34 @@ export async function fetchUserScansLeaderboard(): Promise<UserScan[]> {
   }
 }
 
+export interface CrewLeaderboardEntry {
+  ClanId: string;
+  ClanName: string;
+  OwnerUserId: number;
+  BattlesPlayed: number;
+  BattlesWon: number;
+  MemberUserIds: number[];
+  Rating: number;
+  LastBattlePlayedUTC: number;
+  LastBattlePlayedUTCStr: string;
+}
+
+export async function fetchCrewLeaderboard(): Promise<CrewLeaderboardEntry[]> {
+  try {
+    const response = await fetch('https://proxy.jailbreakchangelogs.xyz/?destination=https://badimo.nyc3.digitaloceanspaces.com/crew_leaderboard/snapshot/top/50/season/18/latest.json');
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch crew leaderboard');
+    }
+    
+    const data = await response.json();
+    return data as CrewLeaderboardEntry[];
+  } catch (err) {
+    console.error('[SERVER] Error fetching crew leaderboard:', err);
+    return [];
+  }
+}
+
 export async function fetchRobloxUserByUsername(username: string) {
   try {
     const response = await fetch(`${INVENTORY_API_URL}/proxy/users`, {

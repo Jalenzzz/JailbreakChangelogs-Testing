@@ -431,6 +431,9 @@ export default function Header() {
       <ListItem component={Link} href="/users" onClick={handleDrawerToggle} sx={{ pl: 4 }}>
         <ListItemText primary="User Search" />
       </ListItem>
+      <ListItem component={Link} href="/crews" onClick={handleDrawerToggle} sx={{ pl: 4 }}>
+        <ListItemText primary="Crew Leaderboard" />
+      </ListItem>
       <ListItem component={Link} href="/servers" onClick={handleDrawerToggle} sx={{ pl: 4 }}>
         <ListItemText primary="Private Servers" />
       </ListItem>
@@ -719,7 +722,7 @@ export default function Header() {
                             }}
                             transition={{ duration: 0.2, delay: 0.05 }}
                           >
-                            <Link href="/servers" className="rounded-lg px-4 py-2 text-base text-[#D3D9D4] hover:bg-[#2E3944] transition-colors font-bold hover:text-white block" onClick={handleCommunityMenuClose}>Private Servers</Link>
+                            <Link href="/crews" className="rounded-lg px-4 py-2 text-base text-[#D3D9D4] hover:bg-[#2E3944] transition-colors font-bold hover:text-white block" onClick={handleCommunityMenuClose}>Crew Leaderboard</Link>
                           </motion.div>
                           <motion.div
                             variants={{
@@ -728,7 +731,7 @@ export default function Header() {
                             }}
                             transition={{ duration: 0.2, delay: 0.1 }}
                           >
-                            <Link href="/bot" className="rounded-lg px-4 py-2 text-base text-[#D3D9D4] hover:bg-[#2E3944] transition-colors font-bold hover:text-white block" onClick={handleCommunityMenuClose}>Discord Bot</Link>
+                            <Link href="/servers" className="rounded-lg px-4 py-2 text-base text-[#D3D9D4] hover:bg-[#2E3944] transition-colors font-bold hover:text-white block" onClick={handleCommunityMenuClose}>Private Servers</Link>
                           </motion.div>
                           <motion.div
                             variants={{
@@ -737,7 +740,7 @@ export default function Header() {
                             }}
                             transition={{ duration: 0.2, delay: 0.15 }}
                           >
-                            <Link href="/faq" className="rounded-lg px-4 py-2 text-base text-[#D3D9D4] hover:bg-[#2E3944] transition-colors font-bold hover:text-white block" onClick={handleCommunityMenuClose}>FAQ</Link>
+                            <Link href="/bot" className="rounded-lg px-4 py-2 text-base text-[#D3D9D4] hover:bg-[#2E3944] transition-colors font-bold hover:text-white block" onClick={handleCommunityMenuClose}>Discord Bot</Link>
                           </motion.div>
                           <motion.div
                             variants={{
@@ -745,6 +748,15 @@ export default function Header() {
                               visible: { opacity: 1, x: 0 }
                             }}
                             transition={{ duration: 0.2, delay: 0.2 }}
+                          >
+                            <Link href="/faq" className="rounded-lg px-4 py-2 text-base text-[#D3D9D4] hover:bg-[#2E3944] transition-colors font-bold hover:text-white block" onClick={handleCommunityMenuClose}>FAQ</Link>
+                          </motion.div>
+                          <motion.div
+                            variants={{
+                              hidden: { opacity: 0, x: -10 },
+                              visible: { opacity: 1, x: 0 }
+                            }}
+                            transition={{ duration: 0.2, delay: 0.25 }}
                           >
                             <Link href="/contributors" className="rounded-lg px-4 py-2 text-base text-[#D3D9D4] hover:bg-[#2E3944] transition-colors font-bold hover:text-white block" onClick={handleCommunityMenuClose}>Contributors</Link>
                           </motion.div>
