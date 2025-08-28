@@ -206,16 +206,21 @@ function CrewLeaderboardEntry({
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="flex items-center gap-6">
-        <div className="text-center">
-          <div className="text-lg font-semibold text-white">{formatRating(crew.Rating)}</div>
-          <div className="text-xs text-gray-400">Rating</div>
+      {/* Stats and View Crew Button */}
+      <div className="flex items-center justify-between gap-6">
+        {/* Stats */}
+        <div className="flex items-center gap-6">
+          <div className="text-center">
+            <div className="text-lg font-semibold text-white">{formatRating(crew.Rating)}</div>
+            <div className="text-xs text-gray-400">Rating</div>
+          </div>
+          <div className="text-center">
+            <div className="text-lg font-semibold text-white">{crew.BattlesPlayed}</div>
+            <div className="text-xs text-gray-400">Battles</div>
+          </div>
         </div>
-        <div className="text-center">
-          <div className="text-lg font-semibold text-white">{crew.BattlesPlayed}</div>
-          <div className="text-xs text-gray-400">Battles</div>
-        </div>
+        
+        {/* View Crew Button - positioned on the right side */}
         <Link
           href={`/crews/${index + 1}`}
           className="px-4 py-2 bg-[#5865F2] hover:bg-[#4752C4] text-white rounded-lg transition-colors text-sm font-medium inline-block"
