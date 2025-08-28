@@ -8,7 +8,19 @@ import dynamic from 'next/dynamic';
 import localFont from 'next/font/local';
 import { getItemImagePath, isVideoItem, isDriftItem, getDriftVideoPath, getVideoPath, handleImageError } from '@/utils/images';
 import { fetchMissingRobloxData, fetchOriginalOwnerAvatars } from '@/app/inventories/actions';
+import { fetchItems } from '@/utils/api';
 import { RobloxUser } from '@/types';
+
+
+// Helper function to parse cash value strings for totals (returns 0 for N/A)
+const parseCashValueForTotal = (value: string | null): number => {
+  if (value === null || value === "N/A") return 0;
+  const num = parseFloat(value.replace(/[^0-9.]/g, ""));
+  if (value.toLowerCase().includes("k")) return num * 1000;
+  if (value.toLowerCase().includes("m")) return num * 1000000;
+  if (value.toLowerCase().includes("b")) return num * 1000000000;
+  return num;
+};
 
 const Select = dynamic(() => import('react-select'), { ssr: false });
 
@@ -23,6 +35,7 @@ interface TradeHistoryEntry {
 
 interface InventoryItem {
   tradePopularMetric: number | null;
+  item_id: number;
   level: number | null;
   timesTraded: number;
   id: string;
@@ -69,7 +82,20 @@ export default function InventoryItems({
 }: InventoryItemsProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [sortOrder, setSortOrder] = useState<'alpha-asc' | 'alpha-desc' | 'traded-desc' | 'unique-desc' | 'created-asc' | 'created-desc' | 'random' | 'duplicates'>('created-desc');
+  const [sortOrder, setSortOrder] = useState<'alpha-asc' | 'alpha-desc' | 'traded-desc' | 'unique-desc' | 'created-asc' | 'created-desc' | 'random' | 'duplicates' | 'cash-desc' | 'cash-asc' | 'duped-desc' | 'duped-asc'>('cash-desc');
+  const [itemsData, setItemsData] = useState<Array<{
+    id: number;
+    cash_value: string | null;
+    duped_value: string | null;
+    children?: Array<{
+      id: number;
+      data: {
+        cash_value: string | null;
+        duped_value: string | null;
+      };
+    }>;
+  }>>([]);
+
   const [page, setPage] = useState(1);
   const [showOnlyOriginal, setShowOnlyOriginal] = useState(false);
   const [selectLoaded, setSelectLoaded] = useState(false);
@@ -90,6 +116,22 @@ export default function InventoryItems({
     setLocalRobloxUsers(robloxUsers);
     setLocalRobloxAvatars(robloxAvatars);
   }, [robloxUsers, robloxAvatars]);
+
+  // Fetch items data for value sorting
+  useEffect(() => {
+    const fetchItemsData = async () => {
+      if (sortOrder.includes('cash') || sortOrder.includes('duped')) {
+        try {
+          const items = await fetchItems();
+          setItemsData(items);
+        } catch (error) {
+          console.error('Error fetching items data:', error);
+        }
+      }
+    };
+
+    fetchItemsData();
+  }, [sortOrder]);
 
   // Helper function to get user display name
   const getUserDisplay = useCallback((userId: string) => {
@@ -242,13 +284,48 @@ export default function InventoryItems({
           const bCreatedAtDesc = b.info.find(info => info.title === 'Created At')?.value;
           if (!aCreatedAtDesc || !bCreatedAtDesc) return 0;
           return new Date(bCreatedAtDesc).getTime() - new Date(aCreatedAtDesc).getTime();
+        case 'cash-desc':
+        case 'cash-asc':
+        case 'duped-desc':
+        case 'duped-asc':
+          // Create a map of item_id to item data for quick lookup
+          const itemMap = new Map();
+          itemsData.forEach(item => {
+            itemMap.set(item.id, item);
+            // Also add children items
+            if (item.children) {
+              item.children.forEach((child: {
+                id: number;
+                data: {
+                  cash_value: string | null;
+                  duped_value: string | null;
+                };
+              }) => {
+                itemMap.set(child.id, {
+                  ...item,
+                  ...child.data,
+                  id: child.id
+                });
+              });
+            }
+          });
+          
+          const aItemData = itemMap.get(a.item_id);
+          const bItemData = itemMap.get(b.item_id);
+          
+          if (!aItemData || !bItemData) return 0;
+          
+          const aValue = sortOrder.includes('cash') ? parseCashValueForTotal(aItemData.cash_value) : parseCashValueForTotal(aItemData.duped_value);
+          const bValue = sortOrder.includes('cash') ? parseCashValueForTotal(bItemData.cash_value) : parseCashValueForTotal(bItemData.duped_value);
+          
+          return sortOrder.includes('desc') ? bValue - aValue : aValue - bValue;
         default:
           return Math.random() - 0.5;
       }
     });
 
     return items;
-  }, [initialData, searchTerm, showOnlyOriginal, selectedCategories, sortOrder]);
+  }, [initialData, searchTerm, showOnlyOriginal, selectedCategories, sortOrder, itemsData]);
 
   // Get unique categories from the data
   const availableCategories = useMemo(() => {
@@ -417,8 +494,8 @@ export default function InventoryItems({
           <div className="w-full sm:w-1/3">
             {selectLoaded ? (
               <Select
-                value={{ 
-                  value: sortOrder, 
+                                value={{
+                  value: sortOrder,
                   label: (() => {
                     switch (sortOrder) {
                       case 'random': return 'Random Order';
@@ -427,9 +504,13 @@ export default function InventoryItems({
                       case 'alpha-desc': return 'Name (Z to A)';
                       case 'traded-desc': return 'Monthly Traded (High to Low)';
                       case 'unique-desc': return 'Monthly Unique (High to Low)';
+                      case 'cash-desc': return 'Cash Value (High to Low)';
+                      case 'cash-asc': return 'Cash Value (Low to High)';
+                      case 'duped-desc': return 'Duped Value (High to Low)';
+                      case 'duped-asc': return 'Duped Value (Low to High)';
                       case 'created-asc': return 'Created On (Oldest to Newest)';
                       case 'created-desc': return 'Created On (Newest to Oldest)';
-                      default: return 'Random Order';
+                      default: return 'Cash Value (High to Low)';
                     }
                   })()
                 }}
@@ -438,7 +519,7 @@ export default function InventoryItems({
                     setSortOrder('random');
                     return;
                   }
-                  setSortOrder((option as { value: 'alpha-asc' | 'alpha-desc' | 'traded-desc' | 'unique-desc' | 'created-asc' | 'created-desc' | 'random' | 'duplicates' }).value);
+                  setSortOrder((option as { value: 'alpha-asc' | 'alpha-desc' | 'traded-desc' | 'unique-desc' | 'created-asc' | 'created-desc' | 'random' | 'duplicates' | 'cash-desc' | 'cash-asc' | 'duped-desc' | 'duped-asc' }).value);
                 }}
                 options={[
                   { label: 'Random', options: [
@@ -454,6 +535,12 @@ export default function InventoryItems({
                   { label: 'Activity', options: [
                     { value: 'traded-desc', label: 'Monthly Traded (High to Low)' },
                     { value: 'unique-desc', label: 'Monthly Unique (High to Low)' },
+                  ]},
+                  { label: 'Values', options: [
+                    { value: 'cash-desc', label: 'Cash Value (High to Low)' },
+                    { value: 'cash-asc', label: 'Cash Value (Low to High)' },
+                    { value: 'duped-desc', label: 'Duped Value (High to Low)' },
+                    { value: 'duped-asc', label: 'Duped Value (Low to High)' },
                   ]},
                   { label: 'Date', options: [
                     { value: 'created-desc', label: 'Created On (Newest to Oldest)' },

@@ -16,6 +16,7 @@ interface TradeHistoryEntry {
 
 interface InventoryItem {
   tradePopularMetric: number | null;
+  item_id: number;
   level: number | null;
   timesTraded: number;
   id: string;

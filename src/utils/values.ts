@@ -24,7 +24,7 @@ export const trendOrder = [
   "Hyped",
 ] as const;
 
-const parseCashValue = (value: string | null): number => {
+export const parseCashValue = (value: string | null): number => {
   if (value === null || value === "N/A") return -1;
   const num = parseFloat(value.replace(/[^0-9.]/g, ""));
   if (value.toLowerCase().includes("k")) return num * 1000;

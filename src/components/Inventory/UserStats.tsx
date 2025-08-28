@@ -3,9 +3,23 @@
 import Image from 'next/image';
 import { RobloxUser } from '@/types';
 import { Tooltip } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { fetchItems } from '@/utils/api';
+
+
+// Helper function to parse cash value strings for totals (returns 0 for N/A)
+const parseCashValueForTotal = (value: string | null): number => {
+  if (value === null || value === "N/A") return 0;
+  const num = parseFloat(value.replace(/[^0-9.]/g, ""));
+  if (value.toLowerCase().includes("k")) return num * 1000;
+  if (value.toLowerCase().includes("m")) return num * 1000000;
+  if (value.toLowerCase().includes("b")) return num * 1000000000;
+  return num;
+};
 
 interface InventoryItem {
   tradePopularMetric: number | null;
+  item_id: number;
   level: number | null;
   timesTraded: number;
   id: string;
@@ -85,21 +99,36 @@ const gamepassData = {
 // Helper functions
 const formatNumber = (num: number) => {
   if (num >= 1000000) {
-    return (num / 1000000).toFixed(1) + 'M';
+    return (Math.floor(num / 100000) / 10).toFixed(1) + 'M';
   } else if (num >= 1000) {
-    return (num / 1000).toFixed(1) + 'K';
+    return (Math.floor(num / 100) / 10).toFixed(1) + 'K';
   }
   return num.toString();
 };
 
 const formatMoney = (money: number) => {
-  if (money >= 1000000) {
-    return `$${(money / 1000000).toFixed(1)}M`;
+  if (money >= 1000000000) {
+    return `$${(Math.round(money / 100000000) / 10).toFixed(1)}B`;
+  } else if (money >= 1000000) {
+    return `$${(Math.floor(money / 100000) / 10).toFixed(1)}M`;
   } else if (money >= 1000) {
-    return `$${(money / 1000).toFixed(1)}K`;
+    return `$${(Math.floor(money / 100) / 10).toFixed(1)}K`;
   }
   return `$${money.toLocaleString()}`;
 };
+
+const formatPreciseMoney = (money: number) => {
+  if (money >= 1000000000) {
+    return `$${(Math.floor(money / 100000000) / 10).toFixed(1)}B`;
+  } else if (money >= 1000000) {
+    return `$${(Math.floor(money / 100000) / 10).toFixed(1)}M`;
+  } else if (money >= 1000) {
+    return `$${(Math.floor(money / 100) / 10).toFixed(1)}K`;
+  }
+  return `$${money.toLocaleString()}`;
+};
+
+
 
 const formatDate = (timestamp: number) => {
   return new Date(timestamp * 1000).toLocaleString('en-US', {
@@ -124,6 +153,10 @@ const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
 };
 
 export default function UserStats({ initialData, robloxUsers, robloxAvatars }: UserStatsProps) {
+  const [totalCashValue, setTotalCashValue] = useState<number>(0);
+  const [totalDupedValue, setTotalDupedValue] = useState<number>(0);
+  const [isLoadingValues, setIsLoadingValues] = useState<boolean>(true);
+
   // Helper function to get user display name
   const getUserDisplay = (userId: string) => {
     const user = robloxUsers[userId];
@@ -141,6 +174,61 @@ export default function UserStats({ initialData, robloxUsers, robloxAvatars }: U
     const avatar = robloxAvatars[userId];
     return avatar && typeof avatar === 'string' && avatar.trim() !== '' ? avatar : null;
   };
+
+  // Calculate total values
+  useEffect(() => {
+    const calculateTotalValues = async () => {
+      try {
+        setIsLoadingValues(true);
+        const items = await fetchItems();
+        
+        let totalCash = 0;
+        let totalDuped = 0;
+
+        // Create a map of item_id to item data for quick lookup
+        const itemMap = new Map();
+        items.forEach(item => {
+          itemMap.set(item.id, item);
+          // Also add children items
+          if (item.children) {
+            item.children.forEach(child => {
+              itemMap.set(child.id, {
+                ...item,
+                ...child.data,
+                id: child.id
+              });
+            });
+          }
+        });
+        
+
+
+        // Calculate totals for each inventory item
+        initialData.data.forEach(inventoryItem => {
+          const itemData = itemMap.get(inventoryItem.item_id);
+          if (itemData) {
+            const cashValue = parseCashValueForTotal(itemData.cash_value);
+            const dupedValue = parseCashValueForTotal(itemData.duped_value);
+            totalCash += cashValue;
+            totalDuped += dupedValue;
+          }
+        });
+        
+
+
+        setTotalCashValue(totalCash);
+        setTotalDupedValue(totalDuped);
+      } catch {
+
+      } finally {
+        setIsLoadingValues(false);
+      }
+    };
+
+    if (initialData?.data?.length > 0) {
+      calculateTotalValues();
+    }
+  }, [initialData]);
 
   return (
     <div className="bg-[#212A31] rounded-lg border border-[#2E3944] p-6">
@@ -187,18 +275,84 @@ export default function UserStats({ initialData, robloxUsers, robloxAvatars }: U
       )}
       
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2 sm:gap-4">
         <div className="text-center">
           <div className="text-sm text-muted">Total Items</div>
-          <div className="text-2xl font-bold text-white">{formatNumber(initialData.item_count)}</div>
+          <Tooltip 
+            title={initialData.item_count.toLocaleString()}
+            placement="top"
+            arrow
+            slotProps={{
+              tooltip: {
+                sx: {
+                  backgroundColor: '#0F1419',
+                  color: '#D3D9D4',
+                  fontSize: '0.75rem',
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  border: '1px solid #2E3944',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                  '& .MuiTooltip-arrow': {
+                    color: '#0F1419',
+                  }
+                }
+              }
+            }}
+          >
+            <div className="text-2xl font-bold text-white cursor-help">{formatNumber(initialData.item_count)}</div>
+          </Tooltip>
         </div>
         <div className="text-center">
           <div className="text-sm text-muted">Original Items</div>
-          <div className="text-2xl font-bold text-[#4ade80]">{formatNumber(initialData.data.filter(item => item.isOriginalOwner).length)}</div>
+          <Tooltip 
+            title={initialData.data.filter(item => item.isOriginalOwner).length.toLocaleString()}
+            placement="top"
+            arrow
+            slotProps={{
+              tooltip: {
+                sx: {
+                  backgroundColor: '#0F1419',
+                  color: '#D3D9D4',
+                  fontSize: '0.75rem',
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  border: '1px solid #2E3944',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                  '& .MuiTooltip-arrow': {
+                    color: '#0F1419',
+                  }
+                }
+              }
+            }}
+          >
+            <div className="text-2xl font-bold text-[#4ade80] cursor-help">{formatNumber(initialData.data.filter(item => item.isOriginalOwner).length)}</div>
+          </Tooltip>
         </div>
         <div className="text-center">
           <div className="text-sm text-muted">Non-Original</div>
-          <div className="text-2xl font-bold text-[#ff6b6b]">{formatNumber(initialData.data.filter(item => !item.isOriginalOwner).length)}</div>
+          <Tooltip 
+            title={initialData.data.filter(item => !item.isOriginalOwner).length.toLocaleString()}
+            placement="top"
+            arrow
+            slotProps={{
+              tooltip: {
+                sx: {
+                  backgroundColor: '#0F1419',
+                  color: '#D3D9D4',
+                  fontSize: '0.75rem',
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  border: '1px solid #2E3944',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                  '& .MuiTooltip-arrow': {
+                    color: '#0F1419',
+                  }
+                }
+              }
+            }}
+          >
+            <div className="text-2xl font-bold text-[#ff6b6b] cursor-help">{formatNumber(initialData.data.filter(item => !item.isOriginalOwner).length)}</div>
+          </Tooltip>
         </div>
         <div className="text-center">
           <div className="text-sm text-muted">Level</div>
@@ -208,7 +362,7 @@ export default function UserStats({ initialData, robloxUsers, robloxAvatars }: U
           <div className="text-sm text-muted">XP</div>
           <div className="text-2xl font-bold text-white">{formatNumber(initialData.xp)}</div>
         </div>
-        <div className="text-center hidden lg:block">
+        <div className="text-center hidden xl:block">
           <div className="text-sm text-muted">Money</div>
           <Tooltip 
             title={`$${initialData.money.toLocaleString()}`}
@@ -237,7 +391,7 @@ export default function UserStats({ initialData, robloxUsers, robloxAvatars }: U
       </div>
       
       {/* Money gets its own row for mobile and tablet */}
-      <div className="mt-4 text-center lg:hidden">
+      <div className="mt-4 text-center xl:hidden">
         <div className="text-sm text-muted">Money</div>
         <Tooltip 
           title={`$${initialData.money.toLocaleString()}`}
@@ -262,6 +416,70 @@ export default function UserStats({ initialData, robloxUsers, robloxAvatars }: U
         >
           <div className="text-2xl font-bold text-[#4ade80] cursor-help">{formatMoney(initialData.money)}</div>
         </Tooltip>
+      </div>
+
+      {/* Total Values */}
+      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="text-center p-4 bg-[#2E3944] rounded-lg border border-[#37424D]">
+          <div className="text-sm text-muted mb-2">Total Cash Value</div>
+          {isLoadingValues ? (
+            <div className="text-2xl font-bold text-[#1d7da3] animate-pulse">Loading...</div>
+          ) : (
+            <Tooltip 
+              title={`$${totalCashValue.toLocaleString()}`}
+              placement="top"
+              arrow
+              slotProps={{
+                tooltip: {
+                  sx: {
+                    backgroundColor: '#0F1419',
+                    color: '#D3D9D4',
+                    fontSize: '0.75rem',
+                    padding: '8px 12px',
+                    borderRadius: '8px',
+                    border: '1px solid #2E3944',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                    '& .MuiTooltip-arrow': {
+                      color: '#0F1419',
+                    }
+                  }
+                }
+              }}
+            >
+              <div className="text-2xl font-bold text-[#1d7da3] cursor-help">{formatPreciseMoney(totalCashValue)}</div> 
+            </Tooltip>
+          )}
+        </div>
+        <div className="text-center p-4 bg-[#2E3944] rounded-lg border border-[#37424D]">
+          <div className="text-sm text-muted mb-2">Total Duped Value</div>
+          {isLoadingValues ? (
+            <div className="text-2xl font-bold text-gray-400 animate-pulse">Loading...</div>
+          ) : (
+            <Tooltip 
+              title={`$${totalDupedValue.toLocaleString()}`}
+              placement="top"
+              arrow
+              slotProps={{
+                tooltip: {
+                  sx: {
+                    backgroundColor: '#0F1419',
+                    color: '#D3D9D4',
+                    fontSize: '0.75rem',
+                    padding: '8px 12px',
+                    borderRadius: '8px',
+                    border: '1px solid #2E3944',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                    '& .MuiTooltip-arrow': {
+                      color: '#0F1419',
+                    }
+                  }
+                }
+              }}
+            >
+              <div className="text-2xl font-bold text-gray-400 cursor-help">{formatPreciseMoney(totalDupedValue)}</div>
+            </Tooltip>
+          )}
+        </div>
       </div>
       
       {/* Gamepasses */}
