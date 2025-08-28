@@ -552,7 +552,7 @@ export default function Header() {
                   <AnimatePresence>
                     {navMenuOpen && (
                       <motion.div
-                        className="absolute left-1/2 -translate-x-1/2 mt-0 min-w-[260px] rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] bg-[rgba(30,30,30,0.35)] backdrop-blur-xl border border-white/[0.12] z-50"
+                        className="absolute left-1/2 -translate-x-1/2 mt-0 min-w-[260px] rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] bg-[rgba(33,42,49,0.95)] backdrop-blur-xl border border-white/[0.12] z-50"
                         style={{
                           top: '100%',
                         }}
@@ -680,7 +680,7 @@ export default function Header() {
                   <AnimatePresence>
                     {communityMenuOpen && (
                       <motion.div
-                        className="absolute left-1/2 -translate-x-1/2 mt-0 min-w-[260px] rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] bg-[rgba(30,30,30,0.35)] backdrop-blur-xl border border-white/[0.12] z-50"
+                        className="absolute left-1/2 -translate-x-1/2 mt-0 min-w-[260px] rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] bg-[rgba(33,42,49,0.95)] backdrop-blur-xl border border-white/[0.12] z-50"
                         style={{
                           top: '100%',
                         }}
@@ -843,7 +843,7 @@ export default function Header() {
                       <AnimatePresence>
                         {Boolean(anchorEl) && (
                           <motion.div
-                            className="absolute right-0 mt-0 min-w-[280px] rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] bg-[rgba(30,30,30,0.35)] backdrop-blur-xl border border-white/[0.12] z-50"
+                            className="absolute right-0 mt-0 min-w-[280px] rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] bg-[rgba(33,42,49,0.95)] backdrop-blur-xl border border-white/[0.12] z-50"
                             style={{
                               top: '100%',
                             }}

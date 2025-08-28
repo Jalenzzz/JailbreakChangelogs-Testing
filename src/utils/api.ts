@@ -935,3 +935,29 @@ export async function fetchRobloxUserByUsername(username: string) {
     return null;
   }
 }
+
+export interface UserWithFlags extends UserData {
+  flags: Array<{
+    flag: string;
+    created_at: number;
+    enabled: boolean;
+    index: number;
+    description: string;
+  }>;
+}
+
+export async function fetchUsersWithFlags(): Promise<UserWithFlags[]> {
+  try {
+    const response = await fetch(`${BASE_API_URL}/users/list/flags`);
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch users with flags');
+    }
+    
+    const data = await response.json();
+    return data as UserWithFlags[];
+  } catch (err) {
+    console.error('[SERVER] Error fetching users with flags:', err);
+    return [];
+  }
+}
