@@ -49,6 +49,7 @@ export const BASE_API_URL =
 
 export const PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 export const INVENTORY_API_URL = process.env.NEXT_PUBLIC_INVENTORY_API_URL;
+export const CREW_LEADERBOARD_URL = process.env.NEXT_PUBLIC_CREW_LEADERBOARD_URL;
 export interface OnlineUser {
   id: string;
   username: string;
@@ -917,7 +918,7 @@ export interface CrewLeaderboardEntry {
 
 export async function fetchCrewLeaderboard(): Promise<CrewLeaderboardEntry[]> {
   try {
-    const response = await fetch('https://proxy.jailbreakchangelogs.xyz/?destination=https://badimo.nyc3.digitaloceanspaces.com/crew_leaderboard/snapshot/top/50/season/18/latest.json');
+    const response = await fetch(`https://proxy.jailbreakchangelogs.xyz/?destination=${CREW_LEADERBOARD_URL}`);
     
     if (!response.ok) {
       throw new Error('Failed to fetch crew leaderboard');

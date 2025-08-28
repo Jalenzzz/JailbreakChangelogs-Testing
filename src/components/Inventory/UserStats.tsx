@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { RobloxUser } from '@/types';
+import { Tooltip } from '@mui/material';
 
 interface InventoryItem {
   tradePopularMetric: number | null;
@@ -45,16 +46,40 @@ interface UserStatsProps {
   robloxAvatars: Record<string, string>;
 }
 
-// Gamepass data
+// Gamepass mapping with links and image names
 const gamepassData = {
-  PremiumGarage: { image: 'PremiumGarage', link: 'https://www.roblox.com/games/606849621/Jailbreak?assetId=1' },
-  Stereo: { image: 'Stereo', link: 'https://www.roblox.com/games/606849621/Jailbreak?assetId=2' },
-  BOSS: { image: 'BOSS', link: 'https://www.roblox.com/games/606849621/Jailbreak?assetId=3' },
-  VIP: { image: 'VIP', link: 'https://www.roblox.com/games/606849621/Jailbreak?assetId=4' },
-  TradingVIP: { image: 'TradingVIP', link: 'https://www.roblox.com/games/606849621/Jailbreak?assetId=5' },
-  DuffelBag: { image: 'DuffelBag', link: 'https://www.roblox.com/games/606849621/Jailbreak?assetId=6' },
-  SWAT: { image: 'SWAT', link: 'https://www.roblox.com/games/606849621/Jailbreak?assetId=7' },
-  Walmart: { image: 'Walmart', link: 'https://www.roblox.com/games/606849621/Jailbreak?assetId=8' }
+  'PremiumGarage': {
+    link: 'https://www.roblox.com/game-pass/2725211/Pro-Garage',
+    image: 'PremiumGarage'
+  },
+  'DuffelBag': {
+    link: 'https://www.roblox.com/game-pass/2219040/Duffel-Bag',
+    image: 'DuffelBag'
+  },
+  'SWAT': {
+    link: 'https://www.roblox.com/game-pass/2070427/SWAT-Team',
+    image: 'SWAT'
+  },
+  'Stereo': {
+    link: 'https://www.roblox.com/game-pass/2218187/Car-Stereo',
+    image: 'Stereo'
+  },
+  'BOSS': {
+    link: 'https://www.roblox.com/game-pass/4974038/Crime-Boss',
+    image: 'BOSS'
+  },
+  'VIP': {
+    link: 'https://www.roblox.com/game-pass/2296901/Very-Important-Player-VIP',
+    image: 'VIP'
+  },
+  'TradingVIP': {
+    link: 'https://www.roblox.com/game-pass/56149618/VIP-Trading',
+    image: 'TradingVIP'
+  },
+  'Walmart': {
+    link: 'https://www.roblox.com/game-pass/1142100573/The-Pass',
+    image: 'Walmart'
+  }
 };
 
 // Helper functions
@@ -185,14 +210,58 @@ export default function UserStats({ initialData, robloxUsers, robloxAvatars }: U
         </div>
         <div className="text-center hidden lg:block">
           <div className="text-sm text-muted">Money</div>
-          <div className="text-2xl font-bold text-[#4ade80]">{formatMoney(initialData.money)}</div>
+          <Tooltip 
+            title={`$${initialData.money.toLocaleString()}`}
+            placement="top"
+            arrow
+            slotProps={{
+              tooltip: {
+                sx: {
+                  backgroundColor: '#0F1419',
+                  color: '#D3D9D4',
+                  fontSize: '0.75rem',
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  border: '1px solid #2E3944',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                  '& .MuiTooltip-arrow': {
+                    color: '#0F1419',
+                  }
+                }
+              }
+            }}
+          >
+            <div className="text-2xl font-bold text-[#4ade80] cursor-help">{formatMoney(initialData.money)}</div>
+          </Tooltip>
         </div>
       </div>
       
       {/* Money gets its own row for mobile and tablet */}
       <div className="mt-4 text-center lg:hidden">
         <div className="text-sm text-muted">Money</div>
-        <div className="text-2xl font-bold text-[#4ade80]">{formatMoney(initialData.money)}</div>
+        <Tooltip 
+          title={`$${initialData.money.toLocaleString()}`}
+          placement="top"
+          arrow
+          slotProps={{
+            tooltip: {
+              sx: {
+                backgroundColor: '#0F1419',
+                color: '#D3D9D4',
+                fontSize: '0.75rem',
+                padding: '8px 12px',
+                borderRadius: '8px',
+                border: '1px solid #2E3944',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                '& .MuiTooltip-arrow': {
+                  color: '#0F1419',
+                }
+              }
+            }
+          }}
+        >
+          <div className="text-2xl font-bold text-[#4ade80] cursor-help">{formatMoney(initialData.money)}</div>
+        </Tooltip>
       </div>
       
       {/* Gamepasses */}
