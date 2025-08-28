@@ -1,10 +1,10 @@
 'use client';
 
 import Image from 'next/image';
-import { RobloxUser } from '@/types';
+import { RobloxUser, Item } from '@/types';
 import { Tooltip } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { fetchItems } from '@/utils/api';
+
 
 
 // Helper function to parse cash value strings for totals (returns 0 for N/A)
@@ -58,6 +58,7 @@ interface UserStatsProps {
   initialData: InventoryData;
   robloxUsers: Record<string, RobloxUser>;
   robloxAvatars: Record<string, string>;
+  itemsData?: Item[];
 }
 
 // Gamepass mapping with links and image names
@@ -108,27 +109,31 @@ const formatNumber = (num: number) => {
 
 const formatMoney = (money: number) => {
   if (money >= 1000000000) {
-    return `$${(Math.round(money / 100000000) / 10).toFixed(1)}B`;
+    const value = Math.round(money / 100000000) / 10;
+    return `$${value % 1 === 0 ? value.toFixed(0) : value.toFixed(1)}B`;
   } else if (money >= 1000000) {
-    return `$${(Math.floor(money / 100000) / 10).toFixed(1)}M`;
+    const value = Math.floor(money / 100000) / 10;
+    return `$${value % 1 === 0 ? value.toFixed(0) : value.toFixed(1)}M`;
   } else if (money >= 1000) {
-    return `$${(Math.floor(money / 100) / 10).toFixed(1)}K`;
+    const value = Math.floor(money / 100) / 10;
+    return `$${value % 1 === 0 ? value.toFixed(0) : value.toFixed(1)}K`;
   }
   return `$${money.toLocaleString()}`;
 };
 
 const formatPreciseMoney = (money: number) => {
   if (money >= 1000000000) {
-    return `$${(Math.floor(money / 100000000) / 10).toFixed(1)}B`;
+    const value = Math.floor(money / 100000000) / 10;
+    return `$${value % 1 === 0 ? value.toFixed(0) : value.toFixed(1)}B`;
   } else if (money >= 1000000) {
-    return `$${(Math.floor(money / 100000) / 10).toFixed(1)}M`;
+    const value = Math.floor(money / 100000) / 10;
+    return `$${value % 1 === 0 ? value.toFixed(0) : value.toFixed(1)}M`;
   } else if (money >= 1000) {
-    return `$${(Math.floor(money / 100) / 10).toFixed(1)}K`;
+    const value = Math.floor(money / 100) / 10;
+    return `$${value % 1 === 0 ? value.toFixed(0) : value.toFixed(1)}K`;
   }
   return `$${money.toLocaleString()}`;
 };
-
-
 
 const formatDate = (timestamp: number) => {
   return new Date(timestamp * 1000).toLocaleString('en-US', {
@@ -152,7 +157,7 @@ const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
   e.currentTarget.src = '/assets/images/placeholder.png';
 };
 
-export default function UserStats({ initialData, robloxUsers, robloxAvatars }: UserStatsProps) {
+export default function UserStats({ initialData, robloxUsers, robloxAvatars, itemsData: propItemsData }: UserStatsProps) {
   const [totalCashValue, setTotalCashValue] = useState<number>(0);
   const [totalDupedValue, setTotalDupedValue] = useState<number>(0);
   const [isLoadingValues, setIsLoadingValues] = useState<boolean>(true);
@@ -177,28 +182,19 @@ export default function UserStats({ initialData, robloxUsers, robloxAvatars }: U
 
   // Calculate total values
   useEffect(() => {
-    const calculateTotalValues = async () => {
+    const calculateTotalValues = () => {
+      if (!propItemsData || propItemsData.length === 0) return;
+      
       try {
         setIsLoadingValues(true);
-        const items = await fetchItems();
         
         let totalCash = 0;
         let totalDuped = 0;
 
         // Create a map of item_id to item data for quick lookup
         const itemMap = new Map();
-        items.forEach(item => {
+        propItemsData.forEach(item => {
           itemMap.set(item.id, item);
-          // Also add children items
-          if (item.children) {
-            item.children.forEach(child => {
-              itemMap.set(child.id, {
-                ...item,
-                ...child.data,
-                id: child.id
-              });
-            });
-          }
         });
         
 
@@ -225,10 +221,10 @@ export default function UserStats({ initialData, robloxUsers, robloxAvatars }: U
       }
     };
 
-    if (initialData?.data?.length > 0) {
+    if (initialData?.data && initialData.data.length > 0 && propItemsData && propItemsData.length > 0) {
       calculateTotalValues();
     }
-  }, [initialData]);
+  }, [initialData, propItemsData]);
 
   return (
     <div className="bg-[#212A31] rounded-lg border border-[#2E3944] p-6">
@@ -446,7 +442,7 @@ export default function UserStats({ initialData, robloxUsers, robloxAvatars }: U
                 }
               }}
             >
-              <div className="text-2xl font-bold text-[#1d7da3] cursor-help">{formatPreciseMoney(totalCashValue)}</div> 
+              <div className="text-2xl font-bold text-white cursor-help">{formatPreciseMoney(totalCashValue)}</div> 
             </Tooltip>
           )}
         </div>
@@ -476,7 +472,7 @@ export default function UserStats({ initialData, robloxUsers, robloxAvatars }: U
                 }
               }}
             >
-              <div className="text-2xl font-bold text-gray-400 cursor-help">{formatPreciseMoney(totalDupedValue)}</div>
+              <div className="text-2xl font-bold text-white cursor-help">{formatPreciseMoney(totalDupedValue)}</div>
             </Tooltip>
           )}
         </div>

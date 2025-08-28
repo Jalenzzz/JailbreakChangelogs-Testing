@@ -4,7 +4,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { fetchMissingRobloxData, fetchOriginalOwnerAvatars } from './actions';
-import { RobloxUser } from '@/types';
+import { fetchItems } from '@/utils/api';
+import { RobloxUser, Item } from '@/types';
 import SearchForm from '@/components/Inventory/SearchForm';
 import UserStats from '@/components/Inventory/UserStats';
 import InventoryItems from '@/components/Inventory/InventoryItems';
@@ -65,6 +66,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, original
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [robloxUsers, setRobloxUsers] = useState<Record<string, RobloxUser>>(initialRobloxUsers || {});
   const [robloxAvatars, setRobloxAvatars] = useState(initialRobloxAvatars || {});
+  const [itemsData, setItemsData] = useState<Item[]>([]);
 
   const router = useRouter();
 
@@ -125,6 +127,22 @@ export default function InventoryCheckerClient({ initialData, robloxId, original
     }
   }, [robloxAvatars, initialRobloxAvatars, setRobloxAvatars]);
   
+  // Fetch items data for value calculations
+  useEffect(() => {
+    const loadItemsData = async () => {
+      try {
+        const items = await fetchItems();
+        setItemsData(items);
+      } catch (error) {
+        console.error('Failed to fetch items data:', error);
+      }
+    };
+    
+    if (initialData?.data && initialData.data.length > 0) {
+      loadItemsData();
+    }
+  }, [initialData]);
+
   // Progressive loading for trade history modal
   useEffect(() => {
     if (!selectedItem?.history || selectedItem.history.length === 0) return;
@@ -226,6 +244,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, original
         initialData={initialData}
         robloxUsers={robloxUsers}
         robloxAvatars={robloxAvatars}
+        itemsData={itemsData}
       />
 
       {/* Inventory Items */}
@@ -234,6 +253,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, original
         robloxUsers={robloxUsers}
         robloxAvatars={robloxAvatars}
         onItemClick={handleItemClick}
+        itemsData={itemsData}
       />
 
       {/* Trade History Modal */}
