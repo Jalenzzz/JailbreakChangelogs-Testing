@@ -150,7 +150,7 @@ export default function CrewLeaderboard({ leaderboard }: CrewLeaderboardProps) {
           
           {filteredLeaderboard.length === 0 && searchTerm && (
             <div className="text-center py-8">
-              <p className="text-gray-400">No crews found matching "{searchTerm}"</p>
+              <p className="text-gray-400">No crews found matching &quot;{searchTerm}&quot;</p>
             </div>
           )}
         </div>

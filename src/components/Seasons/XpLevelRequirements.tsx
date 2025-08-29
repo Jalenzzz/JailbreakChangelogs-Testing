@@ -144,18 +144,37 @@ export default function XpLevelRequirements({ season }: XpLevelRequirementsProps
               </div>
 
               {/* XP Information */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-400">This Level:</span>
-                  <span className="text-sm text-white font-semibold">
-                    {req.xpRequired.toLocaleString()} XP
-                  </span>
+              <div className="space-y-3">
+                {/* This Level Section */}
+                <div className="bg-[#1E2328]/50 rounded-lg p-3 border border-[#2E3944]">
+                  <div className="flex items-center gap-2 mb-1">
+                    <svg className="w-4 h-4 text-[#5865F2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    <span className="text-xs font-medium text-[#5865F2] uppercase tracking-wide">This Level Only</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-400">XP Required:</span>
+                    <span className="text-lg text-white font-bold">
+                      {req.xpRequired.toLocaleString()} XP
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-400">Total Needed:</span>
-                  <span className="text-sm text-white font-semibold">
-                    {req.totalXp.toLocaleString()} XP
-                  </span>
+
+                {/* Total Needed Section */}
+                <div className="bg-[#2E3944]/50 rounded-lg p-3 border border-[#37424D]">
+                  <div className="flex items-center gap-2 mb-1">
+                    <svg className="w-4 h-4 text-[#FFB636]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    <span className="text-xs font-medium text-[#FFB636] uppercase tracking-wide">Cumulative Total</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-400">Total XP:</span>
+                    <span className="text-lg text-white font-bold">
+                      {req.totalXp.toLocaleString()} XP
+                    </span>
+                  </div>
                 </div>
               </div>
               <div className="absolute inset-0 bg-gradient-to-br from-[#5865F2]/10 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />

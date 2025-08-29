@@ -34,9 +34,12 @@ export default async function WillIMakeItPage() {
         <Breadcrumb />
         
         <div className="mt-8">
-          <h1 className="text-4xl font-bold text-white mb-4">
-            Will I Make It to Level 10?
-          </h1>
+          <div className="flex items-center gap-3 mb-4">
+            <h1 className="text-4xl font-bold text-white">
+              Will I Make It to Level 10?
+            </h1>
+            <span className="text-[12px] uppercase font-semibold text-white bg-[#5865F2] px-2 py-1 rounded">New</span>
+          </div>
           <p className="text-gray-300 text-lg mb-8">
             Calculate your chances of reaching level 10 in Season {season.season}: {season.title}
           </p>
@@ -51,6 +54,7 @@ export default async function WillIMakeItPage() {
             endDate={season.end_date}
             doubleXpStart={season.end_date - season.xp_data.doubleXpDuration}
             seasonEnds={season.end_date}
+            totalDays={season.xp_data.xp_rates.totalDays}
           />
         </div>
 

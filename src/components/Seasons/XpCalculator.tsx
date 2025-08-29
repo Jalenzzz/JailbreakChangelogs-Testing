@@ -18,6 +18,10 @@ export default function XpCalculator({ season }: XpCalculatorProps) {
   const [isCalculating, setIsCalculating] = useState(false);
   const resultsRef = useRef<HTMLDivElement | null>(null);
 
+  // Check if season has ended
+  const currentTime = Math.floor(Date.now() / 1000);
+  const seasonHasEnded = currentTime >= season.end_date;
+
   useEffect(() => {
     if (results) {
       const el = document.getElementById('season-progress-summary');
@@ -213,6 +217,41 @@ export default function XpCalculator({ season }: XpCalculatorProps) {
     setIsCalculating(false);
   };
 
+  // If season has ended, show a different UI
+  if (seasonHasEnded) {
+    return (
+      <div className="mb-8 rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
+        <div className="text-center">
+          <div className="mb-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-[#FF6B6B] to-[#FF8E8E] rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h2 className="text-2xl font-bold text-white mb-2">
+              This Season Has Ended
+            </h2>
+            <p className="text-gray-300 mb-6">
+              The XP calculator is no longer available for this season.
+            </p>
+          </div>
+          
+          <div className="bg-[#1E2328]/50 rounded-lg p-4 border border-[#2E3944]">
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <svg className="w-5 h-5 text-[#5865F2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              <span className="text-[#5865F2] font-semibold">Check Back Soon!</span>
+            </div>
+            <p className="text-sm text-gray-400">
+              The XP calculator will be available again when Season {season.season + 1} begins.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <XpCalculatorInfo />
@@ -224,6 +263,7 @@ export default function XpCalculator({ season }: XpCalculatorProps) {
         onXpChange={setCurrentXp}
         onCalculate={calculateXp}
         isCalculating={isCalculating}
+        season={season}
       />
 
       <div ref={resultsRef}>

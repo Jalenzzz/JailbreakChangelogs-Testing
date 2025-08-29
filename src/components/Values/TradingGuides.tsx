@@ -90,9 +90,16 @@ export default function TradingGuides({ valueSort, onValueSortChange, onScrollTo
         onClick={() => setIsExpanded(!isExpanded)}
         className="flex items-center justify-between w-full mb-4 p-4 rounded-lg border border-[#2E3944] bg-[#37424D] hover:bg-[#2E3944] transition-colors"
       >
-        <h3 className="text-xl font-semibold text-muted">
-          Trading Guides & Information
-        </h3>
+        <div className="flex items-center gap-3">
+          <h3 className="text-xl font-semibold text-muted">
+            Trading Guides & Information
+          </h3>
+          {!isExpanded && (
+            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[#5865F2] text-white animate-pulse">
+              Click me!
+            </span>
+          )}
+        </div>
         {isExpanded ? (
           <ChevronUpIcon className="h-5 w-5 text-muted" />
         ) : (

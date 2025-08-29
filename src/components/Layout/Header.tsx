@@ -51,13 +51,16 @@ export default function Header() {
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [navMenuAnchorEl, setNavMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [communityMenuAnchorEl, setCommunityMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [seasonsMenuAnchorEl, setSeasonsMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [isDiscordModalOpen, setIsDiscordModalOpen] = useState(false);
   const [navMenuCloseTimeout, setNavMenuCloseTimeout] = useState<NodeJS.Timeout | null>(null);
   const [communityMenuCloseTimeout, setCommunityMenuCloseTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [seasonsMenuCloseTimeout, setSeasonsMenuCloseTimeout] = useState<NodeJS.Timeout | null>(null);
   useEscapeLogin();
 
   const navMenuButtonRef = useRef<HTMLDivElement | null>(null);
   const communityMenuButtonRef = useRef<HTMLDivElement | null>(null);
+  const seasonsMenuButtonRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -169,13 +172,20 @@ export default function Header() {
   };
 
   const handleNavMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    // Close community menu immediately if it's open
+    // Close other menus immediately if they're open
     if (communityMenuAnchorEl) {
       if (communityMenuCloseTimeout) {
         clearTimeout(communityMenuCloseTimeout);
         setCommunityMenuCloseTimeout(null);
       }
       setCommunityMenuAnchorEl(null);
+    }
+    if (seasonsMenuAnchorEl) {
+      if (seasonsMenuCloseTimeout) {
+        clearTimeout(seasonsMenuCloseTimeout);
+        setSeasonsMenuCloseTimeout(null);
+      }
+      setSeasonsMenuAnchorEl(null);
     }
 
     if (navMenuCloseTimeout) {
@@ -195,13 +205,20 @@ export default function Header() {
   const navMenuOpen = Boolean(navMenuAnchorEl);
 
   const handleCommunityMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    // Close nav menu immediately if it's open
+    // Close other menus immediately if they're open
     if (navMenuAnchorEl) {
       if (navMenuCloseTimeout) {
         clearTimeout(navMenuCloseTimeout);
         setNavMenuCloseTimeout(null);
       }
       setNavMenuAnchorEl(null);
+    }
+    if (seasonsMenuAnchorEl) {
+      if (seasonsMenuCloseTimeout) {
+        clearTimeout(seasonsMenuCloseTimeout);
+        setSeasonsMenuCloseTimeout(null);
+      }
+      setSeasonsMenuAnchorEl(null);
     }
 
     if (communityMenuCloseTimeout) {
@@ -220,6 +237,39 @@ export default function Header() {
 
   const communityMenuOpen = Boolean(communityMenuAnchorEl);
 
+  const handleSeasonsMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    // Close other menus immediately if they're open
+    if (navMenuAnchorEl) {
+      if (navMenuCloseTimeout) {
+        clearTimeout(navMenuCloseTimeout);
+        setNavMenuCloseTimeout(null);
+      }
+      setNavMenuAnchorEl(null);
+    }
+    if (communityMenuAnchorEl) {
+      if (communityMenuCloseTimeout) {
+        clearTimeout(communityMenuCloseTimeout);
+        setCommunityMenuCloseTimeout(null);
+      }
+      setCommunityMenuAnchorEl(null);
+    }
+
+    if (seasonsMenuCloseTimeout) {
+      clearTimeout(seasonsMenuCloseTimeout);
+      setSeasonsMenuCloseTimeout(null);
+    }
+    setSeasonsMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleSeasonsMenuClose = () => {
+    const timeout = setTimeout(() => {
+      setSeasonsMenuAnchorEl(null);
+    }, 150);
+    setSeasonsMenuCloseTimeout(timeout);
+  };
+
+  const seasonsMenuOpen = Boolean(seasonsMenuAnchorEl);
+
   // Cleanup timeouts on unmount
   useEffect(() => {
     return () => {
@@ -229,8 +279,11 @@ export default function Header() {
       if (communityMenuCloseTimeout) {
         clearTimeout(communityMenuCloseTimeout);
       }
+      if (seasonsMenuCloseTimeout) {
+        clearTimeout(seasonsMenuCloseTimeout);
+      }
     };
-  }, [navMenuCloseTimeout, communityMenuCloseTimeout]);
+  }, [navMenuCloseTimeout, communityMenuCloseTimeout, seasonsMenuCloseTimeout]);
 
   const drawer = (
     <List>
@@ -355,7 +408,17 @@ export default function Header() {
         <ListItemText primary="Changelogs" />
       </ListItem>
       <ListItem component={Link} href="/seasons" onClick={handleDrawerToggle} sx={{ pl: 4 }}>
-        <ListItemText primary="Seasons" />
+        <ListItemText primary="Browse Seasons" />
+      </ListItem>
+      <ListItem component={Link} href="/seasons/will-i-make-it" onClick={handleDrawerToggle} sx={{ pl: 4 }}>
+        <ListItemText 
+          primary={
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+              <span>Will I Make It</span>
+              <span className="text-[10px] uppercase font-semibold text-white bg-[#5865F2] px-1.5 py-0.5 rounded">New</span>
+            </Box>
+          } 
+        />
       </ListItem>
       <ListItem>
         <Typography 
@@ -490,21 +553,95 @@ export default function Header() {
                   <Typography variant="button" sx={{ fontWeight: 700 }}>Changelogs</Typography>
                 </Button>
                 
-                <Button
-                  component={Link}
-                  href="/seasons"
-                  sx={{
-                    color: '#D3D9D4',
-                    borderRadius: '8px',
-                    '&:hover': {
-                      color: '#FFFFFF',
-                      backgroundColor: '#5865F2',
-                      borderRadius: '8px',
-                    }
-                  }}
+                {/* Seasons Dropdown */}
+                <Box
+                  sx={{ position: 'relative', display: 'inline-block' }}
+                  onMouseEnter={handleSeasonsMenuOpen}
+                  onMouseLeave={handleSeasonsMenuClose}
+                  ref={seasonsMenuButtonRef}
                 >
-                  <Typography variant="button" sx={{ fontWeight: 700 }}>Seasons</Typography>
-                </Button>
+                  <Button
+                    type="button"
+                    sx={{
+                      color: seasonsMenuOpen ? '#FFFFFF' : '#D3D9D4',
+                      borderRadius: '8px',
+                      backgroundColor: seasonsMenuOpen ? '#5865F2' : 'transparent',
+                      '&:hover': {
+                        color: '#FFFFFF',
+                        backgroundColor: '#5865F2',
+                        borderRadius: '8px',
+                      }
+                    }}
+                  >
+                    <Typography variant="button" sx={{ fontWeight: 700, color: seasonsMenuOpen ? '#FFFFFF' : undefined }}>Seasons</Typography>
+                    <motion.div
+                      animate={{ rotate: seasonsMenuOpen ? 180 : 0 }}
+                      transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+                    >
+                      <KeyboardArrowDownIcon 
+                        sx={{ 
+                          ml: 0.5,
+                          fontSize: '1.2rem',
+                          color: seasonsMenuOpen ? '#FFFFFF' : '#D3D9D4',
+                        }} 
+                      />
+                    </motion.div>
+                  </Button>
+            
+                  <AnimatePresence>
+                    {seasonsMenuOpen && (
+                      <motion.div
+                        className="absolute left-1/2 -translate-x-1/2 mt-0 min-w-[260px] rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] bg-[rgba(33,42,49,0.95)] backdrop-blur-xl border border-white/[0.12] z-50"
+                        style={{
+                          top: '100%',
+                        }}
+                        initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                        transition={{ 
+                          duration: 0.2, 
+                          ease: [0.4, 0, 0.2, 1],
+                          staggerChildren: 0.05
+                        }}
+                      >
+                        <motion.div 
+                          className="flex flex-col py-3 px-2 gap-1"
+                          initial="hidden"
+                          animate="visible"
+                          exit="hidden"
+                          variants={{
+                            hidden: { opacity: 0 },
+                            visible: { opacity: 1 }
+                          }}
+                        >
+                          <motion.div
+                            variants={{
+                              hidden: { opacity: 0, x: -10 },
+                              visible: { opacity: 1, x: 0 }
+                            }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <Link href="/seasons" className="rounded-lg px-4 py-2 text-base text-[#D3D9D4] hover:bg-[#2E3944] transition-colors font-bold hover:text-white block" onClick={handleSeasonsMenuClose}>Browse Seasons</Link>
+                          </motion.div>
+                          <motion.div
+                            variants={{
+                              hidden: { opacity: 0, x: -10 },
+                              visible: { opacity: 1, x: 0 }
+                            }}
+                            transition={{ duration: 0.2, delay: 0.05 }}
+                          >
+                            <Link href="/seasons/will-i-make-it" className="rounded-lg px-4 py-2 text-base text-[#D3D9D4] hover:bg-[#2E3944] transition-colors font-bold hover:text-white block" onClick={handleSeasonsMenuClose}>
+                              <div className="flex flex-col items-start">
+                                <span>Will I Make It</span>
+                                <span className="text-[10px] uppercase font-semibold text-white bg-[#5865F2] px-1.5 py-0.5 rounded">New</span>
+                              </div>
+                            </Link>
+                          </motion.div>
+                        </motion.div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </Box>
                 
                 {/* Values Dropdown */}
                 <Box

@@ -9,9 +9,10 @@ interface XpImportantDatesProps {
   endDate: number; // Unix timestamp
   doubleXpStart: number; // Unix timestamp
   seasonEnds: number; // Unix timestamp
+  totalDays: number; // Total days from XP data
 }
 
-export default function XpImportantDates({ season, title, startDate, endDate, doubleXpStart, seasonEnds }: XpImportantDatesProps) {
+export default function XpImportantDates({ season, title, startDate, endDate, doubleXpStart, seasonEnds, totalDays }: XpImportantDatesProps) {
   const [doubleXpTimeLeft, setDoubleXpTimeLeft] = useState<string>('');
   const [seasonEndTimeLeft, setSeasonEndTimeLeft] = useState<string>('');
   const [doubleXpStatus, setDoubleXpStatus] = useState<string>('');
@@ -94,11 +95,7 @@ export default function XpImportantDates({ season, title, startDate, endDate, do
     });
   };
 
-  const calculateDuration = (start: number, end: number): string => {
-    const durationMs = (end - start) * 1000;
-    const days = Math.floor(durationMs / (24 * 60 * 60 * 1000));
-    return `${days} days`;
-  };
+
 
   return (
     <div>
@@ -112,7 +109,7 @@ export default function XpImportantDates({ season, title, startDate, endDate, do
             {formatDate(startDate)} - {formatDate(endDate)}
           </p>
           <p className="text-base">
-            Duration: {calculateDuration(startDate, endDate)} • Target Level 10
+            Duration: {totalDays} days • Target Level 10
           </p>
         </div>
       </div>
