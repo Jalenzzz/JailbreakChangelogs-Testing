@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { FilterSort, ValueSort } from "@/types";
 import dynamic from 'next/dynamic';
@@ -45,6 +45,8 @@ export default function ValuesSearchControls({
   const [selectLoaded, setSelectLoaded] = useState(false);
   const [currentUserPremiumType, setCurrentUserPremiumType] = useState<number>(0);
   const [premiumStatusLoaded, setPremiumStatusLoaded] = useState(false);
+  const [isSearchHighlighted, setIsSearchHighlighted] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const MAX_VALUE_RANGE = 100_000_000;
   const MIN_VALUE_DISTANCE = 4_000_000;
   
@@ -74,6 +76,28 @@ export default function ValuesSearchControls({
     window.addEventListener('authStateChanged', handleAuthChange);
     return () => {
       window.removeEventListener('authStateChanged', handleAuthChange);
+    };
+  }, []);
+
+  // Handle Ctrl+F to focus search input
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === 'f') {
+        event.preventDefault();
+        if (searchInputRef.current) {
+          searchInputRef.current.focus();
+          searchInputRef.current.select();
+          // Add visual highlight
+          setIsSearchHighlighted(true);
+          // Remove highlight after 2 seconds
+          setTimeout(() => setIsSearchHighlighted(false), 2000);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
 
@@ -117,11 +141,16 @@ export default function ValuesSearchControls({
                   : "w-full"
             }`}>
               <input
+                ref={searchInputRef}
                 type="text"
                 placeholder={`Search ${filterSort === "name-all-items" ? "items" : filterSort.replace("name-", "").replace("-items", "").replace(/-/g, " ").toLowerCase()}...`}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full rounded-lg border border-[#2E3944] bg-[#37424D] px-4 py-2 pl-10 pr-10 text-muted placeholder-[#D3D9D4] focus:border-[#124E66] focus:outline-none"
+                className={`w-full rounded-lg border px-4 py-2 pl-10 pr-10 text-muted placeholder-[#D3D9D4] focus:outline-none transition-all duration-300 ${
+                  isSearchHighlighted 
+                    ? 'border-[#124E66] bg-[#1A5F7A] shadow-lg shadow-[#124E66]/20' 
+                    : 'border-[#2E3944] bg-[#37424D] focus:border-[#124E66]'
+                }`}
               />
               <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]" />
               {searchTerm && (

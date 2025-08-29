@@ -918,7 +918,7 @@ export interface CrewLeaderboardEntry {
 
 export async function fetchCrewLeaderboard(): Promise<CrewLeaderboardEntry[]> {
   try {
-    const response = await fetch(`https://proxy.jailbreakchangelogs.xyz/?destination=${CREW_LEADERBOARD_URL}`);
+    const response = await fetch(`${CREW_LEADERBOARD_URL}`);
     
     if (!response.ok) {
       throw new Error('Failed to fetch crew leaderboard');

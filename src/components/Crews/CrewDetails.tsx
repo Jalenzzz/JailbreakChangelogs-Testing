@@ -312,9 +312,9 @@ export default function CrewDetails({ crew, rank }: CrewDetailsProps) {
             <div className="flex items-center justify-between p-3 bg-[#1A2328] rounded-lg border border-[#2E3944]">
               <span className="text-gray-400 text-sm">Win/Loss Ratio</span>
               <span className="text-white font-semibold">
-                {crew.BattlesPlayed > 0 && (crew.BattlesPlayed - crew.BattlesWon) > 0 
-                  ? (crew.BattlesWon / (crew.BattlesPlayed - crew.BattlesWon)).toFixed(2) 
-                  : crew.BattlesWon > 0 ? '∞' : '0.00'}
+                {crew.BattlesPlayed > 0 
+                  ? `${crew.BattlesWon}-${crew.BattlesPlayed - crew.BattlesWon}` 
+                  : '0-0'}
               </span>
             </div>
             <div className="flex items-center justify-between p-3 bg-[#1A2328] rounded-lg border border-[#2E3944]">
