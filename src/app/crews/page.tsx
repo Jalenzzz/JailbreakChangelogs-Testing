@@ -19,7 +19,7 @@ export default async function CrewsPage() {
               <span className="text-[10px] uppercase font-semibold text-white bg-[#5865F2] px-1.5 py-0.5 rounded">New</span>
             </div>
             <p className="text-gray-400 text-lg">
-              Top crews in Jailbreak based on their battle performance and rating.
+              Top crews in Roblox Jailbreak based on their battle performance and rating.
             </p>
           </div>
 

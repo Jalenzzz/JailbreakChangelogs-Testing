@@ -6,10 +6,13 @@ import { CrewLeaderboardEntry as CrewLeaderboardEntryType } from '@/utils/api';
 import { RobloxUser } from '@/types';
 import { fetchMissingRobloxData } from '@/app/inventories/actions';
 import localFont from 'next/font/local';
+import { Inter } from 'next/font/google';
 
 const bangers = localFont({
   src: '../../../public/fonts/Bangers.ttf',
 });
+
+const inter = Inter({ subsets: ['latin'] });
 
 interface CrewDetailsProps {
   crew: CrewLeaderboardEntryType;
@@ -121,7 +124,15 @@ export default function CrewDetails({ crew, rank }: CrewDetailsProps) {
   return (
     <div className="space-y-8">
             {/* Crew Header with Flag, Rank, and Info */}
-      <div className="bg-[#212A31] rounded-lg p-4 sm:p-6 border border-[#2E3944]">
+      <div className={`rounded-lg p-4 sm:p-6 border ${
+        rank === 1 
+          ? 'bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border-yellow-400/50' 
+          : rank === 2 
+          ? 'bg-gradient-to-r from-gray-400/20 to-gray-500/20 border-gray-300/50'
+          : rank === 3
+          ? 'bg-gradient-to-r from-amber-600/20 to-amber-700/20 border-amber-500/50'
+          : 'bg-[#212A31] border-[#2E3944]'
+      }`}>
         <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
           {/* Crew Flag with Owner Avatar */}
           <div className="relative w-40 h-28 sm:w-48 sm:h-32 rounded overflow-hidden flex-shrink-0">
@@ -148,7 +159,15 @@ export default function CrewDetails({ crew, rank }: CrewDetailsProps) {
           {/* Crew Info with Rank */}
           <div className="flex-1 text-center sm:text-left">
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 mb-4">
-              <div className={`${bangers.className} text-4xl text-blue-300`}>
+              <div className={`text-4xl font-bold ${inter.className} ${
+                rank === 1 
+                  ? 'text-yellow-400' 
+                  : rank === 2 
+                  ? 'text-gray-300'
+                  : rank === 3
+                  ? 'text-amber-500'
+                  : 'text-blue-300'
+              }`}>
                 #{rank}
               </div>
             </div>
@@ -170,27 +189,54 @@ export default function CrewDetails({ crew, rank }: CrewDetailsProps) {
         </h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Rating with gradient background */}
-          <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-blue-500/20 to-purple-500/20 p-4 border border-blue-500/30 !bg-gradient-to-br !from-blue-500/20 !to-purple-500/20">
-            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full -translate-y-8 translate-x-8"></div>
+          {/* Rating with gradient background and flag */}
+          <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-blue-500/20 to-purple-500/20 p-4 border border-blue-500/30">
+            {/* Flag background */}
+            <div className="absolute inset-0 opacity-5">
+              <Image
+                src="https://assets.jailbreakchangelogs.xyz/assets/images/crews/flags/Flag_3.png"
+                alt="Crew flag background"
+                fill
+                className="object-cover"
+              />
+            </div>
+
             <div className="relative z-10">
               <div className="text-2xl font-bold text-white mb-1">{formatRating(crew.Rating)}</div>
               <div className="text-blue-300 text-sm font-medium">Rating</div>
             </div>
           </div>
 
-          {/* Battles with animated background */}
+          {/* Battles with animated background and flag */}
           <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-green-500/20 to-emerald-500/20 p-4 border border-green-500/30">
-            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-green-500/10 to-emerald-500/10 rounded-full -translate-y-8 translate-x-8"></div>
+            {/* Flag background */}
+            <div className="absolute inset-0 opacity-5">
+              <Image
+                src="https://assets.jailbreakchangelogs.xyz/assets/images/crews/flags/Flag_3.png"
+                alt="Crew flag background"
+                fill
+                className="object-cover"
+              />
+            </div>
+
             <div className="relative z-10">
               <div className="text-2xl font-bold text-white mb-1">{crew.BattlesPlayed}</div>
               <div className="text-green-300 text-sm font-medium">Battles Played</div>
             </div>
           </div>
 
-          {/* Win Rate with progress bar */}
+          {/* Win Rate with progress bar and flag */}
           <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-yellow-500/20 to-orange-500/20 p-4 border border-yellow-500/30">
-            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-yellow-500/10 to-orange-500/10 rounded-full -translate-y-8 translate-x-8"></div>
+            {/* Flag background */}
+            <div className="absolute inset-0 opacity-5">
+              <Image
+                src="https://assets.jailbreakchangelogs.xyz/assets/images/crews/flags/Flag_3.png"
+                alt="Crew flag background"
+                fill
+                className="object-cover"
+              />
+            </div>
+
             <div className="relative z-10">
               <div className="text-2xl font-bold text-white mb-1">{winRate}%</div>
               <div className="text-yellow-300 text-sm font-medium">Win Rate</div>
@@ -203,18 +249,36 @@ export default function CrewDetails({ crew, rank }: CrewDetailsProps) {
             </div>
           </div>
 
-          {/* Members with icon */}
-          <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 p-4 border border-purple-500/30 !bg-gradient-to-br !from-purple-500/20 !to-pink-500/20">
-            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-full -translate-y-8 translate-x-8"></div>
+          {/* Members with icon and flag */}
+          <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 p-4 border border-purple-500/30">
+            {/* Flag background */}
+            <div className="absolute inset-0 opacity-5">
+              <Image
+                src="https://assets.jailbreakchangelogs.xyz/assets/images/crews/flags/Flag_3.png"
+                alt="Crew flag background"
+                fill
+                className="object-cover"
+              />
+            </div>
+
             <div className="relative z-10">
               <div className="text-2xl font-bold text-white mb-1">{crew.MemberUserIds.length}</div>
               <div className="text-purple-300 text-sm font-medium">Members</div>
             </div>
           </div>
 
-          {/* Last Battle Date */}
-          <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-indigo-500/20 to-blue-500/20 p-4 border border-indigo-500/30 !bg-gradient-to-br !from-indigo-500/20 !to-blue-500/20">
-            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-indigo-500/10 to-blue-500/10 rounded-full -translate-y-8 translate-x-8"></div>
+          {/* Last Battle Date with flag */}
+          <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-indigo-500/20 to-blue-500/20 p-4 border border-indigo-500/30">
+            {/* Flag background */}
+            <div className="absolute inset-0 opacity-5">
+              <Image
+                src="https://assets.jailbreakchangelogs.xyz/assets/images/crews/flags/Flag_3.png"
+                alt="Crew flag background"
+                fill
+                className="object-cover"
+              />
+            </div>
+
             <div className="relative z-10">
               <div className="text-lg font-bold text-white mb-1">{lastBattleDate}</div>
               <div className="text-indigo-300 text-sm font-medium">Last Battle</div>
@@ -222,9 +286,18 @@ export default function CrewDetails({ crew, rank }: CrewDetailsProps) {
             </div>
           </div>
 
-          {/* Battle Stats Summary */}
+          {/* Battle Stats Summary with flag */}
           <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-red-500/20 to-pink-500/20 p-4 border border-red-500/30">
-            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-red-500/10 to-pink-500/10 rounded-full -translate-y-8 translate-x-8"></div>
+            {/* Flag background */}
+            <div className="absolute inset-0 opacity-5">
+              <Image
+                src="https://assets.jailbreakchangelogs.xyz/assets/images/crews/flags/Flag_3.png"
+                alt="Crew flag background"
+                fill
+                className="object-cover"
+              />
+            </div>
+
             <div className="relative z-10">
               <div className="text-lg font-bold text-white mb-1">{crew.BattlesWon}</div>
               <div className="text-red-300 text-sm font-medium">Battles Won</div>
