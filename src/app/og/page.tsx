@@ -1,10 +1,17 @@
 import OGFinderClient from '@/components/OG/OGFinderClient';
 import Breadcrumb from '@/components/Layout/Breadcrumb';
 import ExperimentalFeatureBanner from '@/components/UI/ExperimentalFeatureBanner';
+import { isFeatureEnabled } from '@/utils/featureFlags';
+import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
 export default function OGFinderPage() {
+  // Check if OG Finder feature is enabled
+  if (!isFeatureEnabled('OG_FINDER')) {
+    redirect('/');
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <Breadcrumb />

@@ -76,6 +76,7 @@ export default function OGFinderResults({
   const router = useRouter();
 
   const itemsPerPage = 20;
+  const MAX_SEARCH_LENGTH = 50;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -397,6 +398,7 @@ export default function OGFinderResults({
                 placeholder="Search items..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                maxLength={MAX_SEARCH_LENGTH}
                 className="w-full px-3 py-2 pl-10 pr-10 border border-[#2E3944] bg-[#37424D] rounded-lg shadow-sm focus:outline-none focus:border-[#5865F2] text-muted placeholder-[#D3D9D4]"
               />
               <svg className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -550,6 +552,57 @@ export default function OGFinderResults({
             {filteredItems.length} items found
           </h3>
         </div>
+
+        {/* No Items Found Message */}
+        {filteredItems.length === 0 && (searchTerm || selectedCategories.length > 0) && (
+          <div className="text-center py-8 text-muted">
+            <p className="break-words">
+              No items found
+              {searchTerm && ` matching "${searchTerm}"`}
+              {selectedCategories.length > 0 && ` in selected categories`}
+            </p>
+            <div className="flex flex-wrap justify-center gap-2 mt-2">
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm("")}
+                  className="text-[#5865F2] hover:text-[#4752C4] hover:underline"
+                >
+                  Clear search
+                </button>
+              )}
+              {selectedCategories.length > 0 && (
+                <button
+                  onClick={() => setSelectedCategories([])}
+                  className="text-[#5865F2] hover:text-[#4752C4] hover:underline"
+                >
+                  Clear categories
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Filter Summary - Only show when there are items */}
+        {(searchTerm || selectedCategories.length > 0) && filteredItems.length > 0 && (
+          <div className="mb-4 p-3 bg-[#2E3944] rounded-lg border border-[#37424D]">
+            <div className="flex flex-wrap items-center gap-2 text-sm text-muted">
+              <span className="font-medium">Active filters:</span>
+              {selectedCategories.length > 0 && (
+                <span className="px-2 py-1 bg-[#5865F2] text-white rounded-md text-xs">
+                  Category: {selectedCategories[0]}
+                </span>
+              )}
+              {searchTerm && (
+                <span className="px-2 py-1 bg-[#5865F2] text-white rounded-md text-xs break-words">
+                  Search: &quot;{searchTerm}&quot;
+                </span>
+              )}
+              <span className="text-xs opacity-75">
+                Showing {filteredItems.length} of {initialData?.count || 0} items
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* Top Pagination */}
         {totalPages > 1 && (

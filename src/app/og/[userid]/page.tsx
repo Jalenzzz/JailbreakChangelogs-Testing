@@ -2,6 +2,8 @@ import OGFinderDataStreamer from '@/components/OG/OGFinderDataStreamer';
 import Breadcrumb from '@/components/Layout/Breadcrumb';
 import { Suspense } from 'react';
 import ExperimentalFeatureBanner from '@/components/UI/ExperimentalFeatureBanner';
+import { isFeatureEnabled } from '@/utils/featureFlags';
+import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,6 +14,11 @@ interface OGFinderUserPageProps {
 }
 
 export default async function OGFinderUserPage({ params }: OGFinderUserPageProps) {
+  // Check if OG Finder feature is enabled
+  if (!isFeatureEnabled('OG_FINDER')) {
+    redirect('/');
+  }
+
   const { userid } = await params;
 
   return (

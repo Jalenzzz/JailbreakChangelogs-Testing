@@ -1,9 +1,10 @@
 import { Suspense } from 'react';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import InventoryCheckerClient from '../InventoryCheckerClient';
 import InventoryDataStreamer from '../InventoryDataStreamer';
 import Breadcrumb from '@/components/Layout/Breadcrumb';
 import ExperimentalFeatureBanner from '@/components/UI/ExperimentalFeatureBanner';
+import { isFeatureEnabled } from '@/utils/featureFlags';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,6 +15,11 @@ interface InventoryCheckerPageProps {
 }
 
 export default async function InventoryCheckerPage({ params }: InventoryCheckerPageProps) {
+  // Check if Inventory Calculator feature is enabled
+  if (!isFeatureEnabled('INVENTORY_CALCULATOR')) {
+    redirect('/');
+  }
+
   const { userid } = await params;
 
   // Allow both usernames and numeric IDs

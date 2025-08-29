@@ -5,8 +5,43 @@ import Image from 'next/image';
 import CopyButton from './CopyButton';
 import { Suspense } from 'react';
 import ExperimentalFeatureBanner from '@/components/UI/ExperimentalFeatureBanner';
+import { isFeatureEnabled } from '@/utils/featureFlags';
+import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
+
+export default function InventoriesPage() {
+  // Check if Inventory Calculator feature is enabled
+  if (!isFeatureEnabled('INVENTORY_CALCULATOR')) {
+    redirect('/');
+  }
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <Breadcrumb />
+      <div className="flex items-center gap-3 mb-6">
+        <h1 className="text-3xl font-bold">Inventory Calculator</h1>
+        <span className="text-[10px] uppercase font-semibold text-amber-200 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-400/30 px-1.5 py-0.5 rounded">Beta</span>
+      </div>
+      
+      <ExperimentalFeatureBanner className="mb-6" />
+      
+      <p className="text-gray-600 dark:text-gray-400 mb-4">
+        Enter a Roblox ID or username to view their inventory and calculate item values.
+      </p>
+      
+      <InventoryCheckerClient />
+      
+      <Suspense fallback={<div>Loading stats...</div>}>
+        <StatsSection />
+      </Suspense>
+      
+      <Suspense fallback={<div>Loading leaderboard...</div>}>
+        <LeaderboardSection />
+      </Suspense>
+    </div>
+  );
+}
 
 // Component for stats that loads immediately
 async function StatsSection() {
@@ -191,65 +226,4 @@ function BasicLeaderboardUser({ user, index }: { user: UserScan; index: number }
   );
 }
 
-export default function InventoryCheckerPage() {
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <Breadcrumb />
-      <h1 className="text-3xl font-bold mb-6">Inventory Checker</h1>
-      
-      <ExperimentalFeatureBanner className="mb-6" />
-      
-      <p className="text-gray-600 dark:text-gray-400 mb-4">
-        Enter a Roblox ID or username to check their Jailbreak inventory.
-      </p>
-      
-      {/* Stats load immediately */}
-      <Suspense fallback={
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          <div className="bg-[#212A31] rounded-lg p-4 shadow-sm border border-[#2E3944] animate-pulse">
-            <div className="h-8 bg-gray-600 rounded w-24 mb-2"></div>
-            <div className="h-4 bg-gray-600 rounded w-32"></div>
-          </div>
-          <div className="bg-[#212A31] rounded-lg p-4 shadow-sm border border-[#2E3944] animate-pulse">
-            <div className="h-8 bg-gray-600 rounded w-24 mb-2"></div>
-            <div className="h-4 bg-gray-600 rounded w-32"></div>
-          </div>
-        </div>
-      }>
-        <StatsSection />
-      </Suspense>
-      
-      <InventoryCheckerClient />
-      
-      {/* Leaderboard loads separately */}
-      <Suspense fallback={
-        <div className="mt-8">
-          <h2 className="text-xl font-bold mb-4 text-gray-300">Most Scanned Players</h2>
-          <div className="bg-[#212A31] rounded-lg p-4 shadow-sm border border-[#2E3944]">
-            <div className="space-y-3">
-              {[...Array(10)].map((_, index) => (
-                <div key={index} className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 rounded-lg bg-[#2E3944] border border-[#37424D] animate-pulse">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-gray-600 rounded-full"></div>
-                    <div className="w-10 h-10 bg-gray-600 rounded-full"></div>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start gap-2">
-                      <div className="flex-1 min-w-0">
-                        <div className="h-5 bg-gray-600 rounded w-32 mb-2"></div>
-                        <div className="h-4 bg-gray-600 rounded w-24"></div>
-                      </div>
-                      <div className="w-6 h-6 bg-gray-600 rounded"></div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      }>
-        <LeaderboardSection />
-      </Suspense>
-    </div>
-  );
-}
+
