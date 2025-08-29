@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { RobloxUser } from '@/types';
+import { useAuth } from '@/hooks/useAuth';
+import { hasValidToken } from '@/utils/cookies';
+import toast from 'react-hot-toast';
 import OGFinderDataStreamer from './OGFinderDataStreamer';
 import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
@@ -55,6 +58,7 @@ export default function OGFinderClient({
   const [localRobloxUsers, setLocalRobloxUsers] = useState<Record<string, RobloxUser>>(initialRobloxUsers || {});
   const [localRobloxAvatars, setLocalRobloxAvatars] = useState<Record<string, string>>(initialRobloxAvatars || {});
   const router = useRouter();
+  const { isAuthenticated, setShowLoginModal } = useAuth();
 
   // Update local state when props change
   useEffect(() => {
@@ -75,6 +79,16 @@ export default function OGFinderClient({
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchId.trim()) return;
+
+    // Check if user is authenticated
+    if (!isAuthenticated || !hasValidToken()) {
+      toast.error('You need to be logged in to use the OG Finder feature.', {
+        duration: 4000,
+        position: 'bottom-right',
+      });
+      setShowLoginModal(true);
+      return;
+    }
 
     setIsLoading(true);
     router.push(`/og/${searchId.trim()}`);

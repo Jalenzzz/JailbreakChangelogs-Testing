@@ -38,6 +38,7 @@ import { PUBLIC_API_URL } from "@/utils/api";
 import { useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { isFeatureEnabled } from '@/utils/featureFlags';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function Header() {
   const pathname = usePathname();
@@ -49,7 +50,7 @@ export default function Header() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mounted, setMounted] = useState(false);
-  const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const { showLoginModal, setShowLoginModal } = useAuth();
   const [navMenuAnchorEl, setNavMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [communityMenuAnchorEl, setCommunityMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [seasonsMenuAnchorEl, setSeasonsMenuAnchorEl] = useState<null | HTMLElement>(null);
@@ -319,7 +320,7 @@ export default function Header() {
               component="div"
               onClick={() => { 
                 handleDrawerToggle();
-                setLoginModalOpen(true);
+                setShowLoginModal(true);
                 const event = new CustomEvent('setLoginTab', { detail: 1 });
                 window.dispatchEvent(event);
               }}
@@ -369,7 +370,7 @@ export default function Header() {
             <Button
               variant="contained"
               onClick={() => {
-                setLoginModalOpen(true);
+                setShowLoginModal(true);
                 handleDrawerToggle();
               }}
               sx={{
@@ -1081,7 +1082,7 @@ export default function Header() {
                                     className="flex items-center w-full rounded-lg px-4 py-2 text-base text-[#D3D9D4] hover:bg-[#2E3944] transition-colors font-bold hover:text-white" 
                                     onClick={() => { 
                                       handleMenuClose(); 
-                                      setLoginModalOpen(true);
+                                      setShowLoginModal(true);
                                       const event = new CustomEvent('setLoginTab', { detail: 1 });
                                       window.dispatchEvent(event);
                                     }}
@@ -1133,7 +1134,7 @@ export default function Header() {
                 ) : (
                   <Button
                     variant="contained"
-                    onClick={() => setLoginModalOpen(true)}
+                    onClick={() => setShowLoginModal(true)}
                     sx={{
                       backgroundColor: '#5865F2',
                       '&:hover': {
@@ -1203,8 +1204,8 @@ export default function Header() {
         {drawer}
       </Drawer>
       <LoginModalWrapper 
-        open={loginModalOpen} 
-        onClose={() => setLoginModalOpen(false)} 
+        open={showLoginModal} 
+        onClose={() => setShowLoginModal(false)} 
       />
 
       <EscapeLoginModal />
