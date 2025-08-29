@@ -101,6 +101,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
       changeFrequency: 'daily' as const,
     },
+    {
+      url: `${BASE_URL}/og`,
+      lastModified: new Date().toISOString(),
+      priority: 0.8,
+      changeFrequency: 'daily' as const,
+    },
   ]
 
   // Sitemap URLs for each content type

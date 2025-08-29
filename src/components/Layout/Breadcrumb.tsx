@@ -167,6 +167,22 @@ export default function Breadcrumb({ userData, loading }: BreadcrumbProps) {
         }
       }
       
+      // Special handling for OG route
+      if (pathSegments[0] === 'og') {
+        if (index === 0) {
+          return {
+            label: "OG Finder",
+            href: "/og"
+          };
+        }
+        if (index === 1) {
+          return {
+            label: `User ${segment}`,
+            href: `/${pathSegments.slice(0, index + 1).join('/')}`
+          };
+        }
+      }
+      
       return {
         label: segment.charAt(0).toUpperCase() + segment.slice(1),
         href: `/${pathSegments.slice(0, index + 1).join('/')}`

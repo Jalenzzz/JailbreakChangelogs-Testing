@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { Dialog } from '@headlessui/react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import { fetchMissingRobloxData, fetchOriginalOwnerAvatars } from './actions';
 import { fetchItems } from '@/utils/api';
 import { RobloxUser, Item } from '@/types';
@@ -257,27 +259,28 @@ export default function InventoryCheckerClient({ initialData, robloxId, original
       />
 
       {/* Trade History Modal */}
-      {showHistoryModal && selectedItem && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#212A31] rounded-lg border border-[#2E3944] max-w-2xl w-full max-h-[80vh] overflow-hidden">
-            {/* Modal Header */}
-            <div className="flex items-start sm:items-center justify-between p-4 sm:p-6 border-b border-[#2E3944] gap-4">
-              <div className="min-w-0 flex-1">
-                <h2 className="text-lg sm:text-xl font-semibold text-muted">Trade History</h2>
-                <p className="text-sm text-muted opacity-75 truncate">{selectedItem.title}</p>
+      {selectedItem && (
+        <Dialog open={showHistoryModal} onClose={closeHistoryModal} className="relative z-50">
+          <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
+          
+          <div className="fixed inset-0 flex items-center justify-center p-4">
+            <div className="mx-auto w-full max-w-2xl rounded-lg bg-[#212A31] border border-[#2E3944] max-h-[80vh] overflow-hidden">
+              {/* Modal Header */}
+              <div className="flex items-start sm:items-center justify-between p-4 sm:p-6 border-b border-[#2E3944] gap-4">
+                <div className="min-w-0 flex-1">
+                  <Dialog.Title className="text-lg sm:text-xl font-semibold text-muted">Trade History</Dialog.Title>
+                  <p className="text-sm text-muted opacity-75 truncate">{selectedItem.title}</p>
+                </div>
+                <button
+                  onClick={closeHistoryModal}
+                  className="rounded-full p-1 text-muted hover:bg-[#2E3944] hover:text-white"
+                >
+                  <XMarkIcon className="h-6 w-6" />
+                </button>
               </div>
-              <button
-                onClick={closeHistoryModal}
-                className="text-muted hover:text-white transition-colors flex-shrink-0"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
 
-            {/* Modal Content */} 
-            <div className="p-6 overflow-y-auto max-h-[60vh]">
+              {/* Modal Content */} 
+              <div className="p-6 overflow-y-auto max-h-[60vh]">
               {selectedItem.history && selectedItem.history.length > 0 ? (
                 <div className="space-y-4">
                   {(() => {
@@ -412,6 +415,7 @@ export default function InventoryCheckerClient({ initialData, robloxId, original
             </div>
           </div>
         </div>
+        </Dialog>
       )}
     </div>
   );

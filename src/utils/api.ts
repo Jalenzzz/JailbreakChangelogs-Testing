@@ -990,3 +990,28 @@ export async function fetchUsersWithFlags(): Promise<UserWithFlags[]> {
     return [];
   }
 }
+
+export async function fetchOGSearchData(robloxId: string) {
+  console.log('[SERVER] fetchOGSearchData called with robloxId:', robloxId);
+  try {
+    const response = await fetch(`${INVENTORY_API_URL}/search?username=${robloxId}`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-OGFinder/1.0'
+      }
+    });
+    
+    if (!response.ok) {
+      console.error(`[SERVER] OG Search API returned ${response.status} for ID: ${robloxId}`);
+      if (response.status === 404) {
+        return { error: 'not_found', message: 'This user has not been scanned by our bots yet. Their OG item data is not available.' };
+      }
+      throw new Error(`Failed to fetch OG search data: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error('[SERVER] Error fetching OG search data:', err);
+    return { error: 'fetch_error', message: 'Failed to fetch OG search data. Please try again.' };
+  }
+}

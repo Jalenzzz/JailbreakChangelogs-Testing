@@ -459,6 +459,16 @@ export default function Header() {
           } 
         />
       </ListItem>
+      <ListItem component={Link} href="/og" onClick={handleDrawerToggle} sx={{ pl: 4 }}>
+        <ListItemText 
+          primary={
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+              <span>OG Finder</span>
+              <span className="text-[10px] uppercase font-semibold text-white bg-[#5865F2] px-1.5 py-0.5 rounded">New</span>
+            </Box>
+          } 
+        />
+      </ListItem>
       <ListItem>
         <Typography 
           sx={{ 
@@ -760,6 +770,20 @@ export default function Header() {
                               <div className="flex flex-col items-start">
                                 <span>Inventory Calculator</span>
                                 <span className="text-[10px] uppercase font-semibold text-amber-200 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-400/30 px-1.5 py-0.5 rounded">Beta</span>
+                              </div>
+                            </Link>
+                          </motion.div>
+                          <motion.div
+                            variants={{
+                              hidden: { opacity: 0, x: -10 },
+                              visible: { opacity: 1, x: 0 }
+                            }}
+                            transition={{ duration: 0.2, delay: 0.3 }}
+                          >
+                            <Link href="/og" className="rounded-lg px-4 py-2 text-base text-[#D3D9D4] hover:bg-[#2E3944] transition-colors font-bold hover:text-white block" onClick={handleNavMenuClose}>
+                              <div className="flex flex-col items-start">
+                                <span>OG Finder</span>
+                                <span className="text-[10px] uppercase font-semibold text-white bg-[#5865F2] px-1.5 py-0.5 rounded">New</span>
                               </div>
                             </Link>
                           </motion.div>
