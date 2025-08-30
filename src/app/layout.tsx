@@ -158,7 +158,9 @@ export default async function RootLayout({
             <AuthCheck />
             <SurveyProvider>
               <div className="flex min-h-screen flex-col">
-                <Header />
+                <Suspense fallback={<div className="h-16 bg-[#212A31] border-b border-[#2E3944]" />}>
+                  <Header />
+                </Suspense>
                 <main className="flex-1">{children}</main>
 
                 <footer className="bg-[#212A31] py-8">
@@ -376,7 +378,7 @@ export default async function RootLayout({
                       <p className="text-muted">
                         Maintained by{" "}
                         <a
-                          href="https://github.com/v3kmmw"
+                          href="https://github.com/Jakobiis"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-400 hover:text-blue-300 hover:underline"
@@ -546,7 +548,9 @@ export default async function RootLayout({
         <AuthCheck />
         <SurveyProvider>
           <div className="flex min-h-screen flex-col">
-            <Header />
+            <Suspense fallback={<div className="h-16 bg-[#212A31] border-b border-[#2E3944]" />}>
+              <Header />
+            </Suspense>
             <main className="flex-1">{children}</main>
 
             <footer className="bg-[#212A31] py-8">
@@ -764,7 +768,7 @@ export default async function RootLayout({
                       <p className="text-muted">
                         Maintained by{" "}
                         <a
-                          href="https://github.com/v3kmmw"
+                          href="https://github.com/Jakobiis"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-400 hover:text-blue-300 hover:underline"
