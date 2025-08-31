@@ -109,7 +109,7 @@ export const UserBadges = ({
         duration: 4000,
         style: {
           background: "linear-gradient(to right, #8B5CF6, #6D28D9)",
-          color: "white",
+          color: "black",
         },
       }
     );
@@ -212,7 +212,7 @@ export const UserBadges = ({
     toast(
       () => (
         <div className="flex items-center gap-2">
-          <CgCodeSlash className="w-5 h-5 text-gray-100" />
+          <CgCodeSlash className="w-5 h-5 text-black" />
           <span>
             {developerFlag?.description ||
               "This user is a developer for Jailbreak Changelogs!"}
@@ -223,7 +223,7 @@ export const UserBadges = ({
         duration: 4000,
         style: {
           background: "linear-gradient(to right, #84CC16, #65A30D)",
-          color: "white",
+          color: "black",
         },
       }
     );
@@ -243,7 +243,7 @@ export const UserBadges = ({
     };
 
     const premiumTextColors = {
-      1: "white", // Bronze - white text
+      1: "black", // Bronze - black text
       2: "black", // Silver - black text
       3: "black", // Gold - black text
     };
@@ -489,7 +489,7 @@ export const UserBadges = ({
             }}
           >
             <div
-              className={`inline-flex items-center justify-center rounded-full bg-gradient-to-r from-lime-500 to-lime-600 text-white cursor-help hover:opacity-90 ${currentSize.container}`}
+              className={`inline-flex items-center justify-center rounded-full bg-gradient-to-r from-lime-500 to-lime-600 text-black cursor-help hover:opacity-90 ${currentSize.container}`}
               onClick={handleDeveloperBadgeClick}
             >
               <CgCodeSlash className={currentSize.icon} />
