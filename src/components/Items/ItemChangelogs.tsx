@@ -126,6 +126,19 @@ const formatBooleanLikeValue = (value: ItemChangeValue | undefined): string => {
   return String(value);
 };
 
+// Format creator information the same way as CreatorLink component
+const formatCreatorValue = (value: ItemChangeValue | undefined): { display: string; robloxId?: string } => {
+  if (value === undefined || value === null) return { display: 'N/A' };
+  if (value === 'N/A') return { display: '???' };
+  
+  const strValue = String(value);
+  const match = strValue.match(/(.*?)\s*\((\d+)\)/);
+  if (!match) return { display: strValue };
+  
+  const [, name, id] = match;
+  return { display: name, robloxId: id };
+};
+
 // Determine which field the suggestion_type applies to (match Values changelogs behavior)
 const doesSuggestionTypeApplyToKey = (suggestionType?: string, changeKey?: string) => {
   if (!suggestionType || !changeKey) return false;
@@ -506,7 +519,10 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                                     strong: (props) => <b {...props} />,
                                   }}
                                 >
-                                  {text}
+                                  {text.replace(
+                                    /(Common Trades?:?)/gi,
+                                    '**$1**'
+                                  )}
                                 </ReactMarkdown>
                                 {isTruncated && (
                                   <a
@@ -541,15 +557,19 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                       if (isNA(oldValue) && isNA(newValue)) return null;
                       if (oldValue === newValue) return null;
 
-                      const formatValue = (k: string, v: unknown): string => {
+                      const formatValue = (k: string, v: unknown): { display: string; robloxId?: string; isCreator?: boolean } => {
                         if (k === 'cash_value' || k === 'duped_value') {
-                          return formatFullValue(String(v));
+                          return { display: formatFullValue(String(v)) };
+                        }
+                        if (k === 'creator') {
+                          const creatorInfo = formatCreatorValue(v as ItemChangeValue | undefined);
+                          return { ...creatorInfo, isCreator: true };
                         }
                         if (typeof v === 'boolean' || v === 1 || v === 0 || k.startsWith('is_')) {
-                          return formatBooleanLikeValue(v as ItemChangeValue | undefined);
+                          return { display: formatBooleanLikeValue(v as ItemChangeValue | undefined) };
                         }
                         const str = v === '' || v === null || v === undefined ? 'N/A' : String(v);
-                        return str;
+                        return { display: str };
                       };
 
                       return (
@@ -577,11 +597,41 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                             </div>
                             <div className="flex items-center gap-2 mt-1">
                               <span className="text-sm text-[#D3D9D4] line-through break-words overflow-hidden" style={{ wordBreak: 'normal', overflowWrap: 'anywhere' }}>
-                                {convertUrlsToLinks(formatValue(key, oldValue))}
+                                {(() => {
+                                  const formatted = formatValue(key, oldValue);
+                                  if (formatted.isCreator && formatted.robloxId) {
+                                    return (
+                                      <a
+                                        href={`https://www.roblox.com/users/${formatted.robloxId}/profile`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-400 hover:text-blue-300 hover:underline transition-colors"
+                                      >
+                                        {formatted.display}
+                                      </a>
+                                    );
+                                  }
+                                  return convertUrlsToLinks(formatted.display);
+                                })()}
                               </span>
                               <span className="text-[#D3D9D4]">→</span>
                               <span className="text-sm text-white font-medium break-words overflow-hidden" style={{ wordBreak: 'normal', overflowWrap: 'anywhere' }}>
-                                {convertUrlsToLinks(formatValue(key, newValue))}
+                                {(() => {
+                                  const formatted = formatValue(key, newValue);
+                                  if (formatted.isCreator && formatted.robloxId) {
+                                    return (
+                                      <a
+                                        href={`https://www.roblox.com/users/${formatted.robloxId}/profile`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-400 hover:text-blue-300 hover:underline transition-colors"
+                                      >
+                                        {formatted.display}
+                                      </a>
+                                    );
+                                  }
+                                  return convertUrlsToLinks(formatted.display);
+                                })()}
                               </span>
                             </div>
                           </div>
