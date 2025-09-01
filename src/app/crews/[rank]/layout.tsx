@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { fetchCrewLeaderboard, AVAILABLE_CREW_SEASONS } from '@/utils/api';
+import { AVAILABLE_CREW_SEASONS } from '@/utils/api';
 import { getMaintenanceMetadata } from '@/utils/maintenance';
 
 interface CrewRankLayoutProps {
@@ -10,7 +10,7 @@ interface CrewRankLayoutProps {
 }
 
 export async function generateMetadata({ params, searchParams }: CrewRankLayoutProps): Promise<Metadata> {
-  // Check for maintenance mode first
+  
   const maintenanceMetadata = await getMaintenanceMetadata();
   if (maintenanceMetadata) {
     return maintenanceMetadata;
@@ -22,39 +22,36 @@ export async function generateMetadata({ params, searchParams }: CrewRankLayoutP
   try {
     const rankNumber = parseInt(rank);
     const resolvedSearchParams = await searchParams;
-    const seasonParam = resolvedSearchParams.season;
-    const selectedSeason = seasonParam ? parseInt(seasonParam, 10) : 19;
     
-    // Validate season parameter
-    const validSeason = AVAILABLE_CREW_SEASONS.includes(selectedSeason) ? selectedSeason : 19;
-    
-    const leaderboard = await fetchCrewLeaderboard(validSeason);
-    const crew = leaderboard[rankNumber - 1]; // Convert 1-based rank to 0-based index
-
-    if (!crew) {
+    // Handle case where searchParams might be undefined
+    if (!resolvedSearchParams) {
       return {
         metadataBase: new URL('https://jailbreakchangelogs.xyz'),
-        title: 'Crew Not Found - Jailbreak Changelogs',
-        description: 'The requested crew could not be found.',
+        title: 'Crew Details - Jailbreak Changelogs',
+        description: 'View crew details and performance statistics.',
         alternates: {
           canonical: `/crews/${rank}`,
         },
       };
     }
-
+    
+    const seasonParam = resolvedSearchParams.season;
+    const selectedSeason = seasonParam ? parseInt(seasonParam, 10) : 19;
+    
+    // Validate season parameter
+    const validSeason = AVAILABLE_CREW_SEASONS.includes(selectedSeason) ? selectedSeason : 19;
     const seasonText = validSeason === 19 ? '' : ` (Season ${validSeason})`;
-    const seasonDescription = validSeason === 19 ? '' : ` from Season ${validSeason}`;
-
+    
     return {
       metadataBase: new URL('https://jailbreakchangelogs.xyz'),
-      title: `${crew.ClanName} - Rank #${rank}${seasonText} - Jailbreak Changelogs`,
-      description: `${crew.ClanName} is ranked #${rank} in Jailbreak${seasonDescription} with a rating of ${Math.round(crew.Rating)} and ${crew.BattlesPlayed} battles played.`,
+      title: `Crew Details${seasonText} - Jailbreak Changelogs`,
+      description: `View crew details and performance statistics${seasonText}.`,
       alternates: {
         canonical: `/crews/${rank}${validSeason !== 19 ? `?season=${validSeason}` : ''}`,
       },
       openGraph: {
-        title: `${crew.ClanName} - Rank #${rank}${seasonText}`,
-        description: `${crew.ClanName} is ranked #${rank} in Jailbreak${seasonDescription} with a rating of ${Math.round(crew.Rating)} and ${crew.BattlesPlayed} battles played.`,
+        title: `Crew Details${seasonText}`,
+        description: `View crew details and performance statistics${seasonText}.`,
         type: 'website',
         siteName: 'Jailbreak Changelogs',
         url: `/crews/${rank}${validSeason !== 19 ? `?season=${validSeason}` : ''}`,
@@ -63,22 +60,25 @@ export async function generateMetadata({ params, searchParams }: CrewRankLayoutP
             url: `/api/og/crew?rank=${rank}`,
             width: 1200,
             height: 630,
-            alt: `${crew.ClanName} - Rank #${rank}${seasonText}`,
+            alt: `Crew Details${seasonText}`,
           },
         ],
       },
       twitter: {
         card: 'summary_large_image',
-        title: `${crew.ClanName} - Rank #${rank}${seasonText}`,
-        description: `${crew.ClanName} is ranked #${rank} in Jailbreak${seasonDescription} with a rating of ${Math.round(crew.Rating)} and ${crew.BattlesPlayed} battles played.`,
+        title: `Crew Details${seasonText}`,
+        description: `View crew details and performance statistics${seasonText}.`,
         images: [`/api/og/crew?rank=${rank}`],
       },
     };
-  } catch {
+  } catch (error) {
+    console.error('Error generating crew metadata:', error);
+    
+    // Final fallback
     return {
       metadataBase: new URL('https://jailbreakchangelogs.xyz'),
-      title: 'Crew Not Found - Jailbreak Changelogs',
-      description: 'The requested crew could not be found.',
+      title: 'Crew Details - Jailbreak Changelogs',
+      description: 'View crew details and performance statistics.',
       alternates: {
         canonical: `/crews/${rank}`,
       },
