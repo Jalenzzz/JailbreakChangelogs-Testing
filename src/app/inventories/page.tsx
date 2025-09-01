@@ -123,6 +123,7 @@ async function LeaderboardUser({ user, index }: { user: UserScan; index: number 
       if (avatar && avatar.targetId && avatar.state === 'Completed' && avatar.imageUrl) {
         avatarUrl = avatar.imageUrl;
       }
+      // For blocked avatars, don't set avatarUrl so the component can use its own fallback
     }
   } catch (error) {
     console.error(`Failed to fetch Roblox data for user ${user.user_id}:`, error);

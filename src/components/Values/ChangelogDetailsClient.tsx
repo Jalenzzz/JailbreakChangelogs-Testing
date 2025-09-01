@@ -465,9 +465,44 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
               textColor="primary"
               indicatorColor="primary"
               variant="fullWidth"
+              sx={{
+                '& .MuiTab-root': {
+                  minHeight: 'auto',
+                  padding: '8px 12px',
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                  color: '#D3D9D4',
+                  '&.Mui-selected': {
+                    color: '#FFFFFF',
+                    fontWeight: 600,
+                  },
+                  '&:hover': {
+                    color: '#FFFFFF',
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                  },
+                },
+                '& .MuiTabs-indicator': {
+                  backgroundColor: '#5865F2',
+                  height: '3px',
+                }
+              }}
             >
-              <Tab label={`Upvotes (${activeVoters?.upCount ?? 0})`} />
-              <Tab label={`Downvotes (${activeVoters?.downCount ?? 0})`} />
+              <Tab 
+                label={
+                  <div className="flex flex-col items-center">
+                    <span className="font-medium">Upvotes</span>
+                    <span className="text-xs text-muted mt-1">({activeVoters?.upCount ?? 0})</span>
+                  </div>
+                } 
+              />
+              <Tab 
+                label={
+                  <div className="flex flex-col items-center">
+                    <span className="font-medium">Downvotes</span>
+                    <span className="text-xs text-muted mt-1">({activeVoters?.downCount ?? 0})</span>
+                  </div>
+                } 
+              />
             </Tabs>
             <div className="mt-3 space-y-2">
               {(votersTab === 'up' ? (activeVoters?.up || []) : (activeVoters?.down || [])).length === 0 ? (
@@ -498,7 +533,7 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
                           {voter.name}
                         </a>
                       </div>
-                      <div className="text-xs text-muted">{new Date(voter.timestamp * 1000).toLocaleString()}</div>
+                      <div className="text-xs text-muted">{new Date(voter.timestamp * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
                     </div>
                   </div>
                 ))

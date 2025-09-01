@@ -1,14 +1,15 @@
 import { Metadata } from 'next';
-import { fetchCrewLeaderboard } from '@/utils/api';
+import { fetchCrewLeaderboard, AVAILABLE_CREW_SEASONS } from '@/utils/api';
 import { getMaintenanceMetadata } from '@/utils/maintenance';
 
 interface CrewRankLayoutProps {
   params: Promise<{
     rank: string;
   }>;
+  searchParams: Promise<{ season?: string }>;
 }
 
-export async function generateMetadata({ params }: CrewRankLayoutProps): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: CrewRankLayoutProps): Promise<Metadata> {
   // Check for maintenance mode first
   const maintenanceMetadata = await getMaintenanceMetadata();
   if (maintenanceMetadata) {
@@ -20,7 +21,14 @@ export async function generateMetadata({ params }: CrewRankLayoutProps): Promise
 
   try {
     const rankNumber = parseInt(rank);
-    const leaderboard = await fetchCrewLeaderboard();
+    const resolvedSearchParams = await searchParams;
+    const seasonParam = resolvedSearchParams.season;
+    const selectedSeason = seasonParam ? parseInt(seasonParam, 10) : 19;
+    
+    // Validate season parameter
+    const validSeason = AVAILABLE_CREW_SEASONS.includes(selectedSeason) ? selectedSeason : 19;
+    
+    const leaderboard = await fetchCrewLeaderboard(validSeason);
     const crew = leaderboard[rankNumber - 1]; // Convert 1-based rank to 0-based index
 
     if (!crew) {
@@ -34,32 +42,35 @@ export async function generateMetadata({ params }: CrewRankLayoutProps): Promise
       };
     }
 
+    const seasonText = validSeason === 19 ? '' : ` (Season ${validSeason})`;
+    const seasonDescription = validSeason === 19 ? '' : ` from Season ${validSeason}`;
+
     return {
       metadataBase: new URL('https://jailbreakchangelogs.xyz'),
-      title: `${crew.ClanName} - Rank #${rank} - Jailbreak Changelogs`,
-      description: `${crew.ClanName} is ranked #${rank} in Jailbreak with a rating of ${Math.round(crew.Rating)} and ${crew.BattlesPlayed} battles played.`,
+      title: `${crew.ClanName} - Rank #${rank}${seasonText} - Jailbreak Changelogs`,
+      description: `${crew.ClanName} is ranked #${rank} in Jailbreak${seasonDescription} with a rating of ${Math.round(crew.Rating)} and ${crew.BattlesPlayed} battles played.`,
       alternates: {
-        canonical: `/crews/${rank}`,
+        canonical: `/crews/${rank}${validSeason !== 19 ? `?season=${validSeason}` : ''}`,
       },
       openGraph: {
-        title: `${crew.ClanName} - Rank #${rank}`,
-        description: `${crew.ClanName} is ranked #${rank} in Jailbreak with a rating of ${Math.round(crew.Rating)} and ${crew.BattlesPlayed} battles played.`,
+        title: `${crew.ClanName} - Rank #${rank}${seasonText}`,
+        description: `${crew.ClanName} is ranked #${rank} in Jailbreak${seasonDescription} with a rating of ${Math.round(crew.Rating)} and ${crew.BattlesPlayed} battles played.`,
         type: 'website',
         siteName: 'Jailbreak Changelogs',
-        url: `/crews/${rank}`,
+        url: `/crews/${rank}${validSeason !== 19 ? `?season=${validSeason}` : ''}`,
         images: [
           {
             url: `/api/og/crew?rank=${rank}`,
             width: 1200,
             height: 630,
-            alt: `${crew.ClanName} - Rank #${rank}`,
+            alt: `${crew.ClanName} - Rank #${rank}${seasonText}`,
           },
         ],
       },
       twitter: {
         card: 'summary_large_image',
-        title: `${crew.ClanName} - Rank #${rank}`,
-        description: `${crew.ClanName} is ranked #${rank} in Jailbreak with a rating of ${Math.round(crew.Rating)} and ${crew.BattlesPlayed} battles played.`,
+        title: `${crew.ClanName} - Rank #${rank}${seasonText}`,
+        description: `${crew.ClanName} is ranked #${rank} in Jailbreak${seasonDescription} with a rating of ${Math.round(crew.Rating)} and ${crew.BattlesPlayed} battles played.`,
         images: [`/api/og/crew?rank=${rank}`],
       },
     };
