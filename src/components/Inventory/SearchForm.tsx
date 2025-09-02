@@ -9,8 +9,6 @@ interface SearchFormProps {
   isLoading: boolean;
   externalIsLoading: boolean;
   error?: string;
-  showRetry?: boolean;
-  onRetry?: () => void;
 }
 
 export default function SearchForm({
@@ -19,9 +17,7 @@ export default function SearchForm({
   handleSearch,
   isLoading,
   externalIsLoading,
-  error,
-  showRetry,
-  onRetry
+  error
 }: SearchFormProps) {
   return (
     <div className="bg-[#212A31] rounded-lg border border-[#2E3944] p-6">
@@ -82,17 +78,9 @@ export default function SearchForm({
               </svg>
             </div>
             <div className="flex-1">
-              <p className="text-red-300 text-sm font-medium">Unable to fetch inventory data</p>
-              <p className="text-red-400 text-sm mt-1">{error}</p>
-              {showRetry && onRetry && (
-                <button
-                  onClick={onRetry}
-                  className="mt-2 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded transition-colors"
-                >
-                  Try Again
-                </button>
-              )}
-              <div className="mt-2 text-xs text-red-400/70">
+              <p className="text-red-200 text-sm font-medium">Unable to fetch inventory data</p>
+              <p className="text-red-100 text-sm mt-1">{error}</p>
+              <div className="mt-2 text-xs text-red-200/90">
                 <p>• Make sure the username or Roblox ID is correct</p>
                 <p>• Check if the user has been scanned by our bots</p>
                 <p>• If the problem persists, try again later</p>
