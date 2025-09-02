@@ -59,9 +59,11 @@ interface InventoryCheckerClientProps {
   robloxAvatars?: Record<string, string>;
   error?: string;
   isLoading?: boolean;
+  showRetry?: boolean;
+  onRetry?: () => void;
 }
 
-export default function InventoryCheckerClient({ initialData, robloxId, originalSearchTerm, robloxUsers: initialRobloxUsers, robloxAvatars: initialRobloxAvatars, error, isLoading: externalIsLoading }: InventoryCheckerClientProps) {
+export default function InventoryCheckerClient({ initialData, robloxId, originalSearchTerm, robloxUsers: initialRobloxUsers, robloxAvatars: initialRobloxAvatars, error, isLoading: externalIsLoading, showRetry, onRetry }: InventoryCheckerClientProps) {
   const [searchId, setSearchId] = useState(originalSearchTerm || robloxId || '');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
@@ -218,6 +220,8 @@ export default function InventoryCheckerClient({ initialData, robloxId, original
         isLoading={isLoading}
         externalIsLoading={externalIsLoading || false}
         error={error}
+        showRetry={showRetry}
+        onRetry={onRetry}
       />
     );
   }
@@ -239,6 +243,8 @@ export default function InventoryCheckerClient({ initialData, robloxId, original
         isLoading={isLoading}
         externalIsLoading={externalIsLoading || false}
         error={error}
+        showRetry={showRetry}
+        onRetry={onRetry}
       />
 
       {/* User Stats */}

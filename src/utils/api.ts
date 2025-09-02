@@ -653,16 +653,36 @@ export async function fetchInventoryData(robloxId: string) {
     
     if (!response.ok) {
       console.error(`[SERVER] Inventory API returned ${response.status} for ID: ${robloxId}`);
-      if (response.status === 404) {
-        return { error: 'not_found', message: 'This user has not been scanned by our bots yet. Their inventory data is not available.' };
+      
+      // Handle specific HTTP status codes with user-friendly messages
+      switch (response.status) {
+        case 404:
+          return { error: 'not_found', message: 'This user has not been scanned by our bots yet. Their inventory data is not available.' };
+        case 500:
+          return { error: 'server_error', message: 'Our inventory service is currently experiencing issues. Please try again in a few minutes.' };
+        case 429:
+          return { error: 'rate_limit', message: 'Too many requests. Please wait a moment before trying again.' };
+        case 503:
+          return { error: 'service_unavailable', message: 'Our inventory service is temporarily unavailable. Please try again later.' };
+        default:
+          return { error: 'api_error', message: `Unable to fetch inventory data (Error ${response.status}). Please try again.` };
       }
-      throw new Error(`Failed to fetch inventory data: ${response.status}`);
     }
     
     const data = await response.json();
     return data;
   } catch (err) {
     console.error('[SERVER] Error fetching inventory data:', err);
+    
+    // Handle specific error types
+    if (err instanceof TypeError && err.message.includes('fetch')) {
+      return { error: 'network_error', message: 'Network error. Please check your connection and try again.' };
+    }
+    
+    if (err instanceof Error) {
+      return { error: 'fetch_error', message: `Failed to fetch inventory data: ${err.message}` };
+    }
+    
     return { error: 'fetch_error', message: 'Failed to fetch inventory data. Please try again.' };
   }
 }

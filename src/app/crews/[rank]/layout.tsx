@@ -20,7 +20,6 @@ export async function generateMetadata({ params, searchParams }: CrewRankLayoutP
   const { rank } = await params;
 
   try {
-    const rankNumber = parseInt(rank);
     const resolvedSearchParams = await searchParams;
     
     // Handle case where searchParams might be undefined

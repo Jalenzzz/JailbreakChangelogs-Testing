@@ -96,10 +96,18 @@ async function InventoryDataFetcher({ robloxId }: { robloxId: string }) {
 
   // Check if the result contains an error
   if (result && 'error' in result) {
+    // Add retry button for server errors and network errors
+    const showRetry = result.error === 'server_error' || 
+                     result.error === 'service_unavailable' || 
+                     result.error === 'network_error' ||
+                     result.error === 'fetch_error';
+    
     return (
       <InventoryCheckerClient 
         robloxId={actualRobloxId} 
-        error={result.message} 
+        error={result.message}
+        showRetry={showRetry}
+        onRetry={() => window.location.reload()}
       />
     );
   }
