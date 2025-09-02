@@ -8,6 +8,7 @@ import ExperimentalFeatureBanner from '@/components/UI/ExperimentalFeatureBanner
 import ComingSoon from '@/components/UI/ComingSoon';
 import { isFeatureEnabled } from '@/utils/featureFlags';
 import { MdOutlineSecurity } from "react-icons/md";
+import { RiVerifiedBadgeFill } from "react-icons/ri";
 
 // Type definitions for bot data
 interface BotUserData {
@@ -199,11 +200,9 @@ async function OfficialBotsSection() {
             
             return (
               <div key={botId} className="flex items-center gap-3 p-3 rounded-lg bg-[#2E3944] border border-[#37424D]">
-                <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-green-600 text-white">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-green-600 text-white">
+                <RiVerifiedBadgeFill className="w-4 h-4" />
+              </div>
                 
                 {/* Bot Avatar */}
                 <div className="w-10 h-10 rounded-full overflow-hidden bg-[#37424D] flex-shrink-0">
