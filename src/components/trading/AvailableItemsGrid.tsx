@@ -442,6 +442,31 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
 
         </div>
 
+        {/* Top Pagination */}
+        {totalPages > 1 && filteredItems.length > 0 && (
+          <div className="flex justify-center mb-4">
+            <Pagination 
+              count={totalPages} 
+              page={page} 
+              onChange={handlePageChange}
+              sx={{
+                '& .MuiPaginationItem-root': {
+                  color: '#D3D9D4',
+                  '&.Mui-selected': {
+                    backgroundColor: '#5865F2',
+                    '&:hover': {
+                      backgroundColor: '#4752C4',
+                    },
+                  },
+                  '&:hover': {
+                    backgroundColor: '#37424D',
+                  },
+                },
+              }}
+            />
+          </div>
+        )}
+
         <div className="grid grid-cols-1 gap-4 min-[375px]:grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">
           {paginatedItems.length === 0 ? (
             <div className="col-span-full text-center py-8">
