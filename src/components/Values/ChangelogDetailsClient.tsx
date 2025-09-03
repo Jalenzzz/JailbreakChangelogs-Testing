@@ -15,6 +15,7 @@ import { formatFullValue } from '@/utils/values';
 import ReactMarkdown from 'react-markdown';
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import DisplayAd from '@/components/Ads/DisplayAd';
+import AdRemovalNotice from '@/components/Ads/AdRemovalNotice';
 import { getCurrentUserPremiumType } from '@/hooks/useAuth';
 import ChangelogDetailsHeader from './ChangelogDetailsHeader';
 import { FaCircleMinus } from "react-icons/fa6";
@@ -335,7 +336,7 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
 
           {/* Ad - Takes up 1/3 of the space, only show for non-premium users */}
           {premiumStatusLoaded && currentUserPremiumType === 0 && (
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 flex flex-col">
               <div className="bg-[#1a2127] rounded-lg overflow-hidden border border-[#2E3944] shadow transition-all duration-300 relative h-full" style={{ minHeight: '250px' }}>
                 <span className="absolute top-2 left-2 text-xs text-muted bg-[#212A31] px-2 py-0.5 rounded z-10">
                   Advertisement
@@ -346,6 +347,7 @@ export default function ChangelogDetailsClient({ changelog, userData }: Changelo
                   style={{ display: 'block', width: '100%', height: '100%' }}
                 />
               </div>
+              <AdRemovalNotice className="mt-2" />
             </div>
           )}
         </div>

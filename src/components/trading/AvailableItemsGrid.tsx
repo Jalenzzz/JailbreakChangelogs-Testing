@@ -23,6 +23,7 @@ import Image from 'next/image';
 import { FilterSort, ValueSort } from '@/types';
 import dynamic from 'next/dynamic';
 import DisplayAd from '@/components/Ads/DisplayAd';
+import AdRemovalNotice from '@/components/Ads/AdRemovalNotice';
 import { useDebounce } from '@/hooks/useDebounce';
 import { getCurrentUserPremiumType } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
@@ -252,6 +253,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
                 style={{ display: "block", width: "100%", height: "100%" }}
               />
             </div>
+            <AdRemovalNotice className="mt-2" />
           </div>
         )}
 
