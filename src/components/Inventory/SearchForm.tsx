@@ -1,6 +1,6 @@
 'use client';
 
-import { MagnifyingGlassIcon, XMarkIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 interface SearchFormProps {
   searchId: string;
@@ -8,7 +8,6 @@ interface SearchFormProps {
   handleSearch: (e: React.FormEvent) => void;
   isLoading: boolean;
   externalIsLoading: boolean;
-  error?: string;
 }
 
 export default function SearchForm({
@@ -16,8 +15,7 @@ export default function SearchForm({
   setSearchId,
   handleSearch,
   isLoading,
-  externalIsLoading,
-  error
+  externalIsLoading
 }: SearchFormProps) {
   return (
     <div className="bg-[#212A31] rounded-lg border border-[#2E3944] p-6">

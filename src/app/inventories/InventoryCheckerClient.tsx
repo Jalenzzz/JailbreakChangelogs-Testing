@@ -217,7 +217,6 @@ export default function InventoryCheckerClient({ initialData, robloxId, original
         handleSearch={handleSearch}
         isLoading={isLoading}
         externalIsLoading={externalIsLoading || false}
-        error={error}
       />
     );
   }
@@ -238,7 +237,6 @@ export default function InventoryCheckerClient({ initialData, robloxId, original
         handleSearch={handleSearch}
         isLoading={isLoading}
         externalIsLoading={externalIsLoading || false}
-        error={error}
       />
 
       {/* Error Display */}
