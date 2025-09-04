@@ -7,7 +7,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { hasValidToken } from '@/utils/cookies';
 import toast from 'react-hot-toast';
 import OGFinderDataStreamer from './OGFinderDataStreamer';
-import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 
 interface OGSearchData {
   results: Array<{
@@ -140,6 +140,21 @@ export default function OGFinderClient({
           error={error}
           isLoading={isLoading}
         />
+      )}
+
+      {/* Error Display */}
+      {error && !initialData && (
+        <div className="bg-[#212A31] rounded-lg p-6 shadow-sm border border-[#2E3944]">
+          <div className="text-center">
+            <div className="flex justify-center mb-4">
+              <div className="p-3 bg-red-500/10 rounded-full">
+                <ExclamationTriangleIcon className="h-8 w-8 text-red-400" />
+              </div>
+            </div>
+            <h3 className="text-lg font-semibold text-red-400 mb-2">User Not Found</h3>
+            <p className="text-gray-300">{error}</p>
+          </div>
+        </div>
       )}
     </div>
   );

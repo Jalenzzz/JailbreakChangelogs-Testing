@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, XMarkIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import DupeFinderResults from './DupeFinderResults';
 import type { DupeFinderItem, RobloxUser } from '@/types';
 
@@ -109,8 +109,16 @@ export default function DupeFinderClient({
 
       {/* Error Display */}
       {error && !initialData && (
-        <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4">
-          <p className="text-red-400">{error}</p>
+        <div className="bg-[#212A31] rounded-lg p-6 shadow-sm border border-[#2E3944]">
+          <div className="text-center">
+            <div className="flex justify-center mb-4">
+              <div className="p-3 bg-red-500/10 rounded-full">
+                <ExclamationTriangleIcon className="h-8 w-8 text-red-400" />
+              </div>
+            </div>
+            <h3 className="text-lg font-semibold text-red-400 mb-2">User Not Found</h3>
+            <p className="text-gray-300">{error}</p>
+          </div>
         </div>
       )}
     </div>

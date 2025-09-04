@@ -6,7 +6,7 @@ import { RobloxUser } from '@/types';
 import Image from 'next/image';
 import { Pagination } from '@mui/material';
 import { Dialog } from '@headlessui/react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { fetchMissingRobloxData, fetchOriginalOwnerAvatars } from '@/app/inventories/actions';
 import { getItemImagePath, isVideoItem, isDriftItem, getDriftVideoPath, getVideoPath, handleImageError } from '@/utils/images';
 import localFont from 'next/font/local';
@@ -299,32 +299,8 @@ export default function OGFinderResults({
   // Get unique categories
   const categories = [...new Set(initialData?.results?.map(item => item.categoryTitle) || [])];
 
-  if (error) {
-    return (
-      <div className="bg-[#212A31] rounded-lg p-6 shadow-sm border border-[#2E3944]">
-        <div className="text-center">
-          <div className="text-red-400 text-lg font-medium mb-2">Error</div>
-          <div className="text-gray-400">{error}</div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!initialData?.results || initialData.results.length === 0) {
-    return (
-      <div className="bg-[#212A31] rounded-lg p-6 shadow-sm border border-[#2E3944]">
-        <div className="text-center">
-          <div className="text-gray-400 text-lg font-medium mb-2">No OG Items Found</div>
-          <div className="text-gray-500">This user doesn&apos;t have any original items in our database.</div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6">
-
-      
       {/* Search Form */}
       <SearchForm
         searchId={searchId}
@@ -335,8 +311,41 @@ export default function OGFinderResults({
         error={error}
       />
 
-      {/* User Info */}
-      <div className="bg-[#212A31] rounded-lg p-6 shadow-sm border border-[#2E3944]">
+      {/* Error Display */}
+      {error && (
+        <div className="bg-[#212A31] rounded-lg p-6 shadow-sm border border-[#2E3944]">
+          <div className="text-center">
+            <div className="flex justify-center mb-4">
+              <div className="p-3 bg-red-500/10 rounded-full">
+                <ExclamationTriangleIcon className="h-8 w-8 text-red-400" />
+              </div>
+            </div>
+            <h3 className="text-lg font-semibold text-red-400 mb-2">Search Error</h3>
+            <p className="text-gray-300">{error}</p>
+          </div>
+        </div>
+      )}
+
+      {/* No Items Found Display */}
+      {!error && (!initialData?.results || initialData.results.length === 0) && (
+        <div className="bg-[#212A31] rounded-lg p-6 shadow-sm border border-[#2E3944]">
+          <div className="text-center">
+            <div className="flex justify-center mb-4">
+              <div className="p-3 bg-red-500/10 rounded-full">
+                <ExclamationTriangleIcon className="h-8 w-8 text-red-400" />
+              </div>
+            </div>
+            <h3 className="text-lg font-semibold text-red-400 mb-2">No OG Items Found</h3>
+            <p className="text-gray-300">This user doesn&apos;t have any original items in our database.</p>
+          </div>
+        </div>
+      )}
+
+      {/* User Info and Results - Only show when no error and has data */}
+      {!error && initialData?.results && initialData.results.length > 0 && (
+        <>
+          {/* User Info */}
+          <div className="bg-[#212A31] rounded-lg p-6 shadow-sm border border-[#2E3944]">
         <h2 className="text-xl font-semibold mb-4 text-muted">User Information</h2>
         
         {/* Roblox User Profile */}
@@ -785,9 +794,10 @@ export default function OGFinderResults({
             />
           </div>
         )}
+          </div>
 
-      {/* Trade History Modal */}
-      {selectedItem && (
+          {/* Trade History Modal */}
+          {selectedItem && (
                 <Dialog open={showHistoryModal} onClose={closeHistoryModal} className="relative z-50">
           <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
         
@@ -961,7 +971,8 @@ export default function OGFinderResults({
         </div>
         </Dialog>
       )}
-      </div>
+        </>
+      )}
     </div>
   );
 }

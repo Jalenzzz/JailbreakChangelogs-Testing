@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { Dialog } from '@headlessui/react';
 import { Pagination } from '@mui/material';
 import Image from 'next/image';
@@ -252,8 +252,13 @@ export default function DupeFinderResults({
     return (
       <div className="bg-[#212A31] rounded-lg p-6 shadow-sm border border-[#2E3944]">
         <div className="text-center">
-          <div className="text-red-400 text-lg font-medium mb-2">Error</div>
-          <div className="text-gray-400">{error}</div>
+          <div className="flex justify-center mb-4">
+            <div className="p-3 bg-red-500/10 rounded-full">
+              <ExclamationTriangleIcon className="h-8 w-8 text-red-400" />
+            </div>
+          </div>
+          <h3 className="text-lg font-semibold text-red-400 mb-2">Search Error</h3>
+          <p className="text-gray-300">{error}</p>
         </div>
       </div>
     );
