@@ -422,6 +422,16 @@ export default function Header() {
           } 
         />
       </ListItem>
+      <ListItem component={Link} href="/seasons/contracts" onClick={handleDrawerToggle} sx={{ pl: 4 }}>
+        <ListItemText 
+          primary={
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+              <span>Weekly Contracts</span>
+              <span className="text-[10px] uppercase font-semibold text-white bg-[#5865F2] px-1.5 py-0.5 rounded">New</span>
+            </Box>
+          } 
+        />
+      </ListItem>
       <ListItem>
         <Typography 
           sx={{ 
@@ -700,6 +710,20 @@ export default function Header() {
                             <Link href="/seasons/will-i-make-it" className="rounded-lg px-4 py-2 text-base text-[#D3D9D4] hover:bg-[#2E3944] transition-colors font-bold hover:text-white block" onClick={handleSeasonsMenuClose}>
                               <div className="flex items-center gap-2 flex-wrap"> 
                                 <span>Will I Make It</span>
+                                <span className="text-[10px] uppercase font-semibold text-white bg-[#5865F2] px-1.5 py-0.5 rounded">New</span>
+                              </div>
+                            </Link>
+                          </motion.div>
+                          <motion.div
+                            variants={{
+                              hidden: { opacity: 0, x: -10 },
+                              visible: { opacity: 1, x: 0 }
+                            }}
+                            transition={{ duration: 0.2, delay: 0.1 }}
+                          >
+                            <Link href="/seasons/contracts" className="rounded-lg px-4 py-2 text-base text-[#D3D9D4] hover:bg-[#2E3944] transition-colors font-bold hover:text-white block" onClick={handleSeasonsMenuClose}>
+                              <div className="flex items-center gap-2 flex-wrap"> 
+                                <span>Weekly Contracts</span>
                                 <span className="text-[10px] uppercase font-semibold text-white bg-[#5865F2] px-1.5 py-0.5 rounded">New</span>
                               </div>
                             </Link>
