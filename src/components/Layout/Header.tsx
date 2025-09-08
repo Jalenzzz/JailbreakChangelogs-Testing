@@ -1028,6 +1028,27 @@ export default function Header() {
               </Box>
 
               <Box className="flex items-center gap-2 ml-auto">
+                <IconButton
+                  component="a"
+                  href="https://ko-fi.com/jailbreakchangelogs"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    color: '#FFFFFF',
+                    '&:hover': {
+                      backgroundColor: 'rgba(29, 125, 163, 0.1)'
+                    }
+                  }}
+                  aria-label="Support us on Ko-fi"
+                >
+                  <Image
+                    src="https://assets.jailbreakchangelogs.xyz/assets/images/kofi_assets/kofi_symbol.svg"
+                    alt="Ko-fi"
+                    width={22}
+                    height={22}
+                    style={{ display: 'block' }}
+                  />
+                </IconButton>
                 <Tooltip title="Join our Discord">
                   <IconButton
                     onClick={() => setIsDiscordModalOpen(true)}
@@ -1247,6 +1268,27 @@ export default function Header() {
           )}
           {mounted && isMobile && (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <IconButton
+                component="a"
+                href="https://ko-fi.com/jbchangelogs"
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{
+                  color: '#FFFFFF',
+                  '&:hover': {
+                    backgroundColor: 'rgba(29, 125, 163, 0.1)'
+                  }
+                }}
+                aria-label="Support us on Ko-fi"
+              >
+                <Image
+                  src="https://assets.jailbreakchangelogs.xyz/assets/images/kofi_assets/kofi_symbol.svg"
+                  alt="Ko-fi"
+                  width={22}
+                  height={22}
+                  style={{ display: 'block' }}
+                />
+              </IconButton>
               <Tooltip title="Join our Discord">
                 <IconButton
                   onClick={() => setIsDiscordModalOpen(true)}

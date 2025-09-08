@@ -44,7 +44,11 @@ function formatTime(seconds: number): string {
   const hours = Math.floor((seconds % (24 * 60 * 60)) / (60 * 60));
   const minutes = Math.floor((seconds % (60 * 60)) / 60);
   const secs = seconds % 60;
-  return `${days} days ${hours} hours ${minutes} minutes ${secs} seconds`;
+  const dLabel = days === 1 ? 'day' : 'days';
+  const hLabel = hours === 1 ? 'hour' : 'hours';
+  const mLabel = minutes === 1 ? 'minute' : 'minutes';
+  const sLabel = secs === 1 ? 'second' : 'seconds';
+  return `${days} ${dLabel} ${hours} ${hLabel} ${minutes} ${mLabel} ${secs} ${sLabel}`;
 }
 
 const WeeklyContractsCountdown: React.FC = () => {
