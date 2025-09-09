@@ -39,6 +39,8 @@ export const formatTimestamp = (timestamp: string | number, options: FormatOptio
   if (includeTime) {
     dateOptions.hour = '2-digit';
     dateOptions.minute = '2-digit';
+    // Force 12-hour clock for all timestamp displays
+    dateOptions.hour12 = true;
   }
 
   return date.toLocaleDateString('en-US', dateOptions);
@@ -98,7 +100,17 @@ export const formatProfileDate = (timestamp: string | number): string => {
  * @returns Formatted date string with time (e.g., "January 1, 2024, 3:45 PM")
  */
 export const formatMessageDate = (timestamp: string | number): string => {
-  return formatTimestamp(timestamp, { format: 'long', includeTime: true });
+  const timestampNum = typeof timestamp === 'string' ? parseInt(timestamp) : timestamp;
+  const isMilliseconds = timestampNum > 1000000000000;
+  const date = new Date(isMilliseconds ? timestampNum : timestampNum * 1000);
+  return new Intl.DateTimeFormat(undefined, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  }).format(date);
 };
 
 /**
@@ -125,7 +137,8 @@ export const formatFullDate = (timestamp: string | number): string => {
     month: 'long',
     day: 'numeric',
     hour: 'numeric',
-    minute: 'numeric'
+    minute: 'numeric',
+    hour12: true
   };
   
   return date.toLocaleDateString('en-US', options);
@@ -164,8 +177,10 @@ export const formatCustomDate = (timestamp: string | number): string => {
   const day = date.getDate();
   const month = date.toLocaleDateString('en-US', { month: 'long' });
   const year = date.getFullYear();
-  const hours = date.getHours().toString().padStart(2, '0');
+  const hours24 = date.getHours();
   const minutes = date.getMinutes().toString().padStart(2, '0');
+  const period = hours24 >= 12 ? 'PM' : 'AM';
+  const hours12 = (hours24 % 12) === 0 ? 12 : (hours24 % 12);
   
-  return `${weekday} ${day} ${month} ${year} at ${hours}:${minutes}`;
+  return `${weekday} ${day} ${month} ${year} at ${hours12}:${minutes} ${period}`;
 }; 

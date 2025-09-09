@@ -53,6 +53,11 @@ export default function SeasonContractsClient({ contracts, updatedAt }: SeasonCo
                   <div className="bg-[#212A31] text-white text-sm font-bold uppercase px-4 py-2">Contract {idx + 1}</div>
                   <div className="p-4">
                     <div className="text-white text-lg font-extrabold mb-3 leading-snug">{c.description}</div>
+                    {c.name === 'AccumArrestBounty' && (
+                      <div className="mb-3 rounded border border-yellow-500/30 bg-yellow-500/10 px-3 py-2 text-xs text-yellow-200">
+                        Note: This goal varies per player (e.g., 5,500–6,000). Displayed value may be approximate.
+                      </div>
+                    )}
                     <div className="flex items-center justify-between">
                       <div className="text-white text-sm font-bold bg-[#047857] px-3 py-2 rounded">
                         REWARD: {c.reward} XP

@@ -807,10 +807,10 @@ export async function fetchInventoryData(robloxId: string) {
 
       // Some responses come back as ["Inventory not found.", 404]
       if (Array.isArray(payload)) {
-        const [maybeMessage, maybeStatus] = payload as unknown[];
-        const isErrorTuple = typeof maybeMessage === 'string' && typeof maybeStatus === 'number';
+        const [errorMessage, statusCode] = payload as unknown[];
+        const isErrorTuple = typeof errorMessage === 'string' && typeof statusCode === 'number';
         if (isErrorTuple) {
-          return { error: 'not_found', message: maybeMessage } as const;
+          return { error: 'not_found', message: errorMessage } as const;
         }
         return payload[0] ?? null;
       }
