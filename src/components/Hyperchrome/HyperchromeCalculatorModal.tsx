@@ -43,7 +43,20 @@ export default function HyperchromeCalculatorModal({
   }, [level, pity]);
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+      scroll="paper"
+      slotProps={{
+        paper: {
+          sx: {
+            minHeight: { xs: '60vh', sm: '55vh' },
+          },
+        },
+      }}
+    >
       <DialogContent sx={{ p: 0, backgroundColor: '#212A31', border: '1px solid #2E3944' }}>
         <div className="relative space-y-5 p-4 sm:p-6">
           <button
