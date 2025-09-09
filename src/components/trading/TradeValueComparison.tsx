@@ -1,8 +1,12 @@
-import React from 'react';
-import { TradeItem } from '@/types/trading';
-import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
-import Link from 'next/link';
-import { getItemTypeColor, getDemandColor, getTrendColor } from '@/utils/badgeColors';
+import React from "react";
+import { TradeItem } from "@/types/trading";
+import { FaArrowUp, FaArrowDown } from "react-icons/fa";
+import Link from "next/link";
+import {
+  getItemTypeColor,
+  getDemandColor,
+  getTrendColor,
+} from "@/utils/badgeColors";
 
 interface TradeValueComparisonProps {
   offering: TradeItem[];
@@ -11,22 +15,22 @@ interface TradeValueComparisonProps {
 
 const parseCurrencyValue = (value: string): number => {
   if (!value || value === "N/A") return 0;
-  
+
   // Remove any non-numeric characters except decimal point and k/m
-  const cleanValue = value.toLowerCase().replace(/[^0-9.kms]/g, '');
-  
+  const cleanValue = value.toLowerCase().replace(/[^0-9.kms]/g, "");
+
   // Extract the numeric part and suffix
   const match = cleanValue.match(/^([0-9.]+)([km]?)$/);
   if (!match) return 0;
-  
+
   const [, num, suffix] = match;
   const numericValue = parseFloat(num);
-  
+
   // Apply multiplier based on suffix
   switch (suffix) {
-    case 'k':
+    case "k":
       return numericValue * 1000;
-    case 'm':
+    case "m":
       return numericValue * 1000000;
     default:
       return numericValue;
@@ -38,62 +42,83 @@ const formatCurrencyValue = (value: number): string => {
 };
 
 const getItemData = (item: TradeItem): TradeItem => {
-  if ('data' in item && item.data) {
+  if ("data" in item && item.data) {
     return {
       ...item.data,
       id: item.id,
-      is_sub: 'sub_name' in item,
-      sub_name: 'sub_name' in item ? item.sub_name : undefined,
+      is_sub: "sub_name" in item,
+      sub_name: "sub_name" in item ? item.sub_name : undefined,
       tradable: item.data.tradable ? 1 : 0,
       is_limited: item.data.is_limited ?? 0,
-      name: 'sub_name' in item ? `${item.data.name} (${item.sub_name})` : item.data.name,
+      name:
+        "sub_name" in item
+          ? `${item.data.name} (${item.sub_name})`
+          : item.data.name,
       base_name: item.data.name,
-      trend: (item.trend ?? item.data?.trend ?? null)
+      trend: item.trend ?? item.data?.trend ?? null,
     };
   }
   return item;
 };
 
 const groupItems = (items: TradeItem[]) => {
-  const grouped = items.reduce((acc, item) => {
-    const itemData = getItemData(item);
-    const key = `${item.id}-${itemData.name}-${itemData.type}`;
-    if (!acc[key]) {
-      acc[key] = { ...itemData, count: 1 };
-    } else {
-      acc[key].count++;
-    }
-    return acc;
-  }, {} as Record<string, TradeItem & { count: number }>);
-  
+  const grouped = items.reduce(
+    (acc, item) => {
+      const itemData = getItemData(item);
+      const key = `${item.id}-${itemData.name}-${itemData.type}`;
+      if (!acc[key]) {
+        acc[key] = { ...itemData, count: 1 };
+      } else {
+        acc[key].count++;
+      }
+      return acc;
+    },
+    {} as Record<string, TradeItem & { count: number }>,
+  );
+
   return Object.values(grouped);
 };
 
-export default function TradeValueComparison({ offering, requesting }: TradeValueComparisonProps) {
+export default function TradeValueComparison({
+  offering,
+  requesting,
+}: TradeValueComparisonProps) {
   return (
     <div className="bg-[#2E3944] rounded-lg p-6">
-      <h3 className="text-lg font-semibold text-muted mb-4">Value Comparison</h3>
-      
+      <h3 className="text-lg font-semibold text-muted mb-4">
+        Value Comparison
+      </h3>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Offering Side */}
         <div>
           <div className="flex items-center gap-2 mb-3">
             <h4 className="text-muted font-medium">Offering Side</h4>
             <span className="px-2 py-0.5 text-xs rounded-full bg-[#5865F2] text-white border border-[#5865F2]/20">
-              {groupItems(offering).reduce((sum, item) => sum + item.count, 0)} item{groupItems(offering).reduce((sum, item) => sum + item.count, 0) !== 1 ? 's' : ''}
+              {groupItems(offering).reduce((sum, item) => sum + item.count, 0)}{" "}
+              item
+              {groupItems(offering).reduce(
+                (sum, item) => sum + item.count,
+                0,
+              ) !== 1
+                ? "s"
+                : ""}
             </span>
           </div>
           <div className="bg-[#37424D] rounded-lg p-4">
             <div className="space-y-2">
               {groupItems(offering).map((item, index, array) => (
-                <div key={`${item.id}`} className={`flex justify-between items-center ${index !== array.length - 1 ? 'pb-3 border-b border-[#4A5568]' : ''}`}>
+                <div
+                  key={`${item.id}`}
+                  className={`flex justify-between items-center ${index !== array.length - 1 ? "pb-3 border-b border-[#4A5568]" : ""}`}
+                >
                   <div>
-                    <Link 
-                      href={`/item/${item.type.toLowerCase()}/${item.base_name || item.name}${'sub_name' in item ? `?variant=${item.sub_name}` : ''}`}
+                    <Link
+                      href={`/item/${item.type.toLowerCase()}/${item.base_name || item.name}${"sub_name" in item ? `?variant=${item.sub_name}` : ""}`}
                       className="text-[#FFFFFF] hover:text-blue-400 transition-colors font-medium"
                     >
-                      {item.base_name && item.sub_name 
-                        ? `${item.base_name} (${item.sub_name})` 
+                      {item.base_name && item.sub_name
+                        ? `${item.base_name} (${item.sub_name})`
                         : item.name}
                       {item.count > 1 && (
                         <span className="ml-2 px-2.5 py-1 text-sm rounded-full bg-[#5865F2] text-white border border-[#5865F2]/20">
@@ -102,7 +127,7 @@ export default function TradeValueComparison({ offering, requesting }: TradeValu
                       )}
                     </Link>
                     <div className="mt-1">
-                      <span 
+                      <span
                         className="rounded-full px-2 py-0.5 text-xs text-white"
                         style={{ backgroundColor: getItemTypeColor(item.type) }}
                       >
@@ -121,20 +146,44 @@ export default function TradeValueComparison({ offering, requesting }: TradeValu
                     </div>
                     <div className="mt-1 flex items-center gap-2">
                       <span className="text-xs text-muted">Demand:</span>
-                      <span className={`inline-block px-2 py-0.5 text-xs rounded-full text-white font-semibold ${getDemandColor(item.demand ?? 'N/A')}`}>
-                        {(item.demand ?? 'N/A') === 'N/A' ? 'Unknown' : (item.demand as string)}
+                      <span
+                        className={`inline-block px-2 py-0.5 text-xs rounded-full text-white font-semibold ${getDemandColor(item.demand ?? "N/A")}`}
+                      >
+                        {(item.demand ?? "N/A") === "N/A"
+                          ? "Unknown"
+                          : (item.demand as string)}
                       </span>
                     </div>
                     <div className="mt-1 flex items-center gap-2">
                       <span className="text-xs text-muted">Trend:</span>
-                      <span className={`inline-block px-2 py-0.5 text-xs rounded-full text-white font-semibold ${getTrendColor(item.trend || 'Unknown')}`}>
-                        {!('trend' in item) || item.trend === null || item.trend === 'N/A' ? 'Unknown' : (item.trend as string)}
+                      <span
+                        className={`inline-block px-2 py-0.5 text-xs rounded-full text-white font-semibold ${getTrendColor(item.trend || "Unknown")}`}
+                      >
+                        {!("trend" in item) ||
+                        item.trend === null ||
+                        item.trend === "N/A"
+                          ? "Unknown"
+                          : (item.trend as string)}
                       </span>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-muted">Cash: {item.cash_value === null || item.cash_value === "N/A" ? "N/A" : formatCurrencyValue(parseCurrencyValue(item.cash_value))}</div>
-                    <div className="text-muted">Duped: {item.duped_value === null || item.duped_value === "N/A" ? "N/A" : formatCurrencyValue(parseCurrencyValue(item.duped_value))}</div>
+                    <div className="text-muted">
+                      Cash:{" "}
+                      {item.cash_value === null || item.cash_value === "N/A"
+                        ? "N/A"
+                        : formatCurrencyValue(
+                            parseCurrencyValue(item.cash_value),
+                          )}
+                    </div>
+                    <div className="text-muted">
+                      Duped:{" "}
+                      {item.duped_value === null || item.duped_value === "N/A"
+                        ? "N/A"
+                        : formatCurrencyValue(
+                            parseCurrencyValue(item.duped_value),
+                          )}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -142,12 +191,26 @@ export default function TradeValueComparison({ offering, requesting }: TradeValu
                 <span className="text-muted">Total</span>
                 <div className="text-right">
                   <div className="text-[#FFFFFF]">
-                    Cash: {formatCurrencyValue(groupItems(offering).reduce((sum, item) => 
-                      sum + (parseCurrencyValue(item.cash_value) * item.count), 0))}
+                    Cash:{" "}
+                    {formatCurrencyValue(
+                      groupItems(offering).reduce(
+                        (sum, item) =>
+                          sum +
+                          parseCurrencyValue(item.cash_value) * item.count,
+                        0,
+                      ),
+                    )}
                   </div>
                   <div className="text-[#FFFFFF]">
-                    Duped: {formatCurrencyValue(groupItems(offering).reduce((sum, item) => 
-                      sum + (parseCurrencyValue(item.duped_value) * item.count), 0))}
+                    Duped:{" "}
+                    {formatCurrencyValue(
+                      groupItems(offering).reduce(
+                        (sum, item) =>
+                          sum +
+                          parseCurrencyValue(item.duped_value) * item.count,
+                        0,
+                      ),
+                    )}
                   </div>
                 </div>
               </div>
@@ -160,20 +223,33 @@ export default function TradeValueComparison({ offering, requesting }: TradeValu
           <div className="flex items-center gap-2 mb-3">
             <h4 className="text-muted font-medium">Requesting Side</h4>
             <span className="px-2 py-0.5 text-xs rounded-full bg-[#5865F2] text-white border border-[#5865F2]/20">
-              {groupItems(requesting).reduce((sum, item) => sum + item.count, 0)} item{groupItems(requesting).reduce((sum, item) => sum + item.count, 0) !== 1 ? 's' : ''}
+              {groupItems(requesting).reduce(
+                (sum, item) => sum + item.count,
+                0,
+              )}{" "}
+              item
+              {groupItems(requesting).reduce(
+                (sum, item) => sum + item.count,
+                0,
+              ) !== 1
+                ? "s"
+                : ""}
             </span>
           </div>
           <div className="bg-[#37424D] rounded-lg p-4">
             <div className="space-y-2">
               {groupItems(requesting).map((item, index, array) => (
-                <div key={`${item.id}`} className={`flex justify-between items-center ${index !== array.length - 1 ? 'pb-3 border-b border-[#4A5568]' : ''}`}>
+                <div
+                  key={`${item.id}`}
+                  className={`flex justify-between items-center ${index !== array.length - 1 ? "pb-3 border-b border-[#4A5568]" : ""}`}
+                >
                   <div>
-                    <Link 
-                      href={`/item/${item.type.toLowerCase()}/${item.base_name || item.name}${'sub_name' in item ? `?variant=${item.sub_name}` : ''}`}
+                    <Link
+                      href={`/item/${item.type.toLowerCase()}/${item.base_name || item.name}${"sub_name" in item ? `?variant=${item.sub_name}` : ""}`}
                       className="text-[#FFFFFF] hover:text-blue-400 transition-colors font-medium"
                     >
-                      {item.base_name && item.sub_name 
-                        ? `${item.base_name} (${item.sub_name})` 
+                      {item.base_name && item.sub_name
+                        ? `${item.base_name} (${item.sub_name})`
                         : item.name}
                       {item.count > 1 && (
                         <span className="ml-2 px-2.5 py-1 text-sm rounded-full bg-[#5865F2] text-white border border-[#5865F2]/20">
@@ -182,7 +258,7 @@ export default function TradeValueComparison({ offering, requesting }: TradeValu
                       )}
                     </Link>
                     <div className="mt-1">
-                      <span 
+                      <span
                         className="rounded-full px-2 py-0.5 text-xs text-white"
                         style={{ backgroundColor: getItemTypeColor(item.type) }}
                       >
@@ -201,20 +277,44 @@ export default function TradeValueComparison({ offering, requesting }: TradeValu
                     </div>
                     <div className="mt-1 flex items-center gap-2">
                       <span className="text-xs text-muted">Demand:</span>
-                      <span className={`inline-block px-2 py-0.5 text-xs rounded-full text-white font-semibold ${getDemandColor(item.demand ?? 'N/A')}`}>
-                        {(item.demand ?? 'N/A') === 'N/A' ? 'Unknown' : (item.demand as string)}
+                      <span
+                        className={`inline-block px-2 py-0.5 text-xs rounded-full text-white font-semibold ${getDemandColor(item.demand ?? "N/A")}`}
+                      >
+                        {(item.demand ?? "N/A") === "N/A"
+                          ? "Unknown"
+                          : (item.demand as string)}
                       </span>
                     </div>
                     <div className="mt-1 flex items-center gap-2">
                       <span className="text-xs text-muted">Trend:</span>
-                      <span className={`inline-block px-2 py-0.5 text-xs rounded-full text-white font-semibold ${getTrendColor(item.trend || 'Unknown')}`}>
-                        {!('trend' in item) || item.trend === null || item.trend === 'N/A' ? 'Unknown' : (item.trend as string)}
+                      <span
+                        className={`inline-block px-2 py-0.5 text-xs rounded-full text-white font-semibold ${getTrendColor(item.trend || "Unknown")}`}
+                      >
+                        {!("trend" in item) ||
+                        item.trend === null ||
+                        item.trend === "N/A"
+                          ? "Unknown"
+                          : (item.trend as string)}
                       </span>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-muted">Cash: {item.cash_value === null || item.cash_value === "N/A" ? "N/A" : formatCurrencyValue(parseCurrencyValue(item.cash_value))}</div>
-                    <div className="text-muted">Duped: {item.duped_value === null || item.duped_value === "N/A" ? "N/A" : formatCurrencyValue(parseCurrencyValue(item.duped_value))}</div>
+                    <div className="text-muted">
+                      Cash:{" "}
+                      {item.cash_value === null || item.cash_value === "N/A"
+                        ? "N/A"
+                        : formatCurrencyValue(
+                            parseCurrencyValue(item.cash_value),
+                          )}
+                    </div>
+                    <div className="text-muted">
+                      Duped:{" "}
+                      {item.duped_value === null || item.duped_value === "N/A"
+                        ? "N/A"
+                        : formatCurrencyValue(
+                            parseCurrencyValue(item.duped_value),
+                          )}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -222,12 +322,26 @@ export default function TradeValueComparison({ offering, requesting }: TradeValu
                 <span className="text-muted">Total</span>
                 <div className="text-right">
                   <div className="text-[#FFFFFF]">
-                    Cash: {formatCurrencyValue(groupItems(requesting).reduce((sum, item) => 
-                      sum + (parseCurrencyValue(item.cash_value) * item.count), 0))}
+                    Cash:{" "}
+                    {formatCurrencyValue(
+                      groupItems(requesting).reduce(
+                        (sum, item) =>
+                          sum +
+                          parseCurrencyValue(item.cash_value) * item.count,
+                        0,
+                      ),
+                    )}
                   </div>
                   <div className="text-[#FFFFFF]">
-                    Duped: {formatCurrencyValue(groupItems(requesting).reduce((sum, item) => 
-                      sum + (parseCurrencyValue(item.duped_value) * item.count), 0))}
+                    Duped:{" "}
+                    {formatCurrencyValue(
+                      groupItems(requesting).reduce(
+                        (sum, item) =>
+                          sum +
+                          parseCurrencyValue(item.duped_value) * item.count,
+                        0,
+                      ),
+                    )}
                   </div>
                 </div>
               </div>
@@ -242,27 +356,46 @@ export default function TradeValueComparison({ offering, requesting }: TradeValu
         <div className="space-y-2">
           <div className="flex justify-between items-center">
             <span className="text-muted">Cash Value Difference</span>
-            <span className={(() => {
-              const offeringTotal = groupItems(offering).reduce((sum, item) => 
-                sum + (parseCurrencyValue(item.cash_value) * item.count), 0);
-              const requestingTotal = groupItems(requesting).reduce((sum, item) => 
-                sum + (parseCurrencyValue(item.cash_value) * item.count), 0);
-              const diff = offeringTotal - requestingTotal;
-              if (diff < 0) return 'inline-flex items-center gap-2 font-semibold px-3 py-1 rounded-full bg-[#43B581]/20 text-white border border-[#43B581]/30 shadow-sm text-base';
-              if (diff > 0) return 'inline-flex items-center gap-2 font-semibold px-3 py-1 rounded-full bg-red-500/20 text-white border border-red-500/30 shadow-sm text-base';
-              return 'inline-flex items-center gap-2 font-semibold px-3 py-1 rounded-full bg-gray-500/20 text-white border border-gray-500/30 shadow-sm text-base';
-            })()}>
+            <span
+              className={(() => {
+                const offeringTotal = groupItems(offering).reduce(
+                  (sum, item) =>
+                    sum + parseCurrencyValue(item.cash_value) * item.count,
+                  0,
+                );
+                const requestingTotal = groupItems(requesting).reduce(
+                  (sum, item) =>
+                    sum + parseCurrencyValue(item.cash_value) * item.count,
+                  0,
+                );
+                const diff = offeringTotal - requestingTotal;
+                if (diff < 0)
+                  return "inline-flex items-center gap-2 font-semibold px-3 py-1 rounded-full bg-[#43B581]/20 text-white border border-[#43B581]/30 shadow-sm text-base";
+                if (diff > 0)
+                  return "inline-flex items-center gap-2 font-semibold px-3 py-1 rounded-full bg-red-500/20 text-white border border-red-500/30 shadow-sm text-base";
+                return "inline-flex items-center gap-2 font-semibold px-3 py-1 rounded-full bg-gray-500/20 text-white border border-gray-500/30 shadow-sm text-base";
+              })()}
+            >
               {(() => {
-                const offeringTotal = groupItems(offering).reduce((sum, item) => 
-                  sum + (parseCurrencyValue(item.cash_value) * item.count), 0);
-                const requestingTotal = groupItems(requesting).reduce((sum, item) => 
-                  sum + (parseCurrencyValue(item.cash_value) * item.count), 0);
+                const offeringTotal = groupItems(offering).reduce(
+                  (sum, item) =>
+                    sum + parseCurrencyValue(item.cash_value) * item.count,
+                  0,
+                );
+                const requestingTotal = groupItems(requesting).reduce(
+                  (sum, item) =>
+                    sum + parseCurrencyValue(item.cash_value) * item.count,
+                  0,
+                );
                 const diff = offeringTotal - requestingTotal;
                 return (
                   <>
-                    {diff !== 0 && (
-                      diff < 0 ? <FaArrowUp className="text-[#43B581]" /> : <FaArrowDown className="text-red-500" />
-                    )}
+                    {diff !== 0 &&
+                      (diff < 0 ? (
+                        <FaArrowUp className="text-[#43B581]" />
+                      ) : (
+                        <FaArrowDown className="text-red-500" />
+                      ))}
                     {formatCurrencyValue(Math.abs(diff))}
                   </>
                 );
@@ -271,27 +404,46 @@ export default function TradeValueComparison({ offering, requesting }: TradeValu
           </div>
           <div className="flex justify-between items-center">
             <span className="text-muted">Duped Value Difference</span>
-            <span className={(() => {
-              const offeringTotal = groupItems(offering).reduce((sum, item) => 
-                sum + (parseCurrencyValue(item.duped_value) * item.count), 0);
-              const requestingTotal = groupItems(requesting).reduce((sum, item) => 
-                sum + (parseCurrencyValue(item.duped_value) * item.count), 0);
-              const diff = offeringTotal - requestingTotal;
-              if (diff < 0) return 'inline-flex items-center gap-2 font-semibold px-3 py-1 rounded-full bg-[#43B581]/20 text-white border border-[#43B581]/30 shadow-sm text-base';
-              if (diff > 0) return 'inline-flex items-center gap-2 font-semibold px-3 py-1 rounded-full bg-red-500/20 text-white border border-red-500/30 shadow-sm text-base';
-              return 'inline-flex items-center gap-2 font-semibold px-3 py-1 rounded-full bg-gray-500/20 text-white border border-gray-500/30 shadow-sm text-base';
-            })()}>
+            <span
+              className={(() => {
+                const offeringTotal = groupItems(offering).reduce(
+                  (sum, item) =>
+                    sum + parseCurrencyValue(item.duped_value) * item.count,
+                  0,
+                );
+                const requestingTotal = groupItems(requesting).reduce(
+                  (sum, item) =>
+                    sum + parseCurrencyValue(item.duped_value) * item.count,
+                  0,
+                );
+                const diff = offeringTotal - requestingTotal;
+                if (diff < 0)
+                  return "inline-flex items-center gap-2 font-semibold px-3 py-1 rounded-full bg-[#43B581]/20 text-white border border-[#43B581]/30 shadow-sm text-base";
+                if (diff > 0)
+                  return "inline-flex items-center gap-2 font-semibold px-3 py-1 rounded-full bg-red-500/20 text-white border border-red-500/30 shadow-sm text-base";
+                return "inline-flex items-center gap-2 font-semibold px-3 py-1 rounded-full bg-gray-500/20 text-white border border-gray-500/30 shadow-sm text-base";
+              })()}
+            >
               {(() => {
-                const offeringTotal = groupItems(offering).reduce((sum, item) => 
-                  sum + (parseCurrencyValue(item.duped_value) * item.count), 0);
-                const requestingTotal = groupItems(requesting).reduce((sum, item) => 
-                  sum + (parseCurrencyValue(item.duped_value) * item.count), 0);
+                const offeringTotal = groupItems(offering).reduce(
+                  (sum, item) =>
+                    sum + parseCurrencyValue(item.duped_value) * item.count,
+                  0,
+                );
+                const requestingTotal = groupItems(requesting).reduce(
+                  (sum, item) =>
+                    sum + parseCurrencyValue(item.duped_value) * item.count,
+                  0,
+                );
                 const diff = offeringTotal - requestingTotal;
                 return (
                   <>
-                    {diff !== 0 && (
-                      diff < 0 ? <FaArrowUp className="text-[#43B581]" /> : <FaArrowDown className="text-red-500" />
-                    )}
+                    {diff !== 0 &&
+                      (diff < 0 ? (
+                        <FaArrowUp className="text-[#43B581]" />
+                      ) : (
+                        <FaArrowDown className="text-red-500" />
+                      ))}
                     {formatCurrencyValue(Math.abs(diff))}
                   </>
                 );
@@ -302,4 +454,4 @@ export default function TradeValueComparison({ offering, requesting }: TradeValu
       </div>
     </div>
   );
-} 
+}

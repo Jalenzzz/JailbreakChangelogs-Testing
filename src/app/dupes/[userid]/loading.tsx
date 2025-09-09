@@ -1,5 +1,5 @@
-import Breadcrumb from '@/components/Layout/Breadcrumb';
-import DupeFinderClient from '@/components/Dupes/DupeFinderClient';
+import Breadcrumb from "@/components/Layout/Breadcrumb";
+import DupeFinderClient from "@/components/Dupes/DupeFinderClient";
 
 export default function Loading() {
   return (

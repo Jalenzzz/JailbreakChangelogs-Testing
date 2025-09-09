@@ -1,7 +1,7 @@
 "use client";
 
-import React from 'react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import React from "react";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
 interface SurveyBannerProps {
   onAccept: () => void;
@@ -11,16 +11,18 @@ interface SurveyBannerProps {
 
 const SurveyBanner: React.FC<SurveyBannerProps> = ({ onAccept, onDismiss }) => {
   return (
-    <div 
+    <div
       className="fixed bottom-0 left-0 right-0 bg-[#1A5F7A] border-t border-[#124e66] p-4 z-50"
       style={{
-        boxShadow: '0 -4px 6px rgba(0, 0, 0, 0.2)'
+        boxShadow: "0 -4px 6px rgba(0, 0, 0, 0.2)",
       }}
     >
       <div className="container mx-auto flex items-center justify-between gap-4">
         <div className="flex-1">
           <p className="text-white">
-            <span className="font-semibold">We&apos;d love to get your feedback!</span>
+            <span className="font-semibold">
+              We&apos;d love to get your feedback!
+            </span>
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -43,4 +45,4 @@ const SurveyBanner: React.FC<SurveyBannerProps> = ({ onAccept, onDismiss }) => {
   );
 };
 
-export default SurveyBanner; 
+export default SurveyBanner;

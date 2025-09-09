@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { XMarkIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { getItemTypeColor } from '@/utils/badgeColors';
+import { getItemTypeColor } from "@/utils/badgeColors";
 
 interface Item {
   id: number;
@@ -31,20 +31,20 @@ const ItemSelectionModal: React.FC<ItemSelectionModalProps> = ({
   isOpen,
   onClose,
   onItemSelect,
-  initialItems = []
+  initialItems = [],
 }) => {
   const [items, setItems] = useState<Item[]>(initialItems);
   const [loading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [isOpen]);
 
@@ -60,8 +60,8 @@ const ItemSelectionModal: React.FC<ItemSelectionModalProps> = ({
     }
   }, [initialItems]);
 
-  const filteredItems = items.filter(item => 
-    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredItems = items.filter((item) =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   if (!isOpen) return null;
@@ -94,12 +94,14 @@ const ItemSelectionModal: React.FC<ItemSelectionModalProps> = ({
 
           <div className="max-h-[400px] overflow-y-auto">
             {loading ? (
-              <div className="text-center text-muted py-4">Loading items...</div>
+              <div className="text-center text-muted py-4">
+                Loading items...
+              </div>
             ) : filteredItems.length === 0 ? (
               <div className="text-center text-muted py-4">No items found</div>
             ) : (
               <div className="space-y-1">
-                {filteredItems.map(item => (
+                {filteredItems.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => {
@@ -108,8 +110,10 @@ const ItemSelectionModal: React.FC<ItemSelectionModalProps> = ({
                     }}
                     className="w-full flex items-center justify-between p-2 rounded-lg border border-[#2E3944] bg-[#37424D] hover:bg-[#2E3944] transition-colors text-left group"
                   >
-                    <span className="text-muted group-hover:text-[#FFFFFF] transition-colors truncate">{item.name}</span>
-                    <span 
+                    <span className="text-muted group-hover:text-[#FFFFFF] transition-colors truncate">
+                      {item.name}
+                    </span>
+                    <span
                       className="px-2 py-0.5 text-xs rounded-full text-white ml-2 flex-shrink-0"
                       style={{ backgroundColor: getItemTypeColor(item.type) }}
                     >
@@ -126,4 +130,4 @@ const ItemSelectionModal: React.FC<ItemSelectionModalProps> = ({
   );
 };
 
-export default ItemSelectionModal; 
+export default ItemSelectionModal;

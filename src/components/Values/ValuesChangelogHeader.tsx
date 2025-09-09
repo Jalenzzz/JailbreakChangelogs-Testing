@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const ValuesChangelogHeader: React.FC = () => {
   return (
@@ -9,10 +9,11 @@ const ValuesChangelogHeader: React.FC = () => {
         </h2>
       </div>
       <p className="mb-4 text-muted">
-        Welcome to our comprehensive collection of our Value Changes! Track every value change, price adjustment, and item modification we make.
+        Welcome to our comprehensive collection of our Value Changes! Track
+        every value change, price adjustment, and item modification we make.
       </p>
     </div>
   );
 };
 
-export default ValuesChangelogHeader; 
+export default ValuesChangelogHeader;

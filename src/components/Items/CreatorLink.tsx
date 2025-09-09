@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface CreatorLinkProps {
   creator: string | null;
@@ -22,4 +22,4 @@ export default function CreatorLink({ creator }: CreatorLinkProps) {
       {name}
     </a>
   );
-} 
+}

@@ -1,21 +1,23 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import Maintenance from './Maintenance';
-import Header from './Header';
-import { canBypassMaintenance } from '@/utils/maintenance';
+import { useEffect, useState } from "react";
+import Maintenance from "./Maintenance";
+import Header from "./Header";
+import { canBypassMaintenance } from "@/utils/maintenance";
 
 interface MaintenanceBypassProps {
   children: React.ReactNode;
 }
 
-export default function MaintenanceBypass({ children }: MaintenanceBypassProps) {
+export default function MaintenanceBypass({
+  children,
+}: MaintenanceBypassProps) {
   const [canBypass, setCanBypass] = useState<boolean | null>(null);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
-    
+
     // Check if user can bypass maintenance
     const bypassCheck = canBypassMaintenance();
     setCanBypass(bypassCheck);
@@ -33,7 +35,7 @@ export default function MaintenanceBypass({ children }: MaintenanceBypassProps) 
     const handleAuthChange = () => {
       const newBypassCheck = canBypassMaintenance();
       setCanBypass(newBypassCheck);
-      
+
       // Update title when auth changes
       if (newBypassCheck) {
         document.title = "Latest Updates & Patch Notes | Changelogs";
@@ -42,10 +44,10 @@ export default function MaintenanceBypass({ children }: MaintenanceBypassProps) 
       }
     };
 
-    window.addEventListener('authStateChanged', handleAuthChange);
-    
+    window.addEventListener("authStateChanged", handleAuthChange);
+
     return () => {
-      window.removeEventListener('authStateChanged', handleAuthChange);
+      window.removeEventListener("authStateChanged", handleAuthChange);
     };
   }, []);
 
@@ -71,4 +73,3 @@ export default function MaintenanceBypass({ children }: MaintenanceBypassProps) 
     </div>
   );
 }
-

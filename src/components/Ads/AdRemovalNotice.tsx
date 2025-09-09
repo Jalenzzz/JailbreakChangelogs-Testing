@@ -1,14 +1,16 @@
 "use client";
 
-import React from 'react';
-import { useAuth } from '@/hooks/useAuth';
-import Link from 'next/link';
+import React from "react";
+import { useAuth } from "@/hooks/useAuth";
+import Link from "next/link";
 
 interface AdRemovalNoticeProps {
   className?: string;
 }
 
-const AdRemovalNotice: React.FC<AdRemovalNoticeProps> = ({ className = "" }) => {
+const AdRemovalNotice: React.FC<AdRemovalNoticeProps> = ({
+  className = "",
+}) => {
   const { user } = useAuth();
   const isSupporter = user?.premiumtype && user.premiumtype > 0;
 
@@ -20,9 +22,10 @@ const AdRemovalNotice: React.FC<AdRemovalNoticeProps> = ({ className = "" }) => 
   return (
     <div className={`mt-2 text-center ${className}`}>
       <p className="text-xs text-muted">
-        <span className="text-blue-300">Become a supporter</span> to remove ads and unlock premium features!{' '}
+        <span className="text-blue-300">Become a supporter</span> to remove ads
+        and unlock premium features!{" "}
         <Link
-          href="/supporting" 
+          href="/supporting"
           className="text-blue-400 hover:text-blue-300 underline transition-colors"
         >
           Learn more

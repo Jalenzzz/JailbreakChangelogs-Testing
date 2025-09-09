@@ -1,12 +1,12 @@
-import React from 'react';
-import Breadcrumb from '@/components/Layout/Breadcrumb';
+import React from "react";
+import Breadcrumb from "@/components/Layout/Breadcrumb";
 
 export default function Loading() {
   return (
     <div className="min-h-screen bg-[#2E3944]">
       <div className="container mx-auto px-4 py-8">
         <Breadcrumb />
-        
+
         <div className="mt-8">
           <div className="h-12 bg-[#37424D] rounded-lg mb-4 animate-pulse"></div>
           <div className="h-6 bg-[#37424D] rounded-lg mb-8 w-3/4 animate-pulse"></div>
@@ -39,9 +39,8 @@ export default function Loading() {
             <div className="h-12 bg-[#37424D] rounded-lg animate-pulse"></div>
             <div className="h-12 bg-[#37424D] rounded-lg animate-pulse"></div>
           </div>
-
         </div>
       </div>
     </div>
   );
-} 
+}

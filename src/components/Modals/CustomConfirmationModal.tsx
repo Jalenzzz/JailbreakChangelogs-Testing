@@ -1,5 +1,5 @@
-import React from 'react';
-import { useLockBodyScroll } from '@/hooks/useLockBodyScroll';
+import React from "react";
+import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
 
 interface CustomConfirmationModalProps {
   open: boolean;
@@ -12,7 +12,9 @@ interface CustomConfirmationModalProps {
   onCancel: () => void;
 }
 
-export const CustomConfirmationModal: React.FC<CustomConfirmationModalProps> = ({
+export const CustomConfirmationModal: React.FC<
+  CustomConfirmationModalProps
+> = ({
   open,
   title,
   message,
@@ -27,7 +29,10 @@ export const CustomConfirmationModal: React.FC<CustomConfirmationModalProps> = (
 
   return (
     <div className="fixed inset-0 z-50">
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" aria-hidden="true" />
+      <div
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+        aria-hidden="true"
+      />
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <div className="mx-auto w-full max-w-sm rounded-lg bg-[#212A31] p-6 shadow-xl border border-[#5865F2]">
           <h2 className="text-white text-xl font-semibold mb-4">{title}</h2>
@@ -50,4 +55,4 @@ export const CustomConfirmationModal: React.FC<CustomConfirmationModalProps> = (
       </div>
     </div>
   );
-}; 
+};

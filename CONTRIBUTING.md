@@ -24,6 +24,30 @@ At this point, you're ready to make your changes! Feel free to ask for help; eve
 
 Your patch should follow the same coding conventions & pass the same code quality checks as the rest of the project. Make sure all features work as intended before you make a Pull Request.
 
+## Formatting
+
+We enforce Prettier for consistent code style.
+
+- Before committing, format your changes:
+
+```
+pnpm format
+```
+
+- To verify formatting without writing changes:
+
+```
+pnpm format:check
+```
+
+Our CI runs `pnpm format:check` on every push/PR and will fail if files are not formatted. If CI fails, run `pnpm format` locally and commit the result.
+
+### Editor setup
+
+- Install Prettier and ESLint extensions (VSCode will prompt from `.vscode/extensions.json`).
+- Enable format on save (already configured via `.vscode/settings.json`).
+- Your editor will use the project-local Prettier version.
+
 ## Make a Pull Request
 
 At this point, you should switch back to your main branch and make sure it's up to date with JailbreakChangelogs' main branch:

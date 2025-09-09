@@ -1,21 +1,25 @@
-import React from 'react';
-import Link from 'next/link';
-import { ClockIcon, CalendarIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
+import React from "react";
+import Link from "next/link";
+import {
+  ClockIcon,
+  CalendarIcon,
+  ArrowPathIcon,
+} from "@heroicons/react/24/outline";
 
 interface TimelineHeaderProps {
   onViewMore: () => void;
 }
 
-const TimelineHeader: React.FC<TimelineHeaderProps> = ({
-  onViewMore,
-}) => {
+const TimelineHeader: React.FC<TimelineHeaderProps> = ({ onViewMore }) => {
   return (
     <div className="mb-8 rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
       <h2 className="mb-4 text-2xl font-semibold text-muted">
         Roblox Jailbreak Timeline
       </h2>
       <p className="mb-4 text-muted">
-        Explore the complete history of Roblox Jailbreak updates, from the game&apos;s launch to the latest changes. Track major updates, feature releases, and gameplay evolution chronologically.
+        Explore the complete history of Roblox Jailbreak updates, from the
+        game&apos;s launch to the latest changes. Track major updates, feature
+        releases, and gameplay evolution chronologically.
       </p>
 
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -23,11 +27,14 @@ const TimelineHeader: React.FC<TimelineHeaderProps> = ({
           <div className="mb-3 flex items-center space-x-3">
             <ClockIcon className="h-6 w-6 text-[#5865F2]" />
             <div>
-              <h3 className="font-semibold text-muted">Chronological History</h3>
+              <h3 className="font-semibold text-muted">
+                Chronological History
+              </h3>
             </div>
           </div>
           <p className="text-sm text-muted">
-            Timeline entries are displayed from newest to oldest, starting with the latest update at the top.
+            Timeline entries are displayed from newest to oldest, starting with
+            the latest update at the top.
           </p>
         </div>
 
@@ -39,7 +46,8 @@ const TimelineHeader: React.FC<TimelineHeaderProps> = ({
             </div>
           </div>
           <p className="text-sm text-muted">
-            Major gameplay changes and additions that have shaped the game&apos;s evolution.
+            Major gameplay changes and additions that have shaped the
+            game&apos;s evolution.
           </p>
         </div>
 
@@ -51,7 +59,8 @@ const TimelineHeader: React.FC<TimelineHeaderProps> = ({
             </div>
           </div>
           <p className="text-sm text-muted">
-            Content updates and seasonal events that have kept the game fresh and engaging.
+            Content updates and seasonal events that have kept the game fresh
+            and engaging.
           </p>
         </div>
       </div>
@@ -75,4 +84,4 @@ const TimelineHeader: React.FC<TimelineHeaderProps> = ({
   );
 };
 
-export default TimelineHeader; 
+export default TimelineHeader;

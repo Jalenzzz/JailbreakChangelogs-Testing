@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { ClipboardIcon, CheckIcon } from '@heroicons/react/24/outline';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
+import { useState } from "react";
+import { ClipboardIcon, CheckIcon } from "@heroicons/react/24/outline";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 interface CopyButtonProps {
   text: string;
   className?: string;
 }
 
-export default function CopyButton({ text, className = '' }: CopyButtonProps) {
+export default function CopyButton({ text, className = "" }: CopyButtonProps) {
   const [copied, setCopied] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
@@ -21,7 +21,7 @@ export default function CopyButton({ text, className = '' }: CopyButtonProps) {
       setSnackbarOpen(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error('Failed to copy text:', err);
+      console.error("Failed to copy text:", err);
     }
   };
 
@@ -39,22 +39,27 @@ export default function CopyButton({ text, className = '' }: CopyButtonProps) {
         )}
       </button>
 
-    {/* Copy Success Snackbar */}
-    <Snackbar
-      open={snackbarOpen}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      onClose={() => setSnackbarOpen(false)}
-      autoHideDuration={3000}
-    >
-      <MuiAlert
-        elevation={6}
-        variant="filled"
-        severity="success"
-        sx={{ background: '#212A31', color: '#fff', border: '1px solid #5865F2', fontWeight: 500 }}
+      {/* Copy Success Snackbar */}
+      <Snackbar
+        open={snackbarOpen}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        onClose={() => setSnackbarOpen(false)}
+        autoHideDuration={3000}
       >
-        Roblox ID copied to clipboard!
-      </MuiAlert>
-    </Snackbar>
-  </>
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          severity="success"
+          sx={{
+            background: "#212A31",
+            color: "#fff",
+            border: "1px solid #5865F2",
+            fontWeight: 500,
+          }}
+        >
+          Roblox ID copied to clipboard!
+        </MuiAlert>
+      </Snackbar>
+    </>
   );
 }

@@ -1,39 +1,50 @@
 function useWindowWidth() {
-  const [width, setWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
+  const [width, setWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1024,
+  );
   useEffect(() => {
     const handleResize = () => setWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
   return width;
 }
 
-import React, { useState, useEffect } from 'react';
-import { TradeItem } from '@/types/trading';
-import { Pagination } from '@mui/material';
-import toast from 'react-hot-toast';
-import { getItemImagePath, handleImageError, isVideoItem, getVideoPath } from '@/utils/images';
-import { sortByCashValue, sortByDemand, formatFullValue } from '@/utils/values';
-import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { getItemTypeColor, getDemandColor, getTrendColor } from '@/utils/badgeColors';
-import { CategoryIconBadge } from '@/utils/categoryIcons';
-import { TradeAdErrorModal } from './TradeAdErrorModal';
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import Image from 'next/image';
-import { FilterSort, ValueSort } from '@/types';
-import dynamic from 'next/dynamic';
-import DisplayAd from '@/components/Ads/DisplayAd';
-import AdRemovalNotice from '@/components/Ads/AdRemovalNotice';
-import { useDebounce } from '@/hooks/useDebounce';
-import { getCurrentUserPremiumType } from '@/hooks/useAuth';
-import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from "react";
+import { TradeItem } from "@/types/trading";
+import { Pagination } from "@mui/material";
+import toast from "react-hot-toast";
+import {
+  getItemImagePath,
+  handleImageError,
+  isVideoItem,
+  getVideoPath,
+} from "@/utils/images";
+import { sortByCashValue, sortByDemand, formatFullValue } from "@/utils/values";
+import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  getItemTypeColor,
+  getDemandColor,
+  getTrendColor,
+} from "@/utils/badgeColors";
+import { CategoryIconBadge } from "@/utils/categoryIcons";
+import { TradeAdErrorModal } from "./TradeAdErrorModal";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import Image from "next/image";
+import { FilterSort, ValueSort } from "@/types";
+import dynamic from "next/dynamic";
+import DisplayAd from "@/components/Ads/DisplayAd";
+import AdRemovalNotice from "@/components/Ads/AdRemovalNotice";
+import { useDebounce } from "@/hooks/useDebounce";
+import { getCurrentUserPremiumType } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 
-const Select = dynamic(() => import('react-select'), { ssr: false });
+const Select = dynamic(() => import("react-select"), { ssr: false });
 
 interface AvailableItemsGridProps {
   items: TradeItem[];
-  onSelect: (item: TradeItem, side: 'offering' | 'requesting') => boolean;
+  onSelect: (item: TradeItem, side: "offering" | "requesting") => boolean;
   selectedItems: TradeItem[];
   onCreateTradeAd?: () => void;
   requireAuth?: boolean;
@@ -44,28 +55,34 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
   onSelect,
 }) => {
   const windowWidth = useWindowWidth();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
-  const [selectedVariants, setSelectedVariants] = useState<Record<number, string>>({});
+  const [selectedVariants, setSelectedVariants] = useState<
+    Record<number, string>
+  >({});
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
   const [filterSort, setFilterSort] = useState<FilterSort>("name-all-items");
   const [valueSort, setValueSort] = useState<ValueSort>("cash-desc");
 
   const [selectLoaded, setSelectLoaded] = useState(false);
-  const [currentUserPremiumType, setCurrentUserPremiumType] = useState<number>(0);
+  const [currentUserPremiumType, setCurrentUserPremiumType] =
+    useState<number>(0);
   const [premiumStatusLoaded, setPremiumStatusLoaded] = useState(false);
   const router = useRouter();
   const ITEMS_PER_PAGE = windowWidth === 1024 ? 25 : 24;
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const MAX_QUERY_DISPLAY_LENGTH = 120;
-  const displayDebouncedSearchQuery = debouncedSearchQuery && debouncedSearchQuery.length > MAX_QUERY_DISPLAY_LENGTH
-    ? `${debouncedSearchQuery.slice(0, MAX_QUERY_DISPLAY_LENGTH)}...`
-    : debouncedSearchQuery;
-  const displaySearchQuery = searchQuery.length > MAX_QUERY_DISPLAY_LENGTH
-    ? `${searchQuery.slice(0, MAX_QUERY_DISPLAY_LENGTH)}...`
-    : searchQuery;
+  const displayDebouncedSearchQuery =
+    debouncedSearchQuery &&
+    debouncedSearchQuery.length > MAX_QUERY_DISPLAY_LENGTH
+      ? `${debouncedSearchQuery.slice(0, MAX_QUERY_DISPLAY_LENGTH)}...`
+      : debouncedSearchQuery;
+  const displaySearchQuery =
+    searchQuery.length > MAX_QUERY_DISPLAY_LENGTH
+      ? `${searchQuery.slice(0, MAX_QUERY_DISPLAY_LENGTH)}...`
+      : searchQuery;
 
   useEffect(() => {
     setSelectLoaded(true);
@@ -81,11 +98,19 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
       setShowErrorModal(true);
     };
 
-    const element = document.querySelector('[data-component="available-items-grid"]');
-    element?.addEventListener('showTradeAdError', handleShowError as EventListener);
+    const element = document.querySelector(
+      '[data-component="available-items-grid"]',
+    );
+    element?.addEventListener(
+      "showTradeAdError",
+      handleShowError as EventListener,
+    );
 
     return () => {
-      element?.removeEventListener('showTradeAdError', handleShowError as EventListener);
+      element?.removeEventListener(
+        "showTradeAdError",
+        handleShowError as EventListener,
+      );
     };
   }, []);
 
@@ -97,128 +122,168 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
       setCurrentUserPremiumType(getCurrentUserPremiumType());
     };
 
-    window.addEventListener('authStateChanged', handleAuthChange);
+    window.addEventListener("authStateChanged", handleAuthChange);
     return () => {
-      window.removeEventListener('authStateChanged', handleAuthChange);
+      window.removeEventListener("authStateChanged", handleAuthChange);
     };
   }, []);
 
-  const filteredItems = items.filter(item => {
-    const normalize = (str: string) => str.toLowerCase().replace(/[^a-z0-9]/g, '');
-    const tokenize = (str: string) => str.toLowerCase().match(/[a-z0-9]+/g) || [];
-    const splitAlphaNum = (str: string) => {
-      return (str.match(/[a-z]+|[0-9]+/gi) || []).map(s => s.toLowerCase());
-    };
-    const searchNormalized = normalize(debouncedSearchQuery);
-    const searchTokens = tokenize(debouncedSearchQuery);
-    const searchAlphaNum = splitAlphaNum(debouncedSearchQuery);
-    function isTokenSubsequence(searchTokens: string[], nameTokens: string[]) {
-      let i = 0, j = 0;
-      while (i < searchTokens.length && j < nameTokens.length) {
-        if (nameTokens[j].includes(searchTokens[i])) {
-          i++;
+  const filteredItems = items
+    .filter((item) => {
+      const normalize = (str: string) =>
+        str.toLowerCase().replace(/[^a-z0-9]/g, "");
+      const tokenize = (str: string) =>
+        str.toLowerCase().match(/[a-z0-9]+/g) || [];
+      const splitAlphaNum = (str: string) => {
+        return (str.match(/[a-z]+|[0-9]+/gi) || []).map((s) => s.toLowerCase());
+      };
+      const searchNormalized = normalize(debouncedSearchQuery);
+      const searchTokens = tokenize(debouncedSearchQuery);
+      const searchAlphaNum = splitAlphaNum(debouncedSearchQuery);
+      function isTokenSubsequence(
+        searchTokens: string[],
+        nameTokens: string[],
+      ) {
+        let i = 0,
+          j = 0;
+        while (i < searchTokens.length && j < nameTokens.length) {
+          if (nameTokens[j].includes(searchTokens[i])) {
+            i++;
+          }
+          j++;
         }
-        j++;
+        return i === searchTokens.length;
       }
-      return i === searchTokens.length;
-    }
-    const nameNormalized = normalize(item.name);
-    const typeNormalized = normalize(item.type);
-    const nameTokens = tokenize(item.name);
-    const nameAlphaNum = splitAlphaNum(item.name);
-    const matchesSearch =
-      nameNormalized.includes(searchNormalized) ||
-      typeNormalized.includes(searchNormalized) ||
-      isTokenSubsequence(searchTokens, nameTokens) ||
-      isTokenSubsequence(searchAlphaNum, nameAlphaNum);
-    if (!matchesSearch) return false;
-    if (item.tradable !== 1) return false;
+      const nameNormalized = normalize(item.name);
+      const typeNormalized = normalize(item.type);
+      const nameTokens = tokenize(item.name);
+      const nameAlphaNum = splitAlphaNum(item.name);
+      const matchesSearch =
+        nameNormalized.includes(searchNormalized) ||
+        typeNormalized.includes(searchNormalized) ||
+        isTokenSubsequence(searchTokens, nameTokens) ||
+        isTokenSubsequence(searchAlphaNum, nameAlphaNum);
+      if (!matchesSearch) return false;
+      if (item.tradable !== 1) return false;
 
-    switch (filterSort) {
-      case "name-limited-items":
-        return item.is_limited === 1;
-      case "name-seasonal-items":
-        return item.is_seasonal === 1;
-      case "name-vehicles":
-        return item.type.toLowerCase() === "vehicle";
-      case "name-spoilers":
-        return item.type.toLowerCase() === "spoiler";
-      case "name-rims":
-        return item.type.toLowerCase() === "rim";
-      case "name-body-colors":
-        return item.type.toLowerCase() === "body color";
-      case "name-hyperchromes":
-        return item.type.toLowerCase() === "hyperchrome";
-      case "name-textures":
-        return item.type.toLowerCase() === "texture";
-      case "name-tire-stickers":
-        return item.type.toLowerCase() === "tire sticker";
-      case "name-tire-styles":
-        return item.type.toLowerCase() === "tire style";
-      case "name-drifts":
-        return item.type.toLowerCase() === "drift";
-      case "name-furnitures":
-        return item.type.toLowerCase() === "furniture";
-      case "name-horns":
-        return item.type.toLowerCase() === "horn";
-      case "name-weapon-skins":
-        return item.type.toLowerCase() === "weapon skin";
-      default:
-        return true;
-    }
-  }).sort((a, b) => {
-    switch (valueSort) {
-      case "cash-desc":
-        return sortByCashValue(a.cash_value, b.cash_value, 'desc');
-      case "cash-asc":
-        return sortByCashValue(a.cash_value, b.cash_value, 'asc');
-      case "duped-desc":
-        return sortByCashValue(a.duped_value, b.duped_value, 'desc');
-      case "duped-asc":
-        return sortByCashValue(a.duped_value, b.duped_value, 'asc');
-      case "demand-desc":
-        return sortByDemand(a.demand || 'Close to none', b.demand || 'Close to none', 'desc');
-      case "demand-asc":
-        return sortByDemand(a.demand || 'Close to none', b.demand || 'Close to none', 'asc');
-      case "times-traded-desc":
-        return (b.metadata?.TimesTraded ?? 0) - (a.metadata?.TimesTraded ?? 0);
-      case "times-traded-asc":
-        return (a.metadata?.TimesTraded ?? 0) - (b.metadata?.TimesTraded ?? 0);
-      case "unique-circulation-desc":
-        return (b.metadata?.UniqueCirculation ?? 0) - (a.metadata?.UniqueCirculation ?? 0);
-      case "unique-circulation-asc":
-        return (a.metadata?.UniqueCirculation ?? 0) - (b.metadata?.UniqueCirculation ?? 0);
-      case "demand-multiple-desc":
-        return (b.metadata?.DemandMultiple ?? 0) - (a.metadata?.DemandMultiple ?? 0);
-      case "demand-multiple-asc":
-        return (a.metadata?.DemandMultiple ?? 0) - (b.metadata?.DemandMultiple ?? 0);
-      default:
-        return 0;
-    }
-  });
+      switch (filterSort) {
+        case "name-limited-items":
+          return item.is_limited === 1;
+        case "name-seasonal-items":
+          return item.is_seasonal === 1;
+        case "name-vehicles":
+          return item.type.toLowerCase() === "vehicle";
+        case "name-spoilers":
+          return item.type.toLowerCase() === "spoiler";
+        case "name-rims":
+          return item.type.toLowerCase() === "rim";
+        case "name-body-colors":
+          return item.type.toLowerCase() === "body color";
+        case "name-hyperchromes":
+          return item.type.toLowerCase() === "hyperchrome";
+        case "name-textures":
+          return item.type.toLowerCase() === "texture";
+        case "name-tire-stickers":
+          return item.type.toLowerCase() === "tire sticker";
+        case "name-tire-styles":
+          return item.type.toLowerCase() === "tire style";
+        case "name-drifts":
+          return item.type.toLowerCase() === "drift";
+        case "name-furnitures":
+          return item.type.toLowerCase() === "furniture";
+        case "name-horns":
+          return item.type.toLowerCase() === "horn";
+        case "name-weapon-skins":
+          return item.type.toLowerCase() === "weapon skin";
+        default:
+          return true;
+      }
+    })
+    .sort((a, b) => {
+      switch (valueSort) {
+        case "cash-desc":
+          return sortByCashValue(a.cash_value, b.cash_value, "desc");
+        case "cash-asc":
+          return sortByCashValue(a.cash_value, b.cash_value, "asc");
+        case "duped-desc":
+          return sortByCashValue(a.duped_value, b.duped_value, "desc");
+        case "duped-asc":
+          return sortByCashValue(a.duped_value, b.duped_value, "asc");
+        case "demand-desc":
+          return sortByDemand(
+            a.demand || "Close to none",
+            b.demand || "Close to none",
+            "desc",
+          );
+        case "demand-asc":
+          return sortByDemand(
+            a.demand || "Close to none",
+            b.demand || "Close to none",
+            "asc",
+          );
+        case "times-traded-desc":
+          return (
+            (b.metadata?.TimesTraded ?? 0) - (a.metadata?.TimesTraded ?? 0)
+          );
+        case "times-traded-asc":
+          return (
+            (a.metadata?.TimesTraded ?? 0) - (b.metadata?.TimesTraded ?? 0)
+          );
+        case "unique-circulation-desc":
+          return (
+            (b.metadata?.UniqueCirculation ?? 0) -
+            (a.metadata?.UniqueCirculation ?? 0)
+          );
+        case "unique-circulation-asc":
+          return (
+            (a.metadata?.UniqueCirculation ?? 0) -
+            (b.metadata?.UniqueCirculation ?? 0)
+          );
+        case "demand-multiple-desc":
+          return (
+            (b.metadata?.DemandMultiple ?? 0) -
+            (a.metadata?.DemandMultiple ?? 0)
+          );
+        case "demand-multiple-asc":
+          return (
+            (a.metadata?.DemandMultiple ?? 0) -
+            (b.metadata?.DemandMultiple ?? 0)
+          );
+        default:
+          return 0;
+      }
+    });
 
   const startIndex = (page - 1) * ITEMS_PER_PAGE;
-  const paginatedItems = filteredItems.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const paginatedItems = filteredItems.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE,
+  );
   const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
 
-  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number,
+  ) => {
     setPage(value);
   };
 
   const handleVariantSelect = (itemId: number, variant: string) => {
-    setSelectedVariants(prev => ({
+    setSelectedVariants((prev) => ({
       ...prev,
-      [itemId]: variant
+      [itemId]: variant,
     }));
   };
 
-  const handleAddItem = (item: TradeItem, side: 'offering' | 'requesting') => {
+  const handleAddItem = (item: TradeItem, side: "offering" | "requesting") => {
     const selectedVariant = selectedVariants[item.id];
     let itemToAdd = { ...item, side };
 
-    if (selectedVariant && selectedVariant !== '2025') {
+    if (selectedVariant && selectedVariant !== "2025") {
       // If a specific variant is selected, use its values
-      const selectedChild = item.children?.find(child => child.sub_name === selectedVariant);
+      const selectedChild = item.children?.find(
+        (child) => child.sub_name === selectedVariant,
+      );
       if (selectedChild) {
         itemToAdd = {
           ...item,
@@ -227,7 +292,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
           demand: selectedChild.data.demand,
           sub_name: selectedVariant,
           base_name: item.name,
-          side
+          side,
         };
       }
     } else {
@@ -236,13 +301,15 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
         ...item,
         sub_name: undefined,
         base_name: item.name,
-        side
+        side,
       };
     }
 
     const addedSuccessfully = onSelect(itemToAdd, side);
     if (addedSuccessfully) {
-      const itemName = itemToAdd.sub_name ? `${itemToAdd.name} (${itemToAdd.sub_name})` : itemToAdd.name;
+      const itemName = itemToAdd.sub_name
+        ? `${itemToAdd.name} (${itemToAdd.sub_name})`
+        : itemToAdd.name;
       toast.success(`Added ${itemName} to ${side} items`);
     }
   };
@@ -250,12 +317,13 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
   return (
     <div className="space-y-4" data-component="available-items-grid">
       <div className="bg-[#212A31] rounded-lg p-1 sm:p-2 pt-4 border border-[#2E3944]">
-
-
         {/* Ad Placement: Above the grid, only for non-premium users */}
         {premiumStatusLoaded && currentUserPremiumType === 0 && (
           <div className="flex flex-col items-center w-full mb-6">
-            <div className="w-full max-w-[700px] bg-[#1a2127] rounded-lg overflow-hidden border border-[#2E3944] shadow transition-all duration-300 relative" style={{ minHeight: '250px' }}>
+            <div
+              className="w-full max-w-[700px] bg-[#1a2127] rounded-lg overflow-hidden border border-[#2E3944] shadow transition-all duration-300 relative"
+              style={{ minHeight: "250px" }}
+            >
               <span className="absolute top-2 left-2 text-xs text-muted bg-[#212A31] px-2 py-0.5 rounded z-10">
                 Advertisement
               </span>
@@ -281,7 +349,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
             />
             {searchQuery && (
               <button
-                onClick={() => setSearchQuery('')}
+                onClick={() => setSearchQuery("")}
                 className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#FFFFFF] hover:text-muted"
                 aria-label="Clear search"
               >
@@ -291,7 +359,9 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
           </div>
           {debouncedSearchQuery && (
             <div className="mt-2 text-sm text-muted">
-              Found {filteredItems.length} {filteredItems.length === 1 ? 'item' : 'items'} matching &quot;{displayDebouncedSearchQuery}&quot;
+              Found {filteredItems.length}{" "}
+              {filteredItems.length === 1 ? "item" : "items"} matching &quot;
+              {displayDebouncedSearchQuery}&quot;
             </div>
           )}
         </div>
@@ -299,26 +369,45 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-4">
           {selectLoaded ? (
             <Select
-              value={{ value: filterSort, label: (() => {
-                switch (filterSort) {
-                  case 'name-all-items': return 'All Items';
-                  case 'name-limited-items': return 'Limited Items';
-                  case 'name-seasonal-items': return 'Seasonal Items';
-                  case 'name-vehicles': return 'Vehicles';
-                  case 'name-spoilers': return 'Spoilers';
-                  case 'name-rims': return 'Rims';
-                  case 'name-body-colors': return 'Body Colors';
-                  case 'name-hyperchromes': return 'HyperChromes';
-                  case 'name-textures': return 'Body Textures';
-                  case 'name-tire-stickers': return 'Tire Stickers';
-                  case 'name-tire-styles': return 'Tire Styles';
-                  case 'name-drifts': return 'Drifts';
-                  case 'name-furnitures': return 'Furniture';
-                  case 'name-horns': return 'Horns';
-                  case 'name-weapon-skins': return 'Weapon Skins';
-                  default: return filterSort;
-                }
-              })() }}
+              value={{
+                value: filterSort,
+                label: (() => {
+                  switch (filterSort) {
+                    case "name-all-items":
+                      return "All Items";
+                    case "name-limited-items":
+                      return "Limited Items";
+                    case "name-seasonal-items":
+                      return "Seasonal Items";
+                    case "name-vehicles":
+                      return "Vehicles";
+                    case "name-spoilers":
+                      return "Spoilers";
+                    case "name-rims":
+                      return "Rims";
+                    case "name-body-colors":
+                      return "Body Colors";
+                    case "name-hyperchromes":
+                      return "HyperChromes";
+                    case "name-textures":
+                      return "Body Textures";
+                    case "name-tire-stickers":
+                      return "Tire Stickers";
+                    case "name-tire-styles":
+                      return "Tire Styles";
+                    case "name-drifts":
+                      return "Drifts";
+                    case "name-furnitures":
+                      return "Furniture";
+                    case "name-horns":
+                      return "Horns";
+                    case "name-weapon-skins":
+                      return "Weapon Skins";
+                    default:
+                      return filterSort;
+                  }
+                })(),
+              }}
               onChange={(option: unknown) => {
                 if (!option) {
                   // Reset to original value when cleared
@@ -331,21 +420,21 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
                 setPage(1);
               }}
               options={[
-                { value: 'name-all-items', label: 'All Items' },
-                { value: 'name-limited-items', label: 'Limited Items' },
-                { value: 'name-seasonal-items', label: 'Seasonal Items' },
-                { value: 'name-vehicles', label: 'Vehicles' },
-                { value: 'name-spoilers', label: 'Spoilers' },
-                { value: 'name-rims', label: 'Rims' },
-                { value: 'name-body-colors', label: 'Body Colors' },
-                { value: 'name-hyperchromes', label: 'HyperChromes' },
-                { value: 'name-textures', label: 'Body Textures' },
-                { value: 'name-tire-stickers', label: 'Tire Stickers' },
-                { value: 'name-tire-styles', label: 'Tire Styles' },
-                { value: 'name-drifts', label: 'Drifts' },
-                { value: 'name-furnitures', label: 'Furniture' },
-                { value: 'name-horns', label: 'Horns' },
-                { value: 'name-weapon-skins', label: 'Weapon Skins' },
+                { value: "name-all-items", label: "All Items" },
+                { value: "name-limited-items", label: "Limited Items" },
+                { value: "name-seasonal-items", label: "Seasonal Items" },
+                { value: "name-vehicles", label: "Vehicles" },
+                { value: "name-spoilers", label: "Spoilers" },
+                { value: "name-rims", label: "Rims" },
+                { value: "name-body-colors", label: "Body Colors" },
+                { value: "name-hyperchromes", label: "HyperChromes" },
+                { value: "name-textures", label: "Body Textures" },
+                { value: "name-tire-stickers", label: "Tire Stickers" },
+                { value: "name-tire-styles", label: "Tire Styles" },
+                { value: "name-drifts", label: "Drifts" },
+                { value: "name-furnitures", label: "Furniture" },
+                { value: "name-horns", label: "Horns" },
+                { value: "name-weapon-skins", label: "Weapon Skins" },
               ]}
               classNamePrefix="react-select"
               className="w-full"
@@ -353,26 +442,36 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
               styles={{
                 control: (base) => ({
                   ...base,
-                  backgroundColor: '#37424D',
-                  borderColor: '#2E3944',
-                  color: '#D3D9D4',
+                  backgroundColor: "#37424D",
+                  borderColor: "#2E3944",
+                  color: "#D3D9D4",
                 }),
-                singleValue: (base) => ({ ...base, color: '#D3D9D4' }),
-                menu: (base) => ({ ...base, backgroundColor: '#37424D', color: '#D3D9D4', zIndex: 3000 }),
+                singleValue: (base) => ({ ...base, color: "#D3D9D4" }),
+                menu: (base) => ({
+                  ...base,
+                  backgroundColor: "#37424D",
+                  color: "#D3D9D4",
+                  zIndex: 3000,
+                }),
                 option: (base, state) => ({
                   ...base,
-                  backgroundColor: state.isSelected ? '#5865F2' : state.isFocused ? '#2E3944' : '#37424D',
-                  color: state.isSelected || state.isFocused ? '#FFFFFF' : '#D3D9D4',
-                  '&:active': {
-                    backgroundColor: '#124E66',
-                    color: '#FFFFFF',
+                  backgroundColor: state.isSelected
+                    ? "#5865F2"
+                    : state.isFocused
+                      ? "#2E3944"
+                      : "#37424D",
+                  color:
+                    state.isSelected || state.isFocused ? "#FFFFFF" : "#D3D9D4",
+                  "&:active": {
+                    backgroundColor: "#124E66",
+                    color: "#FFFFFF",
                   },
                 }),
                 clearIndicator: (base) => ({
                   ...base,
-                  color: '#D3D9D4',
-                  '&:hover': {
-                    color: '#FFFFFF',
+                  color: "#D3D9D4",
+                  "&:hover": {
+                    color: "#FFFFFF",
                   },
                 }),
               }}
@@ -384,23 +483,39 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
 
           {selectLoaded ? (
             <Select
-              value={{ value: valueSort, label: (() => {
-                switch (valueSort) {
-                  case 'cash-desc': return 'Cash Value (High to Low)';
-                  case 'cash-asc': return 'Cash Value (Low to High)';
-                  case 'duped-desc': return 'Duped Value (High to Low)';
-                  case 'duped-asc': return 'Duped Value (Low to High)';
-                  case 'demand-desc': return 'Demand (High to Low)';
-                  case 'demand-asc': return 'Demand (Low to High)';
-                  case 'times-traded-desc': return 'Times Traded (High to Low)';
-                  case 'times-traded-asc': return 'Times Traded (Low to High)';
-                  case 'unique-circulation-desc': return 'Unique Circulation (High to Low)';
-                  case 'unique-circulation-asc': return 'Unique Circulation (Low to High)';
-                  case 'demand-multiple-desc': return 'Demand Multiple (High to Low)';
-                  case 'demand-multiple-asc': return 'Demand Multiple (Low to High)';
-                  default: return valueSort;
-                }
-              })() }}
+              value={{
+                value: valueSort,
+                label: (() => {
+                  switch (valueSort) {
+                    case "cash-desc":
+                      return "Cash Value (High to Low)";
+                    case "cash-asc":
+                      return "Cash Value (Low to High)";
+                    case "duped-desc":
+                      return "Duped Value (High to Low)";
+                    case "duped-asc":
+                      return "Duped Value (Low to High)";
+                    case "demand-desc":
+                      return "Demand (High to Low)";
+                    case "demand-asc":
+                      return "Demand (Low to High)";
+                    case "times-traded-desc":
+                      return "Times Traded (High to Low)";
+                    case "times-traded-asc":
+                      return "Times Traded (Low to High)";
+                    case "unique-circulation-desc":
+                      return "Unique Circulation (High to Low)";
+                    case "unique-circulation-asc":
+                      return "Unique Circulation (Low to High)";
+                    case "demand-multiple-desc":
+                      return "Demand Multiple (High to Low)";
+                    case "demand-multiple-asc":
+                      return "Demand Multiple (Low to High)";
+                    default:
+                      return valueSort;
+                  }
+                })(),
+              }}
               onChange={(option: unknown) => {
                 if (!option) {
                   // Reset to original value when cleared
@@ -413,24 +528,51 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
                 setPage(1);
               }}
               options={[
-                { label: 'Values', options: [
-                  { value: 'cash-desc', label: 'Cash Value (High to Low)' },
-                  { value: 'cash-asc', label: 'Cash Value (Low to High)' },
-                  { value: 'duped-desc', label: 'Duped Value (High to Low)' },
-                  { value: 'duped-asc', label: 'Duped Value (Low to High)' },
-                ]},
-                { label: 'Trading Metrics', options: [
-                  { value: 'times-traded-desc', label: 'Times Traded (High to Low)' },
-                  { value: 'times-traded-asc', label: 'Times Traded (Low to High)' },
-                  { value: 'unique-circulation-desc', label: 'Unique Circulation (High to Low)' },
-                  { value: 'unique-circulation-asc', label: 'Unique Circulation (Low to High)' },
-                  { value: 'demand-multiple-desc', label: 'Demand Multiple (High to Low)' },
-                  { value: 'demand-multiple-asc', label: 'Demand Multiple (Low to High)' },
-                ]},
-                { label: 'Demand', options: [
-                  { value: 'demand-desc', label: 'Demand (High to Low)' },
-                  { value: 'demand-asc', label: 'Demand (Low to High)' },
-                ]},
+                {
+                  label: "Values",
+                  options: [
+                    { value: "cash-desc", label: "Cash Value (High to Low)" },
+                    { value: "cash-asc", label: "Cash Value (Low to High)" },
+                    { value: "duped-desc", label: "Duped Value (High to Low)" },
+                    { value: "duped-asc", label: "Duped Value (Low to High)" },
+                  ],
+                },
+                {
+                  label: "Trading Metrics",
+                  options: [
+                    {
+                      value: "times-traded-desc",
+                      label: "Times Traded (High to Low)",
+                    },
+                    {
+                      value: "times-traded-asc",
+                      label: "Times Traded (Low to High)",
+                    },
+                    {
+                      value: "unique-circulation-desc",
+                      label: "Unique Circulation (High to Low)",
+                    },
+                    {
+                      value: "unique-circulation-asc",
+                      label: "Unique Circulation (Low to High)",
+                    },
+                    {
+                      value: "demand-multiple-desc",
+                      label: "Demand Multiple (High to Low)",
+                    },
+                    {
+                      value: "demand-multiple-asc",
+                      label: "Demand Multiple (Low to High)",
+                    },
+                  ],
+                },
+                {
+                  label: "Demand",
+                  options: [
+                    { value: "demand-desc", label: "Demand (High to Low)" },
+                    { value: "demand-asc", label: "Demand (Low to High)" },
+                  ],
+                },
               ]}
               classNamePrefix="react-select"
               className="w-full"
@@ -438,26 +580,36 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
               styles={{
                 control: (base) => ({
                   ...base,
-                  backgroundColor: '#37424D',
-                  borderColor: '#2E3944',
-                  color: '#D3D9D4',
+                  backgroundColor: "#37424D",
+                  borderColor: "#2E3944",
+                  color: "#D3D9D4",
                 }),
-                singleValue: (base) => ({ ...base, color: '#D3D9D4' }),
-                menu: (base) => ({ ...base, backgroundColor: '#37424D', color: '#D3D9D4', zIndex: 3000 }),
+                singleValue: (base) => ({ ...base, color: "#D3D9D4" }),
+                menu: (base) => ({
+                  ...base,
+                  backgroundColor: "#37424D",
+                  color: "#D3D9D4",
+                  zIndex: 3000,
+                }),
                 option: (base, state) => ({
                   ...base,
-                  backgroundColor: state.isSelected ? '#5865F2' : state.isFocused ? '#2E3944' : '#37424D',
-                  color: state.isSelected || state.isFocused ? '#FFFFFF' : '#D3D9D4',
-                  '&:active': {
-                    backgroundColor: '#124E66',
-                    color: '#FFFFFF',
+                  backgroundColor: state.isSelected
+                    ? "#5865F2"
+                    : state.isFocused
+                      ? "#2E3944"
+                      : "#37424D",
+                  color:
+                    state.isSelected || state.isFocused ? "#FFFFFF" : "#D3D9D4",
+                  "&:active": {
+                    backgroundColor: "#124E66",
+                    color: "#FFFFFF",
                   },
                 }),
                 clearIndicator: (base) => ({
                   ...base,
-                  color: '#D3D9D4',
-                  '&:hover': {
-                    color: '#FFFFFF',
+                  color: "#D3D9D4",
+                  "&:hover": {
+                    color: "#FFFFFF",
                   },
                 }),
               }}
@@ -466,28 +618,26 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
           ) : (
             <div className="w-full h-10 bg-[#37424D] border border-[#2E3944] rounded-md animate-pulse"></div>
           )}
-
-
         </div>
 
         {/* Top Pagination */}
         {totalPages > 1 && filteredItems.length > 0 && (
           <div className="flex justify-center mb-4">
-            <Pagination 
-              count={totalPages} 
-              page={page} 
+            <Pagination
+              count={totalPages}
+              page={page}
               onChange={handlePageChange}
               sx={{
-                '& .MuiPaginationItem-root': {
-                  color: '#D3D9D4',
-                  '&.Mui-selected': {
-                    backgroundColor: '#5865F2',
-                    '&:hover': {
-                      backgroundColor: '#4752C4',
+                "& .MuiPaginationItem-root": {
+                  color: "#D3D9D4",
+                  "&.Mui-selected": {
+                    backgroundColor: "#5865F2",
+                    "&:hover": {
+                      backgroundColor: "#4752C4",
                     },
                   },
-                  '&:hover': {
-                    backgroundColor: '#37424D',
+                  "&:hover": {
+                    backgroundColor: "#37424D",
                   },
                 },
               }}
@@ -499,14 +649,13 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
           {paginatedItems.length === 0 ? (
             <div className="col-span-full text-center py-8">
               <p className="text-muted">
-                {searchQuery 
+                {searchQuery
                   ? `No items found matching "${displaySearchQuery}"${filterSort !== "name-all-items" ? ` in ${filterSort.replace("name-", "").replace("-items", "").replace(/-/g, " ")}` : ""}`
-                  : `No items found${filterSort !== "name-all-items" ? ` in ${filterSort.replace("name-", "").replace("-items", "").replace(/-/g, " ")}` : ""}`
-              }
+                  : `No items found${filterSort !== "name-all-items" ? ` in ${filterSort.replace("name-", "").replace("-items", "").replace(/-/g, " ")}` : ""}`}
               </p>
               <button
                 onClick={() => {
-                  setSearchQuery('');
+                  setSearchQuery("");
                   setFilterSort("name-all-items");
                   setValueSort("cash-desc");
                 }}
@@ -520,22 +669,24 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
               <div
                 key={item.id}
                 className={`group p-2 rounded-lg transition-colors text-left w-full flex flex-col ${
-                  item.tradable === 1 
-                    ? 'bg-[#1a2127] hover:bg-[#212A31]'
-                    : 'bg-[#1a2127] opacity-50 cursor-not-allowed'
+                  item.tradable === 1
+                    ? "bg-[#1a2127] hover:bg-[#212A31]"
+                    : "bg-[#1a2127] opacity-50 cursor-not-allowed"
                 }`}
                 tabIndex={0}
                 role="button"
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: "pointer" }}
                 onClick={(e) => {
                   // Only navigate if not clicking a button or dropdown
                   if (
                     e.target instanceof HTMLElement &&
-                    !e.target.closest('button') &&
-                    !e.target.closest('a') &&
-                    !e.target.closest('.dropdown')
+                    !e.target.closest("button") &&
+                    !e.target.closest("a") &&
+                    !e.target.closest(".dropdown")
                   ) {
-                    router.push(`/item/${encodeURIComponent(item.type.toLowerCase())}/${encodeURIComponent(item.name)}`);
+                    router.push(
+                      `/item/${encodeURIComponent(item.type.toLowerCase())}/${encodeURIComponent(item.name)}`,
+                    );
                   }
                 }}
               >
@@ -575,7 +726,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
                       {item.name}
                     </span>
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span 
+                      <span
                         className="px-2 py-0.5 text-xs rounded-full text-white"
                         style={{ backgroundColor: getItemTypeColor(item.type) }}
                       >
@@ -601,56 +752,124 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
                       <>
                         <div className="text-xs text-muted space-y-1">
                           <div className="flex items-center justify-between bg-gradient-to-r from-[#2E3944] to-[#1a202c] rounded-lg p-1.5">
-                            <span className="text-xs text-muted font-medium whitespace-nowrap">Cash</span>
+                            <span className="text-xs text-muted font-medium whitespace-nowrap">
+                              Cash
+                            </span>
                             <span className="bg-[#1d7da3] text-white text-xs px-2 py-0.5 font-bold rounded-lg shadow-sm">
-                              {selectedVariants[item.id] && selectedVariants[item.id] !== '2025' ? 
-                                (item.children?.find(child => child.sub_name === selectedVariants[item.id])?.data.cash_value === null || 
-                                item.children?.find(child => child.sub_name === selectedVariants[item.id])?.data.cash_value === "N/A" ? "N/A" :
-                                (() => {
-                                  const value = item.children?.find(child => child.sub_name === selectedVariants[item.id])?.data.cash_value ?? null;
-                                  if (value === null || value === "N/A") return "N/A";
-                                  return windowWidth <= 640 ? value : formatFullValue(value);
-                                })())
+                              {selectedVariants[item.id] &&
+                              selectedVariants[item.id] !== "2025"
+                                ? item.children?.find(
+                                    (child) =>
+                                      child.sub_name ===
+                                      selectedVariants[item.id],
+                                  )?.data.cash_value === null ||
+                                  item.children?.find(
+                                    (child) =>
+                                      child.sub_name ===
+                                      selectedVariants[item.id],
+                                  )?.data.cash_value === "N/A"
+                                  ? "N/A"
+                                  : (() => {
+                                      const value =
+                                        item.children?.find(
+                                          (child) =>
+                                            child.sub_name ===
+                                            selectedVariants[item.id],
+                                        )?.data.cash_value ?? null;
+                                      if (value === null || value === "N/A")
+                                        return "N/A";
+                                      return windowWidth <= 640
+                                        ? value
+                                        : formatFullValue(value);
+                                    })()
                                 : (() => {
-                                    if (item.cash_value === null || item.cash_value === "N/A") return "N/A";
-                                    return windowWidth <= 640 ? item.cash_value : formatFullValue(item.cash_value);
+                                    if (
+                                      item.cash_value === null ||
+                                      item.cash_value === "N/A"
+                                    )
+                                      return "N/A";
+                                    return windowWidth <= 640
+                                      ? item.cash_value
+                                      : formatFullValue(item.cash_value);
                                   })()}
                             </span>
                           </div>
                           <div className="flex items-center justify-between bg-gradient-to-r from-[#2E3944] to-[#1a202c] rounded-lg p-1.5">
-                            <span className="text-xs text-muted font-medium whitespace-nowrap">Duped</span>
+                            <span className="text-xs text-muted font-medium whitespace-nowrap">
+                              Duped
+                            </span>
                             <span className="bg-gray-600 text-white text-xs px-2 py-0.5 font-bold rounded-lg shadow-sm">
-                              {selectedVariants[item.id] && selectedVariants[item.id] !== '2025' ? 
-                                (item.children?.find(child => child.sub_name === selectedVariants[item.id])?.data.duped_value === null || 
-                                item.children?.find(child => child.sub_name === selectedVariants[item.id])?.data.duped_value === "N/A" ? "N/A" :
-                                (() => {
-                                  const value = item.children?.find(child => child.sub_name === selectedVariants[item.id])?.data.duped_value ?? null;
-                                  if (value === null || value === "N/A") return "N/A";
-                                  return windowWidth <= 640 ? value : formatFullValue(value);
-                                })())
+                              {selectedVariants[item.id] &&
+                              selectedVariants[item.id] !== "2025"
+                                ? item.children?.find(
+                                    (child) =>
+                                      child.sub_name ===
+                                      selectedVariants[item.id],
+                                  )?.data.duped_value === null ||
+                                  item.children?.find(
+                                    (child) =>
+                                      child.sub_name ===
+                                      selectedVariants[item.id],
+                                  )?.data.duped_value === "N/A"
+                                  ? "N/A"
+                                  : (() => {
+                                      const value =
+                                        item.children?.find(
+                                          (child) =>
+                                            child.sub_name ===
+                                            selectedVariants[item.id],
+                                        )?.data.duped_value ?? null;
+                                      if (value === null || value === "N/A")
+                                        return "N/A";
+                                      return windowWidth <= 640
+                                        ? value
+                                        : formatFullValue(value);
+                                    })()
                                 : (() => {
-                                    if (item.duped_value === null || item.duped_value === "N/A") return "N/A";
-                                    return windowWidth <= 640 ? item.duped_value : formatFullValue(item.duped_value);
+                                    if (
+                                      item.duped_value === null ||
+                                      item.duped_value === "N/A"
+                                    )
+                                      return "N/A";
+                                    return windowWidth <= 640
+                                      ? item.duped_value
+                                      : formatFullValue(item.duped_value);
                                   })()}
                             </span>
                           </div>
                           <div className="flex items-center justify-between bg-gradient-to-r from-[#2E3944] to-[#1a202c] rounded-lg p-1.5">
-                            <span className="text-xs text-muted font-medium whitespace-nowrap">Demand</span>
+                            <span className="text-xs text-muted font-medium whitespace-nowrap">
+                              Demand
+                            </span>
                             {(() => {
-                              const d = selectedVariants[item.id] && selectedVariants[item.id] !== '2025'
-                                ? (item.children?.find(child => child.sub_name === selectedVariants[item.id])?.data.demand ?? 'N/A')
-                                : (item.demand ?? 'N/A');
+                              const d =
+                                selectedVariants[item.id] &&
+                                selectedVariants[item.id] !== "2025"
+                                  ? (item.children?.find(
+                                      (child) =>
+                                        child.sub_name ===
+                                        selectedVariants[item.id],
+                                    )?.data.demand ?? "N/A")
+                                  : (item.demand ?? "N/A");
                               return (
-                                <span className={`text-xs px-2 py-0.5 font-bold rounded-lg shadow-sm ${getDemandColor(d)}`}>
-                                  {d === 'N/A' ? 'Unknown' : d}
+                                <span
+                                  className={`text-xs px-2 py-0.5 font-bold rounded-lg shadow-sm ${getDemandColor(d)}`}
+                                >
+                                  {d === "N/A" ? "Unknown" : d}
                                 </span>
                               );
                             })()}
                           </div>
                           <div className="flex items-center justify-between bg-gradient-to-r from-[#2E3944] to-[#1a202c] rounded-lg p-1.5">
-                            <span className="text-xs text-muted font-medium whitespace-nowrap">Trend</span>
-                            <span className={`text-xs px-2 py-0.5 font-bold rounded-lg shadow-sm ${getTrendColor(item.trend || 'Unknown')}`}>
-                              {!item.trend || item.trend === 'N/A' ? 'Unknown' : item.trend}
+                            <span className="text-xs text-muted font-medium whitespace-nowrap">
+                              Trend
+                            </span>
+                            <span
+                              className={`text-xs px-2 py-0.5 font-bold rounded-lg shadow-sm ${getTrendColor(item.trend || "Unknown")}`}
+                            >
+                              {!item.trend || item.trend === "N/A"
+                                ? "Unknown"
+                                : item.trend}
                             </span>
                           </div>
                         </div>
@@ -660,12 +879,16 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
                               onClick={(e) => {
                                 e.stopPropagation();
                                 e.preventDefault();
-                                setOpenDropdownId(openDropdownId === item.id ? null : item.id);
+                                setOpenDropdownId(
+                                  openDropdownId === item.id ? null : item.id,
+                                );
                               }}
                               className="w-full flex items-center justify-between gap-1 rounded-lg border border-[#2E3944] bg-[#37424D] px-3 py-1.5 text-sm text-muted hover:bg-[#124E66] focus:outline-none"
                             >
-                              {selectedVariants[item.id] || '2025'}
-                              <ChevronDownIcon className={`h-4 w-4 transition-transform ${openDropdownId === item.id ? 'rotate-180' : ''}`} />
+                              {selectedVariants[item.id] || "2025"}
+                              <ChevronDownIcon
+                                className={`h-4 w-4 transition-transform ${openDropdownId === item.id ? "rotate-180" : ""}`}
+                              />
                             </button>
                             <AnimatePresence>
                               {openDropdownId === item.id && (
@@ -674,18 +897,24 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
                                   initial={{ opacity: 0, y: -8 }}
                                   animate={{ opacity: 1, y: 0 }}
                                   exit={{ opacity: 0, y: -8 }}
-                                  transition={{ duration: 0.18, ease: 'easeOut' }}
+                                  transition={{
+                                    duration: 0.18,
+                                    ease: "easeOut",
+                                  }}
                                   className="absolute z-10 mt-1 w-full rounded-lg border border-[#2E3944] bg-[#37424D] shadow-lg"
                                 >
                                   <button
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       e.preventDefault();
-                                      handleVariantSelect(item.id, '2025');
+                                      handleVariantSelect(item.id, "2025");
                                       setOpenDropdownId(null);
                                     }}
                                     className={`w-full px-3 py-2 text-left text-sm text-muted hover:bg-[#124E66] ${
-                                      selectedVariants[item.id] === '2025' || !selectedVariants[item.id] ? 'bg-[#124E66]' : ''
+                                      selectedVariants[item.id] === "2025" ||
+                                      !selectedVariants[item.id]
+                                        ? "bg-[#124E66]"
+                                        : ""
                                     }`}
                                   >
                                     2025
@@ -696,11 +925,17 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
                                       onClick={(e) => {
                                         e.stopPropagation();
                                         e.preventDefault();
-                                        handleVariantSelect(item.id, child.sub_name);
+                                        handleVariantSelect(
+                                          item.id,
+                                          child.sub_name,
+                                        );
                                         setOpenDropdownId(null);
                                       }}
                                       className={`w-full px-3 py-2 text-left text-sm text-muted hover:bg-[#124E66] ${
-                                        selectedVariants[item.id] === child.sub_name ? 'bg-[#124E66]' : ''
+                                        selectedVariants[item.id] ===
+                                        child.sub_name
+                                          ? "bg-[#124E66]"
+                                          : ""
                                       }`}
                                     >
                                       {child.sub_name}
@@ -720,7 +955,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
                         onClick={(e) => {
                           e.stopPropagation();
                           e.preventDefault();
-                          handleAddItem(item, 'offering');
+                          handleAddItem(item, "offering");
                         }}
                         className="flex-1 py-1 px-2 text-xs rounded-md transition-colors bg-[#047857] hover:bg-[#065F46] text-white"
                       >
@@ -730,7 +965,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
                         onClick={(e) => {
                           e.stopPropagation();
                           e.preventDefault();
-                          handleAddItem(item, 'requesting');
+                          handleAddItem(item, "requesting");
                         }}
                         className="flex-1 py-1 px-2 text-xs rounded-md transition-colors bg-[#B91C1C] hover:bg-[#991B1B] text-white"
                       >
@@ -745,21 +980,21 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
         </div>
         {totalPages > 1 && filteredItems.length > 0 && (
           <div className="flex justify-center mt-4">
-            <Pagination 
-              count={totalPages} 
-              page={page} 
+            <Pagination
+              count={totalPages}
+              page={page}
               onChange={handlePageChange}
               sx={{
-                '& .MuiPaginationItem-root': {
-                  color: '#D3D9D4',
-                  '&.Mui-selected': {
-                    backgroundColor: '#5865F2',
-                    '&:hover': {
-                      backgroundColor: '#4752C4',
+                "& .MuiPaginationItem-root": {
+                  color: "#D3D9D4",
+                  "&.Mui-selected": {
+                    backgroundColor: "#5865F2",
+                    "&:hover": {
+                      backgroundColor: "#4752C4",
                     },
                   },
-                  '&:hover': {
-                    backgroundColor: '#37424D',
+                  "&:hover": {
+                    backgroundColor: "#37424D",
                   },
                 },
               }}
@@ -778,4 +1013,4 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({
 };
 
 export { AvailableItemsGrid };
-export type { AvailableItemsGridProps }; 
+export type { AvailableItemsGridProps };

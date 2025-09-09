@@ -1,7 +1,7 @@
-import React from 'react';
-import Link from 'next/link';
-import { RobloxIcon } from '@/components/Icons/RobloxIcon';
-import { UserAvatar } from '@/utils/avatar';
+import React from "react";
+import Link from "next/link";
+import { RobloxIcon } from "@/components/Icons/RobloxIcon";
+import { UserAvatar } from "@/utils/avatar";
 
 interface TradeUserTooltipProps {
   user: {
@@ -43,13 +43,15 @@ export const TradeUserTooltip: React.FC<TradeUserTooltipProps> = ({ user }) => {
         {/* User Details */}
         <div className="flex-1 min-w-0">
           <div className="mb-1">
-            <Link 
+            <Link
               href={`/users/${user.id}`}
               className="block hover:opacity-80 transition-opacity"
             >
               <div className="flex items-center gap-2">
                 <h3 className="text-lg font-semibold text-muted hover:text-blue-300 transition-colors">
-                  {user.global_name && user.global_name !== "None" ? user.global_name : user.username}
+                  {user.global_name && user.global_name !== "None"
+                    ? user.global_name
+                    : user.username}
                 </h3>
               </div>
               <p className="text-sm text-[#B9BBBE]">@{user.username}</p>
@@ -71,4 +73,4 @@ export const TradeUserTooltip: React.FC<TradeUserTooltipProps> = ({ user }) => {
       </div>
     </div>
   );
-}; 
+};

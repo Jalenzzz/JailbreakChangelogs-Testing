@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { ThemeProvider } from '@mui/material';
-import { darkTheme } from '@/theme/darkTheme';
+import React, { useState, useEffect } from "react";
+import { ThemeProvider } from "@mui/material";
+import { darkTheme } from "@/theme/darkTheme";
 import { ArrowUpIcon } from "@heroicons/react/24/outline";
-import TimelineHeader from './TimelineHeader';
-import TimelineContent from './TimelineContent';
-import TimelineModal from './TimelineModal';
-import { Changelog } from '@/utils/api';
+import TimelineHeader from "./TimelineHeader";
+import TimelineContent from "./TimelineContent";
+import TimelineModal from "./TimelineModal";
+import { Changelog } from "@/utils/api";
 
 interface TimelineClientProps {
   changelogs: Changelog[];
@@ -37,7 +37,10 @@ export default function TimelineClient({ changelogs }: TimelineClientProps) {
     <ThemeProvider theme={darkTheme}>
       <TimelineHeader onViewMore={() => setIsModalOpen(true)} />
       <TimelineContent changelogs={changelogs} />
-      <TimelineModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <TimelineModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
 
       {showBackToTop && (
         <button

@@ -1,39 +1,39 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { Pagination } from '@mui/material';
-import Link from 'next/link';
-import { UserData } from '@/types/auth';
-import RobloxUserCard from '@/components/Users/RobloxUserCard';
-import DiscordUserCard from '@/components/Users/DiscordUserCard';
-import UserTypeTabs from '@/components/Users/UserTypeTabs';
-import { useDebounce } from '@/hooks/useDebounce';
-import { Tooltip } from '@mui/material';
-import { UserDetailsTooltip } from './UserDetailsTooltip';
+import { useState, useEffect } from "react";
+import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Pagination } from "@mui/material";
+import Link from "next/link";
+import { UserData } from "@/types/auth";
+import RobloxUserCard from "@/components/Users/RobloxUserCard";
+import DiscordUserCard from "@/components/Users/DiscordUserCard";
+import UserTypeTabs from "@/components/Users/UserTypeTabs";
+import { useDebounce } from "@/hooks/useDebounce";
+import { Tooltip } from "@mui/material";
+import { UserDetailsTooltip } from "./UserDetailsTooltip";
 
 interface UserSearchProps {
   initialUsers: UserData[];
 }
 
 export default function UserSearch({ initialUsers }: UserSearchProps) {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const [userType, setUserType] = useState<'discord' | 'roblox'>('discord');
+  const [userType, setUserType] = useState<"discord" | "roblox">("discord");
   const usersPerPage = 21;
-  
+
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
   useEffect(() => {
     const checkAuthStatus = () => {
-      const storedUser = localStorage.getItem('user');
+      const storedUser = localStorage.getItem("user");
       if (storedUser) {
         try {
           const userData = JSON.parse(storedUser);
           setCurrentUserId(userData.id);
         } catch (error) {
-          console.error('Error parsing user data:', error);
+          console.error("Error parsing user data:", error);
           setCurrentUserId(null);
         }
       } else {
@@ -42,39 +42,42 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
     };
 
     checkAuthStatus();
-    window.addEventListener('storage', checkAuthStatus);
+    window.addEventListener("storage", checkAuthStatus);
     const handleAuthChange = () => checkAuthStatus();
-    window.addEventListener('authStateChanged', handleAuthChange);
+    window.addEventListener("authStateChanged", handleAuthChange);
 
     return () => {
-      window.removeEventListener('storage', checkAuthStatus);
-      window.removeEventListener('authStateChanged', handleAuthChange);
+      window.removeEventListener("storage", checkAuthStatus);
+      window.removeEventListener("authStateChanged", handleAuthChange);
     };
   }, []);
 
-  const filteredUsers = initialUsers.filter(user => {
+  const filteredUsers = initialUsers.filter((user) => {
     const searchLower = debouncedSearchQuery.trim().toLowerCase();
     const isIdSearch = /^\d{18,19}$/.test(debouncedSearchQuery);
-    
-    if (userType === 'roblox') {
+
+    if (userType === "roblox") {
       if (!user.roblox_id) return false;
-      
+
       if (isIdSearch) {
         return user.id === debouncedSearchQuery;
       }
-      
+
       return (
-        (user.roblox_username && user.roblox_username.toLowerCase().includes(searchLower)) ||
-        (user.roblox_display_name && user.roblox_display_name.toLowerCase().includes(searchLower))
+        (user.roblox_username &&
+          user.roblox_username.toLowerCase().includes(searchLower)) ||
+        (user.roblox_display_name &&
+          user.roblox_display_name.toLowerCase().includes(searchLower))
       );
     } else {
       if (isIdSearch) {
         return user.id === debouncedSearchQuery;
       }
-      
+
       return (
         user.username.toLowerCase().includes(searchLower) ||
-        (user.global_name && user.global_name.toLowerCase().includes(searchLower))
+        (user.global_name &&
+          user.global_name.toLowerCase().includes(searchLower))
       );
     }
   });
@@ -93,7 +96,7 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
           setPage(pageNumber);
         } else {
           setPage(1);
-          history.pushState(null, '', window.location.pathname);
+          history.pushState(null, "", window.location.pathname);
         }
       } else {
         setPage(1);
@@ -101,14 +104,17 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
     };
 
     handleHashChange();
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
   }, [totalPages]);
 
-  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number,
+  ) => {
     setPage(value);
     if (value === 1) {
-      history.pushState(null, '', window.location.pathname);
+      history.pushState(null, "", window.location.pathname);
     } else {
       window.location.hash = value.toString();
     }
@@ -120,7 +126,7 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
         <div className="relative flex-1">
           <input
             type="text"
-            placeholder={`Search ${userType === 'roblox' ? 'Roblox' : 'Discord'} users...`}
+            placeholder={`Search ${userType === "roblox" ? "Roblox" : "Discord"} users...`}
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
@@ -132,7 +138,7 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
           {searchQuery && (
             <button
               onClick={() => {
-                setSearchQuery('');
+                setSearchQuery("");
                 setPage(1);
               }}
               className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#FFFFFF] hover:text-muted"
@@ -151,16 +157,18 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
             setPage(1);
           }}
         />
-  <div className="flex items-center gap-2 text-sm text-muted">
+        <div className="flex items-center gap-2 text-sm text-muted">
           <span>
             {(() => {
               const MAX_QUERY_DISPLAY = 32;
-              const displayQuery = debouncedSearchQuery && debouncedSearchQuery.length > MAX_QUERY_DISPLAY
-                ? debouncedSearchQuery.slice(0, MAX_QUERY_DISPLAY) + '...'
-                : debouncedSearchQuery;
-              return debouncedSearchQuery 
-                ? `Found ${filteredUsers.length.toLocaleString()} ${userType === 'roblox' ? 'Roblox' : 'Discord'} ${filteredUsers.length === 1 ? 'user' : 'users'} matching "${displayQuery}"`
-                : `Total ${userType === 'roblox' ? 'Roblox' : 'Discord'} Users: ${filteredUsers.length.toLocaleString()}`;
+              const displayQuery =
+                debouncedSearchQuery &&
+                debouncedSearchQuery.length > MAX_QUERY_DISPLAY
+                  ? debouncedSearchQuery.slice(0, MAX_QUERY_DISPLAY) + "..."
+                  : debouncedSearchQuery;
+              return debouncedSearchQuery
+                ? `Found ${filteredUsers.length.toLocaleString()} ${userType === "roblox" ? "Roblox" : "Discord"} ${filteredUsers.length === 1 ? "user" : "users"} matching "${displayQuery}"`
+                : `Total ${userType === "roblox" ? "Roblox" : "Discord"} Users: ${filteredUsers.length.toLocaleString()}`;
             })()}
           </span>
         </div>
@@ -172,12 +180,14 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
             <p className="text-[#FFFFFF] text-sm mt-2">
               {(() => {
                 const MAX_QUERY_DISPLAY = 32;
-                const displayQuery = debouncedSearchQuery && debouncedSearchQuery.length > MAX_QUERY_DISPLAY
-                  ? debouncedSearchQuery.slice(0, MAX_QUERY_DISPLAY) + '...'
-                  : debouncedSearchQuery;
-                return debouncedSearchQuery 
-                  ? `No ${userType === 'roblox' ? 'Roblox' : 'Discord'} users match "${displayQuery}"` 
-                  : `No ${userType === 'roblox' ? 'Roblox' : 'Discord'} users available`;
+                const displayQuery =
+                  debouncedSearchQuery &&
+                  debouncedSearchQuery.length > MAX_QUERY_DISPLAY
+                    ? debouncedSearchQuery.slice(0, MAX_QUERY_DISPLAY) + "..."
+                    : debouncedSearchQuery;
+                return debouncedSearchQuery
+                  ? `No ${userType === "roblox" ? "Roblox" : "Discord"} users match "${displayQuery}"`
+                  : `No ${userType === "roblox" ? "Roblox" : "Discord"} users available`;
               })()}
             </p>
           </div>
@@ -185,43 +195,60 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
           currentUsers.map((user) => (
             <Tooltip
               key={user.id}
-              title={user.settings?.profile_public === 0 && currentUserId !== user.id ? null : <UserDetailsTooltip user={user} />}
+              title={
+                user.settings?.profile_public === 0 &&
+                currentUserId !== user.id ? null : (
+                  <UserDetailsTooltip user={user} />
+                )
+              }
               arrow
               disableTouchListener
               slotProps={{
                 tooltip: {
                   sx: {
-                    bgcolor: '#1A2228',
-                    border: '1px solid #2E3944',
-                    maxWidth: '400px',
-                    width: 'auto',
-                    minWidth: '300px',
-                    '& .MuiTooltip-arrow': {
-                      color: '#1A2228',
+                    bgcolor: "#1A2228",
+                    border: "1px solid #2E3944",
+                    maxWidth: "400px",
+                    width: "auto",
+                    minWidth: "300px",
+                    "& .MuiTooltip-arrow": {
+                      color: "#1A2228",
                     },
                   },
                 },
               }}
             >
               <Link
-                href={user.settings?.profile_public === 0 && currentUserId !== user.id ? '#' : `/users/${user.id}`}
+                href={
+                  user.settings?.profile_public === 0 &&
+                  currentUserId !== user.id
+                    ? "#"
+                    : `/users/${user.id}`
+                }
                 prefetch={false}
                 className={`block bg-[#212A31] p-4 rounded-lg shadow-md border border-[#2E3944] ${
-                  user.settings?.profile_public === 0 && currentUserId !== user.id
-                    ? 'cursor-not-allowed opacity-75'
-                    : 'hover:border-blue-300 group'
+                  user.settings?.profile_public === 0 &&
+                  currentUserId !== user.id
+                    ? "cursor-not-allowed opacity-75"
+                    : "hover:border-blue-300 group"
                 } transition-colors`}
                 onClick={(e) => {
-                  if (user.settings?.profile_public === 0 && currentUserId !== user.id) {
+                  if (
+                    user.settings?.profile_public === 0 &&
+                    currentUserId !== user.id
+                  ) {
                     e.preventDefault();
                   }
                 }}
               >
                 <div className="flex items-center space-x-3">
-                  {userType === 'roblox' ? (
+                  {userType === "roblox" ? (
                     <RobloxUserCard user={user} currentUserId={currentUserId} />
                   ) : (
-                    <DiscordUserCard user={user} currentUserId={currentUserId} />
+                    <DiscordUserCard
+                      user={user}
+                      currentUserId={currentUserId}
+                    />
                   )}
                 </div>
               </Link>
@@ -236,16 +263,16 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
             page={page}
             onChange={handlePageChange}
             sx={{
-              '& .MuiPaginationItem-root': {
-                color: '#D3D9D4',
-                '&.Mui-selected': {
-                  backgroundColor: '#5865F2',
-                  '&:hover': {
-                    backgroundColor: '#4752C4',
+              "& .MuiPaginationItem-root": {
+                color: "#D3D9D4",
+                "&.Mui-selected": {
+                  backgroundColor: "#5865F2",
+                  "&:hover": {
+                    backgroundColor: "#4752C4",
                   },
                 },
-                '&:hover': {
-                  backgroundColor: '#2E3944',
+                "&:hover": {
+                  backgroundColor: "#2E3944",
                 },
               },
             }}
@@ -254,4 +281,4 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
       )}
     </div>
   );
-} 
+}

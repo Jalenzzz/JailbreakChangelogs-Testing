@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import { demandOrder, trendOrder } from "@/utils/values";
-import { getDemandColor, getTrendColor } from '@/utils/badgeColors';
+import { getDemandColor, getTrendColor } from "@/utils/badgeColors";
 import { ValueSort } from "@/types";
 
 interface TradingGuidesProps {
@@ -12,29 +12,33 @@ interface TradingGuidesProps {
   onScrollToSearch: () => void;
 }
 
-export default function TradingGuides({ valueSort, onValueSortChange, onScrollToSearch }: TradingGuidesProps) {
+export default function TradingGuides({
+  valueSort,
+  onValueSortChange,
+  onScrollToSearch,
+}: TradingGuidesProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const getDemandValue = (demand: string): string => {
-    switch(demand) {
-      case 'Close to none':
-        return 'demand-close-to-none';
-      case 'Very Low':
-        return 'demand-very-low';
-      case 'Low':
-        return 'demand-low';
-      case 'Medium':
-        return 'demand-medium';
-      case 'Decent':
-        return 'demand-decent';
-      case 'High':
-        return 'demand-high';
-      case 'Very High':
-        return 'demand-very-high';
-      case 'Extremely High':
-        return 'demand-extremely-high';
+    switch (demand) {
+      case "Close to none":
+        return "demand-close-to-none";
+      case "Very Low":
+        return "demand-very-low";
+      case "Low":
+        return "demand-low";
+      case "Medium":
+        return "demand-medium";
+      case "Decent":
+        return "demand-decent";
+      case "High":
+        return "demand-high";
+      case "Very High":
+        return "demand-very-high";
+      case "Extremely High":
+        return "demand-extremely-high";
       default:
-        return 'demand-close-to-none';
+        return "demand-close-to-none";
     }
   };
 
@@ -49,27 +53,27 @@ export default function TradingGuides({ valueSort, onValueSortChange, onScrollTo
   };
 
   const getTrendValue = (trend: string): string => {
-    switch(trend) {
-      case 'Avoided':
-        return 'trend-avoided';
-      case 'Dropping':
-        return 'trend-dropping';
-      case 'Unstable':
-        return 'trend-unstable';
-      case 'Hoarded':
-        return 'trend-hoarded';
-      case 'Projected':
-        return 'trend-projected';
-      case 'Stable':
-        return 'trend-stable';
-      case 'Recovering':
-        return 'trend-recovering';
-      case 'Rising':
-        return 'trend-rising';
-      case 'Hyped':
-        return 'trend-hyped';
+    switch (trend) {
+      case "Avoided":
+        return "trend-avoided";
+      case "Dropping":
+        return "trend-dropping";
+      case "Unstable":
+        return "trend-unstable";
+      case "Hoarded":
+        return "trend-hoarded";
+      case "Projected":
+        return "trend-projected";
+      case "Stable":
+        return "trend-stable";
+      case "Recovering":
+        return "trend-recovering";
+      case "Rising":
+        return "trend-rising";
+      case "Hyped":
+        return "trend-hyped";
       default:
-        return 'trend-stable';
+        return "trend-stable";
     }
   };
 
@@ -117,15 +121,15 @@ export default function TradingGuides({ valueSort, onValueSortChange, onScrollTo
             <ul className="mb-4 list-inside list-disc space-y-2 text-muted">
               <li>This is NOT an official list, it is 100% community based</li>
               <li>
-                Some values may be outdated but we do our best to make sure it&apos;s
-                accurate as possible
+                Some values may be outdated but we do our best to make sure
+                it&apos;s accurate as possible
               </li>
               <li>
-                Please don&apos;t 100% rely on the value list, use your own judgment as
-                well
+                Please don&apos;t 100% rely on the value list, use your own
+                judgment as well
               </li>
             </ul>
-            
+
             <h3 className="mb-2 text-xl font-semibold text-muted">
               Demand Levels Guide
             </h3>
@@ -135,19 +139,27 @@ export default function TradingGuides({ valueSort, onValueSortChange, onScrollTo
                   key={demand}
                   onClick={() => handleDemandClick(demand)}
                   className={`flex items-center gap-2 rounded-lg border border-[#2E3944] bg-[#37424D] px-3 py-1.5 transition-all hover:scale-105 focus:outline-none ${
-                    valueSort === getDemandValue(demand) ? 'ring-2 ring-[#5865F2]' : ''
+                    valueSort === getDemandValue(demand)
+                      ? "ring-2 ring-[#5865F2]"
+                      : ""
                   }`}
                 >
-                  <span className={`inline-block w-2 h-2 rounded-full ${getDemandColor(demand)}`}></span>
+                  <span
+                    className={`inline-block w-2 h-2 rounded-full ${getDemandColor(demand)}`}
+                  ></span>
                   <span className="text-sm font-bold text-white">{demand}</span>
                 </button>
               ))}
             </div>
             <p className="mb-4 text-sm text-muted">
-              <strong>Note:</strong> Demand levels are ranked from lowest to highest. Items with higher demand are generally easier to trade and may have better values.<br/>
-              Not all demand levels are currently in use; some may not be represented among items.
+              <strong>Note:</strong> Demand levels are ranked from lowest to
+              highest. Items with higher demand are generally easier to trade
+              and may have better values.
+              <br />
+              Not all demand levels are currently in use; some may not be
+              represented among items.
             </p>
-            
+
             <h3 className="mb-2 text-xl font-semibold text-muted">
               Trend Levels Guide
             </h3>
@@ -157,68 +169,117 @@ export default function TradingGuides({ valueSort, onValueSortChange, onScrollTo
                   key={trend}
                   onClick={() => handleTrendClick(trend)}
                   className={`flex items-center gap-2 rounded-lg border border-[#2E3944] bg-[#37424D] px-3 py-1.5 transition-all hover:scale-105 focus:outline-none ${
-                    valueSort === getTrendValue(trend) ? 'ring-2 ring-[#5865F2]' : ''
+                    valueSort === getTrendValue(trend)
+                      ? "ring-2 ring-[#5865F2]"
+                      : ""
                   }`}
                 >
-                  <span className={`inline-block w-2 h-2 rounded-full ${getTrendColor(trend)}`}></span>
+                  <span
+                    className={`inline-block w-2 h-2 rounded-full ${getTrendColor(trend)}`}
+                  ></span>
                   <span className="text-sm font-bold text-white">{trend}</span>
                 </button>
               ))}
             </div>
             <div className="mb-4 space-y-2 text-sm text-muted">
               <div className="flex items-start gap-2">
-                <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${getTrendColor('Avoided')} bg-opacity-20`}>
+                <span
+                  className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${getTrendColor("Avoided")} bg-opacity-20`}
+                >
                   Avoided
                 </span>
-                <span>Items which are on a decline due to being generally avoided by the community.</span>
+                <span>
+                  Items which are on a decline due to being generally avoided by
+                  the community.
+                </span>
               </div>
               <div className="flex items-start gap-2">
-                <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${getTrendColor('Dropping')} bg-opacity-20`}>
+                <span
+                  className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${getTrendColor("Dropping")} bg-opacity-20`}
+                >
                   Dropping
                 </span>
-                <span>Items which are consistently getting larger underpays from base overtime.</span>
+                <span>
+                  Items which are consistently getting larger underpays from
+                  base overtime.
+                </span>
               </div>
               <div className="flex items-start gap-2">
-                <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${getTrendColor('Unstable')} bg-opacity-20`}>
+                <span
+                  className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${getTrendColor("Unstable")} bg-opacity-20`}
+                >
                   Unstable
                 </span>
-                <span>Items which inconsistently yet occasionally get a varying overpay/underpay from base.</span>
+                <span>
+                  Items which inconsistently yet occasionally get a varying
+                  overpay/underpay from base.
+                </span>
               </div>
               <div className="flex items-start gap-2">
-                <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${getTrendColor('Hoarded')} bg-opacity-20`}>
+                <span
+                  className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${getTrendColor("Hoarded")} bg-opacity-20`}
+                >
                   Hoarded
                 </span>
-                <span>Rare items which have been hoarded to create scarcity artificially.</span>
+                <span>
+                  Rare items which have been hoarded to create scarcity
+                  artificially.
+                </span>
               </div>
               <div className="flex items-start gap-2">
-                <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${getTrendColor('Projected')} bg-opacity-20`}>
+                <span
+                  className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${getTrendColor("Projected")} bg-opacity-20`}
+                >
                   Projected
                 </span>
-                <span>Items which aren&apos;t as rare/valuable as people make it out to be yet consistently are treated as such.</span>
+                <span>
+                  Items which aren&apos;t as rare/valuable as people make it out
+                  to be yet consistently are treated as such.
+                </span>
               </div>
               <div className="flex items-start gap-2">
-                <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${getTrendColor('Stable')} bg-opacity-20`}>
+                <span
+                  className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${getTrendColor("Stable")} bg-opacity-20`}
+                >
                   Stable
                 </span>
-                <span>Items which get a consistent amount of value. (Consistent underpay/base/overpay)</span>
+                <span>
+                  Items which get a consistent amount of value. (Consistent
+                  underpay/base/overpay)
+                </span>
               </div>
               <div className="flex items-start gap-2">
-                <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${getTrendColor('Recovering')} bg-opacity-20`}>
+                <span
+                  className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${getTrendColor("Recovering")} bg-opacity-20`}
+                >
                   Recovering
                 </span>
-                <span>Items which have recently dropped significantly in value which are beginning to gradually increase in demand.</span>
+                <span>
+                  Items which have recently dropped significantly in value which
+                  are beginning to gradually increase in demand.
+                </span>
               </div>
               <div className="flex items-start gap-2">
-                <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${getTrendColor('Rising')} bg-opacity-20`}>
+                <span
+                  className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${getTrendColor("Rising")} bg-opacity-20`}
+                >
                   Rising
                 </span>
-                <span>Items which are consistently getting larger overpays from base overtime.</span>
+                <span>
+                  Items which are consistently getting larger overpays from base
+                  overtime.
+                </span>
               </div>
               <div className="flex items-start gap-2">
-                <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${getTrendColor('Hyped')} bg-opacity-20`}>
+                <span
+                  className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${getTrendColor("Hyped")} bg-opacity-20`}
+                >
                   Hyped
                 </span>
-                <span>Items which are on a fast rise due to short lived hype created by the community.</span>
+                <span>
+                  Items which are on a fast rise due to short lived hype created
+                  by the community.
+                </span>
               </div>
             </div>
           </div>
@@ -230,7 +291,13 @@ export default function TradingGuides({ valueSort, onValueSortChange, onScrollTo
               allowFullScreen
               loading="lazy"
               title="Jailbreak Trading Video"
-              style={{ border: 0, borderRadius: '20px', maxWidth: 560, width: '100%', height: 315 }}
+              style={{
+                border: 0,
+                borderRadius: "20px",
+                maxWidth: 560,
+                width: "100%",
+                height: 315,
+              }}
             />
           </div>
         </div>

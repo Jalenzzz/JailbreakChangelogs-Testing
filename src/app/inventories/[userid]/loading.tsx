@@ -1,5 +1,5 @@
-import Breadcrumb from '@/components/Layout/Breadcrumb';
-import InventoryCheckerClient from '../InventoryCheckerClient';
+import Breadcrumb from "@/components/Layout/Breadcrumb";
+import InventoryCheckerClient from "../InventoryCheckerClient";
 
 export default function Loading() {
   return (

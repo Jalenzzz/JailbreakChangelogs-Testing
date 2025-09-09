@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 import { BanknotesIcon } from "@heroicons/react/24/outline";
-import Image from 'next/image';
-import { formatFullValue, formatPrice } from '@/utils/values';
-import { getTrendColor, getDemandColor } from '@/utils/badgeColors';
+import Image from "next/image";
+import { formatFullValue, formatPrice } from "@/utils/values";
+import { getTrendColor, getDemandColor } from "@/utils/badgeColors";
 
 interface ItemValuesProps {
   cashValue: string | null;
@@ -15,13 +15,18 @@ interface ItemValuesProps {
   type: string;
 }
 
-
-
-
-
-export default function ItemValues({ cashValue, dupedValue, demand, trend, notes, price, health, type }: ItemValuesProps) {
-  const isRobuxPrice = price.toLowerCase().includes('robux');
-  const isUSDPrice = price.includes('$');
+export default function ItemValues({
+  cashValue,
+  dupedValue,
+  demand,
+  trend,
+  notes,
+  price,
+  health,
+  type,
+}: ItemValuesProps) {
+  const isRobuxPrice = price.toLowerCase().includes("robux");
+  const isUSDPrice = price.includes("$");
   const hasNoPrice = price === "N/A";
 
   return (
@@ -57,11 +62,13 @@ export default function ItemValues({ cashValue, dupedValue, demand, trend, notes
         {/* Original Price */}
         <div className="bg-[#2e3944] rounded-lg p-4 border border-gray-700/50">
           <div className="flex items-center gap-2 mb-2">
-            <h4 className="text-sm text-gray-300 font-medium">Original Price</h4>
+            <h4 className="text-sm text-gray-300 font-medium">
+              Original Price
+            </h4>
           </div>
           <div className="flex items-center gap-2">
-            {!hasNoPrice && (
-              isRobuxPrice ? (
+            {!hasNoPrice &&
+              (isRobuxPrice ? (
                 <Image
                   src="/assets/images/Robux_Icon.png"
                   alt="Robux"
@@ -69,10 +76,12 @@ export default function ItemValues({ cashValue, dupedValue, demand, trend, notes
                   height={20}
                   className="h-6 w-6"
                 />
-              ) : !isUSDPrice && price.toLowerCase() !== 'free' && (
-                <BanknotesIcon className="h-6 w-6 text-white" />
-              )
-            )}
+              ) : (
+                !isUSDPrice &&
+                price.toLowerCase() !== "free" && (
+                  <BanknotesIcon className="h-6 w-6 text-white" />
+                )
+              ))}
             <p className="text-2xl font-bold text-white">
               {formatPrice(price)}
             </p>
@@ -80,14 +89,14 @@ export default function ItemValues({ cashValue, dupedValue, demand, trend, notes
         </div>
 
         {/* Vehicle Health - Only show for vehicles */}
-        {type.toLowerCase() === 'vehicle' && (
+        {type.toLowerCase() === "vehicle" && (
           <div className="bg-[#2e3944] rounded-lg p-4 border border-gray-700/50">
             <div className="flex items-center gap-2 mb-2">
-              <h4 className="text-sm text-gray-300 font-medium">Vehicle Health</h4>
+              <h4 className="text-sm text-gray-300 font-medium">
+                Vehicle Health
+              </h4>
             </div>
-            <p className="text-2xl font-bold text-white">
-              {health || "???"}
-            </p>
+            <p className="text-2xl font-bold text-white">{health || "???"}</p>
           </div>
         )}
 
@@ -96,7 +105,9 @@ export default function ItemValues({ cashValue, dupedValue, demand, trend, notes
           <div className="flex items-center gap-2 mb-2">
             <h4 className="text-sm text-gray-300 font-medium">Item Demand</h4>
           </div>
-          <div className={`flex items-center gap-2 p-3 rounded-lg ${getDemandColor(demand)}`}>
+          <div
+            className={`flex items-center gap-2 p-3 rounded-lg ${getDemandColor(demand)}`}
+          >
             <p className="text-2xl font-bold text-white">
               {demand === "N/A" ? "Unknown" : demand}
             </p>
@@ -108,9 +119,11 @@ export default function ItemValues({ cashValue, dupedValue, demand, trend, notes
           <div className="flex items-center gap-2 mb-2">
             <h4 className="text-sm text-gray-300 font-medium">Trend</h4>
           </div>
-          <div className={`flex items-center gap-2 p-3 rounded-lg ${getTrendColor(trend || 'Unknown')}`}>
+          <div
+            className={`flex items-center gap-2 p-3 rounded-lg ${getTrendColor(trend || "Unknown")}`}
+          >
             <span className="text-2xl font-bold text-white">
-              {(!trend || trend === 'Unknown') ? 'Unknown' : trend}
+              {!trend || trend === "Unknown" ? "Unknown" : trend}
             </span>
           </div>
         </div>
@@ -122,11 +135,9 @@ export default function ItemValues({ cashValue, dupedValue, demand, trend, notes
           <div className="flex items-center gap-2 mb-2">
             <h4 className="text-sm text-gray-300 font-medium">Item Notes</h4>
           </div>
-          <p className="text-2xl font-bold text-white">
-            {notes}
-          </p>
+          <p className="text-2xl font-bold text-white">{notes}</p>
         </div>
       )}
     </div>
   );
-} 
+}

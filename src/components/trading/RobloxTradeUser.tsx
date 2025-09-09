@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Tooltip } from '@mui/material';
-import { RobloxIcon } from '@/components/Icons/RobloxIcon';
-import { TradeUserTooltip } from './TradeUserTooltip';
+import React, { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Tooltip } from "@mui/material";
+import { RobloxIcon } from "@/components/Icons/RobloxIcon";
+import { TradeUserTooltip } from "./TradeUserTooltip";
 
 interface RobloxTradeUserProps {
   user: {
@@ -21,7 +21,10 @@ interface RobloxTradeUserProps {
   showBadge?: boolean;
 }
 
-export default function RobloxTradeUser({ user, showBadge = false }: RobloxTradeUserProps) {
+export default function RobloxTradeUser({
+  user,
+  showBadge = false,
+}: RobloxTradeUserProps) {
   const [imageError, setImageError] = useState(false);
 
   if (!user.roblox_id || !user.roblox_username) {
@@ -35,7 +38,7 @@ export default function RobloxTradeUser({ user, showBadge = false }: RobloxTrade
           <div className="relative w-10 h-10 rounded-full overflow-hidden bg-[#212A31]">
             <Image
               src={user.roblox_avatar}
-              alt={`${user.roblox_display_name || user.roblox_username || 'Roblox'} user's profile picture`}
+              alt={`${user.roblox_display_name || user.roblox_username || "Roblox"} user's profile picture`}
               fill
               draggable={false}
               className="object-cover"
@@ -65,13 +68,13 @@ export default function RobloxTradeUser({ user, showBadge = false }: RobloxTrade
             slotProps={{
               tooltip: {
                 sx: {
-                  bgcolor: '#1A2228',
-                  border: '1px solid #2E3944',
-                  maxWidth: '400px',
-                  width: 'auto',
-                  minWidth: '300px',
-                  '& .MuiTooltip-arrow': {
-                    color: '#1A2228',
+                  bgcolor: "#1A2228",
+                  border: "1px solid #2E3944",
+                  maxWidth: "400px",
+                  width: "auto",
+                  minWidth: "300px",
+                  "& .MuiTooltip-arrow": {
+                    color: "#1A2228",
                   },
                 },
               },
@@ -87,10 +90,12 @@ export default function RobloxTradeUser({ user, showBadge = false }: RobloxTrade
             </Link>
           </Tooltip>
           {user.roblox_display_name && (
-            <span className="text-xs text-[#FFFFFF] truncate">@{user.roblox_username}</span>
+            <span className="text-xs text-[#FFFFFF] truncate">
+              @{user.roblox_username}
+            </span>
           )}
         </div>
       </div>
     </div>
   );
-} 
+}

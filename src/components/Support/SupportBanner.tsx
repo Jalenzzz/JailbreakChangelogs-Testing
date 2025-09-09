@@ -1,8 +1,8 @@
 "use client";
 
-import React from 'react';
-import { XMarkIcon, HeartIcon } from '@heroicons/react/24/outline';
-import Link from 'next/link';
+import React from "react";
+import { XMarkIcon, HeartIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
 
 interface SupportBannerProps {
   onDismiss: () => void;
@@ -10,10 +10,10 @@ interface SupportBannerProps {
 
 const SupportBanner: React.FC<SupportBannerProps> = ({ onDismiss }) => {
   return (
-    <div 
+    <div
       className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-[#5865F2] to-[#4752C4] border-t border-[#4752C4] p-4 z-[2001]"
       style={{
-        boxShadow: '0 -4px 6px rgba(0, 0, 0, 0.2)'
+        boxShadow: "0 -4px 6px rgba(0, 0, 0, 0.2)",
       }}
     >
       <div className="container mx-auto flex items-center justify-between gap-4">
@@ -23,7 +23,9 @@ const SupportBanner: React.FC<SupportBannerProps> = ({ onDismiss }) => {
           </div>
           <div>
             <p className="text-white font-medium">
-              <span className="font-semibold">Support Jailbreak Changelogs</span>
+              <span className="font-semibold">
+                Support Jailbreak Changelogs
+              </span>
               <span className="ml-2 text-white/90 text-sm">
                 Remove ads and unlock supporter features
               </span>
@@ -50,4 +52,4 @@ const SupportBanner: React.FC<SupportBannerProps> = ({ onDismiss }) => {
   );
 };
 
-export default SupportBanner; 
+export default SupportBanner;

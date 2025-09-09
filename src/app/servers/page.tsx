@@ -1,11 +1,11 @@
 "use client";
 
-import React from 'react';
-import { ThemeProvider } from '@mui/material';
-import { darkTheme } from '@/theme/darkTheme';
-import Breadcrumb from '@/components/Layout/Breadcrumb';
-import ServerHeader from '@/components/Servers/ServerHeader';
-import ServerList from '@/components/Servers/ServerList';
+import React from "react";
+import { ThemeProvider } from "@mui/material";
+import { darkTheme } from "@/theme/darkTheme";
+import Breadcrumb from "@/components/Layout/Breadcrumb";
+import ServerHeader from "@/components/Servers/ServerHeader";
+import ServerList from "@/components/Servers/ServerList";
 import { ArrowUpIcon } from "@heroicons/react/24/outline";
 
 export default function ServersPage() {
@@ -48,4 +48,4 @@ export default function ServersPage() {
       </main>
     </ThemeProvider>
   );
-} 
+}

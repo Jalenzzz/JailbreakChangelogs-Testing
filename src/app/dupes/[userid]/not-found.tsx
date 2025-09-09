@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import Link from "next/link";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 export default function NotFound() {
   return (
@@ -9,7 +9,8 @@ export default function NotFound() {
           User Not Found
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mb-8">
-          The user you&apos;re looking for doesn&apos;t exist or has no dupe data available.
+          The user you&apos;re looking for doesn&apos;t exist or has no dupe
+          data available.
         </p>
         <Link
           href="/dupes"

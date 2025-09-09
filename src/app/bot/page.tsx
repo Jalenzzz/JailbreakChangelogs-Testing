@@ -17,12 +17,13 @@ export default function BotPage() {
 
   useEffect(() => {
     const randomNumber = Math.floor(Math.random() * 19) + 1;
-    setBackgroundImage(`https://assets.jailbreakchangelogs.xyz/assets/backgrounds/background${randomNumber}.webp`);
+    setBackgroundImage(
+      `https://assets.jailbreakchangelogs.xyz/assets/backgrounds/background${randomNumber}.webp`,
+    );
   }, []);
 
   return (
     <main className="min-h-screen bg-[#2E3944]">
-
       {/* Hero Section */}
       <section className="relative py-20">
         {/* Background Image */}
@@ -45,9 +46,10 @@ export default function BotPage() {
               Welcome to our Discord Bot Page
             </h1>
             <p className="mx-auto mb-8 max-w-2xl text-base text-muted md:text-lg">
-              Your go-to resource for information and updates about our Discord bot!
+              Your go-to resource for information and updates about our Discord
+              bot!
             </p>
-            
+
             {/* Achievement Banner */}
             <div className="mx-auto mb-8 max-w-2xl">
               <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-yellow-500 via-yellow-400 to-yellow-500 p-1">
@@ -78,7 +80,7 @@ export default function BotPage() {
                 </div>
               </div>
             </div>
-            
+
             <a
               href="https://discord.com/discovery/applications/1281308669299920907"
               target="_blank"
@@ -107,7 +109,9 @@ export default function BotPage() {
                 </h3>
               </div>
               <p className="text-[#FFFFFF]">
-                Remove the hassle of visiting the website! With season tracking, you can view all the latest season content directly from the Discord bot.
+                Remove the hassle of visiting the website! With season tracking,
+                you can view all the latest season content directly from the
+                Discord bot.
               </p>
             </div>
 
@@ -120,7 +124,9 @@ export default function BotPage() {
                 </h3>
               </div>
               <p className="text-[#FFFFFF]">
-                Stay informed about the latest updates and changes without the hassle of visiting external sites. Get instant updates on changelogs right from the bot.
+                Stay informed about the latest updates and changes without the
+                hassle of visiting external sites. Get instant updates on
+                changelogs right from the bot.
               </p>
             </div>
 
@@ -133,7 +139,9 @@ export default function BotPage() {
                 </h3>
               </div>
               <p className="text-[#FFFFFF]">
-                Use /item and /items commands to track specific items or browse all available items in Jailbreak. View detailed item information directly through Discord!
+                Use /item and /items commands to track specific items or browse
+                all available items in Jailbreak. View detailed item information
+                directly through Discord!
               </p>
             </div>
 
@@ -146,7 +154,8 @@ export default function BotPage() {
                 </h3>
               </div>
               <p className="text-[#FFFFFF]">
-                Optimized for performance with quick response times and efficient resource usage to keep your server running smoothly.
+                Optimized for performance with quick response times and
+                efficient resource usage to keep your server running smoothly.
               </p>
             </div>
 
@@ -159,7 +168,8 @@ export default function BotPage() {
                 </h3>
               </div>
               <p className="text-[#FFFFFF]">
-                Access Jailbreak information quickly with simple commands. Check values, view changelogs, and more with intuitive slash commands.
+                Access Jailbreak information quickly with simple commands. Check
+                values, view changelogs, and more with intuitive slash commands.
               </p>
             </div>
 
@@ -172,7 +182,8 @@ export default function BotPage() {
                 </h3>
               </div>
               <p className="text-[#FFFFFF]">
-                Get DMs from users who want to trade with you from our trading page when you make a trade ad.
+                Get DMs from users who want to trade with you from our trading
+                page when you make a trade ad.
               </p>
             </div>
           </div>
@@ -191,4 +202,4 @@ export default function BotPage() {
       </section>
     </main>
   );
-} 
+}

@@ -1,10 +1,10 @@
-import { Suspense } from 'react';
-import { fetchCrewLeaderboard, AVAILABLE_CREW_SEASONS } from '@/utils/api';
-import CrewLeaderboard from '@/components/Crews/CrewLeaderboard';
-import CrewSeasonSelector from '@/components/Crews/CrewSeasonSelector';
-import Breadcrumb from '@/components/Layout/Breadcrumb';
+import { Suspense } from "react";
+import { fetchCrewLeaderboard, AVAILABLE_CREW_SEASONS } from "@/utils/api";
+import CrewLeaderboard from "@/components/Crews/CrewLeaderboard";
+import CrewSeasonSelector from "@/components/Crews/CrewSeasonSelector";
+import Breadcrumb from "@/components/Layout/Breadcrumb";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 interface CrewsPageProps {
   searchParams: Promise<{ season?: string }>;
@@ -14,10 +14,12 @@ export default async function CrewsPage({ searchParams }: CrewsPageProps) {
   const resolvedSearchParams = await searchParams;
   const seasonParam = resolvedSearchParams.season;
   const selectedSeason = seasonParam ? parseInt(seasonParam, 10) : 19;
-  
+
   // Validate season parameter
-  const validSeason = AVAILABLE_CREW_SEASONS.includes(selectedSeason) ? selectedSeason : 19;
-  
+  const validSeason = AVAILABLE_CREW_SEASONS.includes(selectedSeason)
+    ? selectedSeason
+    : 19;
+
   const leaderboard = await fetchCrewLeaderboard(validSeason);
 
   return (
@@ -27,17 +29,25 @@ export default async function CrewsPage({ searchParams }: CrewsPageProps) {
           <Breadcrumb />
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-4">
-              <h1 className="text-4xl font-bold text-gray-100">Crew Leaderboard</h1>
-              <span className="text-[10px] uppercase font-semibold text-white bg-[#5865F2] px-1.5 py-0.5 rounded">New</span>
+              <h1 className="text-4xl font-bold text-gray-100">
+                Crew Leaderboard
+              </h1>
+              <span className="text-[10px] uppercase font-semibold text-white bg-[#5865F2] px-1.5 py-0.5 rounded">
+                New
+              </span>
             </div>
             <p className="text-gray-400 text-lg">
-              Top crews in Roblox Jailbreak based on their battle performance and rating.
+              Top crews in Roblox Jailbreak based on their battle performance
+              and rating.
             </p>
           </div>
 
           <Suspense fallback={<CrewLeaderboardSkeleton />}>
             <CrewSeasonSelector currentSeason={validSeason} />
-            <CrewLeaderboard leaderboard={leaderboard} currentSeason={validSeason} />
+            <CrewLeaderboard
+              leaderboard={leaderboard}
+              currentSeason={validSeason}
+            />
           </Suspense>
         </div>
       </div>
@@ -52,7 +62,10 @@ function CrewLeaderboardSkeleton() {
       <div className="bg-[#212A31] rounded-lg p-4 shadow-sm border border-[#2E3944]">
         <div className="max-h-[48rem] overflow-y-auto space-y-3 pr-2">
           {Array.from({ length: 10 }).map((_, index) => (
-            <div key={index} className="flex items-center gap-3 p-3 rounded-lg bg-[#2E3944] border border-[#37424D] animate-pulse">
+            <div
+              key={index}
+              className="flex items-center gap-3 p-3 rounded-lg bg-[#2E3944] border border-[#37424D] animate-pulse"
+            >
               <div className="w-8 h-8 bg-gray-600 rounded-full"></div>
               <div className="flex-1">
                 <div className="h-4 bg-gray-600 rounded w-3/4 mb-2"></div>

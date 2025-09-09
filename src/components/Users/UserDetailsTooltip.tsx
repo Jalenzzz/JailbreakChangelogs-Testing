@@ -1,31 +1,45 @@
-import React from 'react';
-import Link from 'next/link';
-import { UserData } from '@/types/auth';
-import { RobloxIcon } from '@/components/Icons/RobloxIcon';
-import { formatRelativeDate } from '@/utils/timestamp';
-import {  UserAvatar } from '@/utils/avatar';
-import { UserBadges } from '@/components/Profile/UserBadges';
+import React from "react";
+import Link from "next/link";
+import { UserData } from "@/types/auth";
+import { RobloxIcon } from "@/components/Icons/RobloxIcon";
+import { formatRelativeDate } from "@/utils/timestamp";
+import { UserAvatar } from "@/utils/avatar";
+import { UserBadges } from "@/components/Profile/UserBadges";
 
 interface UserDetailsTooltipProps {
   user: UserData;
 }
 
-export const UserDetailsTooltip: React.FC<UserDetailsTooltipProps> = ({ user }) => {
+export const UserDetailsTooltip: React.FC<UserDetailsTooltipProps> = ({
+  user,
+}) => {
   // Don't show tooltip for private profiles
   if (user.settings?.profile_public === 0) {
     return (
       <div className="p-2">
         <div className="flex gap-3">
           <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-[#2E3944] flex-shrink-0 flex items-center justify-center">
-            <svg className="w-8 h-8 text-[#FFFFFF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            <svg
+              className="w-8 h-8 text-[#FFFFFF]"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+              />
             </svg>
           </div>
           <div className="flex-1 min-w-0">
             <div className="text-lg font-semibold text-muted">
               Private Profile
             </div>
-            <p className="text-sm text-muted">This user&apos;s profile is private</p>
+            <p className="text-sm text-muted">
+              This user&apos;s profile is private
+            </p>
           </div>
         </div>
       </div>
@@ -52,16 +66,18 @@ export const UserDetailsTooltip: React.FC<UserDetailsTooltipProps> = ({ user }) 
         {/* User Details */}
         <div className="flex-1 min-w-0">
           <div className="mb-1">
-            <Link 
+            <Link
               href={`/users/${user.id}`}
               prefetch={false}
               className="block hover:opacity-80 transition-opacity"
             >
               <div className="flex items-center gap-2">
                 <h3 className="text-lg font-semibold text-muted hover:text-blue-300 transition-colors">
-                  {user.global_name && user.global_name !== "None" ? user.global_name : user.username}
+                  {user.global_name && user.global_name !== "None"
+                    ? user.global_name
+                    : user.username}
                 </h3>
-                <UserBadges 
+                <UserBadges
                   usernumber={user.usernumber}
                   premiumType={user.premiumtype}
                   flags={user.flags}
@@ -85,10 +101,12 @@ export const UserDetailsTooltip: React.FC<UserDetailsTooltipProps> = ({ user }) 
 
             {/* Additional Info */}
             <p className="text-muted">Member #{user.usernumber}</p>
-            <p className="text-muted">Joined {formatRelativeDate(parseInt(user.created_at) * 1000)}</p>
+            <p className="text-muted">
+              Joined {formatRelativeDate(parseInt(user.created_at) * 1000)}
+            </p>
           </div>
         </div>
       </div>
     </div>
   );
-}; 
+};

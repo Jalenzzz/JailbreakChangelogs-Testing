@@ -1,5 +1,5 @@
-import React from 'react';
-import { Skeleton } from '@mui/material';
+import React from "react";
+import { Skeleton } from "@mui/material";
 
 export default function Loading() {
   return (
@@ -12,4 +12,4 @@ export default function Loading() {
       </div>
     </div>
   );
-} 
+}

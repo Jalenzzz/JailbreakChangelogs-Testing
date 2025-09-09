@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const ChangelogHeader: React.FC = () => {
   return (
@@ -9,10 +9,13 @@ const ChangelogHeader: React.FC = () => {
         </h2>
       </div>
       <p className="mb-4 text-muted">
-        Welcome to our comprehensive collection of Roblox Jailbreak changelogs! Track every update, feature release, and game modification in Jailbreak&apos;s history. Some updates and features may be unaccounted for, as they may not have been directly announced by Badimo.
+        Welcome to our comprehensive collection of Roblox Jailbreak changelogs!
+        Track every update, feature release, and game modification in
+        Jailbreak&apos;s history. Some updates and features may be unaccounted
+        for, as they may not have been directly announced by Badimo.
       </p>
     </div>
   );
 };
 
-export default ChangelogHeader; 
+export default ChangelogHeader;

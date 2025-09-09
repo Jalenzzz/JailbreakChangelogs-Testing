@@ -1,6 +1,6 @@
-import { TradeAdDetailsSkeleton } from '@/components/trading/TradeAdDetailsSkeleton';
-import Breadcrumb from '@/components/Layout/Breadcrumb';
-import Link from 'next/link';
+import { TradeAdDetailsSkeleton } from "@/components/trading/TradeAdDetailsSkeleton";
+import Breadcrumb from "@/components/Layout/Breadcrumb";
+import Link from "next/link";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 export default function Loading() {
@@ -9,7 +9,7 @@ export default function Loading() {
       <div className="container mx-auto mb-8 px-4 sm:px-6">
         <Breadcrumb loading={true} />
         <div className="flex items-center justify-between mb-6">
-          <Link 
+          <Link
             href="/trading"
             className="inline-flex items-center gap-2 text-blue-300 hover:text-blue-400 transition-colors"
           >
@@ -21,4 +21,4 @@ export default function Loading() {
       </div>
     </main>
   );
-} 
+}

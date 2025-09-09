@@ -1,13 +1,16 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { RobloxUser } from '@/types';
-import { useAuth } from '@/hooks/useAuth';
-import { hasValidToken } from '@/utils/cookies';
-import toast from 'react-hot-toast';
-import OGFinderDataStreamer from './OGFinderDataStreamer';
-import { MagnifyingGlassIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { RobloxUser } from "@/types";
+import { useAuth } from "@/hooks/useAuth";
+import { hasValidToken } from "@/utils/cookies";
+import toast from "react-hot-toast";
+import OGFinderDataStreamer from "./OGFinderDataStreamer";
+import {
+  MagnifyingGlassIcon,
+  ExclamationTriangleIcon,
+} from "@heroicons/react/24/outline";
 
 interface OGSearchData {
   results: Array<{
@@ -26,10 +29,12 @@ interface OGSearchData {
     isOriginalOwner: boolean;
     user_id: string;
     logged_at: number;
-    history: string | Array<{
-      UserId: number;
-      TradeTime: number;
-    }>;
+    history:
+      | string
+      | Array<{
+          UserId: number;
+          TradeTime: number;
+        }>;
   }>;
   count: number;
 }
@@ -44,19 +49,23 @@ interface OGFinderClientProps {
   isLoading?: boolean;
 }
 
-export default function OGFinderClient({ 
-  initialData, 
-  robloxId, 
-  originalSearchTerm, 
-  robloxUsers: initialRobloxUsers, 
-  robloxAvatars: initialRobloxAvatars, 
-  error, 
-  isLoading: externalIsLoading 
+export default function OGFinderClient({
+  initialData,
+  robloxId,
+  originalSearchTerm,
+  robloxUsers: initialRobloxUsers,
+  robloxAvatars: initialRobloxAvatars,
+  error,
+  isLoading: externalIsLoading,
 }: OGFinderClientProps) {
-  const [searchId, setSearchId] = useState(robloxId || '');
+  const [searchId, setSearchId] = useState(robloxId || "");
   const [isLoading, setIsLoading] = useState(externalIsLoading || false);
-  const [localRobloxUsers, setLocalRobloxUsers] = useState<Record<string, RobloxUser>>(initialRobloxUsers || {});
-  const [localRobloxAvatars, setLocalRobloxAvatars] = useState<Record<string, string>>(initialRobloxAvatars || {});
+  const [localRobloxUsers, setLocalRobloxUsers] = useState<
+    Record<string, RobloxUser>
+  >(initialRobloxUsers || {});
+  const [localRobloxAvatars, setLocalRobloxAvatars] = useState<
+    Record<string, string>
+  >(initialRobloxAvatars || {});
   const router = useRouter();
   const { isAuthenticated, setShowLoginModal } = useAuth();
 
@@ -82,9 +91,9 @@ export default function OGFinderClient({
 
     // Check if user is authenticated
     if (!isAuthenticated || !hasValidToken()) {
-      toast.error('You need to be logged in to use the OG Finder feature.', {
+      toast.error("You need to be logged in to use the OG Finder feature.", {
         duration: 4000,
-        position: 'bottom-right',
+        position: "bottom-right",
       });
       setShowLoginModal(true);
       return;
@@ -100,7 +109,10 @@ export default function OGFinderClient({
       <div className="bg-[#212A31] rounded-lg p-6 shadow-sm border border-[#2E3944]">
         <form onSubmit={handleSearch} className="space-y-4">
           <div>
-            <label htmlFor="searchId" className="block text-sm font-medium text-muted mb-2">
+            <label
+              htmlFor="searchId"
+              className="block text-sm font-medium text-muted mb-2"
+            >
               Roblox ID or Username
             </label>
             <div className="relative">
@@ -118,21 +130,21 @@ export default function OGFinderClient({
               />
             </div>
           </div>
-          
+
           <button
             type="submit"
             disabled={isLoading || !searchId.trim()}
             className="w-full px-4 py-3 bg-[#5865F2] text-white rounded-lg hover:bg-[#4752C4] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#5865F2] focus:ring-offset-2 focus:ring-offset-[#212A31] disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? 'Searching...' : 'Search'}
+            {isLoading ? "Searching..." : "Search"}
           </button>
         </form>
       </div>
 
       {/* Results */}
       {robloxId && (
-        <OGFinderDataStreamer 
-          robloxId={robloxId} 
+        <OGFinderDataStreamer
+          robloxId={robloxId}
           originalSearchTerm={originalSearchTerm}
           initialData={initialData}
           robloxUsers={localRobloxUsers}
@@ -151,7 +163,9 @@ export default function OGFinderClient({
                 <ExclamationTriangleIcon className="h-8 w-8 text-red-400" />
               </div>
             </div>
-            <h3 className="text-lg font-semibold text-red-400 mb-2">User Not Found</h3>
+            <h3 className="text-lg font-semibold text-red-400 mb-2">
+              User Not Found
+            </h3>
             <p className="text-gray-300">{error}</p>
           </div>
         </div>

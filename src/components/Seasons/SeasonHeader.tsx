@@ -1,5 +1,5 @@
-import React from 'react';
-import SeasonCountdown from './SeasonCountdown';
+import React from "react";
+import SeasonCountdown from "./SeasonCountdown";
 
 interface Reward {
   id: number;
@@ -25,7 +25,10 @@ interface SeasonHeaderProps {
   nextSeason: Season | null;
 }
 
-const SeasonHeader: React.FC<SeasonHeaderProps> = ({ currentSeason, nextSeason }) => {
+const SeasonHeader: React.FC<SeasonHeaderProps> = ({
+  currentSeason,
+  nextSeason,
+}) => {
   return (
     <div className="mb-8 rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
       <div className="mb-4">
@@ -34,14 +37,20 @@ const SeasonHeader: React.FC<SeasonHeaderProps> = ({ currentSeason, nextSeason }
         </h1>
       </div>
       <p className="mb-4 text-muted">
-        Explore every season of Roblox Jailbreak! Each season brings exciting limited-time rewards, exclusive vehicles, and unique customization items. Level up, earn XP, and unlock special prizes during these time-limited events.
+        Explore every season of Roblox Jailbreak! Each season brings exciting
+        limited-time rewards, exclusive vehicles, and unique customization
+        items. Level up, earn XP, and unlock special prizes during these
+        time-limited events.
       </p>
 
       <div className="mb-8">
-        <SeasonCountdown currentSeason={currentSeason} nextSeason={nextSeason} />
+        <SeasonCountdown
+          currentSeason={currentSeason}
+          nextSeason={nextSeason}
+        />
       </div>
     </div>
   );
 };
 
-export default SeasonHeader; 
+export default SeasonHeader;

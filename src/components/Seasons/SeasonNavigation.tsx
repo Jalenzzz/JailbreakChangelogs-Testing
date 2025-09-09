@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { ClockIcon } from "@heroicons/react/24/outline";
-import { toast } from 'react-hot-toast';
+import { toast } from "react-hot-toast";
 import { FaDiceSix } from "react-icons/fa6";
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 
-const Select = dynamic(() => import('react-select'), { ssr: false });
+const Select = dynamic(() => import("react-select"), { ssr: false });
 
 interface SeasonNavigationProps {
   seasonList: Array<{ season: number; title: string }>;
@@ -33,11 +33,12 @@ const SeasonNavigation: React.FC<SeasonNavigationProps> = ({
   // Create options for the select dropdown
   const selectOptions = seasonList.map((item) => ({
     value: item.season.toString(),
-    label: `Season ${item.season} - ${item.title}`
+    label: `Season ${item.season} - ${item.title}`,
   }));
 
   // Find the current selected option
-  const selectedOption = selectOptions.find(option => option.value === selectedId) || null;
+  const selectedOption =
+    selectOptions.find((option) => option.value === selectedId) || null;
 
   return (
     <div className="mb-8 grid grid-cols-1 gap-4">
@@ -47,7 +48,7 @@ const SeasonNavigation: React.FC<SeasonNavigationProps> = ({
             value={selectedOption}
             onChange={(option: unknown) => {
               if (!option) {
-                onSeasonSelect('');
+                onSeasonSelect("");
                 return;
               }
               const newValue = (option as { value: string }).value;
@@ -61,41 +62,51 @@ const SeasonNavigation: React.FC<SeasonNavigationProps> = ({
             styles={{
               control: (base) => ({
                 ...base,
-                backgroundColor: '#212A31',
-                borderColor: '#2E3944',
-                color: '#D3D9D4',
-                minHeight: '48px',
-                '&:hover': {
-                  borderColor: '#5865F2',
+                backgroundColor: "#212A31",
+                borderColor: "#2E3944",
+                color: "#D3D9D4",
+                minHeight: "48px",
+                "&:hover": {
+                  borderColor: "#5865F2",
                 },
-                '&:focus-within': {
-                  borderColor: '#5865F2',
+                "&:focus-within": {
+                  borderColor: "#5865F2",
                 },
               }),
-              singleValue: (base) => ({ ...base, color: '#D3D9D4' }),
-              placeholder: (base) => ({ ...base, color: '#D3D9D4' }),
-              menu: (base) => ({ ...base, backgroundColor: '#212A31', color: '#D3D9D4', zIndex: 3000 }),
+              singleValue: (base) => ({ ...base, color: "#D3D9D4" }),
+              placeholder: (base) => ({ ...base, color: "#D3D9D4" }),
+              menu: (base) => ({
+                ...base,
+                backgroundColor: "#212A31",
+                color: "#D3D9D4",
+                zIndex: 3000,
+              }),
               option: (base, state) => ({
                 ...base,
-                backgroundColor: state.isSelected ? '#5865F2' : state.isFocused ? '#37424D' : '#212A31',
-                color: state.isSelected || state.isFocused ? '#FFFFFF' : '#D3D9D4',
-                '&:active': {
-                  backgroundColor: '#124E66',
-                  color: '#FFFFFF',
+                backgroundColor: state.isSelected
+                  ? "#5865F2"
+                  : state.isFocused
+                    ? "#37424D"
+                    : "#212A31",
+                color:
+                  state.isSelected || state.isFocused ? "#FFFFFF" : "#D3D9D4",
+                "&:active": {
+                  backgroundColor: "#124E66",
+                  color: "#FFFFFF",
                 },
               }),
               clearIndicator: (base) => ({
                 ...base,
-                color: '#D3D9D4',
-                '&:hover': {
-                  color: '#FFFFFF',
+                color: "#D3D9D4",
+                "&:hover": {
+                  color: "#FFFFFF",
                 },
               }),
               dropdownIndicator: (base) => ({
                 ...base,
-                color: '#D3D9D4',
-                '&:hover': {
-                  color: '#FFFFFF',
+                color: "#D3D9D4",
+                "&:hover": {
+                  color: "#FFFFFF",
                 },
               }),
             }}
@@ -105,9 +116,14 @@ const SeasonNavigation: React.FC<SeasonNavigationProps> = ({
           <div className="w-full h-12 bg-[#212A31] border border-[#2E3944] rounded-lg animate-pulse"></div>
         )}
 
-        {seasonList.length > 0 && (() => {
-          const currentSeason = fullSeasonList.find(season => season.is_current === 1);
-          return currentSeason && currentSeason.season.toString() !== selectedId;
+        {seasonList.length > 0 &&
+        (() => {
+          const currentSeason = fullSeasonList.find(
+            (season) => season.is_current === 1,
+          );
+          return (
+            currentSeason && currentSeason.season.toString() !== selectedId
+          );
         })() ? (
           <button
             onClick={onGoToLatestSeason}
@@ -118,7 +134,7 @@ const SeasonNavigation: React.FC<SeasonNavigationProps> = ({
           </button>
         ) : (
           <button
-            onClick={() => toast.error('Already on the current season')}
+            onClick={() => toast.error("Already on the current season")}
             className="rounded-lg border border-[#5865F2] bg-[#2B2F4C] p-3 text-muted hover:bg-[#32365A] focus:outline-none flex items-center justify-between opacity-50 cursor-not-allowed"
             aria-disabled="true"
           >
@@ -144,4 +160,4 @@ const SeasonNavigation: React.FC<SeasonNavigationProps> = ({
   );
 };
 
-export default SeasonNavigation; 
+export default SeasonNavigation;

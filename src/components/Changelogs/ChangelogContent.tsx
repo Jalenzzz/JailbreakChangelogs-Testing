@@ -1,33 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { ArrowRightIcon, ArrowTurnDownRightIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowRightIcon,
+  ArrowTurnDownRightIcon,
+} from "@heroicons/react/24/outline";
 import { Inter } from "next/font/google";
-import { parseMarkdown } from '@/utils/changelogs';
-import { getCurrentUserPremiumType } from '@/hooks/useAuth';
-import { CommentData } from '@/utils/api';
-import { UserData } from '@/types/auth';
-import AdRemovalNotice from '../Ads/AdRemovalNotice';
-import dynamic from 'next/dynamic';
+import { parseMarkdown } from "@/utils/changelogs";
+import { getCurrentUserPremiumType } from "@/hooks/useAuth";
+import { CommentData } from "@/utils/api";
+import { UserData } from "@/types/auth";
+import AdRemovalNotice from "../Ads/AdRemovalNotice";
+import dynamic from "next/dynamic";
 
 // Dynamic imports for heavy components
-const ChangelogMediaEmbed = dynamic(() => import('./ChangelogMediaEmbed'), {
+const ChangelogMediaEmbed = dynamic(() => import("./ChangelogMediaEmbed"), {
   loading: () => <div className="h-32 bg-[#212A31] rounded animate-pulse" />,
-  ssr: true
+  ssr: true,
 });
 
-const ChangelogComments = dynamic(() => import('../PageComments/ChangelogComments'), {
-  loading: () => <div className="h-64 bg-[#212A31] rounded animate-pulse" />,
-  ssr: true
-});
+const ChangelogComments = dynamic(
+  () => import("../PageComments/ChangelogComments"),
+  {
+    loading: () => <div className="h-64 bg-[#212A31] rounded animate-pulse" />,
+    ssr: true,
+  },
+);
 
-const ChangelogQuickNav = dynamic(() => import('./ChangelogQuickNav'), {
+const ChangelogQuickNav = dynamic(() => import("./ChangelogQuickNav"), {
   loading: () => <div className="h-16 bg-[#212A31] rounded animate-pulse" />,
-  ssr: true
+  ssr: true,
 });
 
-const DisplayAd = dynamic(() => import('../Ads/DisplayAd'), {
+const DisplayAd = dynamic(() => import("../Ads/DisplayAd"), {
   loading: () => <div className="h-48 bg-[#212A31] rounded animate-pulse" />,
-  ssr: false
+  ssr: false,
 });
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
@@ -53,13 +59,19 @@ const ChangelogContent: React.FC<ChangelogContentProps> = ({
   initialComments = [],
   initialUserMap = {},
 }) => {
-  const [imageAspectRatio, setImageAspectRatio] = useState<string>('aspect-[4/3]');
-  const [currentUserPremiumType, setCurrentUserPremiumType] = useState<number>(0);
+  const [imageAspectRatio, setImageAspectRatio] =
+    useState<string>("aspect-[4/3]");
+  const [currentUserPremiumType, setCurrentUserPremiumType] =
+    useState<number>(0);
   const [premiumStatusLoaded, setPremiumStatusLoaded] = useState(false);
-  
-  const currentIndex = changelogList.findIndex(c => c.id === changelogId);
-  const prevChangelog = currentIndex < changelogList.length - 1 ? changelogList[currentIndex + 1] : null;
-  const nextChangelog = currentIndex > 0 ? changelogList[currentIndex - 1] : null;
+
+  const currentIndex = changelogList.findIndex((c) => c.id === changelogId);
+  const prevChangelog =
+    currentIndex < changelogList.length - 1
+      ? changelogList[currentIndex + 1]
+      : null;
+  const nextChangelog =
+    currentIndex > 0 ? changelogList[currentIndex - 1] : null;
 
   useEffect(() => {
     // Get current user's premium type
@@ -71,23 +83,23 @@ const ChangelogContent: React.FC<ChangelogContentProps> = ({
       setCurrentUserPremiumType(getCurrentUserPremiumType());
     };
 
-    window.addEventListener('authStateChanged', handleAuthChange);
+    window.addEventListener("authStateChanged", handleAuthChange);
     return () => {
-      window.removeEventListener('authStateChanged', handleAuthChange);
+      window.removeEventListener("authStateChanged", handleAuthChange);
     };
   }, []);
 
   const handleImageLoad = (event: React.SyntheticEvent<HTMLImageElement>) => {
     const img = event.currentTarget;
     const aspectRatio = img.naturalWidth / img.naturalHeight;
-    
+
     // Determine the appropriate aspect ratio class based on image dimensions
     if (Math.abs(aspectRatio - 1) < 0.1) {
       // Square image (ratio close to 1:1)
-      setImageAspectRatio('aspect-square');
+      setImageAspectRatio("aspect-square");
     } else {
       // Everything else uses 16:9
-      setImageAspectRatio('aspect-video');
+      setImageAspectRatio("aspect-video");
     }
   };
 
@@ -95,22 +107,32 @@ const ChangelogContent: React.FC<ChangelogContentProps> = ({
     <div className="grid grid-cols-1 gap-8 xl:grid-cols-12">
       {/* Content Section - 8/12 columns on desktop, full width on tablet and mobile */}
       <div className="sm:col-span-12 xl:col-span-8">
-        <h1 className={`${inter.className} mb-8 font-bold text-3xl sm:text-5xl text-muted border-b border-[#748D92] pb-4 tracking-tighter`}>
+        <h1
+          className={`${inter.className} mb-8 font-bold text-3xl sm:text-5xl text-muted border-b border-[#748D92] pb-4 tracking-tighter`}
+        >
           {title}
         </h1>
         <div className="prose prose-invert max-w-none">
           {parseMarkdown(sections).map((section, sectionIndex) => (
             <div key={sectionIndex} className="mb-8">
               {section.title && (
-                <h2 className={`${inter.className} font-bold text-[#748D92] text-2xl sm:text-3xl mb-4 tracking-tighter`}>
+                <h2
+                  className={`${inter.className} font-bold text-[#748D92] text-2xl sm:text-3xl mb-4 tracking-tighter`}
+                >
                   {section.title}
                 </h2>
               )}
               <ul className="space-y-2 text-muted">
                 {section.items.map((item, itemIndex) => (
-                  <li key={itemIndex} className={`flex items-start gap-2 ${item.isNested ? 'ml-6' : ''}`}>
-                    {item.type === 'media' ? (
-                      <ChangelogMediaEmbed type={item.mediaType} url={item.url} />
+                  <li
+                    key={itemIndex}
+                    className={`flex items-start gap-2 ${item.isNested ? "ml-6" : ""}`}
+                  >
+                    {item.type === "media" ? (
+                      <ChangelogMediaEmbed
+                        type={item.mediaType}
+                        url={item.url}
+                      />
                     ) : (
                       <>
                         {item.isNested ? (
@@ -129,9 +151,9 @@ const ChangelogContent: React.FC<ChangelogContentProps> = ({
         </div>
 
         {/* Navigation Buttons */}
-        <ChangelogQuickNav 
-          prevChangelog={prevChangelog} 
-          nextChangelog={nextChangelog} 
+        <ChangelogQuickNav
+          prevChangelog={prevChangelog}
+          nextChangelog={nextChangelog}
           onChangelogSelect={onChangelogSelect}
         />
       </div>
@@ -154,9 +176,12 @@ const ChangelogContent: React.FC<ChangelogContentProps> = ({
 
         {/* Comments Section */}
         <div>
-        {premiumStatusLoaded && currentUserPremiumType === 0 && (
+          {premiumStatusLoaded && currentUserPremiumType === 0 && (
             <div className="my-8 flex flex-col items-center">
-              <div className="w-full max-w-[700px] bg-[#1a2127] rounded-lg overflow-hidden border border-[#2E3944] shadow transition-all duration-300 relative" style={{ minHeight: '250px' }}>
+              <div
+                className="w-full max-w-[700px] bg-[#1a2127] rounded-lg overflow-hidden border border-[#2E3944] shadow transition-all duration-300 relative"
+                style={{ minHeight: "250px" }}
+              >
                 <span className="absolute top-2 left-2 text-xs text-muted bg-[#212A31] px-2 py-0.5 rounded z-10">
                   Advertisement
                 </span>
@@ -169,8 +194,8 @@ const ChangelogContent: React.FC<ChangelogContentProps> = ({
               <AdRemovalNotice className="mt-2" />
             </div>
           )}
-          <ChangelogComments 
-            changelogId={changelogId} 
+          <ChangelogComments
+            changelogId={changelogId}
             changelogTitle={title}
             type="changelog"
             initialComments={initialComments}
@@ -182,4 +207,4 @@ const ChangelogContent: React.FC<ChangelogContentProps> = ({
   );
 };
 
-export default ChangelogContent; 
+export default ChangelogContent;

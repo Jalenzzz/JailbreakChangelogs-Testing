@@ -4,20 +4,22 @@ import { useState, useEffect, useRef } from "react";
 import { use } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowUpIcon } from "@heroicons/react/24/outline";
-import toast from 'react-hot-toast';
+import toast from "react-hot-toast";
 import { Changelog } from "@/utils/api";
-import Image from 'next/image';
+import Image from "next/image";
 
 interface ChangelogsClientProps {
   changelogListPromise: Promise<Changelog[]>;
 }
 
-export default function ChangelogsClient({ changelogListPromise }: ChangelogsClientProps) {
+export default function ChangelogsClient({
+  changelogListPromise,
+}: ChangelogsClientProps) {
   const router = useRouter();
-  
+
   // Use the use hook to resolve promises
   const changelogList = use(changelogListPromise);
-  
+
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [sortedChangelogs, setSortedChangelogs] = useState<Changelog[]>([]);
   const backToTopRef = useRef<HTMLDivElement>(null);
@@ -38,12 +40,12 @@ export default function ChangelogsClient({ changelogListPromise }: ChangelogsCli
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleLatestChangelog = () => {
@@ -52,7 +54,7 @@ export default function ChangelogsClient({ changelogListPromise }: ChangelogsCli
       const latestChangelog = sortedChangelogs[0]; // Already sorted by newest first
       router.push(`/changelogs/${latestChangelog.id}`);
     } else {
-      toast.error('No changelogs available');
+      toast.error("No changelogs available");
     }
   };
 
@@ -70,9 +72,10 @@ export default function ChangelogsClient({ changelogListPromise }: ChangelogsCli
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-white mb-4">Changelogs</h1>
         <p className="text-gray-300 mb-6">
-          Stay updated with the latest changes and improvements to Jailbreak Changelogs.
+          Stay updated with the latest changes and improvements to Jailbreak
+          Changelogs.
         </p>
-        
+
         <button
           onClick={handleLatestChangelog}
           className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2"
@@ -97,10 +100,9 @@ export default function ChangelogsClient({ changelogListPromise }: ChangelogsCli
                   {formatDate(changelog.title)}
                 </p>
                 <div className="text-gray-300 line-clamp-3">
-                  {changelog.sections.length > 200 
-                    ? `${changelog.sections.substring(0, 200)}...` 
-                    : changelog.sections
-                  }
+                  {changelog.sections.length > 200
+                    ? `${changelog.sections.substring(0, 200)}...`
+                    : changelog.sections}
                 </div>
               </div>
               {changelog.image_url && (

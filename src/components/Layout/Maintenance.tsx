@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useAuth } from '@/hooks/useAuth';
-import { canBypassMaintenance } from '@/utils/maintenance';
-import Image from 'next/image';
-import localFont from 'next/font/local';
+import { useEffect, useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { canBypassMaintenance } from "@/utils/maintenance";
+import Image from "next/image";
+import localFont from "next/font/local";
 
 const bangers = localFont({
-  src: '../../../public/fonts/Bangers.ttf',
+  src: "../../../public/fonts/Bangers.ttf",
 });
 
 export default function Maintenance() {
@@ -20,7 +20,7 @@ export default function Maintenance() {
         const canBypass = canBypassMaintenance();
         if (canBypass) {
           setShouldShowMaintenance(false);
-          window.location.href = '/';
+          window.location.href = "/";
           return;
         }
       }
@@ -46,7 +46,7 @@ export default function Maintenance() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#2e3944] text-[#D3D9D4] bg-[url('https://assets.jailbreakchangelogs.xyz/assets/backgrounds/background16.webp')] bg-cover bg-no-repeat bg-center relative">
       <div className="absolute inset-0 bg-black/70 z-[1]" />
-      
+
       <div className="container mx-auto max-w-2xl relative z-[2] px-4">
         <div className="text-center flex flex-col items-center gap-4 px-8 py-8 rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] bg-[rgba(30,30,30,0.35)] backdrop-blur-xl border border-white/[0.12]">
           <Image
@@ -62,12 +62,13 @@ export default function Maintenance() {
           <h1 className={`${bangers.className} text-white mb-4 text-5xl`}>
             Under Maintenance
           </h1>
-          
+
           <div className="space-y-4">
             <p className="text-[#f3f4f6] text-xl font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.25)]">
-              We&apos;re making some improvements to bring you a better experience! 🚀
+              We&apos;re making some improvements to bring you a better
+              experience! 🚀
             </p>
-            
+
             <p className="text-[#f3f4f6] text-lg font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.25)]">
               Check back soon.
             </p>
@@ -77,11 +78,11 @@ export default function Maintenance() {
             <h3 className="text-[#f3f4f6] text-xl font-bold mb-4">
               Stay Connected
             </h3>
-            
+
             <p className="text-[#f3f4f6] text-base font-medium mb-6 drop-shadow-[0_2px_8px_rgba(0,0,0,0.25)]">
               Follow us for updates and announcements
             </p>
-            
+
             <div className="flex justify-center gap-4 mb-6">
               <a
                 href="https://x.com/JBChangelogs"
@@ -130,7 +131,7 @@ export default function Maintenance() {
               </a>
             </div>
           </div>
-          
+
           <a
             href="https://status.jailbreakchangelogs.xyz"
             target="_blank"
@@ -143,4 +144,4 @@ export default function Maintenance() {
       </div>
     </div>
   );
-} 
+}

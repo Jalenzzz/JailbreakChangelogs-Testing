@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import Image from 'next/image';
-import { getItemImagePath, handleImageError } from '@/utils/images';
-import { getItemTypeColor } from '@/utils/badgeColors';
+import Image from "next/image";
+import { getItemImagePath, handleImageError } from "@/utils/images";
+import { getItemTypeColor } from "@/utils/badgeColors";
 import { PUBLIC_API_URL } from "@/utils/api";
-import toast from 'react-hot-toast';
-import { getToken } from '@/utils/auth';
+import toast from "react-hot-toast";
+import { getToken } from "@/utils/auth";
 
 interface ReportDupeModalProps {
   isOpen: boolean;
@@ -26,20 +26,20 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
   itemType,
   ownerName: initialOwnerName,
   itemId,
-  isOwnerNameReadOnly = false
+  isOwnerNameReadOnly = false,
 }) => {
-  const [proofUrls, setProofUrls] = useState<string[]>(['']);
+  const [proofUrls, setProofUrls] = useState<string[]>([""]);
   const [loading, setLoading] = useState(false);
   const [ownerName, setOwnerName] = useState(initialOwnerName);
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [isOpen]);
 
@@ -51,7 +51,7 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
 
   const addProofUrl = () => {
     if (proofUrls.length < 5) {
-      setProofUrls([...proofUrls, '']);
+      setProofUrls([...proofUrls, ""]);
     }
   };
 
@@ -61,29 +61,33 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
   };
 
   const validateProofUrl = (url: string) => {
-    return url.match(/^https:\/\/(?:i\.)?(imgur\.com\/(?:a\/)?[a-zA-Z0-9]+(?:\.(?:jpg|jpeg|png|gif))?|postimg\.cc\/[a-zA-Z0-9]+(?:\/(?:[a-zA-Z0-9_-]+))?(?:\.(?:jpg|jpeg|png|gif))?|i\.postimg\.cc\/[a-zA-Z0-9_-]+\.(?:jpg|jpeg|png|gif))$/);
+    return url.match(
+      /^https:\/\/(?:i\.)?(imgur\.com\/(?:a\/)?[a-zA-Z0-9]+(?:\.(?:jpg|jpeg|png|gif))?|postimg\.cc\/[a-zA-Z0-9]+(?:\/(?:[a-zA-Z0-9_-]+))?(?:\.(?:jpg|jpeg|png|gif))?|i\.postimg\.cc\/[a-zA-Z0-9_-]+\.(?:jpg|jpeg|png|gif))$/,
+    );
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!ownerName.trim()) {
-      toast.error('Please enter the duper\'s username');
+      toast.error("Please enter the duper's username");
       return;
     }
 
     // Validate proof URLs
-    const invalidUrls = proofUrls.filter(url => url.trim() && !validateProofUrl(url));
+    const invalidUrls = proofUrls.filter(
+      (url) => url.trim() && !validateProofUrl(url),
+    );
     if (invalidUrls.length > 0) {
-      toast.error('Please enter valid Imgur or Postimg URLs');
+      toast.error("Please enter valid Imgur or Postimg URLs");
       return;
     }
 
     // Filter out empty URLs
-    const validProofUrls = proofUrls.filter(url => url.trim());
+    const validProofUrls = proofUrls.filter((url) => url.trim());
 
     if (validProofUrls.length === 0) {
-      toast.error('Please provide at least one proof URL');
+      toast.error("Please provide at least one proof URL");
       return;
     }
 
@@ -91,39 +95,42 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
     try {
       const token = getToken();
       if (!token) {
-        toast.error('Please log in to report dupes');
+        toast.error("Please log in to report dupes");
         return;
       }
 
       const response = await fetch(`${PUBLIC_API_URL}/dupes/report`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           owner: token,
           dupe_user: ownerName,
           item_id: itemId,
-          proof: validProofUrls.join(", ")
-        })
+          proof: validProofUrls.join(", "),
+        }),
       });
 
       if (!response.ok) {
         if (response.status === 409) {
-          throw new Error('Dupe report already exists');
+          throw new Error("Dupe report already exists");
         }
-        throw new Error('Failed to submit report');
+        throw new Error("Failed to submit report");
       }
 
-      toast.success('Dupe report submitted successfully');
+      toast.success("Dupe report submitted successfully");
       onClose();
     } catch (error) {
-      if (error instanceof Error && error.message === 'Dupe report already exists') {
-        toast.error('This dupe has already been reported');
+      if (
+        error instanceof Error &&
+        error.message === "Dupe report already exists"
+      ) {
+        toast.error("This dupe has already been reported");
       } else {
-        toast.error('Failed to submit report. Please try again.');
+        toast.error("Failed to submit report. Please try again.");
       }
-      console.error('Error submitting report:', error);
+      console.error("Error submitting report:", error);
     } finally {
       setLoading(false);
     }
@@ -160,8 +167,10 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
                 />
               </div>
               <div className="text-center">
-                <h4 className="text-[#FFFFFF] font-medium text-lg">{itemName}</h4>
-                <span 
+                <h4 className="text-[#FFFFFF] font-medium text-lg">
+                  {itemName}
+                </h4>
+                <span
                   className="inline-block px-2 py-0.5 mt-1 text-xs rounded-full"
                   style={{ backgroundColor: getItemTypeColor(itemType) }}
                 >
@@ -182,25 +191,42 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
                 onChange={(e) => setOwnerName(e.target.value)}
                 placeholder="Enter duper's username"
                 readOnly={isOwnerNameReadOnly}
-                className={`w-full px-3 py-2 rounded-lg border border-[#2E3944] bg-[#37424D] text-muted ${isOwnerNameReadOnly ? 'cursor-not-allowed' : ''}`}
+                className={`w-full px-3 py-2 rounded-lg border border-[#2E3944] bg-[#37424D] text-muted ${isOwnerNameReadOnly ? "cursor-not-allowed" : ""}`}
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-muted mb-1">
-                Proof URLs (Imgur or Postimg, max 5) <span className="text-red-500">*</span>
+                Proof URLs (Imgur or Postimg, max 5){" "}
+                <span className="text-red-500">*</span>
               </label>
               <span className="text-xs text-blue-300 mb-2 block">
-                <a href="https://imgur.com/upload" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-400">Upload to Imgur</a>
+                <a
+                  href="https://imgur.com/upload"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:text-blue-400"
+                >
+                  Upload to Imgur
+                </a>
                 {" | "}
-                <a href="https://postimages.org/" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-400">Upload to Postimg</a>
+                <a
+                  href="https://postimages.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:text-blue-400"
+                >
+                  Upload to Postimg
+                </a>
               </span>
               {proofUrls.map((url, index) => (
                 <div key={index} className="relative mb-2">
                   <input
                     type="text"
                     value={url}
-                    onChange={(e) => handleProofUrlChange(index, e.target.value)}
+                    onChange={(e) =>
+                      handleProofUrlChange(index, e.target.value)
+                    }
                     placeholder="Imgur URL or Postimg URL"
                     className="w-full pl-3 pr-10 py-2 rounded-lg border border-[#2E3944] bg-[#37424D] text-muted"
                   />
@@ -231,7 +257,7 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
               disabled={loading}
               className="w-full px-4 py-2 bg-[#5865F2] text-white rounded-lg hover:bg-[#4752C4] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#5865F2] focus:ring-offset-2 focus:ring-offset-[#212A31] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Submitting...' : 'Submit Report'}
+              {loading ? "Submitting..." : "Submit Report"}
             </button>
           </form>
         </div>
@@ -240,4 +266,4 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
   );
 };
 
-export default ReportDupeModal; 
+export default ReportDupeModal;

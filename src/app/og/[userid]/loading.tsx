@@ -1,5 +1,5 @@
-import Breadcrumb from '@/components/Layout/Breadcrumb';
-import OGFinderClient from '@/components/OG/OGFinderClient';
+import Breadcrumb from "@/components/Layout/Breadcrumb";
+import OGFinderClient from "@/components/OG/OGFinderClient";
 
 export default function Loading() {
   return (

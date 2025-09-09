@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { CrewLeaderboardEntry as CrewLeaderboardEntryType } from '@/utils/api';
-import { RobloxUser } from '@/types';
-import { fetchMissingRobloxData } from '@/app/inventories/actions';
-import localFont from 'next/font/local';
-import { Inter } from 'next/font/google';
-import Link from 'next/link';
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { CrewLeaderboardEntry as CrewLeaderboardEntryType } from "@/utils/api";
+import { RobloxUser } from "@/types";
+import { fetchMissingRobloxData } from "@/app/inventories/actions";
+import localFont from "next/font/local";
+import { Inter } from "next/font/google";
+import Link from "next/link";
 
 const bangers = localFont({
-  src: '../../../public/fonts/Bangers.ttf',
+  src: "../../../public/fonts/Bangers.ttf",
 });
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 interface CrewDetailsProps {
   crew: CrewLeaderboardEntryType;
@@ -21,31 +21,38 @@ interface CrewDetailsProps {
   currentSeason: number;
 }
 
-export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsProps) {
-  const [robloxUsers, setRobloxUsers] = useState<Record<string, RobloxUser>>({});
-  const [robloxAvatars, setRobloxAvatars] = useState<Record<string, string>>({});
-
+export default function CrewDetails({
+  crew,
+  rank,
+  currentSeason,
+}: CrewDetailsProps) {
+  const [robloxUsers, setRobloxUsers] = useState<Record<string, RobloxUser>>(
+    {},
+  );
+  const [robloxAvatars, setRobloxAvatars] = useState<Record<string, string>>(
+    {},
+  );
 
   // Load all crew member data
   useEffect(() => {
-    const userIdsToLoad = crew.MemberUserIds.map(userId => userId.toString());
-    
+    const userIdsToLoad = crew.MemberUserIds.map((userId) => userId.toString());
+
     // Fetch user data for all crew members
     const fetchAllUserData = async () => {
       try {
         const result = await fetchMissingRobloxData(userIdsToLoad);
-        
+
         // Update state with new user data
-        if (result.userData && typeof result.userData === 'object') {
-          setRobloxUsers(prev => ({ ...prev, ...result.userData }));
+        if (result.userData && typeof result.userData === "object") {
+          setRobloxUsers((prev) => ({ ...prev, ...result.userData }));
         }
-        
+
         // Update state with new avatar data
-        if (result.avatarData && typeof result.avatarData === 'object') {
-          setRobloxAvatars(prev => ({ ...prev, ...result.avatarData }));
+        if (result.avatarData && typeof result.avatarData === "object") {
+          setRobloxAvatars((prev) => ({ ...prev, ...result.avatarData }));
         }
       } catch (error) {
-        console.error('Failed to fetch user data:', error);
+        console.error("Failed to fetch user data:", error);
       }
     };
 
@@ -86,16 +93,16 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
   const formatLastBattleDate = (utc: number) => {
     try {
       const date = new Date(utc * 1000); // Convert Unix timestamp to milliseconds
-      return date.toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'short', 
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
       });
     } catch (error) {
-      console.error('Error parsing date:', utc, error);
-      return 'Unknown';
+      console.error("Error parsing date:", utc, error);
+      return "Unknown";
     }
   };
 
@@ -105,9 +112,11 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
     const lastBattle = utc * 1000; // Convert to milliseconds
     const diffMs = now - lastBattle;
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    const diffHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const diffHours = Math.floor(
+      (diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+    );
     const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-    
+
     if (diffDays > 0) {
       return `${diffDays}d ago`;
     } else if (diffHours > 0) {
@@ -129,7 +138,11 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center gap-2 text-blue-200">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                  clipRule="evenodd"
+                />
               </svg>
               <span className="font-medium">Historical Data</span>
             </div>
@@ -147,15 +160,17 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
       )}
 
       {/* Crew Header with Flag, Rank, and Info */}
-      <div className={`rounded-lg p-4 sm:p-6 border ${
-        rank === 1 
-          ? 'bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border-yellow-400/50' 
-          : rank === 2 
-          ? 'bg-gradient-to-r from-gray-400/20 to-gray-500/20 border-gray-300/50'
-          : rank === 3
-          ? 'bg-gradient-to-r from-amber-600/20 to-amber-700/20 border-amber-500/50'
-          : 'bg-[#212A31] border-[#2E3944]'
-      }`}>
+      <div
+        className={`rounded-lg p-4 sm:p-6 border ${
+          rank === 1
+            ? "bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border-yellow-400/50"
+            : rank === 2
+              ? "bg-gradient-to-r from-gray-400/20 to-gray-500/20 border-gray-300/50"
+              : rank === 3
+                ? "bg-gradient-to-r from-amber-600/20 to-amber-700/20 border-amber-500/50"
+                : "bg-[#212A31] border-[#2E3944]"
+        }`}
+      >
         <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
           {/* Crew Flag with Owner Avatar */}
           <div className="relative w-40 h-28 sm:w-48 sm:h-32 rounded overflow-hidden flex-shrink-0">
@@ -181,27 +196,34 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
               ) : null;
             })()}
           </div>
-          
+
           {/* Crew Info with Rank */}
           <div className="flex-1 text-center sm:text-left">
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 mb-4">
-              <div className={`text-4xl font-bold ${inter.className} ${
-                rank === 1 
-                  ? 'text-yellow-400' 
-                  : rank === 2 
-                  ? 'text-gray-300'
-                  : rank === 3
-                  ? 'text-amber-500'
-                  : 'text-blue-300'
-              }`}>
+              <div
+                className={`text-4xl font-bold ${inter.className} ${
+                  rank === 1
+                    ? "text-yellow-400"
+                    : rank === 2
+                      ? "text-gray-300"
+                      : rank === 3
+                        ? "text-amber-500"
+                        : "text-blue-300"
+                }`}
+              >
                 #{rank}
               </div>
             </div>
             <div className="flex items-center gap-3 mb-2">
-              <h2 className={`${bangers.className} text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-white break-words`}>
-                {getUsername(crew.OwnerUserId.toString())}&apos;s {crew.ClanName}
+              <h2
+                className={`${bangers.className} text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-white break-words`}
+              >
+                {getUsername(crew.OwnerUserId.toString())}&apos;s{" "}
+                {crew.ClanName}
               </h2>
-              <span className="text-[10px] uppercase font-semibold text-white bg-[#5865F2] px-1.5 py-0.5 rounded">New</span>
+              <span className="text-[10px] uppercase font-semibold text-white bg-[#5865F2] px-1.5 py-0.5 rounded">
+                New
+              </span>
             </div>
             {currentSeason !== 19 && (
               <p className="text-gray-400 text-sm">
@@ -218,7 +240,7 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
           <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
           Crew Performance
         </h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Rating with gradient background and flag */}
           <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-blue-500/20 to-purple-500/20 p-4 border border-blue-500/30">
@@ -233,7 +255,9 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
             </div>
 
             <div className="relative z-10">
-              <div className="text-2xl font-bold text-white mb-1">{formatRating(crew.Rating)}</div>
+              <div className="text-2xl font-bold text-white mb-1">
+                {formatRating(crew.Rating)}
+              </div>
               <div className="text-blue-300 text-sm font-medium">Rating</div>
             </div>
           </div>
@@ -251,8 +275,12 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
             </div>
 
             <div className="relative z-10">
-              <div className="text-2xl font-bold text-white mb-1">{crew.BattlesPlayed}</div>
-              <div className="text-green-300 text-sm font-medium">Battles Played</div>
+              <div className="text-2xl font-bold text-white mb-1">
+                {crew.BattlesPlayed}
+              </div>
+              <div className="text-green-300 text-sm font-medium">
+                Battles Played
+              </div>
             </div>
           </div>
 
@@ -269,10 +297,14 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
             </div>
 
             <div className="relative z-10">
-              <div className="text-2xl font-bold text-white mb-1">{winRate}%</div>
-              <div className="text-yellow-300 text-sm font-medium">Win Rate</div>
+              <div className="text-2xl font-bold text-white mb-1">
+                {winRate}%
+              </div>
+              <div className="text-yellow-300 text-sm font-medium">
+                Win Rate
+              </div>
               <div className="mt-2 bg-white/20 rounded-full h-1.5">
-                <div 
+                <div
                   className="bg-gradient-to-r from-yellow-400 to-orange-400 h-1.5 rounded-full transition-all duration-500"
                   style={{ width: `${winRate}%` }}
                 ></div>
@@ -293,7 +325,9 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
             </div>
 
             <div className="relative z-10">
-              <div className="text-2xl font-bold text-white mb-1">{crew.MemberUserIds.length}</div>
+              <div className="text-2xl font-bold text-white mb-1">
+                {crew.MemberUserIds.length}
+              </div>
               <div className="text-purple-300 text-sm font-medium">Members</div>
             </div>
           </div>
@@ -311,9 +345,15 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
             </div>
 
             <div className="relative z-10">
-              <div className="text-lg font-bold text-white mb-1">{lastBattleDate}</div>
-              <div className="text-indigo-300 text-sm font-medium">Last Battle</div>
-              <div className="text-indigo-200 text-xs mt-1">{timeSinceLastBattle}</div>
+              <div className="text-lg font-bold text-white mb-1">
+                {lastBattleDate}
+              </div>
+              <div className="text-indigo-300 text-sm font-medium">
+                Last Battle
+              </div>
+              <div className="text-indigo-200 text-xs mt-1">
+                {timeSinceLastBattle}
+              </div>
             </div>
           </div>
 
@@ -330,9 +370,15 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
             </div>
 
             <div className="relative z-10">
-              <div className="text-lg font-bold text-white mb-1">{crew.BattlesWon}</div>
-              <div className="text-red-300 text-sm font-medium">Battles Won</div>
-              <div className="text-red-200 text-xs mt-1">of {crew.BattlesPlayed} total</div>
+              <div className="text-lg font-bold text-white mb-1">
+                {crew.BattlesWon}
+              </div>
+              <div className="text-red-300 text-sm font-medium">
+                Battles Won
+              </div>
+              <div className="text-red-200 text-xs mt-1">
+                of {crew.BattlesPlayed} total
+              </div>
             </div>
           </div>
         </div>
@@ -343,43 +389,50 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
             <div className="flex items-center justify-between p-3 bg-[#2E3944] rounded-lg border border-[#37424D]">
               <span className="text-gray-200 text-sm">Win/Loss Ratio</span>
               <span className="text-white font-semibold">
-                {crew.BattlesPlayed > 0 
-                  ? `${crew.BattlesWon}-${crew.BattlesPlayed - crew.BattlesWon}` 
-                  : '0-0'}
+                {crew.BattlesPlayed > 0
+                  ? `${crew.BattlesWon}-${crew.BattlesPlayed - crew.BattlesWon}`
+                  : "0-0"}
               </span>
             </div>
             <div className="flex items-center justify-between p-3 bg-[#2E3944] rounded-lg border border-[#37424D]">
               <span className="text-gray-200 text-sm">Avg Rating</span>
-              <span className="text-white font-semibold">{formatRating(crew.Rating)}</span>
+              <span className="text-white font-semibold">
+                {formatRating(crew.Rating)}
+              </span>
             </div>
             {/* Only show Activity for current season */}
             {currentSeason === 19 && (
               <div className="flex items-center justify-between p-3 bg-[#2E3944] rounded-lg border border-[#37424D]">
                 <span className="text-gray-200 text-sm">Activity</span>
-                <span className={`font-semibold ${timeSinceLastBattle.includes('d') && parseInt(timeSinceLastBattle.split('d')[0]) > 14 ? 'text-red-400' : 'text-green-400'}`}>
-                  {timeSinceLastBattle.includes('d') && parseInt(timeSinceLastBattle.split('d')[0]) > 14 ? 'Inactive' : 'Active'}
+                <span
+                  className={`font-semibold ${timeSinceLastBattle.includes("d") && parseInt(timeSinceLastBattle.split("d")[0]) > 14 ? "text-red-400" : "text-green-400"}`}
+                >
+                  {timeSinceLastBattle.includes("d") &&
+                  parseInt(timeSinceLastBattle.split("d")[0]) > 14
+                    ? "Inactive"
+                    : "Active"}
                 </span>
               </div>
             )}
-        </div>
+          </div>
         </div>
       </div>
 
       {/* Crew Members */}
       <div className="bg-[#212A31] rounded-lg p-4 sm:p-6 border border-[#2E3944]">
-        <h2 className="text-xl font-bold text-gray-100 mb-4">Crew Members ({crew.MemberUserIds.length})</h2>
+        <h2 className="text-xl font-bold text-gray-100 mb-4">
+          Crew Members ({crew.MemberUserIds.length})
+        </h2>
         <div className="space-y-3">
-          {crew.MemberUserIds
-            .sort((a, b) => {
-              // Put owner first, then sort by member ID
-              if (a === crew.OwnerUserId) return -1;
-              if (b === crew.OwnerUserId) return 1;
-              return a - b;
-            })
-            .map((memberId, index) => (
-            <CrewMember 
-              key={memberId} 
-              memberId={memberId} 
+          {crew.MemberUserIds.sort((a, b) => {
+            // Put owner first, then sort by member ID
+            if (a === crew.OwnerUserId) return -1;
+            if (b === crew.OwnerUserId) return 1;
+            return a - b;
+          }).map((memberId, index) => (
+            <CrewMember
+              key={memberId}
+              memberId={memberId}
               index={index}
               getUserDisplay={getUserDisplay}
               getUsername={getUsername}
@@ -402,13 +455,13 @@ interface CrewMemberProps {
   isOwner: boolean;
 }
 
-function CrewMember({ 
-  memberId, 
-  index, 
-  getUserDisplay, 
-  getUsername, 
-  getUserAvatar, 
-  isOwner 
+function CrewMember({
+  memberId,
+  index,
+  getUserDisplay,
+  getUsername,
+  getUserAvatar,
+  isOwner,
 }: CrewMemberProps) {
   const memberIdStr = memberId.toString();
   const displayName = getUserDisplay(memberIdStr);
@@ -436,7 +489,7 @@ function CrewMember({
       {/* Member Info */}
       <div className="flex-1 min-w-0">
         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-          <a 
+          <a
             href={`https://www.roblox.com/users/${memberId}/profile`}
             target="_blank"
             rel="noopener noreferrer"
@@ -445,7 +498,9 @@ function CrewMember({
             {displayName}
           </a>
           {username && (
-            <span className="text-gray-300 text-xs sm:text-sm truncate">(@{username})</span>
+            <span className="text-gray-300 text-xs sm:text-sm truncate">
+              (@{username})
+            </span>
           )}
           {isOwner && (
             <span className="px-2 py-1 bg-[#5865F2] text-white text-xs rounded-full font-medium w-fit">

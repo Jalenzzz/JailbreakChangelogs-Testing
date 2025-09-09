@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import React, { useEffect } from "react";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
 interface ConfirmDialogProps {
   isOpen: boolean;
@@ -18,19 +18,19 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   onConfirm,
   title,
   message,
-  confirmText = 'Confirm',
-  cancelText = 'Cancel',
-  confirmButtonClass = 'bg-red-500 hover:bg-red-600'
+  confirmText = "Confirm",
+  cancelText = "Cancel",
+  confirmButtonClass = "bg-red-500 hover:bg-red-600",
 }) => {
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
 
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [isOpen]);
 
@@ -39,11 +39,11 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
-      
+
       {/* Dialog */}
       <div className="relative bg-[#212A31] rounded-lg border border-[#2E3944] w-full max-w-md mx-4 p-6 shadow-xl">
         {/* Close button */}
@@ -58,7 +58,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         <div className="space-y-4">
           <h3 className="text-xl font-semibold text-muted">{title}</h3>
           <p className="text-muted">{message}</p>
-          
+
           {/* Buttons */}
           <div className="flex justify-end gap-3 mt-6">
             <button
@@ -81,4 +81,4 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       </div>
     </div>
   );
-}; 
+};

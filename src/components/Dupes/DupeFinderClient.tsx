@@ -1,10 +1,14 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { MagnifyingGlassIcon, XMarkIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import DupeFinderResults from './DupeFinderResults';
-import type { DupeFinderItem, RobloxUser } from '@/types';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import {
+  MagnifyingGlassIcon,
+  XMarkIcon,
+  ExclamationTriangleIcon,
+} from "@heroicons/react/24/outline";
+import DupeFinderResults from "./DupeFinderResults";
+import type { DupeFinderItem, RobloxUser } from "@/types";
 
 interface DupeFinderClientProps {
   initialData?: DupeFinderItem[];
@@ -15,18 +19,22 @@ interface DupeFinderClientProps {
   isLoading?: boolean;
 }
 
-export default function DupeFinderClient({ 
-  initialData, 
-  robloxId, 
-  robloxUsers: initialRobloxUsers, 
+export default function DupeFinderClient({
+  initialData,
+  robloxId,
+  robloxUsers: initialRobloxUsers,
   robloxAvatars: initialRobloxAvatars,
-  error, 
-  isLoading: externalIsLoading 
+  error,
+  isLoading: externalIsLoading,
 }: DupeFinderClientProps) {
-  const [searchId, setSearchId] = useState(robloxId || '');
+  const [searchId, setSearchId] = useState(robloxId || "");
   const [isLoading, setIsLoading] = useState(externalIsLoading || false);
-  const [localRobloxUsers, setLocalRobloxUsers] = useState<Record<string, RobloxUser>>(initialRobloxUsers || {});
-  const [localRobloxAvatars, setLocalRobloxAvatars] = useState<Record<string, string>>(initialRobloxAvatars || {});
+  const [localRobloxUsers, setLocalRobloxUsers] = useState<
+    Record<string, RobloxUser>
+  >(initialRobloxUsers || {});
+  const [localRobloxAvatars, setLocalRobloxAvatars] = useState<
+    Record<string, string>
+  >(initialRobloxAvatars || {});
   const router = useRouter();
 
   // Update local state when props change
@@ -59,7 +67,10 @@ export default function DupeFinderClient({
       <div className="bg-[#212A31] rounded-lg p-6 shadow-sm border border-[#2E3944]">
         <form onSubmit={handleSearch} className="space-y-4">
           <div>
-            <label htmlFor="searchId" className="block text-sm font-medium text-muted mb-2">
+            <label
+              htmlFor="searchId"
+              className="block text-sm font-medium text-muted mb-2"
+            >
               Roblox ID or Username
             </label>
             <div className="relative">
@@ -85,13 +96,13 @@ export default function DupeFinderClient({
               )}
             </div>
           </div>
-          
+
           <button
             type="submit"
             disabled={isLoading || !searchId.trim()}
             className="w-full px-4 py-3 bg-[#5865F2] text-white rounded-lg hover:bg-[#4752C4] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#5865F2] focus:ring-offset-2 focus:ring-offset-[#212A31] disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? 'Searching...' : 'Find Dupes'}
+            {isLoading ? "Searching..." : "Find Dupes"}
           </button>
         </form>
       </div>
@@ -116,7 +127,9 @@ export default function DupeFinderClient({
                 <ExclamationTriangleIcon className="h-8 w-8 text-red-400" />
               </div>
             </div>
-            <h3 className="text-lg font-semibold text-red-400 mb-2">User Not Found</h3>
+            <h3 className="text-lg font-semibold text-red-400 mb-2">
+              User Not Found
+            </h3>
             <p className="text-gray-300">{error}</p>
           </div>
         </div>

@@ -1,5 +1,5 @@
-import React from 'react';
-import Link from 'next/link';
+import React from "react";
+import Link from "next/link";
 
 const CalculatorDescription: React.FC = () => {
   return (
@@ -10,19 +10,19 @@ const CalculatorDescription: React.FC = () => {
         </h2>
       </div>
       <p className="mb-6 text-muted">
-        Calculate the value of your Roblox Jailbreak items and trades.
-        Get accurate market values and make informed trading decisions.
+        Calculate the value of your Roblox Jailbreak items and trades. Get
+        accurate market values and make informed trading decisions.
       </p>
 
       <div className="flex flex-wrap gap-3 mt-6">
-        <Link 
-          href="/values" 
+        <Link
+          href="/values"
           className="inline-flex items-center rounded-lg border border-[#2E3944] bg-[#37424D] px-4 py-2 text-sm font-medium text-muted transition-colors hover:bg-[#124E66] hover:text-white"
         >
           View Item Values
         </Link>
-        <Link 
-          href="/trading" 
+        <Link
+          href="/trading"
           className="inline-flex items-center rounded-lg border border-[#2E3944] bg-[#37424D] px-4 py-2 text-sm font-medium text-muted transition-colors hover:bg-[#124E66] hover:text-white"
         >
           Create A Trade Ad
@@ -32,4 +32,4 @@ const CalculatorDescription: React.FC = () => {
   );
 };
 
-export default CalculatorDescription; 
+export default CalculatorDescription;

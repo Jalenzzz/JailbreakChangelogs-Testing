@@ -68,7 +68,7 @@ export const UserBadges = ({
           background: "linear-gradient(to right, #8B5CF6, #4F46E5)",
           color: "white",
         },
-      }
+      },
     );
   };
 
@@ -89,7 +89,7 @@ export const UserBadges = ({
           background: "linear-gradient(to right, #FBBF24, #EAB308)",
           color: "black",
         },
-      }
+      },
     );
   };
 
@@ -111,7 +111,7 @@ export const UserBadges = ({
           background: "linear-gradient(to right, #8B5CF6, #6D28D9)",
           color: "black",
         },
-      }
+      },
     );
   };
 
@@ -133,7 +133,7 @@ export const UserBadges = ({
           background: "linear-gradient(to right, #059669, #047857)",
           color: "white",
         },
-      }
+      },
     );
   };
 
@@ -155,7 +155,7 @@ export const UserBadges = ({
           background: "linear-gradient(to right, #3B82F6, #2563EB)",
           color: "white",
         },
-      }
+      },
     );
   };
 
@@ -177,13 +177,13 @@ export const UserBadges = ({
           background: "linear-gradient(to right, #F97316, #EA580C)",
           color: "white",
         },
-      }
+      },
     );
   };
 
   const handleContributorBadgeClick = () => {
     const contributorFlag = sortedFlags.find(
-      (f) => f.flag === "is_contributor"
+      (f) => f.flag === "is_contributor",
     );
     toast(
       () => (
@@ -201,14 +201,12 @@ export const UserBadges = ({
           background: "linear-gradient(to right, #0D9488, #0F766E)",
           color: "white",
         },
-      }
+      },
     );
   };
 
   const handleDeveloperBadgeClick = () => {
-    const developerFlag = sortedFlags.find(
-      (f) => f.flag === "is_developer"
-    );
+    const developerFlag = sortedFlags.find((f) => f.flag === "is_developer");
     toast(
       () => (
         <div className="flex items-center gap-2">
@@ -225,7 +223,7 @@ export const UserBadges = ({
           background: "linear-gradient(to right, #84CC16, #65A30D)",
           color: "black",
         },
-      }
+      },
     );
   };
 
@@ -265,7 +263,7 @@ export const UserBadges = ({
           color:
             premiumTextColors[premiumType as keyof typeof premiumTextColors],
         },
-      }
+      },
     );
   };
 
@@ -546,7 +544,7 @@ export const UserBadges = ({
         >
           <TrophyIcon className={currentSize.icon} />
         </div>
-      </Tooltip>
+      </Tooltip>,
     );
   }
 
@@ -580,11 +578,16 @@ export const UserBadges = ({
         >
           <SparklesIcon className={currentSize.icon} />
         </div>
-      </Tooltip>
+      </Tooltip>,
     );
   }
 
-  if (primary_guild && primary_guild.tag && primary_guild.badge && primary_guild.identity_guild_id) {
+  if (
+    primary_guild &&
+    primary_guild.tag &&
+    primary_guild.badge &&
+    primary_guild.identity_guild_id
+  ) {
     const badgeUrl = `https://cdn.discordapp.com/guild-tag-badges/${primary_guild.identity_guild_id}/${primary_guild.badge}`;
     const isJBCLGuildId =
       primary_guild.identity_guild_id === "1286064050135896064";
@@ -639,7 +642,7 @@ export const UserBadges = ({
         ) : (
           badgeContent
         )}
-      </Tooltip>
+      </Tooltip>,
     );
   }
 
