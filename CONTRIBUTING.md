@@ -26,21 +26,25 @@ Your patch should follow the same coding conventions & pass the same code qualit
 
 ## Formatting
 
-We enforce Prettier for consistent code style.
+We enforce ESLint + Prettier via Git hooks (Husky + lint-staged).
 
-- Before committing, format your changes:
+- On commit: staged files are auto-fixed and formatted
+  - Runs `eslint --fix` on staged JS/TS files, then `prettier --write` on all staged files
+  - If issues remain, the commit is blocked; fix and re-commit
+
+- On push: formatting is verified
+  - Runs `pnpm format:check`; push is blocked if any files are not formatted
+
+Manual commands (if needed):
 
 ```
-pnpm format
+pnpm format       # write formatting changes
+pnpm format:check # check formatting without writing
 ```
 
-- To verify formatting without writing changes:
+Notes:
 
-```
-pnpm format:check
-```
-
-Our CI runs `pnpm format:check` on every push/PR and will fail if files are not formatted. If CI fails, run `pnpm format` locally and commit the result.
+- After a fresh clone, run `pnpm install` once to set up Husky hooks.
 
 ### Editor setup
 
