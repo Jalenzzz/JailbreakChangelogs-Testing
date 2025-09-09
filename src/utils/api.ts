@@ -41,6 +41,7 @@ export interface Season {
 
 import { Item, ItemDetails, RobloxUser } from "@/types";
 import { UserData } from "@/types/auth";
+import type WebSocket from 'ws';
 
 export const BASE_API_URL =
   process.env.NEXT_PHASE === 'phase-production-build' || process.env.RAILWAY_ENVIRONMENT_NAME !== 'production'
@@ -50,6 +51,7 @@ export const BASE_API_URL =
 export const PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 export const INVENTORY_API_URL = process.env.NEXT_PUBLIC_INVENTORY_API_URL;
 export const CREW_LEADERBOARD_BASE_URL = process.env.NEXT_PUBLIC_CREW_LEADERBOARD_BASE_URL;
+export const INVENTORY_WS_URL = process.env.NEXT_PUBLIC_INVENTORY_WS_URL as string;
 export interface OnlineUser {
   id: string;
   username: string;
@@ -708,32 +710,107 @@ export async function fetchComments(type: string, id: string, itemType?: string)
 export async function fetchInventoryData(robloxId: string) {
   console.log('[SERVER] fetchInventoryData called with robloxId:', robloxId);
   try {
-    const response = await fetch(`${INVENTORY_API_URL}/user?id=${robloxId}&nocache=true`, {
-      headers: {
-        'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0'
+    const wsResult = await (async () => {
+      try {
+        // Dynamically import ws to avoid bundling on the client
+        const wsModule = await import('ws');
+        const WS: typeof WebSocket =
+          (wsModule as { default?: typeof WebSocket }).default ||
+          (wsModule as { WebSocket?: typeof WebSocket }).WebSocket ||
+          (wsModule as unknown as typeof WebSocket);
+        return await new Promise((resolve) => {
+          console.log(`[WS] Connecting to ${INVENTORY_WS_URL} for user ${robloxId}`);
+          const socket = new WS(INVENTORY_WS_URL, {
+            headers: { 'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0' }
+          });
+
+          let settled = false;
+          const timeout = setTimeout(() => {
+            if (settled) return;
+            settled = true;
+            try { socket.close(); } catch {}
+            console.warn(`[WS] Timeout after 10s waiting for data for user ${robloxId}`);
+            resolve({ error: 'timeout', message: 'WebSocket request timed out. Please try again.' });
+          }, 10000);
+
+          socket.on('open', () => {
+            console.log(`[WS] Connected for user ${robloxId}`);
+            try {
+              socket.send(JSON.stringify({ action: 'get_data', user_id: robloxId }));
+              console.log(`[WS] Sent get_data for user ${robloxId}`);
+            } catch (e) {
+              // If send fails, resolve with error and close
+              if (!settled) {
+                settled = true;
+                clearTimeout(timeout);
+                try { socket.close(); } catch {}
+                console.error(`[WS] Send failed for user ${robloxId}:`, e);
+                resolve({ error: 'ws_send_error', message: 'Failed to send WebSocket request.' });
+              }
+            }
+          });
+
+          socket.on('message', (data: Buffer | string) => {
+            if (settled) return;
+            settled = true;
+            clearTimeout(timeout);
+            try {
+              const text = typeof data === 'string' ? data : data.toString('utf-8');
+              console.log(`[WS] Received message for user ${robloxId} (${text.length} bytes)`);
+              const parsed = JSON.parse(text);
+              if (parsed && typeof parsed === 'object' && 'action' in parsed) {
+                const action = (parsed as Record<string, unknown>).action;
+                if (typeof action === 'string') {
+                  console.log(`[WS] Payload action: ${action}`);
+                }
+              }
+              resolve(parsed);
+            } catch (e) {
+              console.error(`[WS] Parse error for user ${robloxId}:`, e);
+              resolve({ error: 'ws_parse_error', message: 'Invalid response from WebSocket server.' });
+            } finally {
+              try { socket.close(); } catch {}
+            }
+          });
+
+          socket.on('error', (err: unknown) => {
+            if (settled) return;
+            settled = true;
+            clearTimeout(timeout);
+            try { socket.close(); } catch {}
+            console.error(`[WS] Connection error for user ${robloxId}:`, err);
+            resolve({ error: 'ws_error', message: 'WebSocket connection error.' });
+          });
+
+          socket.on('close', (code: number, reason: Buffer) => {
+            // If closed before message and not settled, treat as error
+            if (!settled) {
+              settled = true;
+              clearTimeout(timeout);
+              const reasonText = (() => {
+                try { return reason?.toString?.('utf-8') || ''; } catch { return ''; }
+              })();
+              console.warn(`[WS] Closed before data for user ${robloxId} (code=${code}${reasonText ? `, reason=${reasonText}` : ''})`);
+              resolve({ error: 'ws_closed', message: 'WebSocket closed before receiving data.' });
+            }
+          });
+        });
+      } catch (err) {
+        console.error('[WS] Failed to initialize WebSocket client:', err);
+        return { error: 'ws_init_error', message: 'Failed to initialize WebSocket client.' };
       }
-    });
-    
-    if (!response.ok) {
-      console.error(`[SERVER] Inventory API returned ${response.status} for ID: ${robloxId}`);
-      
-      // Handle specific HTTP status codes with user-friendly messages
-      switch (response.status) {
-        case 404:
-          return { error: 'not_found', message: 'This user has not been scanned by our bots yet. Their inventory data is not available.' };
-        case 500:
-          return { error: 'server_error', message: 'Our inventory service is currently experiencing issues. Please try again in a few minutes.' };
-        case 429:
-          return { error: 'rate_limit', message: 'Too many requests. Please wait a moment before trying again.' };
-        case 503:
-          return { error: 'service_unavailable', message: 'Our inventory service is temporarily unavailable. Please try again later.' };
-        default:
-          return { error: 'api_error', message: `Unable to fetch inventory data (Error ${response.status}). Please try again.` };
+    })();
+
+    if (wsResult && typeof wsResult === 'object' && 'action' in wsResult && 'data' in wsResult) {
+      const envelope = wsResult as { action?: string; data?: unknown };
+      const payload = envelope.data;
+      if (Array.isArray(payload)) {
+        return payload[0] ?? null;
       }
+      return payload ?? null;
     }
-    
-    const data = await response.json();
-    return data;
+
+    return wsResult;
   } catch (err) {
     console.error('[SERVER] Error fetching inventory data:', err);
     
@@ -913,6 +990,9 @@ export async function fetchRobloxAvatars(userIds: string[]) {
     for (let i = 0; i < chunks.length; i++) {
       const chunk = chunks[i];
       try {
+        if (!INVENTORY_API_URL) {
+          throw new TypeError('Missing INVENTORY_API_URL');
+        }
         const response = await fetch(`${INVENTORY_API_URL}/proxy/users/avatar-headshot?userIds=${chunk.join(',')}`, {
           headers: {
             'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0'
