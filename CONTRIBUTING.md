@@ -48,9 +48,24 @@ Notes:
 
 ### Editor setup
 
-- Install Prettier and ESLint extensions (VSCode will prompt from `.vscode/extensions.json`).
-- Enable format on save (already configured via `.vscode/settings.json`).
-- Your editor will use the project-local Prettier version.
+- Install Prettier and ESLint extensions in your editor.
+  - VS Code: "Prettier - Code Formatter" (esbenp.prettier-vscode) and "ESLint" (dbaeumer.vscode-eslint)
+- Add these to your VS Code User Settings (Settings JSON):
+
+```
+{
+  "editor.formatOnSave": true,
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "eslint.format.enable": true
+}
+```
+
+- The Prettier extension will use the project-local Prettier version by default.
 
 ## Make a Pull Request
 
