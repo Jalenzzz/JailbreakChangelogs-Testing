@@ -1,6 +1,6 @@
-import { fetchSeasonsList, Season, fetchComments } from "@/utils/api";
-import SeasonDetailsClient from "@/components/Seasons/SeasonDetailsClient";
-import { notFound, redirect } from "next/navigation";
+import { fetchSeasonsList, Season, fetchComments } from '@/utils/api';
+import SeasonDetailsClient from '@/components/Seasons/SeasonDetailsClient';
+import { notFound, redirect } from 'next/navigation';
 
 export const revalidate = 120; // Revalidate every 2 minutes
 
@@ -17,18 +17,14 @@ export default async function SeasonDetailsPage({ params }: Props) {
 
   try {
     const seasonListPromise = fetchSeasonsList();
-    const commentsDataPromise = fetchComments("season", id);
+    const commentsDataPromise = fetchComments('season', id);
 
     // Wait for both promises to resolve
-    const [seasonList, commentsData] = await Promise.all([
-      seasonListPromise,
-      commentsDataPromise,
-    ]);
+    const [seasonList, commentsData] = await Promise.all([seasonListPromise, commentsDataPromise]);
 
     // Find the current season in the list, handling leading zeros
     const currentSeason = seasonList.find(
-      (season: Season) =>
-        season.season.toString() === id || season.season === parseInt(id),
+      (season: Season) => season.season.toString() === id || season.season === parseInt(id),
     );
 
     if (!currentSeason) {
@@ -37,14 +33,12 @@ export default async function SeasonDetailsPage({ params }: Props) {
 
     // Check if the season has valid rewards
     if (
-      typeof currentSeason.rewards === "string" ||
+      typeof currentSeason.rewards === 'string' ||
       !Array.isArray(currentSeason.rewards) ||
       currentSeason.rewards.length === 0
     ) {
       // Redirect to latest season if current season has no rewards
-      const latestSeason = seasonList.find(
-        (s: Season) => s.season === LATEST_SEASON,
-      );
+      const latestSeason = seasonList.find((s: Season) => s.season === LATEST_SEASON);
       if (latestSeason) {
         redirect(`/seasons/${latestSeason.season}`);
       } else {
@@ -63,7 +57,7 @@ export default async function SeasonDetailsPage({ params }: Props) {
       />
     );
   } catch (error) {
-    console.error("Error fetching season:", error);
+    console.error('Error fetching season:', error);
     notFound();
   }
 }

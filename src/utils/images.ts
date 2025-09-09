@@ -1,23 +1,23 @@
 // Image path constants
 export const IMAGE_PATHS = {
-  BASE: "https://assets.jailbreakchangelogs.xyz/assets/images/items",
-  VALUES: "https://assets.jailbreakchangelogs.xyz/assets/images/items/480p",
-  PLACEHOLDER: "/assets/images/Placeholder.webp",
+  BASE: 'https://assets.jailbreakchangelogs.xyz/assets/images/items',
+  VALUES: 'https://assets.jailbreakchangelogs.xyz/assets/images/items/480p',
+  PLACEHOLDER: '/assets/images/Placeholder.webp',
 } as const;
 
 // Type mappings for image paths
 export const TYPE_MAPPINGS: Record<string, string> = {
-  "body color": "body colors",
-  drift: "drifts",
-  furniture: "furnitures",
-  hyperchrome: "hyperchromes",
-  rim: "rims",
-  spoiler: "spoilers",
-  texture: "textures",
-  "tire sticker": "tire stickers",
-  "tire style": "tire styles",
-  vehicle: "vehicles",
-  "weapon skin": "weapon skins",
+  'body color': 'body colors',
+  drift: 'drifts',
+  furniture: 'furnitures',
+  hyperchrome: 'hyperchromes',
+  rim: 'rims',
+  spoiler: 'spoilers',
+  texture: 'textures',
+  'tire sticker': 'tire stickers',
+  'tire style': 'tire styles',
+  vehicle: 'vehicles',
+  'weapon skin': 'weapon skins',
 } as const;
 
 /**
@@ -26,9 +26,7 @@ export const TYPE_MAPPINGS: Record<string, string> = {
  * @returns boolean indicating if the item should use a video
  */
 export const isVideoItem = (name: string): boolean => {
-  return (
-    name === "HyperShift" || name === "Gamer TV Set" || name === "Arcade Racer"
-  );
+  return name === 'HyperShift' || name === 'Gamer TV Set' || name === 'Arcade Racer';
 };
 
 /**
@@ -37,7 +35,7 @@ export const isVideoItem = (name: string): boolean => {
  * @returns boolean indicating if the item is a horn
  */
 export const isHornItem = (type: string): boolean => {
-  return type.toLowerCase() === "horn";
+  return type.toLowerCase() === 'horn';
 };
 
 /**
@@ -46,7 +44,7 @@ export const isHornItem = (type: string): boolean => {
  * @returns boolean indicating if the item is a drift
  */
 export const isDriftItem = (type: string): boolean => {
-  return type.toLowerCase() === "drift";
+  return type.toLowerCase() === 'drift';
 };
 
 /**
@@ -95,14 +93,14 @@ export const getVideoThumbnailPath = (type: string, name: string): string => {
  * @returns The full path to the video file
  */
 export const getVideoPath = (type: string, name: string): string => {
-  if (name === "HyperShift") {
-    return "https://assets.jailbreakchangelogs.xyz/assets/images/items/hyperchromes/HyperShift_optimized.mp4";
+  if (name === 'HyperShift') {
+    return 'https://assets.jailbreakchangelogs.xyz/assets/images/items/hyperchromes/HyperShift_optimized.mp4';
   }
-  if (name === "Gamer TV Set") {
-    return "https://assets.jailbreakchangelogs.xyz/assets/images/items/videos/furnitures/Gamer TV Set.webm";
+  if (name === 'Gamer TV Set') {
+    return 'https://assets.jailbreakchangelogs.xyz/assets/images/items/videos/furnitures/Gamer TV Set.webm';
   }
-  if (name === "Arcade Racer") {
-    return "https://assets.jailbreakchangelogs.xyz/assets/images/items/videos/spoilers/Arcade Racer.webm";
+  if (name === 'Arcade Racer') {
+    return 'https://assets.jailbreakchangelogs.xyz/assets/images/items/videos/spoilers/Arcade Racer.webm';
   }
   throw new Error(`No video path found for ${name}`);
 };
@@ -121,19 +119,19 @@ export const getItemImagePath = (
   name: string,
   isValuesPage: boolean = false,
   isSocialEmbed: boolean = false,
-  hornBackground: "dark" | "light" = "dark",
+  hornBackground: 'dark' | 'light' = 'dark',
 ): string => {
   if (isVideoItem(name)) {
     if (isSocialEmbed) {
       // Return different paths for social media embeds
-      if (name === "HyperShift") {
-        return "https://assets.jailbreakchangelogs.xyz/assets/images/items/hyperchromes/HyperShift_optimized.mp4";
+      if (name === 'HyperShift') {
+        return 'https://assets.jailbreakchangelogs.xyz/assets/images/items/hyperchromes/HyperShift_optimized.mp4';
       }
-      if (name === "Gamer TV Set") {
-        return "https://assets.jailbreakchangelogs.xyz/assets/images/items/furnitures/Gamer TV Set_optimized.gif";
+      if (name === 'Gamer TV Set') {
+        return 'https://assets.jailbreakchangelogs.xyz/assets/images/items/furnitures/Gamer TV Set_optimized.gif';
       }
-      if (name === "Arcade Racer") {
-        return "https://assets.jailbreakchangelogs.xyz/assets/images/items/spoilers/Arcade Racer_optimized.gif";
+      if (name === 'Arcade Racer') {
+        return 'https://assets.jailbreakchangelogs.xyz/assets/images/items/spoilers/Arcade Racer_optimized.gif';
       }
     }
     // For non-video elements (like thumbnails), return the thumbnail path
@@ -141,8 +139,7 @@ export const getItemImagePath = (
   }
 
   if (isHornItem(type)) {
-    const backgroundVariant =
-      hornBackground === "light" ? "light_bg" : "dark_bg";
+    const backgroundVariant = hornBackground === 'light' ? 'light_bg' : 'dark_bg';
     return `https://assets.jailbreakchangelogs.xyz/assets/audios/horn_thumbnail_${backgroundVariant}.webp`;
   }
 

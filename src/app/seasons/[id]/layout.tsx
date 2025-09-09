@@ -1,6 +1,6 @@
-import { Metadata } from "next";
-import { fetchSeasonsList, Season, Reward } from "@/utils/api";
-import { getMaintenanceMetadata } from "@/utils/maintenance";
+import { Metadata } from 'next';
+import { fetchSeasonsList, Season, Reward } from '@/utils/api';
+import { getMaintenanceMetadata } from '@/utils/maintenance';
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -20,9 +20,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     if (!season) {
       return {
-        metadataBase: new URL("https://jailbreakchangelogs.xyz"),
-        title: "Season Not Found",
-        description: "The requested season could not be found.",
+        metadataBase: new URL('https://jailbreakchangelogs.xyz'),
+        title: 'Season Not Found',
+        description: 'The requested season could not be found.',
         alternates: {
           canonical: `/seasons/${id}`,
         },
@@ -32,15 +32,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     // Get all level rewards with images
     const validRewards = season.rewards.filter(
       (reward: Reward) =>
-        reward.requirement.startsWith("Level") &&
-        reward.link !== "N/A" &&
-        reward.link !== null,
+        reward.requirement.startsWith('Level') && reward.link !== 'N/A' && reward.link !== null,
     );
 
     // Shuffle and take 4 images
-    const shuffledRewards = validRewards
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 4);
+    const shuffledRewards = validRewards.sort(() => Math.random() - 0.5).slice(0, 4);
     const images = shuffledRewards.map((reward: Reward) => ({
       url: `https://assets.jailbreakchangelogs.xyz${reward.link}`,
       width: 1200,
@@ -49,7 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }));
 
     return {
-      metadataBase: new URL("https://jailbreakchangelogs.xyz"),
+      metadataBase: new URL('https://jailbreakchangelogs.xyz'),
       title: `Season ${season.season}: ${season.title}`,
       description: season.description,
       alternates: {
@@ -59,11 +55,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         title: `Season ${season.season}: ${season.title}`,
         description: season.description,
         images,
-        siteName: "Jailbreak Changelogs",
+        siteName: 'Jailbreak Changelogs',
         url: `https://jailbreakchangelogs.xyz/seasons/${id}`,
       },
       twitter: {
-        card: "summary_large_image",
+        card: 'summary_large_image',
         title: `Season ${season.season}: ${season.title}`,
         description: season.description,
         images: images.map((img: { url: string }) => img.url),
@@ -72,26 +68,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   } catch {
     const { id } = await params;
     return {
-      metadataBase: new URL("https://jailbreakchangelogs.xyz"),
-      title: "Jailbreak Seasons",
-      description: "Explore all seasons of Roblox Jailbreak.",
+      metadataBase: new URL('https://jailbreakchangelogs.xyz'),
+      title: 'Jailbreak Seasons',
+      description: 'Explore all seasons of Roblox Jailbreak.',
       alternates: {
         canonical: `/seasons/${id}`,
       },
       openGraph: {
-        title: "Jailbreak Seasons",
-        description: "Explore all seasons of Roblox Jailbreak.",
-        siteName: "Jailbreak Changelogs",
+        title: 'Jailbreak Seasons',
+        description: 'Explore all seasons of Roblox Jailbreak.',
+        siteName: 'Jailbreak Changelogs',
         url: `https://jailbreakchangelogs.xyz/seasons/${id}`,
       },
     };
   }
 }
 
-export default function SeasonLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function SeasonLayout({ children }: { children: React.ReactNode }) {
   return <div className="min-h-screen bg-[#2E3944]">{children}</div>;
 }

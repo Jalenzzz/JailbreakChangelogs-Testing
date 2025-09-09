@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { PUBLIC_API_URL } from "@/utils/api";
-import { getToken } from "@/utils/auth";
-import { TradeItem, TradeAd } from "@/types/trading";
-import { UserData } from "@/types/auth";
-import { ItemGrid } from "./ItemGrid";
-import { Button, Skeleton } from "@mui/material";
-import toast from "react-hot-toast";
-import { AvailableItemsGrid } from "./AvailableItemsGrid";
-import { CustomConfirmationModal } from "../Modals/CustomConfirmationModal";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
-import { useSupporterModal } from "@/hooks/useSupporterModal";
-import SupporterModal from "../Modals/SupporterModal";
-import LoginModalWrapper from "../Auth/LoginModalWrapper";
-import dynamic from "next/dynamic";
-import { ArrowsRightLeftIcon, TrashIcon } from "@heroicons/react/24/outline";
+import React, { useState, useEffect } from 'react';
+import { PUBLIC_API_URL } from '@/utils/api';
+import { getToken } from '@/utils/auth';
+import { TradeItem, TradeAd } from '@/types/trading';
+import { UserData } from '@/types/auth';
+import { ItemGrid } from './ItemGrid';
+import { Button, Skeleton } from '@mui/material';
+import toast from 'react-hot-toast';
+import { AvailableItemsGrid } from './AvailableItemsGrid';
+import { CustomConfirmationModal } from '../Modals/CustomConfirmationModal';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useSupporterModal } from '@/hooks/useSupporterModal';
+import SupporterModal from '../Modals/SupporterModal';
+import LoginModalWrapper from '../Auth/LoginModalWrapper';
+import dynamic from 'next/dynamic';
+import { ArrowsRightLeftIcon, TrashIcon } from '@heroicons/react/24/outline';
 
-const Select = dynamic(() => import("react-select"), { ssr: false });
+const Select = dynamic(() => import('react-select'), { ssr: false });
 
 interface TradeAdFormProps {
   onSuccess?: () => void;
@@ -33,10 +33,10 @@ interface UserPremiumTier {
 }
 
 const PREMIUM_TIERS: UserPremiumTier[] = [
-  { tier: 0, name: "Free", durations: [6] },
-  { tier: 1, name: "Supporter 1", durations: [6, 12] },
-  { tier: 2, name: "Supporter 2", durations: [6, 12, 24] },
-  { tier: 3, name: "Supporter 3", durations: [6, 12, 24, 48] },
+  { tier: 0, name: 'Free', durations: [6] },
+  { tier: 1, name: 'Supporter 1', durations: [6, 12] },
+  { tier: 2, name: 'Supporter 2', durations: [6, 12, 24] },
+  { tier: 3, name: 'Supporter 3', durations: [6, 12, 24, 48] },
 ];
 
 export const TradeAdForm: React.FC<TradeAdFormProps> = ({
@@ -49,17 +49,13 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
   const [offeringItems, setOfferingItems] = useState<TradeItem[]>([]);
   const [requestingItems, setRequestingItems] = useState<TradeItem[]>([]);
   const [submitting, setSubmitting] = useState(false);
-  const [userPremiumTier, setUserPremiumTier] = useState<UserPremiumTier>(
-    PREMIUM_TIERS[0],
-  );
+  const [userPremiumTier, setUserPremiumTier] = useState<UserPremiumTier>(PREMIUM_TIERS[0]);
   const [expirationHours, setExpirationHours] = useState<number | null>(null);
   const [showRestoreModal, setShowRestoreModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showClearConfirmModal, setShowClearConfirmModal] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [selectedTradeAd, setSelectedTradeAd] = useState<TradeAd | undefined>(
-    tradeAd,
-  );
+  const [selectedTradeAd, setSelectedTradeAd] = useState<TradeAd | undefined>(tradeAd);
   const [selectLoaded, setSelectLoaded] = useState(false);
   const router = useRouter();
   const { modalState, closeModal, checkTradeAdDuration } = useSupporterModal();
@@ -67,11 +63,11 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
 
   const parseValueString = (valStr: string | number | undefined): number => {
     if (valStr === undefined || valStr === null) return 0;
-    const cleanedValStr = String(valStr).toLowerCase().replace(/,/g, "");
-    if (cleanedValStr === "n/a") return 0;
-    if (cleanedValStr.endsWith("m")) {
+    const cleanedValStr = String(valStr).toLowerCase().replace(/,/g, '');
+    if (cleanedValStr === 'n/a') return 0;
+    if (cleanedValStr.endsWith('m')) {
       return parseFloat(cleanedValStr) * 1_000_000;
-    } else if (cleanedValStr.endsWith("k")) {
+    } else if (cleanedValStr.endsWith('k')) {
       return parseFloat(cleanedValStr) * 1_000;
     } else {
       return parseFloat(cleanedValStr);
@@ -79,10 +75,10 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
   };
 
   const formatTotalValue = (value: string): string => {
-    if (!value || value === "N/A") return "0";
+    if (!value || value === 'N/A') return '0';
 
     const numValue = parseFloat(value);
-    if (isNaN(numValue)) return "0";
+    if (isNaN(numValue)) return '0';
 
     return numValue.toLocaleString();
   };
@@ -102,18 +98,12 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
     };
   };
 
-  const saveItemsToLocalStorage = (
-    offering: TradeItem[],
-    requesting: TradeItem[],
-  ) => {
+  const saveItemsToLocalStorage = (offering: TradeItem[], requesting: TradeItem[]) => {
     if (editMode) return; // Don't save to localStorage when editing
 
     const token = getToken();
     if (token) {
-      localStorage.setItem(
-        "tradeAdFormItems",
-        JSON.stringify({ offering, requesting }),
-      );
+      localStorage.setItem('tradeAdFormItems', JSON.stringify({ offering, requesting }));
     }
   };
 
@@ -133,12 +123,11 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
           const userData = await response.json();
           setUserData(userData);
           const tier =
-            PREMIUM_TIERS.find((t) => t.tier === userData.premiumtype) ||
-            PREMIUM_TIERS[0];
+            PREMIUM_TIERS.find((t) => t.tier === userData.premiumtype) || PREMIUM_TIERS[0];
           setUserPremiumTier(tier);
         }
       } catch (err) {
-        console.error("Error fetching user data:", err);
+        console.error('Error fetching user data:', err);
       } finally {
         setLoading(false);
       }
@@ -165,7 +154,7 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
       if (!token) return;
 
       try {
-        const storedItems = localStorage.getItem("tradeAdFormItems");
+        const storedItems = localStorage.getItem('tradeAdFormItems');
         if (storedItems) {
           const { offering, requesting } = JSON.parse(storedItems);
           if (offering.length > 0 || requesting.length > 0) {
@@ -173,46 +162,43 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
           }
         }
       } catch (error) {
-        console.error("Failed to parse stored items from localStorage:", error);
-        localStorage.removeItem("tradeAdFormItems");
+        console.error('Failed to parse stored items from localStorage:', error);
+        localStorage.removeItem('tradeAdFormItems');
       }
     }
   }, [editMode, tradeAd, userPremiumTier.durations]);
 
   const handleRestoreItems = () => {
     try {
-      const storedItems = localStorage.getItem("tradeAdFormItems");
+      const storedItems = localStorage.getItem('tradeAdFormItems');
       if (storedItems) {
         const { offering, requesting } = JSON.parse(storedItems);
         setOfferingItems(offering || []);
         setRequestingItems(requesting || []);
       }
     } catch (error) {
-      console.error("Failed to restore items from localStorage:", error);
+      console.error('Failed to restore items from localStorage:', error);
     } finally {
       setShowRestoreModal(false);
     }
   };
 
   const handleStartNewTradeAd = () => {
-    localStorage.removeItem("tradeAdFormItems");
+    localStorage.removeItem('tradeAdFormItems');
     setOfferingItems([]);
     setRequestingItems([]);
     setShowRestoreModal(false);
     setShowClearConfirmModal(false);
   };
 
-  const handleAddItem = (
-    item: TradeItem,
-    side: "offering" | "requesting",
-  ): boolean => {
-    const currentItems = side === "offering" ? offeringItems : requestingItems;
+  const handleAddItem = (item: TradeItem, side: 'offering' | 'requesting'): boolean => {
+    const currentItems = side === 'offering' ? offeringItems : requestingItems;
     if (currentItems.length >= 8) {
       toast.error(`Maximum of 8 items allowed for ${side}`);
       return false;
     }
 
-    if (side === "offering") {
+    if (side === 'offering') {
       const newOfferingItems = [...offeringItems, item];
       setOfferingItems(newOfferingItems);
       saveItemsToLocalStorage(newOfferingItems, requestingItems);
@@ -224,16 +210,10 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
     return true;
   };
 
-  const handleRemoveItem = (
-    itemId: number,
-    side: "offering" | "requesting",
-    subName?: string,
-  ) => {
-    if (side === "offering") {
+  const handleRemoveItem = (itemId: number, side: 'offering' | 'requesting', subName?: string) => {
+    if (side === 'offering') {
       const index = offeringItems.findIndex(
-        (item) =>
-          item.id === itemId &&
-          (item.sub_name === subName || (!item.sub_name && !subName)),
+        (item) => item.id === itemId && (item.sub_name === subName || (!item.sub_name && !subName)),
       );
       if (index !== -1) {
         const newOfferingItems = [
@@ -245,9 +225,7 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
       }
     } else {
       const index = requestingItems.findIndex(
-        (item) =>
-          item.id === itemId &&
-          (item.sub_name === subName || (!item.sub_name && !subName)),
+        (item) => item.id === itemId && (item.sub_name === subName || (!item.sub_name && !subName)),
       );
       if (index !== -1) {
         const newRequestingItems = [
@@ -275,12 +253,11 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
     setShowClearConfirmModal(true);
   };
 
-  const handleMirrorItems = (fromSide: "offering" | "requesting") => {
-    const sourceItems =
-      fromSide === "offering" ? offeringItems : requestingItems;
-    const targetSide = fromSide === "offering" ? "requesting" : "offering";
+  const handleMirrorItems = (fromSide: 'offering' | 'requesting') => {
+    const sourceItems = fromSide === 'offering' ? offeringItems : requestingItems;
+    const targetSide = fromSide === 'offering' ? 'requesting' : 'offering';
 
-    if (targetSide === "offering") {
+    if (targetSide === 'offering') {
       setOfferingItems(sourceItems);
     } else {
       setRequestingItems(sourceItems);
@@ -291,10 +268,10 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
     const errors: string[] = [];
 
     if (offeringItems.length === 0) {
-      errors.push("You must add at least one item to offer");
+      errors.push('You must add at least one item to offer');
     }
     if (requestingItems.length === 0) {
-      errors.push("You must add at least one item to request");
+      errors.push('You must add at least one item to request');
     }
 
     // Require all fields
@@ -305,21 +282,19 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
       !userData?.roblox_avatar ||
       !userData?.roblox_join_date
     ) {
-      toast.error("You must link a Roblox account first to create trade ads.");
+      toast.error('You must link a Roblox account first to create trade ads.');
       setLoginModalOpen(true);
       // Set Roblox tab (tab index 1)
       setTimeout(() => {
-        window.dispatchEvent(new CustomEvent("setLoginTab", { detail: 1 }));
+        window.dispatchEvent(new CustomEvent('setLoginTab', { detail: 1 }));
       }, 100);
       return;
     }
 
     if (errors.length > 0) {
-      const availableItemsGrid = document.querySelector(
-        '[data-component="available-items-grid"]',
-      );
+      const availableItemsGrid = document.querySelector('[data-component="available-items-grid"]');
       if (availableItemsGrid) {
-        const event = new CustomEvent("showTradeAdError", {
+        const event = new CustomEvent('showTradeAdError', {
           detail: { errors },
         });
         availableItemsGrid.dispatchEvent(event);
@@ -328,10 +303,7 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
     }
 
     // Validate trade ad duration
-    if (
-      !editMode &&
-      !checkTradeAdDuration(expirationHours!, userData?.premiumtype || 0)
-    ) {
+    if (!editMode && !checkTradeAdDuration(expirationHours!, userData?.premiumtype || 0)) {
       return;
     }
 
@@ -339,63 +311,57 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
       setSubmitting(true);
       const token = getToken();
       if (!token) {
-        toast.error("You must be logged in to create a trade ad");
+        toast.error('You must be logged in to create a trade ad');
         return;
       }
 
       const endpoint = editMode
         ? `${PUBLIC_API_URL}/trades/update?id=${tradeAd?.id}`
         : `${PUBLIC_API_URL}/trades/add`;
-      const method = "POST";
+      const method = 'POST';
 
       const response = await fetch(endpoint, {
         method,
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           offering: offeringItems
             .map((item) => {
               if (item.sub_name) {
-                const child = item.children?.find(
-                  (child) => child.sub_name === item.sub_name,
-                );
+                const child = item.children?.find((child) => child.sub_name === item.sub_name);
                 return child ? `${item.id}-${child.id}` : String(item.id);
               }
               return String(item.id);
             })
-            .join(","),
+            .join(','),
           requesting: requestingItems
             .map((item) => {
               if (item.sub_name) {
-                const child = item.children?.find(
-                  (child) => child.sub_name === item.sub_name,
-                );
+                const child = item.children?.find((child) => child.sub_name === item.sub_name);
                 return child ? `${item.id}-${child.id}` : String(item.id);
               }
               return String(item.id);
             })
-            .join(","),
+            .join(','),
           owner: token,
           ...(editMode ? {} : { expiration: expirationHours! }),
-          ...(editMode && selectedTradeAd
-            ? { status: selectedTradeAd.status }
-            : {}),
+          ...(editMode && selectedTradeAd ? { status: selectedTradeAd.status } : {}),
         }),
       });
 
       if (response.status === 409) {
         toast.error(
-          "You already have a similar trade ad. Please modify your items or delete your existing trade ad first.",
+          'You already have a similar trade ad. Please modify your items or delete your existing trade ad first.',
         );
         const availableItemsGrid = document.querySelector(
           '[data-component="available-items-grid"]',
         );
         if (availableItemsGrid) {
-          const event = new CustomEvent("showTradeAdError", {
+          const event = new CustomEvent('showTradeAdError', {
             detail: {
               errors: [
-                "You already have a similar trade ad. Please modify your items or delete your existing trade ad first.",
+                'You already have a similar trade ad. Please modify your items or delete your existing trade ad first.',
               ],
             },
           });
@@ -404,16 +370,12 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
         setSubmitting(false);
         return;
       } else if (!response.ok) {
-        throw new Error(
-          editMode ? "Failed to update trade ad" : "Failed to create trade ad",
-        );
+        throw new Error(editMode ? 'Failed to update trade ad' : 'Failed to create trade ad');
       } else {
         toast.success(
-          editMode
-            ? "Trade ad updated successfully!"
-            : "Trade ad created successfully!",
+          editMode ? 'Trade ad updated successfully!' : 'Trade ad created successfully!',
         );
-        localStorage.removeItem("tradeAdFormItems");
+        localStorage.removeItem('tradeAdFormItems');
         setOfferingItems([]);
         setRequestingItems([]);
 
@@ -426,11 +388,11 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
         }
       }
     } catch (err) {
-      console.error("Error with trade ad:", err);
+      console.error('Error with trade ad:', err);
       toast.error(
         editMode
-          ? "Failed to update trade ad. Please try again."
-          : "Failed to create trade ad. Please try again.",
+          ? 'Failed to update trade ad. Please try again.'
+          : 'Failed to create trade ad. Please try again.',
       );
     } finally {
       setSubmitting(false);
@@ -438,7 +400,7 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
   };
 
   const handleEnableBotDMs = () => {
-    router.push("/settings?highlight=dms_allowed");
+    router.push('/settings?highlight=dms_allowed');
   };
 
   const handleSuccessModalClose = () => {
@@ -457,15 +419,10 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
     return (
       <div className="space-y-6">
         {/* Expiration Time Selection Skeleton */}
-        <div className="bg-[#212A31] rounded-lg p-4 border border-[#2E3944]">
+        <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4">
           <Skeleton variant="text" width={200} height={24} className="mb-4" />
           <div className="flex items-center gap-4">
-            <Skeleton
-              variant="rectangular"
-              width="100%"
-              height={40}
-              className="rounded-lg"
-            />
+            <Skeleton variant="rectangular" width="100%" height={40} className="rounded-lg" />
             <div className="space-y-2">
               <Skeleton variant="text" width={120} height={20} />
               <Skeleton variant="text" width={180} height={20} />
@@ -474,10 +431,10 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
         </div>
 
         {/* Offering and Requesting Items Skeleton */}
-        <div className="md:flex md:space-x-6 space-y-6 md:space-y-0">
-          <div className="bg-[#212A31] rounded-lg p-4 border border-[#2E3944] flex-1">
+        <div className="space-y-6 md:flex md:space-y-0 md:space-x-6">
+          <div className="flex-1 rounded-lg border border-[#2E3944] bg-[#212A31] p-4">
             <Skeleton variant="text" width={100} height={24} className="mb-4" />
-            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
               {[...Array(8)].map((_, i) => (
                 <Skeleton
                   key={i}
@@ -490,9 +447,9 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
             </div>
           </div>
 
-          <div className="bg-[#212A31] rounded-lg p-4 border border-[#2E3944] flex-1">
+          <div className="flex-1 rounded-lg border border-[#2E3944] bg-[#212A31] p-4">
             <Skeleton variant="text" width={100} height={24} className="mb-4" />
-            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
               {[...Array(8)].map((_, i) => (
                 <Skeleton
                   key={i}
@@ -508,18 +465,8 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
 
         {/* Submit Button Skeleton */}
         <div className="flex justify-end gap-3">
-          <Skeleton
-            variant="rectangular"
-            width={120}
-            height={36}
-            className="rounded-lg"
-          />
-          <Skeleton
-            variant="rectangular"
-            width={140}
-            height={36}
-            className="rounded-lg"
-          />
+          <Skeleton variant="rectangular" width={120} height={36} className="rounded-lg" />
+          <Skeleton variant="rectangular" width={140} height={36} className="rounded-lg" />
         </div>
 
         {/* Available Items Grid Skeleton */}
@@ -544,23 +491,16 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
   const token = getToken();
   if (!token) {
     return (
-      <div className="bg-[#212A31] rounded-lg p-6 border border-[#2E3944] text-center mb-8">
-        <h3 className="text-muted text-lg font-medium mb-4">
-          Create Trade Ads
-        </h3>
-        <p className="text-muted/70 mb-8">
-          Please log in to create your own trade ads.
-        </p>
+      <div className="mb-8 rounded-lg border border-[#2E3944] bg-[#212A31] p-6 text-center">
+        <h3 className="text-muted mb-4 text-lg font-medium">Create Trade Ads</h3>
+        <p className="text-muted/70 mb-8">Please log in to create your own trade ads.</p>
       </div>
     );
   }
 
   return (
     <>
-      <LoginModalWrapper
-        open={loginModalOpen}
-        onClose={() => setLoginModalOpen(false)}
-      />
+      <LoginModalWrapper open={loginModalOpen} onClose={() => setLoginModalOpen(false)} />
       <div className="space-y-6">
         <CustomConfirmationModal
           open={showRestoreModal}
@@ -593,25 +533,23 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
               onClick={() => setShowClearConfirmModal(false)}
             />
             <div className="fixed inset-0 flex items-center justify-center p-4">
-              <div className="mx-auto w-full max-w-sm rounded-lg bg-[#212A31] p-6 shadow-xl border border-[#5865F2]">
-                <h2 className="text-white text-xl font-semibold mb-2">
-                  Clear Trade Ad?
-                </h2>
+              <div className="mx-auto w-full max-w-sm rounded-lg border border-[#5865F2] bg-[#212A31] p-6 shadow-xl">
+                <h2 className="mb-2 text-xl font-semibold text-white">Clear Trade Ad?</h2>
                 <p className="text-muted/80 mb-6">
                   Choose what to clear. This action cannot be undone.
                 </p>
-                <div className="grid grid-cols-1 gap-3 mb-4">
+                <div className="mb-4 grid grid-cols-1 gap-3">
                   <button
                     onClick={() => {
                       setOfferingItems([]);
                       if (requestingItems.length === 0) {
-                        localStorage.removeItem("tradeAdFormItems");
+                        localStorage.removeItem('tradeAdFormItems');
                       } else {
                         saveItemsToLocalStorage([], requestingItems);
                       }
                       setShowClearConfirmModal(false);
                     }}
-                    className="w-full rounded-md border border-[#047857] px-4 py-2 text-sm font-medium text-white bg-[#047857]/20 hover:bg-[#047857]/30 transition-colors"
+                    className="w-full rounded-md border border-[#047857] bg-[#047857]/20 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#047857]/30"
                   >
                     Clear Offering
                   </button>
@@ -619,13 +557,13 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
                     onClick={() => {
                       setRequestingItems([]);
                       if (offeringItems.length === 0) {
-                        localStorage.removeItem("tradeAdFormItems");
+                        localStorage.removeItem('tradeAdFormItems');
                       } else {
                         saveItemsToLocalStorage(offeringItems, []);
                       }
                       setShowClearConfirmModal(false);
                     }}
-                    className="w-full rounded-md border border-[#B91C1C] px-4 py-2 text-sm font-medium text-white bg-[#B91C1C]/20 hover:bg-[#B91C1C]/30 transition-colors"
+                    className="w-full rounded-md border border-[#B91C1C] bg-[#B91C1C]/20 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#B91C1C]/30"
                   >
                     Clear Requesting
                   </button>
@@ -633,7 +571,7 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
                     onClick={() => {
                       handleStartNewTradeAd();
                     }}
-                    className="w-full rounded-md bg-[#B91C1C] px-4 py-2 text-sm font-medium text-white hover:bg-[#991B1B] transition-colors"
+                    className="w-full rounded-md bg-[#B91C1C] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#991B1B]"
                   >
                     Clear Both
                   </button>
@@ -641,7 +579,7 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
                 <div className="flex justify-end">
                   <button
                     onClick={() => setShowClearConfirmModal(false)}
-                    className="rounded-md border border-[#37424D] px-4 py-2 text-sm font-medium text-muted hover:bg-[#2E3944] hover:text-white transition-colors"
+                    className="text-muted rounded-md border border-[#37424D] px-4 py-2 text-sm font-medium transition-colors hover:bg-[#2E3944] hover:text-white"
                   >
                     Cancel
                   </button>
@@ -663,15 +601,15 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
 
         {/* Expiration Time Selection */}
         {!editMode && (
-          <div className="bg-[#212A31] rounded-lg p-4 border border-[#2E3944] mb-4">
-            <h3 className="text-muted font-medium mb-2 flex items-center gap-2">
+          <div className="mb-4 rounded-lg border border-[#2E3944] bg-[#212A31] p-4">
+            <h3 className="text-muted mb-2 flex items-center gap-2 font-medium">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-5 h-5 text-blue-400"
+                className="h-5 w-5 text-blue-400"
               >
                 <path
                   strokeLinecap="round"
@@ -681,21 +619,21 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
               </svg>
               Trade Ad Expiration
             </h3>
-            <p className="text-sm text-blue-300 mb-2">
-              How long should your trade ad be visible? <b>Supporters</b> can
-              choose longer durations!
+            <p className="mb-2 text-sm text-blue-300">
+              How long should your trade ad be visible? <b>Supporters</b> can choose longer
+              durations!
             </p>
             <Link
               href="/supporting"
-              className="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#2E3944] text-white font-semibold hover:bg-[#37424D] transition mb-2"
-              style={{ textDecoration: "none" }}
+              className="mb-2 inline-flex items-center gap-2 rounded bg-[#2E3944] px-3 py-1 font-semibold text-white transition hover:bg-[#37424D]"
+              style={{ textDecoration: 'none' }}
             >
               <Image
                 src="https://assets.jailbreakchangelogs.xyz/assets/images/JBCLHeart.webp"
                 alt="Heart"
                 width={16}
                 height={16}
-                className="w-4 h-4"
+                className="h-4 w-4"
               />
               Become a Supporter
             </Link>
@@ -706,15 +644,12 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
                     expirationHours !== null
                       ? {
                           value: expirationHours,
-                          label: `${expirationHours} ${expirationHours === 1 ? "hour" : "hours"}`,
+                          label: `${expirationHours} ${expirationHours === 1 ? 'hour' : 'hours'}`,
                         }
-                      : { value: null, label: "Select expiration..." }
+                      : { value: null, label: 'Select expiration...' }
                   }
                   onChange={(option: unknown) => {
-                    if (
-                      !option ||
-                      (option as { value: number | null }).value == null
-                    ) {
+                    if (!option || (option as { value: number | null }).value == null) {
                       setExpirationHours(null);
                       return;
                     }
@@ -722,10 +657,10 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
                     setExpirationHours(newValue);
                   }}
                   options={[
-                    { value: null, label: "Select expiration..." },
+                    { value: null, label: 'Select expiration...' },
                     ...[6, 12, 24, 48].map((hours) => ({
                       value: hours,
-                      label: `${hours} ${hours === 1 ? "hour" : "hours"}`,
+                      label: `${hours} ${hours === 1 ? 'hour' : 'hours'}`,
                     })),
                   ]}
                   placeholder="Select expiration..."
@@ -735,52 +670,49 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
                   styles={{
                     control: (base) => ({
                       ...base,
-                      backgroundColor: "#37424D",
-                      borderColor: "#2E3944",
-                      color: "#D3D9D4",
-                      minHeight: "40px",
-                      "&:hover": {
-                        borderColor: "#124E66",
+                      backgroundColor: '#37424D',
+                      borderColor: '#2E3944',
+                      color: '#D3D9D4',
+                      minHeight: '40px',
+                      '&:hover': {
+                        borderColor: '#124E66',
                       },
-                      "&:focus-within": {
-                        borderColor: "#124E66",
+                      '&:focus-within': {
+                        borderColor: '#124E66',
                       },
                     }),
-                    singleValue: (base) => ({ ...base, color: "#D3D9D4" }),
+                    singleValue: (base) => ({ ...base, color: '#D3D9D4' }),
                     menu: (base) => ({
                       ...base,
-                      backgroundColor: "#37424D",
-                      color: "#D3D9D4",
+                      backgroundColor: '#37424D',
+                      color: '#D3D9D4',
                       zIndex: 3000,
                     }),
                     option: (base, state) => ({
                       ...base,
                       backgroundColor: state.isSelected
-                        ? "#124E66"
+                        ? '#124E66'
                         : state.isFocused
-                          ? "#2E3944"
-                          : "#37424D",
-                      color:
-                        state.isSelected || state.isFocused
-                          ? "#FFFFFF"
-                          : "#D3D9D4",
-                      "&:active": {
-                        backgroundColor: "#124E66",
-                        color: "#FFFFFF",
+                          ? '#2E3944'
+                          : '#37424D',
+                      color: state.isSelected || state.isFocused ? '#FFFFFF' : '#D3D9D4',
+                      '&:active': {
+                        backgroundColor: '#124E66',
+                        color: '#FFFFFF',
                       },
                     }),
                     dropdownIndicator: (base) => ({
                       ...base,
-                      color: "#D3D9D4",
-                      "&:hover": {
-                        color: "#FFFFFF",
+                      color: '#D3D9D4',
+                      '&:hover': {
+                        color: '#FFFFFF',
                       },
                     }),
                   }}
                   isSearchable={false}
                 />
               ) : (
-                <div className="w-full h-10 bg-[#37424D] border border-[#2E3944] rounded-lg animate-pulse"></div>
+                <div className="h-10 w-full animate-pulse rounded-lg border border-[#2E3944] bg-[#37424D]"></div>
               )}
             </div>
           </div>
@@ -788,8 +720,8 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
 
         {/* Status Selection (Edit Mode Only) */}
         {editMode && tradeAd && (
-          <div className="bg-[#212A31] rounded-lg p-4 border border-[#2E3944] mt-4">
-            <h3 className="text-muted font-medium mb-4">Trade Status</h3>
+          <div className="mt-4 rounded-lg border border-[#2E3944] bg-[#212A31] p-4">
+            <h3 className="text-muted mb-4 font-medium">Trade Status</h3>
             {selectLoaded ? (
               <Select
                 value={{
@@ -798,7 +730,7 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
                 }}
                 onChange={(option: unknown) => {
                   if (!option) {
-                    const status = "Pending";
+                    const status = 'Pending';
                     setSelectedTradeAd((prev) =>
                       prev ? { ...prev, status } : { ...tradeAd, status },
                     );
@@ -810,8 +742,8 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
                   );
                 }}
                 options={[
-                  { value: "Pending", label: "Pending" },
-                  { value: "Completed", label: "Completed" },
+                  { value: 'Pending', label: 'Pending' },
+                  { value: 'Completed', label: 'Completed' },
                 ]}
                 classNamePrefix="react-select"
                 className="w-full"
@@ -819,52 +751,49 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
                 styles={{
                   control: (base) => ({
                     ...base,
-                    backgroundColor: "#37424D",
-                    borderColor: "#2E3944",
-                    color: "#D3D9D4",
-                    minHeight: "40px",
-                    "&:hover": {
-                      borderColor: "#124E66",
+                    backgroundColor: '#37424D',
+                    borderColor: '#2E3944',
+                    color: '#D3D9D4',
+                    minHeight: '40px',
+                    '&:hover': {
+                      borderColor: '#124E66',
                     },
-                    "&:focus-within": {
-                      borderColor: "#124E66",
+                    '&:focus-within': {
+                      borderColor: '#124E66',
                     },
                   }),
-                  singleValue: (base) => ({ ...base, color: "#D3D9D4" }),
+                  singleValue: (base) => ({ ...base, color: '#D3D9D4' }),
                   menu: (base) => ({
                     ...base,
-                    backgroundColor: "#37424D",
-                    color: "#D3D9D4",
+                    backgroundColor: '#37424D',
+                    color: '#D3D9D4',
                     zIndex: 3000,
                   }),
                   option: (base, state) => ({
                     ...base,
                     backgroundColor: state.isSelected
-                      ? "#124E66"
+                      ? '#124E66'
                       : state.isFocused
-                        ? "#2E3944"
-                        : "#37424D",
-                    color:
-                      state.isSelected || state.isFocused
-                        ? "#FFFFFF"
-                        : "#D3D9D4",
-                    "&:active": {
-                      backgroundColor: "#124E66",
-                      color: "#FFFFFF",
+                        ? '#2E3944'
+                        : '#37424D',
+                    color: state.isSelected || state.isFocused ? '#FFFFFF' : '#D3D9D4',
+                    '&:active': {
+                      backgroundColor: '#124E66',
+                      color: '#FFFFFF',
                     },
                   }),
                   dropdownIndicator: (base) => ({
                     ...base,
-                    color: "#D3D9D4",
-                    "&:hover": {
-                      color: "#FFFFFF",
+                    color: '#D3D9D4',
+                    '&:hover': {
+                      color: '#FFFFFF',
                     },
                   }),
                 }}
                 isSearchable={false}
               />
             ) : (
-              <div className="w-full h-10 bg-[#37424D] border border-[#2E3944] rounded-lg animate-pulse"></div>
+              <div className="h-10 w-full animate-pulse rounded-lg border border-[#2E3944] bg-[#37424D]"></div>
             )}
           </div>
         )}
@@ -875,91 +804,86 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
             variant="contained"
             onClick={handleSwapSides}
             sx={{
-              backgroundColor: "#5865F2",
-              color: "#FFFFFF",
-              "&:hover": {
-                backgroundColor: "#4752C4",
+              backgroundColor: '#5865F2',
+              color: '#FFFFFF',
+              '&:hover': {
+                backgroundColor: '#4752C4',
               },
             }}
           >
-            <ArrowsRightLeftIcon className="h-5 w-5 mr-1" />
+            <ArrowsRightLeftIcon className="mr-1 h-5 w-5" />
             Swap Sides
           </Button>
           <Button
             variant="contained"
             onClick={handleClearSides}
             sx={{
-              backgroundColor: "#EF4444",
-              color: "#FFFFFF",
-              "&:hover": {
-                backgroundColor: "#DC2626",
+              backgroundColor: '#EF4444',
+              color: '#FFFFFF',
+              '&:hover': {
+                backgroundColor: '#DC2626',
               },
             }}
           >
-            <TrashIcon className="h-5 w-5 mr-1" />
+            <TrashIcon className="mr-1 h-5 w-5" />
             Clear
           </Button>
         </div>
 
         {/* Pro tip about Shift+Clear */}
         <div className="text-center">
-          <div className="text-xs text-[#D3D9D4] flex items-center justify-center gap-1">
-            💡 Pro tip: Hold Shift while clicking Clear to clear both sides
-            instantly without confirmation
+          <div className="flex items-center justify-center gap-1 text-xs text-[#D3D9D4]">
+            💡 Pro tip: Hold Shift while clicking Clear to clear both sides instantly without
+            confirmation
           </div>
         </div>
 
         {/* Offering Items */}
-        <div className="md:flex md:space-x-6 space-y-6 md:space-y-0">
+        <div className="space-y-6 md:flex md:space-y-0 md:space-x-6">
           <div
-            className="bg-[#212A31] rounded-lg p-4 border border-[#2E3944] flex-1"
-            style={{ borderColor: "#047857" }}
+            className="flex-1 rounded-lg border border-[#2E3944] bg-[#212A31] p-4"
+            style={{ borderColor: '#047857' }}
           >
-            <div className="flex items-center justify-between mb-4">
+            <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <h3 className="text-muted font-medium">Offering</h3>
-                <span className="text-sm text-muted/70">
-                  ({offeringItems.length}/8)
-                </span>
+                <span className="text-muted/70 text-sm">({offeringItems.length}/8)</span>
               </div>
               <Button
                 variant="outlined"
-                onClick={() => handleMirrorItems("offering")}
+                onClick={() => handleMirrorItems('offering')}
                 size="small"
                 sx={{
-                  borderColor: "#047857",
-                  color: "#FFFFFF",
-                  backgroundColor: "rgba(4, 120, 87, 0.15)",
-                  "&:hover": {
-                    borderColor: "#065F46",
-                    backgroundColor: "rgba(4, 120, 87, 0.25)",
-                    color: "#FFFFFF",
+                  borderColor: '#047857',
+                  color: '#FFFFFF',
+                  backgroundColor: 'rgba(4, 120, 87, 0.15)',
+                  '&:hover': {
+                    borderColor: '#065F46',
+                    backgroundColor: 'rgba(4, 120, 87, 0.25)',
+                    color: '#FFFFFF',
                   },
                 }}
               >
-                <ArrowsRightLeftIcon className="h-4 w-4 mr-1" />
+                <ArrowsRightLeftIcon className="mr-1 h-4 w-4" />
                 Mirror
               </Button>
             </div>
             <ItemGrid
               items={offeringItems}
               title="Offering"
-              onRemove={(id, subName) =>
-                handleRemoveItem(id, "offering", subName)
-              }
+              onRemove={(id, subName) => handleRemoveItem(id, 'offering', subName)}
             />
-            <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted/70 mt-4">
+            <div className="text-muted/70 mt-4 flex flex-col flex-wrap items-start gap-2 text-xs sm:flex-row sm:items-center sm:gap-3 sm:text-sm">
               <span>
-                Total:{" "}
-                <span className="font-bold text-muted">
+                Total:{' '}
+                <span className="text-muted font-bold">
                   {calculateTotals(offeringItems).cashValue}
                 </span>
               </span>
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-white bg-green-500/80 border border-green-500/20">
-                {offeringItems.length} clean •{" "}
-                {calculateTotals(offeringItems).cashValue}
+              <span className="inline-flex items-center rounded-full border border-green-500/20 bg-green-500/80 px-2 py-0.5 text-white">
+                {offeringItems.length} clean • {calculateTotals(offeringItems).cashValue}
               </span>
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-white bg-red-500/80 border border-red-500/20">
+              <span className="inline-flex items-center rounded-full border border-red-500/20 bg-red-500/80 px-2 py-0.5 text-white">
                 0 duped • 0
               </span>
             </div>
@@ -967,54 +891,49 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
 
           {/* Requesting Items */}
           <div
-            className="bg-[#212A31] rounded-lg p-4 border border-[#2E3944] flex-1"
-            style={{ borderColor: "#B91C1C" }}
+            className="flex-1 rounded-lg border border-[#2E3944] bg-[#212A31] p-4"
+            style={{ borderColor: '#B91C1C' }}
           >
-            <div className="flex items-center justify-between mb-4">
+            <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <h3 className="text-muted font-medium">Requesting</h3>
-                <span className="text-sm text-muted/70">
-                  ({requestingItems.length}/8)
-                </span>
+                <span className="text-muted/70 text-sm">({requestingItems.length}/8)</span>
               </div>
               <Button
                 variant="outlined"
-                onClick={() => handleMirrorItems("requesting")}
+                onClick={() => handleMirrorItems('requesting')}
                 size="small"
                 sx={{
-                  borderColor: "#B91C1C",
-                  color: "#FFFFFF",
-                  backgroundColor: "rgba(185, 28, 28, 0.15)",
-                  "&:hover": {
-                    borderColor: "#991B1B",
-                    backgroundColor: "rgba(185, 28, 28, 0.25)",
-                    color: "#FFFFFF",
+                  borderColor: '#B91C1C',
+                  color: '#FFFFFF',
+                  backgroundColor: 'rgba(185, 28, 28, 0.15)',
+                  '&:hover': {
+                    borderColor: '#991B1B',
+                    backgroundColor: 'rgba(185, 28, 28, 0.25)',
+                    color: '#FFFFFF',
                   },
                 }}
               >
-                <ArrowsRightLeftIcon className="h-4 w-4 mr-1" />
+                <ArrowsRightLeftIcon className="mr-1 h-4 w-4" />
                 Mirror
               </Button>
             </div>
             <ItemGrid
               items={requestingItems}
               title="Requesting"
-              onRemove={(id, subName) =>
-                handleRemoveItem(id, "requesting", subName)
-              }
+              onRemove={(id, subName) => handleRemoveItem(id, 'requesting', subName)}
             />
-            <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted/70 mt-4">
+            <div className="text-muted/70 mt-4 flex flex-col flex-wrap items-start gap-2 text-xs sm:flex-row sm:items-center sm:gap-3 sm:text-sm">
               <span>
-                Total:{" "}
-                <span className="font-bold text-muted">
+                Total:{' '}
+                <span className="text-muted font-bold">
                   {calculateTotals(requestingItems).cashValue}
                 </span>
               </span>
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-white bg-green-500/80 border border-green-500/20">
-                {requestingItems.length} clean •{" "}
-                {calculateTotals(requestingItems).cashValue}
+              <span className="inline-flex items-center rounded-full border border-green-500/20 bg-green-500/80 px-2 py-0.5 text-white">
+                {requestingItems.length} clean • {calculateTotals(requestingItems).cashValue}
               </span>
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-white bg-red-500/80 border border-red-500/20">
+              <span className="inline-flex items-center rounded-full border border-red-500/20 bg-red-500/80 px-2 py-0.5 text-white">
                 0 duped • 0
               </span>
             </div>
@@ -1022,76 +941,67 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
         </div>
 
         {/* Submit Button */}
-        <div className="flex flex-col sm:flex-row justify-end gap-3">
+        <div className="flex flex-col justify-end gap-3 sm:flex-row">
           <Button
             variant="outlined"
             onClick={() => {
               if (editMode) {
-                window.history.pushState(null, "", window.location.pathname);
-                window.location.hash = "view";
-              } else if (
-                offeringItems.length > 0 ||
-                requestingItems.length > 0
-              ) {
+                window.history.pushState(null, '', window.location.pathname);
+                window.location.hash = 'view';
+              } else if (offeringItems.length > 0 || requestingItems.length > 0) {
                 setShowClearConfirmModal(true);
               }
             }}
-            disabled={
-              !editMode &&
-              offeringItems.length === 0 &&
-              requestingItems.length === 0
-            }
+            disabled={!editMode && offeringItems.length === 0 && requestingItems.length === 0}
             sx={{
-              borderColor: "#D3D9D4",
-              color: "#D3D9D4",
-              fontSize: { xs: "0.75rem", sm: "0.875rem" },
-              padding: { xs: "6px 12px", sm: "8px 16px" },
-              "&:hover": {
-                borderColor: "#D3D9D4",
-                backgroundColor: "rgba(211, 217, 212, 0.1)",
+              borderColor: '#D3D9D4',
+              color: '#D3D9D4',
+              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+              padding: { xs: '6px 12px', sm: '8px 16px' },
+              '&:hover': {
+                borderColor: '#D3D9D4',
+                backgroundColor: 'rgba(211, 217, 212, 0.1)',
               },
-              "&.Mui-disabled": {
-                borderColor: "#2E3944",
-                color: "#2E3944",
+              '&.Mui-disabled': {
+                borderColor: '#2E3944',
+                color: '#2E3944',
               },
             }}
           >
-            {editMode ? "Cancel" : "Clear Trade Ad"}
+            {editMode ? 'Cancel' : 'Clear Trade Ad'}
           </Button>
           <Button
             variant="contained"
             onClick={() => {
               if (!editMode && expirationHours === null) {
-                toast.error(
-                  "Please select a trade ad expiration before creating your ad.",
-                );
+                toast.error('Please select a trade ad expiration before creating your ad.');
                 return;
               }
               handleSubmit();
             }}
             disabled={submitting}
             sx={{
-              backgroundColor: "#5865F2",
-              color: "white",
-              fontSize: { xs: "0.75rem", sm: "0.875rem" },
-              padding: { xs: "6px 12px", sm: "8px 16px" },
-              "&:hover": {
-                backgroundColor: "#4752C4",
+              backgroundColor: '#5865F2',
+              color: 'white',
+              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+              padding: { xs: '6px 12px', sm: '8px 16px' },
+              '&:hover': {
+                backgroundColor: '#4752C4',
               },
-              "&.Mui-disabled": {
-                backgroundColor: "#444C56",
-                color: "#888",
-                cursor: "not-allowed",
+              '&.Mui-disabled': {
+                backgroundColor: '#444C56',
+                color: '#888',
+                cursor: 'not-allowed',
               },
             }}
           >
             {submitting
               ? editMode
-                ? "Updating Trade Ad..."
-                : "Creating Trade Ad..."
+                ? 'Updating Trade Ad...'
+                : 'Creating Trade Ad...'
               : editMode
-                ? "Update Trade Ad"
-                : "Create Trade Ad"}
+                ? 'Update Trade Ad'
+                : 'Create Trade Ad'}
           </Button>
         </div>
 

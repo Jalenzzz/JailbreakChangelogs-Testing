@@ -1,13 +1,13 @@
-import { Suspense } from "react";
-import { notFound } from "next/navigation";
-import InventoryCheckerClient from "../InventoryCheckerClient";
-import InventoryDataStreamer from "../InventoryDataStreamer";
-import Breadcrumb from "@/components/Layout/Breadcrumb";
-import ExperimentalFeatureBanner from "@/components/UI/ExperimentalFeatureBanner";
-import ComingSoon from "@/components/UI/ComingSoon";
-import { isFeatureEnabled } from "@/utils/featureFlags";
+import { Suspense } from 'react';
+import { notFound } from 'next/navigation';
+import InventoryCheckerClient from '../InventoryCheckerClient';
+import InventoryDataStreamer from '../InventoryDataStreamer';
+import Breadcrumb from '@/components/Layout/Breadcrumb';
+import ExperimentalFeatureBanner from '@/components/UI/ExperimentalFeatureBanner';
+import ComingSoon from '@/components/UI/ComingSoon';
+import { isFeatureEnabled } from '@/utils/featureFlags';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 interface InventoryCheckerPageProps {
   params: Promise<{
@@ -15,11 +15,9 @@ interface InventoryCheckerPageProps {
   }>;
 }
 
-export default async function InventoryCheckerPage({
-  params,
-}: InventoryCheckerPageProps) {
+export default async function InventoryCheckerPage({ params }: InventoryCheckerPageProps) {
   // Check if Inventory Calculator feature is enabled
-  if (!isFeatureEnabled("INVENTORY_CALCULATOR")) {
+  if (!isFeatureEnabled('INVENTORY_CALCULATOR')) {
     return <ComingSoon />;
   }
 
@@ -38,11 +36,9 @@ export default async function InventoryCheckerPage({
   return (
     <div className="container mx-auto px-4 py-8">
       <Breadcrumb />
-      <h1 className="text-3xl font-bold mb-6">Inventory Checker</h1>
+      <h1 className="mb-6 text-3xl font-bold">Inventory Checker</h1>
       <ExperimentalFeatureBanner className="mb-6" />
-      <Suspense
-        fallback={<InventoryCheckerClient robloxId={userid} isLoading={true} />}
-      >
+      <Suspense fallback={<InventoryCheckerClient robloxId={userid} isLoading={true} />}>
         <InventoryDataStreamer robloxId={userid} />
       </Suspense>
     </div>

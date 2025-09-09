@@ -1,8 +1,8 @@
 // removed from layout (might be added back in the future)
-"use client";
+'use client';
 
-import Image from "next/image";
-import { useState } from "react";
+import Image from 'next/image';
+import { useState } from 'react';
 
 const KofiWidget = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,9 +15,9 @@ const KofiWidget = () => {
     <>
       <button
         onClick={handleSupportClick}
-        className="fixed bottom-4 left-4 bg-[#5bc0de] hover:bg-[#4ca9c7] text-[#323842] font-medium px-4 py-2 rounded-full shadow-lg transition-all duration-200 flex items-center gap-2 z-[999]"
+        className="fixed bottom-4 left-4 z-[999] flex items-center gap-2 rounded-full bg-[#5bc0de] px-4 py-2 font-medium text-[#323842] shadow-lg transition-all duration-200 hover:bg-[#4ca9c7]"
         style={{
-          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
         }}
       >
         <Image
@@ -32,14 +32,14 @@ const KofiWidget = () => {
 
       {isModalOpen && (
         <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50"
           onClick={() => setIsModalOpen(false)}
         >
           <div
-            className="bg-white rounded-lg p-4 w-[95%] max-w-[500px] max-h-[90vh] shadow-xl"
+            className="max-h-[90vh] w-[95%] max-w-[500px] rounded-lg bg-white p-4 shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex justify-end mb-2">
+            <div className="mb-2 flex justify-end">
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="text-gray-500 hover:text-gray-700"
@@ -64,10 +64,10 @@ const KofiWidget = () => {
               id="kofiframe"
               src="https://ko-fi.com/jailbreakchangelogs/?hidefeed=true&widget=true&embed=true&preview=true"
               style={{
-                border: "none",
-                width: "100%",
-                padding: "4px",
-                background: "#f9f9f9",
+                border: 'none',
+                width: '100%',
+                padding: '4px',
+                background: '#f9f9f9',
               }}
               height="712"
               title="jailbreakchangelogs"

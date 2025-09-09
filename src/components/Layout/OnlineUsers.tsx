@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { PUBLIC_API_URL } from "@/utils/api";
-import Image from "next/image";
-import { Skeleton } from "@mui/material";
-import Link from "next/link";
+import { useState, useEffect } from 'react';
+import { PUBLIC_API_URL } from '@/utils/api';
+import Image from 'next/image';
+import { Skeleton } from '@mui/material';
+import Link from 'next/link';
 
 interface OnlineUser {
   id: string;
@@ -24,7 +24,7 @@ interface OnlineUsersProps {
 
 export default function OnlineUsers({
   max = 4,
-  className = "",
+  className = '',
   initial,
 }: OnlineUsersProps & { initial?: OnlineUser[] }) {
   const [onlineUsers, setOnlineUsers] = useState<OnlineUser[]>(initial || []);
@@ -40,14 +40,14 @@ export default function OnlineUsers({
         const response = await fetch(`${PUBLIC_API_URL}/users/list/online`);
 
         if (!response.ok) {
-          throw new Error("Failed to fetch online users");
+          throw new Error('Failed to fetch online users');
         }
 
         const data = await response.json();
         setOnlineUsers(data);
       } catch (err) {
-        console.error("Error fetching online users:", err);
-        setError("Failed to load online users");
+        console.error('Error fetching online users:', err);
+        setError('Failed to load online users');
       } finally {
         setLoading(false);
       }
@@ -73,8 +73,8 @@ export default function OnlineUsers({
               width={32}
               height={32}
               sx={{
-                bgcolor: "#2E3944",
-                border: "2px solid #212A31",
+                bgcolor: '#2E3944',
+                border: '2px solid #212A31',
               }}
             />
           ))}
@@ -99,10 +99,10 @@ export default function OnlineUsers({
           <Link
             key={user.id}
             href={`/users/${user.id}`}
-            className="relative w-8 h-8 rounded-full overflow-hidden border-2 border-[#212A31] hover:border-[#5865F2] transition-colors cursor-pointer"
+            className="relative h-8 w-8 cursor-pointer overflow-hidden rounded-full border-2 border-[#212A31] transition-colors hover:border-[#5865F2]"
             style={{ zIndex: visibleUsers.length - index }}
           >
-            {user.avatar && user.avatar !== "None" ? (
+            {user.avatar && user.avatar !== 'None' ? (
               <Image
                 src={`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}?size=128`}
                 alt={`${user.username}'s avatar`}
@@ -111,9 +111,9 @@ export default function OnlineUsers({
                 draggable={false}
               />
             ) : (
-              <div className="w-full h-full bg-[#2E3944] flex items-center justify-center">
+              <div className="flex h-full w-full items-center justify-center bg-[#2E3944]">
                 <svg
-                  className="w-4 h-4 text-[#B9BBBE]"
+                  className="h-4 w-4 text-[#B9BBBE]"
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -134,7 +134,7 @@ export default function OnlineUsers({
         ))}
         {hiddenCount > 0 && (
           <div
-            className="relative w-8 h-8 rounded-full bg-[#5865F2] flex items-center justify-center text-white text-xs font-medium border-2 border-[#212A31]"
+            className="relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#212A31] bg-[#5865F2] text-xs font-medium text-white"
             style={{ zIndex: 0 }}
           >
             +{hiddenCount}

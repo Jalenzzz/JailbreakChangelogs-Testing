@@ -29,5 +29,3 @@ jobs:
 
       - name: Prettier check
         run: pnpm format:check || (echo "::error::Prettier found unformatted files. Run 'pnpm format' locally and commit the changes." && exit 1)
-
-

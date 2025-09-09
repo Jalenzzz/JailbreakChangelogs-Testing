@@ -1,6 +1,6 @@
-import { fetchChangelogList, fetchComments } from "@/utils/api";
-import ChangelogDetailsClient from "@/components/Changelogs/ChangelogDetailsClient";
-import { notFound } from "next/navigation";
+import { fetchChangelogList, fetchComments } from '@/utils/api';
+import ChangelogDetailsClient from '@/components/Changelogs/ChangelogDetailsClient';
+import { notFound } from 'next/navigation';
 
 export const revalidate = 120; // Revalidate every 2 minutes
 
@@ -15,7 +15,7 @@ export default async function ChangelogDetailsPage({ params }: Props) {
 
   try {
     const changelogListPromise = fetchChangelogList();
-    const commentsDataPromise = fetchComments("changelog", id);
+    const commentsDataPromise = fetchComments('changelog', id);
 
     // Wait for both promises to resolve
     const [changelogList, commentsData] = await Promise.all([
@@ -28,8 +28,7 @@ export default async function ChangelogDetailsPage({ params }: Props) {
 
     // Find the current changelog in the list, handling leading zeros
     const currentChangelog = sortedChangelogList.find(
-      (changelog) =>
-        changelog.id.toString() === id || changelog.id === parseInt(id),
+      (changelog) => changelog.id.toString() === id || changelog.id === parseInt(id),
     );
 
     if (!currentChangelog) {
@@ -46,7 +45,7 @@ export default async function ChangelogDetailsPage({ params }: Props) {
       />
     );
   } catch (error) {
-    console.error("Error fetching changelog:", error);
+    console.error('Error fetching changelog:', error);
     notFound();
   }
 }

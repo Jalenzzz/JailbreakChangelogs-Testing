@@ -1,33 +1,33 @@
-import type { Config } from "tailwindcss";
+import type { Config } from 'tailwindcss';
 
 const config: Config = {
   content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
       screens: {
-        "3xl": "1920px",
+        '3xl': '1920px',
       },
       colors: {
         primary: {
-          DEFAULT: "#2e3944",
+          DEFAULT: '#2e3944',
         },
         secondary: {
-          DEFAULT: "#212a31",
+          DEFAULT: '#212a31',
         },
         accent: {
-          DEFAULT: "#124E66",
+          DEFAULT: '#124E66',
         },
         text: {
-          primary: "#000000",
-          secondary: "#FFFFFF",
+          primary: '#000000',
+          secondary: '#FFFFFF',
         },
       },
       aspectRatio: {
-        card: "1 / 1",
+        card: '1 / 1',
       },
     },
   },

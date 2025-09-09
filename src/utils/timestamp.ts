@@ -2,7 +2,7 @@
  * Utility functions for formatting Unix timestamps
  */
 
-type DateFormat = "full" | "long" | "medium" | "short" | "time" | "relative";
+type DateFormat = 'full' | 'long' | 'medium' | 'short' | 'time' | 'relative';
 
 interface FormatOptions {
   format?: DateFormat;
@@ -20,11 +20,10 @@ export const formatTimestamp = (
   timestamp: string | number,
   options: FormatOptions = {},
 ): string => {
-  const { format = "long", includeTime = false, relative = false } = options;
+  const { format = 'long', includeTime = false, relative = false } = options;
 
   // Convert timestamp to number and determine if it's in seconds or milliseconds
-  const timestampNum =
-    typeof timestamp === "string" ? parseInt(timestamp) : timestamp;
+  const timestampNum = typeof timestamp === 'string' ? parseInt(timestamp) : timestamp;
   const isMilliseconds = timestampNum > 1000000000000; // If timestamp is after year 2001, assume milliseconds
 
   // Create date object, multiplying by 1000 only if the timestamp is in seconds
@@ -35,19 +34,19 @@ export const formatTimestamp = (
   }
 
   const dateOptions: Intl.DateTimeFormatOptions = {
-    year: "numeric",
-    month: format === "short" ? "numeric" : "long",
-    day: "numeric",
+    year: 'numeric',
+    month: format === 'short' ? 'numeric' : 'long',
+    day: 'numeric',
   };
 
   if (includeTime) {
-    dateOptions.hour = "2-digit";
-    dateOptions.minute = "2-digit";
+    dateOptions.hour = '2-digit';
+    dateOptions.minute = '2-digit';
     // Force 12-hour clock for all timestamp displays
     dateOptions.hour12 = true;
   }
 
-  return date.toLocaleDateString("en-US", dateOptions);
+  return date.toLocaleDateString('en-US', dateOptions);
 };
 
 /**
@@ -75,21 +74,21 @@ const formatRelativeTime = (date: Date): string => {
     const interval = Math.floor(absDiffInSeconds / seconds);
     if (interval >= 1) {
       // For future dates, round up to the next unit if we're close
-      if (isFuture && unit !== "second") {
+      if (isFuture && unit !== 'second') {
         const remainder = absDiffInSeconds % seconds;
         if (remainder > seconds * 0.8) {
           // If we're more than 80% to the next unit
           const nextInterval = Math.ceil(absDiffInSeconds / seconds);
-          return `in ${nextInterval} ${unit}${nextInterval === 1 ? "" : "s"}`;
+          return `in ${nextInterval} ${unit}${nextInterval === 1 ? '' : 's'}`;
         }
       }
       return isFuture
-        ? `in ${interval} ${unit}${interval === 1 ? "" : "s"}`
-        : `${interval} ${unit}${interval === 1 ? "" : "s"} ago`;
+        ? `in ${interval} ${unit}${interval === 1 ? '' : 's'}`
+        : `${interval} ${unit}${interval === 1 ? '' : 's'} ago`;
     }
   }
 
-  return isFuture ? "in a moment" : "just now";
+  return isFuture ? 'in a moment' : 'just now';
 };
 
 /**
@@ -98,7 +97,7 @@ const formatRelativeTime = (date: Date): string => {
  * @returns Formatted date string (e.g., "January 1, 2024")
  */
 export const formatProfileDate = (timestamp: string | number): string => {
-  return formatTimestamp(timestamp, { format: "long" });
+  return formatTimestamp(timestamp, { format: 'long' });
 };
 
 /**
@@ -107,16 +106,15 @@ export const formatProfileDate = (timestamp: string | number): string => {
  * @returns Formatted date string with time (e.g., "January 1, 2024, 3:45 PM")
  */
 export const formatMessageDate = (timestamp: string | number): string => {
-  const timestampNum =
-    typeof timestamp === "string" ? parseInt(timestamp) : timestamp;
+  const timestampNum = typeof timestamp === 'string' ? parseInt(timestamp) : timestamp;
   const isMilliseconds = timestampNum > 1000000000000;
   const date = new Date(isMilliseconds ? timestampNum : timestampNum * 1000);
   return new Intl.DateTimeFormat(undefined, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
     hour12: true,
   }).format(date);
 };
@@ -135,22 +133,21 @@ export const formatRelativeDate = (timestamp: string | number): string =>
  * @returns Formatted date string with full details (e.g., "Monday, January 1, 2024, 3:45 PM")
  */
 export const formatFullDate = (timestamp: string | number): string => {
-  const timestampNum =
-    typeof timestamp === "string" ? parseInt(timestamp) : timestamp;
+  const timestampNum = typeof timestamp === 'string' ? parseInt(timestamp) : timestamp;
   const isMilliseconds = timestampNum > 1000000000000;
   const date = new Date(isMilliseconds ? timestampNum : timestampNum * 1000);
 
   const options: Intl.DateTimeFormatOptions = {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
     hour12: true,
   };
 
-  return date.toLocaleDateString("en-US", options);
+  return date.toLocaleDateString('en-US', options);
 };
 
 /**
@@ -159,14 +156,13 @@ export const formatFullDate = (timestamp: string | number): string => {
  * @returns Formatted date string in short format
  */
 export const formatShortDate = (timestamp: string | number): string => {
-  const timestampNum =
-    typeof timestamp === "string" ? parseInt(timestamp) : timestamp;
+  const timestampNum = typeof timestamp === 'string' ? parseInt(timestamp) : timestamp;
   const isMilliseconds = timestampNum > 1000000000000;
   const date = new Date(isMilliseconds ? timestampNum : timestampNum * 1000);
 
   // Get day, month, and year
   const day = date.getDate();
-  const month = date.toLocaleString("en-US", { month: "short" });
+  const month = date.toLocaleString('en-US', { month: 'short' });
   const year = date.getFullYear();
 
   // Format as "8 Jan 2025"
@@ -179,18 +175,17 @@ export const formatShortDate = (timestamp: string | number): string => {
  * @returns Formatted date string in custom format
  */
 export const formatCustomDate = (timestamp: string | number): string => {
-  const timestampNum =
-    typeof timestamp === "string" ? parseInt(timestamp) : timestamp;
+  const timestampNum = typeof timestamp === 'string' ? parseInt(timestamp) : timestamp;
   const isMilliseconds = timestampNum > 1000000000000;
   const date = new Date(isMilliseconds ? timestampNum : timestampNum * 1000);
 
-  const weekday = date.toLocaleDateString("en-US", { weekday: "long" });
+  const weekday = date.toLocaleDateString('en-US', { weekday: 'long' });
   const day = date.getDate();
-  const month = date.toLocaleDateString("en-US", { month: "long" });
+  const month = date.toLocaleDateString('en-US', { month: 'long' });
   const year = date.getFullYear();
   const hours24 = date.getHours();
-  const minutes = date.getMinutes().toString().padStart(2, "0");
-  const period = hours24 >= 12 ? "PM" : "AM";
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  const period = hours24 >= 12 ? 'PM' : 'AM';
   const hours12 = hours24 % 12 === 0 ? 12 : hours24 % 12;
 
   return `${weekday} ${day} ${month} ${year} at ${hours12}:${minutes} ${period}`;

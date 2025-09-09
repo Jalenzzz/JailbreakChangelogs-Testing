@@ -1,9 +1,9 @@
-import React, { Suspense } from "react";
-import DupeReportHeader from "@/components/Dupes/DupeReportHeader";
-import DupeSearchForm from "@/components/Dupes/DupeSearchForm";
-import { fetchItems, fetchDupes } from "@/utils/api";
-import Loading from "./loading";
-import { Item, DupeResult } from "@/types";
+import React, { Suspense } from 'react';
+import DupeReportHeader from '@/components/Dupes/DupeReportHeader';
+import DupeSearchForm from '@/components/Dupes/DupeSearchForm';
+import { fetchItems, fetchDupes } from '@/utils/api';
+import Loading from './loading';
+import { Item, DupeResult } from '@/types';
 
 export default function DupeCalculatorPage() {
   return (
@@ -11,9 +11,7 @@ export default function DupeCalculatorPage() {
       <DupeReportHeader />
       <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
         <div className="mb-6">
-          <h2 className="text-xl font-semibold text-muted">
-            Check for Duped Items
-          </h2>
+          <h2 className="text-muted text-xl font-semibold">Check for Duped Items</h2>
         </div>
         <Suspense fallback={<Loading />}>
           <DupeSearchFormWrapper />
@@ -27,7 +25,5 @@ async function DupeSearchFormWrapper() {
   const [items, dupes] = await Promise.all([fetchItems(), fetchDupes()]);
   const safeDupes = Array.isArray(dupes) ? (dupes as DupeResult[]) : [];
 
-  return (
-    <DupeSearchForm initialItems={items as Item[]} initialDupes={safeDupes} />
-  );
+  return <DupeSearchForm initialItems={items as Item[]} initialDupes={safeDupes} />;
 }

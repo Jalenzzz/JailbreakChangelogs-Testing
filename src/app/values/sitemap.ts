@@ -1,13 +1,8 @@
-import type { MetadataRoute } from "next";
-import { BASE_API_URL } from "@/utils/api";
-import {
-  getItemImagePath,
-  isVideoItem,
-  getVideoThumbnailPath,
-  getVideoPath,
-} from "@/utils/images";
+import type { MetadataRoute } from 'next';
+import { BASE_API_URL } from '@/utils/api';
+import { getItemImagePath, isVideoItem, getVideoThumbnailPath, getVideoPath } from '@/utils/images';
 
-const BASE_URL = "https://jailbreakchangelogs.xyz";
+const BASE_URL = 'https://jailbreakchangelogs.xyz';
 
 interface Item {
   name: string;
@@ -33,7 +28,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${BASE_URL}/item/${encodeURIComponent(item.type)}/${encodeURIComponent(item.name)}`,
       lastModified: new Date(timestamp).toISOString(),
       priority: 0.8,
-      changeFrequency: "daily",
+      changeFrequency: 'daily',
     };
 
     if (isVideoItem(item.name)) {

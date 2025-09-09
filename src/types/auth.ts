@@ -12,7 +12,7 @@ export interface UserSettings {
 }
 
 export interface UserPresence {
-  status: "Online" | "Offline";
+  status: 'Online' | 'Offline';
   last_updated: number;
 }
 

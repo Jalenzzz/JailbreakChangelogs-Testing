@@ -1,13 +1,13 @@
-import { Metadata } from "next";
-import { BASE_API_URL } from "@/utils/api";
-import { getItemImagePath } from "@/utils/images";
-import { getMaintenanceMetadata } from "@/utils/maintenance";
-import { formatFullValue, formatPrice } from "@/utils/values";
-import { WithContext, FAQPage, BreadcrumbList, ListItem } from "schema-dts";
-import type { ItemDetails } from "@/types/index";
+import { Metadata } from 'next';
+import { BASE_API_URL } from '@/utils/api';
+import { getItemImagePath } from '@/utils/images';
+import { getMaintenanceMetadata } from '@/utils/maintenance';
+import { formatFullValue, formatPrice } from '@/utils/values';
+import { WithContext, FAQPage, BreadcrumbList, ListItem } from 'schema-dts';
+import type { ItemDetails } from '@/types/index';
 
 const FALLBACK_IMAGE =
-  "https://assets.jailbreakchangelogs.xyz/assets/logos/collab/JBCL_X_TC_Logo_Long_Dark_Background.webp";
+  'https://assets.jailbreakchangelogs.xyz/assets/logos/collab/JBCL_X_TC_Logo_Long_Dark_Background.webp';
 
 interface Props {
   params: Promise<{
@@ -16,10 +16,7 @@ interface Props {
   }>;
 }
 
-async function fetchItem(
-  type: string,
-  name: string,
-): Promise<ItemDetails | null> {
+async function fetchItem(type: string, name: string): Promise<ItemDetails | null> {
   const itemName = decodeURIComponent(name);
   const itemType = decodeURIComponent(type);
   try {
@@ -37,9 +34,7 @@ function sanitizeJsonLd(jsonLd: WithContext<FAQPage | BreadcrumbList>): string {
   return JSON.stringify(jsonLd);
 }
 
-async function generateFAQJsonLd(
-  item: ItemDetails | null,
-): Promise<string | null> {
+async function generateFAQJsonLd(item: ItemDetails | null): Promise<string | null> {
   if (!item) return null;
 
   const faqs = [
@@ -50,7 +45,7 @@ async function generateFAQJsonLd(
   ];
 
   // Only add duped value if it's not N/A
-  if (item.duped_value && item.duped_value !== "N/A") {
+  if (item.duped_value && item.duped_value !== 'N/A') {
     faqs.push({
       question: `What is the duped value of ${item.name}?`,
       answer: `The duped value of ${item.name} is ${formatFullValue(item.duped_value)}.`,
@@ -79,9 +74,7 @@ async function generateFAQJsonLd(
     {
       question: `Can ${item.name} be traded?`,
       answer:
-        item.tradable === 1
-          ? `${item.name} can be traded.`
-          : `${item.name} cannot be traded.`,
+        item.tradable === 1 ? `${item.name} can be traded.` : `${item.name} cannot be traded.`,
     },
     {
       question: `What is the demand for ${item.name}?`,
@@ -90,9 +83,9 @@ async function generateFAQJsonLd(
   );
 
   // Add creator info if available and clean up the name
-  if (item.creator && item.creator !== "N/A") {
+  if (item.creator && item.creator !== 'N/A') {
     // Remove the ID in brackets from creator name
-    const cleanCreatorName = item.creator.replace(/\s*\(\d+\)$/, "");
+    const cleanCreatorName = item.creator.replace(/\s*\(\d+\)$/, '');
     faqs.push({
       question: `Who created ${item.name}?`,
       answer: `${item.name} was created by ${cleanCreatorName}.`,
@@ -100,7 +93,7 @@ async function generateFAQJsonLd(
   }
 
   // Add price info if available
-  if (item.price && item.price !== "N/A") {
+  if (item.price && item.price !== 'N/A') {
     faqs.push({
       question: `What is the price of ${item.name}?`,
       answer: `The price of ${item.name} is ${formatPrice(item.price)}.`,
@@ -108,14 +101,14 @@ async function generateFAQJsonLd(
   }
 
   const jsonLd: WithContext<FAQPage> = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
     name: `Frequently Asked Questions about ${item.name}`,
     mainEntity: faqs.map((faq) => ({
-      "@type": "Question",
+      '@type': 'Question',
       name: faq.question,
       acceptedAnswer: {
-        "@type": "Answer",
+        '@type': 'Answer',
         text: faq.answer,
       },
     })),
@@ -133,25 +126,25 @@ async function generateBreadcrumbJsonLd(
 
   const breadcrumbItems: ListItem[] = [
     {
-      "@type": "ListItem",
+      '@type': 'ListItem',
       position: 1,
-      name: "Home",
-      item: "https://jailbreakchangelogs.xyz",
+      name: 'Home',
+      item: 'https://jailbreakchangelogs.xyz',
     },
     {
-      "@type": "ListItem",
+      '@type': 'ListItem',
       position: 2,
-      name: "Values",
-      item: "https://jailbreakchangelogs.xyz/values",
+      name: 'Values',
+      item: 'https://jailbreakchangelogs.xyz/values',
     },
     {
-      "@type": "ListItem",
+      '@type': 'ListItem',
       position: 3,
       name: item.type.charAt(0).toUpperCase() + item.type.slice(1),
-      item: `https://jailbreakchangelogs.xyz/values?filterSort=name-${decodeURIComponent(itemType).replace(/\s+/g, "-")}s`,
+      item: `https://jailbreakchangelogs.xyz/values?filterSort=name-${decodeURIComponent(itemType).replace(/\s+/g, '-')}s`,
     },
     {
-      "@type": "ListItem",
+      '@type': 'ListItem',
       position: 4,
       name: item.name,
       item: `https://jailbreakchangelogs.xyz/item/${itemType}/${itemName}`,
@@ -159,8 +152,8 @@ async function generateBreadcrumbJsonLd(
   ];
 
   const jsonLd: WithContext<BreadcrumbList> = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
     itemListElement: breadcrumbItems,
   };
 
@@ -181,9 +174,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const itemType = decodeURIComponent(type);
     if (!item) {
       return {
-        metadataBase: new URL("https://jailbreakchangelogs.xyz"),
-        title: "Item Not Found",
-        description: "The requested item could not be found.",
+        metadataBase: new URL('https://jailbreakchangelogs.xyz'),
+        title: 'Item Not Found',
+        description: 'The requested item could not be found.',
         alternates: {
           canonical: `/item/${itemType}/${itemName}`,
         },
@@ -192,10 +185,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const imageUrl = getItemImagePath(item.type, item.name, false, true);
     const finalImageUrl = imageUrl || FALLBACK_IMAGE;
     return {
-      metadataBase: new URL("https://jailbreakchangelogs.xyz"),
+      metadataBase: new URL('https://jailbreakchangelogs.xyz'),
       title: `${item.name} (${item.type}) | Roblox Jailbreak`,
       description:
-        item.description && item.description !== "N/A"
+        item.description && item.description !== 'N/A'
           ? `${item.description.slice(0, 155)}...`
           : `View details about ${item.name}, a ${item.type} in Jailbreak.`,
       alternates: {
@@ -204,12 +197,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       openGraph: {
         title: `${item.name} (${item.type}) | Roblox Jailbreak`,
         description:
-          item.description && item.description !== "N/A"
+          item.description && item.description !== 'N/A'
             ? `${item.description.slice(0, 155)}...`
             : `View details about ${item.name}, a ${item.type} in Jailbreak.`,
-        type: "website",
+        type: 'website',
         url: `https://jailbreakchangelogs.xyz/item/${itemType}/${itemName}`,
-        siteName: "Jailbreak Changelogs",
+        siteName: 'Jailbreak Changelogs',
         images: [
           {
             url: finalImageUrl,
@@ -220,10 +213,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         ],
       },
       twitter: {
-        card: "summary_large_image",
+        card: 'summary_large_image',
         title: `${item.name} (${item.type}) | Roblox Jailbreak`,
         description:
-          item.description && item.description !== "N/A"
+          item.description && item.description !== 'N/A'
             ? `${item.description.slice(0, 155)}...`
             : `View details about ${item.name}, a ${item.type} in Jailbreak.`,
         images: [finalImageUrl],
@@ -234,23 +227,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const itemName = decodeURIComponent(name);
     const itemType = decodeURIComponent(type);
     return {
-      metadataBase: new URL("https://jailbreakchangelogs.xyz"),
-      title: "Error",
-      description: "An error occurred while loading the item details.",
+      metadataBase: new URL('https://jailbreakchangelogs.xyz'),
+      title: 'Error',
+      description: 'An error occurred while loading the item details.',
       alternates: {
         canonical: `/item/${itemType}/${itemName}`,
       },
       openGraph: {
-        title: "Error | Jailbreak Changelogs",
-        description: "An error occurred while loading the item details.",
-        type: "website",
+        title: 'Error | Jailbreak Changelogs',
+        description: 'An error occurred while loading the item details.',
+        type: 'website',
         url: `https://jailbreakchangelogs.xyz/item/${itemType}/${itemName}`,
-        siteName: "Jailbreak Changelogs",
+        siteName: 'Jailbreak Changelogs',
       },
       twitter: {
-        card: "summary",
-        title: "Error | Jailbreak Changelogs",
-        description: "An error occurred while loading the item details.",
+        card: 'summary',
+        title: 'Error | Jailbreak Changelogs',
+        description: 'An error occurred while loading the item details.',
       },
     };
   }

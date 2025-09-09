@@ -1,5 +1,5 @@
-import { Metadata } from "next";
-import { getMaintenanceMetadata } from "@/utils/maintenance";
+import { Metadata } from 'next';
+import { getMaintenanceMetadata } from '@/utils/maintenance';
 
 export async function generateMetadata({
   params,
@@ -15,7 +15,7 @@ export async function generateMetadata({
   const { id } = await params;
 
   return {
-    metadataBase: new URL("https://jailbreakchangelogs.xyz"),
+    metadataBase: new URL('https://jailbreakchangelogs.xyz'),
     title: `Value Changelog #${id}`,
     description: `View value changes in this Jailbreak Changelogs Value update.`,
     alternates: {
@@ -24,33 +24,29 @@ export async function generateMetadata({
     openGraph: {
       title: `Value Changelog #${id}`,
       description: `View value changes in this Jailbreak Changelogs Value update.`,
-      type: "website",
+      type: 'website',
       url: `https://jailbreakchangelogs.xyz/values/changelogs/${id}`,
-      siteName: "Jailbreak Changelogs",
+      siteName: 'Jailbreak Changelogs',
       images: [
         {
-          url: "https://assets.jailbreakchangelogs.xyz/assets/logos/collab/JBCL_X_TC_Logo_Long_Dark_Background.webp",
+          url: 'https://assets.jailbreakchangelogs.xyz/assets/logos/collab/JBCL_X_TC_Logo_Long_Dark_Background.webp',
           width: 1200,
           height: 630,
-          alt: "Value Changelog Banner",
+          alt: 'Value Changelog Banner',
         },
       ],
     },
     twitter: {
-      card: "summary_large_image",
+      card: 'summary_large_image',
       title: `Value Changelog #${id}`,
       description: `View value changes in this Jailbreak Changelogs Value update.`,
       images: [
-        "https://assets.jailbreakchangelogs.xyz/assets/logos/collab/JBCL_X_TC_Logo_Long_Dark_Background.webp",
+        'https://assets.jailbreakchangelogs.xyz/assets/logos/collab/JBCL_X_TC_Logo_Long_Dark_Background.webp',
       ],
     },
   };
 }
 
-export default function ValueChangelogLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function ValueChangelogLayout({ children }: { children: React.ReactNode }) {
   return children;
 }

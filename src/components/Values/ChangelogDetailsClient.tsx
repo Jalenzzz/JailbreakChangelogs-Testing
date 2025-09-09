@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   Pagination,
   Chip,
@@ -12,30 +12,25 @@ import {
   Tab,
   Button,
   useMediaQuery,
-} from "@mui/material";
-import { Masonry } from "@mui/lab";
-import { ThemeProvider } from "@mui/material/styles";
-import { darkTheme } from "@/theme/darkTheme";
-import Image from "next/image";
-import { DefaultAvatar } from "@/utils/avatar";
-import Link from "next/link";
-import {
-  getItemImagePath,
-  handleImageError,
-  isVideoItem,
-  getVideoPath,
-} from "@/utils/images";
-import { getItemTypeColor } from "@/utils/badgeColors";
-import { formatMessageDate } from "@/utils/timestamp";
-import { formatFullValue } from "@/utils/values";
-import ReactMarkdown from "react-markdown";
-import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import DisplayAd from "@/components/Ads/DisplayAd";
-import AdRemovalNotice from "@/components/Ads/AdRemovalNotice";
-import { getCurrentUserPremiumType } from "@/hooks/useAuth";
-import ChangelogDetailsHeader from "./ChangelogDetailsHeader";
-import { FaCircleMinus } from "react-icons/fa6";
-import { FaPlusCircle } from "react-icons/fa";
+} from '@mui/material';
+import { Masonry } from '@mui/lab';
+import { ThemeProvider } from '@mui/material/styles';
+import { darkTheme } from '@/theme/darkTheme';
+import Image from 'next/image';
+import { DefaultAvatar } from '@/utils/avatar';
+import Link from 'next/link';
+import { getItemImagePath, handleImageError, isVideoItem, getVideoPath } from '@/utils/images';
+import { getItemTypeColor } from '@/utils/badgeColors';
+import { formatMessageDate } from '@/utils/timestamp';
+import { formatFullValue } from '@/utils/values';
+import ReactMarkdown from 'react-markdown';
+import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import DisplayAd from '@/components/Ads/DisplayAd';
+import AdRemovalNotice from '@/components/Ads/AdRemovalNotice';
+import { getCurrentUserPremiumType } from '@/hooks/useAuth';
+import ChangelogDetailsHeader from './ChangelogDetailsHeader';
+import { FaCircleMinus } from 'react-icons/fa6';
+import { FaPlusCircle } from 'react-icons/fa';
 
 interface Item {
   id: number;
@@ -174,34 +169,31 @@ export default function ChangelogDetailsClient({
   userData,
 }: ChangelogDetailsClientProps) {
   const [page, setPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedType, setSelectedType] = useState<string>("");
-  const [currentUserPremiumType, setCurrentUserPremiumType] =
-    useState<number>(0);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedType, setSelectedType] = useState<string>('');
+  const [currentUserPremiumType, setCurrentUserPremiumType] = useState<number>(0);
   const [premiumStatusLoaded, setPremiumStatusLoaded] = useState(false);
   const [votersOpen, setVotersOpen] = useState(false);
-  const [votersTab, setVotersTab] = useState<"up" | "down">("up");
+  const [votersTab, setVotersTab] = useState<'up' | 'down'>('up');
   const [activeVoters, setActiveVoters] = useState<VoteLists | null>(null);
   const itemsPerPage = 12;
-  const isAtLeast1024 = useMediaQuery("(min-width:1024px)");
-  const isAtLeast1440 = useMediaQuery("(min-width:1440px)");
+  const isAtLeast1024 = useMediaQuery('(min-width:1024px)');
+  const isAtLeast1440 = useMediaQuery('(min-width:1440px)');
 
   // Format boolean-like values (1/0) to True/False
   const formatBooleanLikeValue = (value: unknown): string => {
-    if (value === undefined || value === null) return "N/A";
-    if (value === 1) return "True";
-    if (value === 0) return "False";
-    if (value === true) return "True";
-    if (value === false) return "False";
+    if (value === undefined || value === null) return 'N/A';
+    if (value === 1) return 'True';
+    if (value === 0) return 'False';
+    if (value === true) return 'True';
+    if (value === false) return 'False';
     return String(value);
   };
 
   // Format creator information the same way as CreatorLink component
-  const formatCreatorValue = (
-    value: unknown,
-  ): { display: string; robloxId?: string } => {
-    if (value === undefined || value === null) return { display: "N/A" };
-    if (value === "N/A") return { display: "???" };
+  const formatCreatorValue = (value: unknown): { display: string; robloxId?: string } => {
+    if (value === undefined || value === null) return { display: 'N/A' };
+    if (value === 'N/A') return { display: '???' };
 
     const strValue = String(value);
     const match = strValue.match(/(.*?)\s*\((\d+)\)/);
@@ -212,18 +204,15 @@ export default function ChangelogDetailsClient({
   };
 
   // Decide which field the suggestion_type applies to
-  const doesSuggestionTypeApplyToKey = (
-    suggestionType?: string,
-    changeKey?: string,
-  ) => {
+  const doesSuggestionTypeApplyToKey = (suggestionType?: string, changeKey?: string) => {
     if (!suggestionType || !changeKey) return false;
     const st = suggestionType.toLowerCase();
     const key = changeKey.toLowerCase();
-    if (st === "cash_value") return key === "cash_value";
-    if (st === "duped_value") return key === "duped_value";
-    if (st === "notes") return key === "notes" || key === "note";
-    if (st === "demand") return key === "demand";
-    if (st === "trend") return key === "trend";
+    if (st === 'cash_value') return key === 'cash_value';
+    if (st === 'duped_value') return key === 'duped_value';
+    if (st === 'notes') return key === 'notes' || key === 'note';
+    if (st === 'demand') return key === 'demand';
+    if (st === 'trend') return key === 'trend';
     return false;
   };
 
@@ -237,18 +226,17 @@ export default function ChangelogDetailsClient({
       setCurrentUserPremiumType(getCurrentUserPremiumType());
     };
 
-    window.addEventListener("authStateChanged", handleAuthChange);
+    window.addEventListener('authStateChanged', handleAuthChange);
     return () => {
-      window.removeEventListener("authStateChanged", handleAuthChange);
+      window.removeEventListener('authStateChanged', handleAuthChange);
     };
   }, []);
 
   // Filter changes based on search query and selected type
   const filteredChanges = changelog.change_data
     .filter((change) => {
-      if (searchQuery === "") {
-        const matchesType =
-          selectedType === "" || change.item.type === selectedType;
+      if (searchQuery === '') {
+        const matchesType = selectedType === '' || change.item.type === selectedType;
         return matchesType;
       }
 
@@ -264,8 +252,7 @@ export default function ChangelogDetailsClient({
       if (change.changed_by.toLowerCase().includes(searchLower)) return true;
 
       // Search in reason
-      if (change.reason && change.reason.toLowerCase().includes(searchLower))
-        return true;
+      if (change.reason && change.reason.toLowerCase().includes(searchLower)) return true;
 
       // Search in suggestion reason
       if (
@@ -282,23 +269,21 @@ export default function ChangelogDetailsClient({
         return true;
 
       // Search in changes (old and new values)
-      const hasValueMatch = Object.entries(change.changes.old).some(
-        ([key, oldValue]) => {
-          if (key === "last_updated") return false;
+      const hasValueMatch = Object.entries(change.changes.old).some(([key, oldValue]) => {
+        if (key === 'last_updated') return false;
 
-          const newValue = change.changes.new[key];
-          if (oldValue === newValue) return false;
+        const newValue = change.changes.new[key];
+        if (oldValue === newValue) return false;
 
-          // Convert values to strings for searching
-          const oldValueStr = String(oldValue || "");
-          const newValueStr = String(newValue || "");
+        // Convert values to strings for searching
+        const oldValueStr = String(oldValue || '');
+        const newValueStr = String(newValue || '');
 
-          return (
-            oldValueStr.toLowerCase().includes(searchLower) ||
-            newValueStr.toLowerCase().includes(searchLower)
-          );
-        },
-      );
+        return (
+          oldValueStr.toLowerCase().includes(searchLower) ||
+          newValueStr.toLowerCase().includes(searchLower)
+        );
+      });
 
       if (hasValueMatch) return true;
 
@@ -333,8 +318,7 @@ export default function ChangelogDetailsClient({
       return false;
     })
     .filter((change) => {
-      const matchesType =
-        selectedType === "" || change.item.type === selectedType;
+      const matchesType = selectedType === '' || change.item.type === selectedType;
       return matchesType;
     });
 
@@ -346,22 +330,16 @@ export default function ChangelogDetailsClient({
   // Calculate pagination
   const totalPages = Math.ceil(filteredChanges.length / itemsPerPage);
   const startIndex = (page - 1) * itemsPerPage;
-  const paginatedChanges = filteredChanges.slice(
-    startIndex,
-    startIndex + itemsPerPage,
-  );
+  const paginatedChanges = filteredChanges.slice(startIndex, startIndex + itemsPerPage);
 
-  const handlePageChange = (
-    _event: React.ChangeEvent<unknown>,
-    value: number,
-  ) => {
+  const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const clearSearch = () => {
-    setSearchQuery("");
-    setSelectedType("");
+    setSearchQuery('');
+    setSelectedType('');
     setPage(1);
   };
 
@@ -374,7 +352,7 @@ export default function ChangelogDetailsClient({
 
   if (!changelog) {
     return (
-      <div className="text-center text-white py-8">
+      <div className="py-8 text-center text-white">
         <p>Changelog not found</p>
       </div>
     );
@@ -385,29 +363,29 @@ export default function ChangelogDetailsClient({
       <div className="space-y-6">
         {/* Header with Side-by-Side Layout */}
         <div
-          className={`grid gap-6 ${premiumStatusLoaded && currentUserPremiumType === 0 ? "grid-cols-1 lg:grid-cols-3" : "grid-cols-1"}`}
+          className={`grid gap-6 ${premiumStatusLoaded && currentUserPremiumType === 0 ? 'grid-cols-1 lg:grid-cols-3' : 'grid-cols-1'}`}
         >
           {/* Changelog Info - Takes up full width for premium users, 2/3 for non-premium */}
           <div
-            className={`${premiumStatusLoaded && currentUserPremiumType === 0 ? "lg:col-span-2" : ""}`}
+            className={`${premiumStatusLoaded && currentUserPremiumType === 0 ? 'lg:col-span-2' : ''}`}
           >
             <ChangelogDetailsHeader changelog={changelog} userData={userData} />
           </div>
 
           {/* Ad - Takes up 1/3 of the space, only show for non-premium users */}
           {premiumStatusLoaded && currentUserPremiumType === 0 && (
-            <div className="lg:col-span-1 flex flex-col">
+            <div className="flex flex-col lg:col-span-1">
               <div
-                className="bg-[#1a2127] rounded-lg overflow-hidden border border-[#2E3944] shadow transition-all duration-300 relative h-full"
-                style={{ minHeight: "250px" }}
+                className="relative h-full overflow-hidden rounded-lg border border-[#2E3944] bg-[#1a2127] shadow transition-all duration-300"
+                style={{ minHeight: '250px' }}
               >
-                <span className="absolute top-2 left-2 text-xs text-muted bg-[#212A31] px-2 py-0.5 rounded z-10">
+                <span className="text-muted absolute top-2 left-2 z-10 rounded bg-[#212A31] px-2 py-0.5 text-xs">
                   Advertisement
                 </span>
                 <DisplayAd
                   adSlot="8162235433"
                   adFormat="auto"
-                  style={{ display: "block", width: "100%", height: "100%" }}
+                  style={{ display: 'block', width: '100%', height: '100%' }}
                 />
               </div>
               <AdRemovalNotice className="mt-2" />
@@ -422,13 +400,13 @@ export default function ChangelogDetailsClient({
             placeholder="Search changes..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-lg border border-[#2E3944] bg-[#37424D] px-4 py-2 pl-10 pr-10 text-muted placeholder-[#D3D9D4] focus:border-[#124E66] focus:outline-none"
+            className="text-muted w-full rounded-lg border border-[#2E3944] bg-[#37424D] px-4 py-2 pr-10 pl-10 placeholder-[#D3D9D4] focus:border-[#124E66] focus:outline-none"
           />
-          <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]" />
+          <MagnifyingGlassIcon className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]" />
           {searchQuery && (
             <button
               onClick={clearSearch}
-              className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#FFFFFF] hover:text-muted"
+              className="hover:text-muted absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]"
               aria-label="Clear search"
             >
               <XMarkIcon />
@@ -437,26 +415,22 @@ export default function ChangelogDetailsClient({
         </div>
 
         {/* Filter by Item Type - Chip Style */}
-        <div className="bg-[#212A31] rounded-lg p-4 border border-[#37424D]">
+        <div className="rounded-lg border border-[#37424D] bg-[#212A31] p-4">
           <div className="mb-3">
-            <h3 className="text-sm font-medium text-[#D3D9D4] mb-2">
-              Filter by item type:
-            </h3>
+            <h3 className="mb-2 text-sm font-medium text-[#D3D9D4]">Filter by item type:</h3>
           </div>
           <div className="flex flex-wrap gap-2">
             <Chip
               label="All Types"
-              onClick={() => setSelectedType("")}
-              variant={selectedType === "" ? "filled" : "outlined"}
+              onClick={() => setSelectedType('')}
+              variant={selectedType === '' ? 'filled' : 'outlined'}
               sx={{
-                backgroundColor:
-                  selectedType === "" ? "#5865F2" : "transparent",
-                borderColor: selectedType === "" ? "#5865F2" : "#37424D",
-                color: selectedType === "" ? "#FFFFFF" : "#D3D9D4",
-                "&:hover": {
-                  backgroundColor:
-                    selectedType === "" ? "#4752C4" : "rgba(88, 101, 242, 0.1)",
-                  borderColor: selectedType === "" ? "#4752C4" : "#5865F2",
+                backgroundColor: selectedType === '' ? '#5865F2' : 'transparent',
+                borderColor: selectedType === '' ? '#5865F2' : '#37424D',
+                color: selectedType === '' ? '#FFFFFF' : '#D3D9D4',
+                '&:hover': {
+                  backgroundColor: selectedType === '' ? '#4752C4' : 'rgba(88, 101, 242, 0.1)',
+                  borderColor: selectedType === '' ? '#4752C4' : '#5865F2',
                 },
               }}
             />
@@ -465,24 +439,15 @@ export default function ChangelogDetailsClient({
                 key={type}
                 label={type}
                 onClick={() => setSelectedType(type)}
-                variant={selectedType === type ? "filled" : "outlined"}
+                variant={selectedType === type ? 'filled' : 'outlined'}
                 sx={{
-                  backgroundColor:
-                    selectedType === type
-                      ? getItemTypeColor(type)
-                      : "transparent",
-                  borderColor:
-                    selectedType === type ? getItemTypeColor(type) : "#37424D",
-                  color: "#FFFFFF",
-                  "&:hover": {
+                  backgroundColor: selectedType === type ? getItemTypeColor(type) : 'transparent',
+                  borderColor: selectedType === type ? getItemTypeColor(type) : '#37424D',
+                  color: '#FFFFFF',
+                  '&:hover': {
                     backgroundColor:
-                      selectedType === type
-                        ? getItemTypeColor(type)
-                        : "rgba(88, 101, 242, 0.1)",
-                    borderColor:
-                      selectedType === type
-                        ? getItemTypeColor(type)
-                        : "#5865F2",
+                      selectedType === type ? getItemTypeColor(type) : 'rgba(88, 101, 242, 0.1)',
+                    borderColor: selectedType === type ? getItemTypeColor(type) : '#5865F2',
                   },
                 }}
               />
@@ -493,27 +458,27 @@ export default function ChangelogDetailsClient({
         <div className="mb-2">
           <p className="text-muted">
             {searchQuery
-              ? `Found ${filteredChanges.length} ${filteredChanges.length === 1 ? "change" : "changes"} matching "${displayQuery}"${selectedType ? ` in ${selectedType}` : ""}`
-              : `Total ${selectedType ? `${selectedType} changes` : "Changes"}: ${filteredChanges.length}`}
+              ? `Found ${filteredChanges.length} ${filteredChanges.length === 1 ? 'change' : 'changes'} matching "${displayQuery}"${selectedType ? ` in ${selectedType}` : ''}`
+              : `Total ${selectedType ? `${selectedType} changes` : 'Changes'}: ${filteredChanges.length}`}
           </p>
           {totalPages > 1 && (
-            <div className="flex justify-center mt-4">
+            <div className="mt-4 flex justify-center">
               <Pagination
                 count={totalPages}
                 page={page}
                 onChange={handlePageChange}
                 color="primary"
                 sx={{
-                  "& .MuiPaginationItem-root": {
-                    color: "#D3D9D4",
-                    "&.Mui-selected": {
-                      backgroundColor: "#5865F2",
-                      "&:hover": {
-                        backgroundColor: "#4752C4",
+                  '& .MuiPaginationItem-root': {
+                    color: '#D3D9D4',
+                    '&.Mui-selected': {
+                      backgroundColor: '#5865F2',
+                      '&:hover': {
+                        backgroundColor: '#4752C4',
                       },
                     },
-                    "&:hover": {
-                      backgroundColor: "rgba(88, 101, 242, 0.1)",
+                    '&:hover': {
+                      backgroundColor: 'rgba(88, 101, 242, 0.1)',
                     },
                   },
                 }}
@@ -531,48 +496,48 @@ export default function ChangelogDetailsClient({
           slotProps={{
             paper: {
               sx: {
-                backgroundColor: "#212A31",
-                border: "1px solid #2E3944",
-                borderRadius: "8px",
+                backgroundColor: '#212A31',
+                border: '1px solid #2E3944',
+                borderRadius: '8px',
               },
             },
           }}
         >
           <DialogTitle
             sx={{
-              bgcolor: "#212A31",
-              color: "#FFFFFF",
-              borderBottom: "1px solid #2E3944",
+              bgcolor: '#212A31',
+              color: '#FFFFFF',
+              borderBottom: '1px solid #2E3944',
             }}
           >
             Voters
           </DialogTitle>
-          <DialogContent dividers sx={{ bgcolor: "#212A31" }}>
+          <DialogContent dividers sx={{ bgcolor: '#212A31' }}>
             <Tabs
-              value={votersTab === "up" ? 0 : 1}
-              onChange={(_, val) => setVotersTab(val === 0 ? "up" : "down")}
+              value={votersTab === 'up' ? 0 : 1}
+              onChange={(_, val) => setVotersTab(val === 0 ? 'up' : 'down')}
               textColor="primary"
               indicatorColor="primary"
               variant="fullWidth"
               sx={{
-                "& .MuiTab-root": {
-                  minHeight: "auto",
-                  padding: "8px 12px",
-                  fontSize: "0.875rem",
+                '& .MuiTab-root': {
+                  minHeight: 'auto',
+                  padding: '8px 12px',
+                  fontSize: '0.875rem',
                   fontWeight: 500,
-                  color: "#D3D9D4",
-                  "&.Mui-selected": {
-                    color: "#FFFFFF",
+                  color: '#D3D9D4',
+                  '&.Mui-selected': {
+                    color: '#FFFFFF',
                     fontWeight: 600,
                   },
-                  "&:hover": {
-                    color: "#FFFFFF",
-                    backgroundColor: "rgba(255, 255, 255, 0.05)",
+                  '&:hover': {
+                    color: '#FFFFFF',
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
                   },
                 },
-                "& .MuiTabs-indicator": {
-                  backgroundColor: "#5865F2",
-                  height: "3px",
+                '& .MuiTabs-indicator': {
+                  backgroundColor: '#5865F2',
+                  height: '3px',
                 },
               }}
             >
@@ -580,9 +545,7 @@ export default function ChangelogDetailsClient({
                 label={
                   <div className="flex flex-col items-center">
                     <span className="font-medium">Upvotes</span>
-                    <span className="text-xs text-muted mt-1">
-                      ({activeVoters?.upCount ?? 0})
-                    </span>
+                    <span className="text-muted mt-1 text-xs">({activeVoters?.upCount ?? 0})</span>
                   </div>
                 }
               />
@@ -590,7 +553,7 @@ export default function ChangelogDetailsClient({
                 label={
                   <div className="flex flex-col items-center">
                     <span className="font-medium">Downvotes</span>
-                    <span className="text-xs text-muted mt-1">
+                    <span className="text-muted mt-1 text-xs">
                       ({activeVoters?.downCount ?? 0})
                     </span>
                   </div>
@@ -598,65 +561,57 @@ export default function ChangelogDetailsClient({
               />
             </Tabs>
             <div className="mt-3 space-y-2">
-              {(votersTab === "up"
-                ? activeVoters?.up || []
-                : activeVoters?.down || []
-              ).length === 0 ? (
-                <div className="text-sm text-muted">No voters to display.</div>
+              {(votersTab === 'up' ? activeVoters?.up || [] : activeVoters?.down || []).length ===
+              0 ? (
+                <div className="text-muted text-sm">No voters to display.</div>
               ) : (
-                (votersTab === "up"
-                  ? activeVoters?.up || []
-                  : activeVoters?.down || []
-                ).map((voter: VoteRecord) => (
-                  <div key={voter.id} className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full overflow-hidden bg-[#2E3944] relative flex-shrink-0">
-                      <DefaultAvatar />
-                      {voter.avatar_hash && (
-                        <Image
-                          src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(`https://cdn.discordapp.com/avatars/${voter.id}/${voter.avatar_hash}?size=128`)}`}
-                          alt={voter.name}
-                          fill
-                          className="object-cover"
-                          onError={(e) => {
-                            (
-                              e as unknown as { currentTarget: HTMLElement }
-                            ).currentTarget.style.display = "none";
-                          }}
-                        />
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-sm text-white">
-                        <a
-                          href={`https://discord.com/users/${voter.id}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-400 hover:text-blue-300 hover:underline"
-                        >
-                          {voter.name}
-                        </a>
-                      </div>
-                      <div className="text-xs text-muted">
-                        {new Date(voter.timestamp * 1000).toLocaleDateString(
-                          "en-US",
-                          {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          },
+                (votersTab === 'up' ? activeVoters?.up || [] : activeVoters?.down || []).map(
+                  (voter: VoteRecord) => (
+                    <div key={voter.id} className="flex items-center gap-2">
+                      <div className="relative h-6 w-6 flex-shrink-0 overflow-hidden rounded-full bg-[#2E3944]">
+                        <DefaultAvatar />
+                        {voter.avatar_hash && (
+                          <Image
+                            src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(`https://cdn.discordapp.com/avatars/${voter.id}/${voter.avatar_hash}?size=128`)}`}
+                            alt={voter.name}
+                            fill
+                            className="object-cover"
+                            onError={(e) => {
+                              (
+                                e as unknown as { currentTarget: HTMLElement }
+                              ).currentTarget.style.display = 'none';
+                            }}
+                          />
                         )}
                       </div>
+                      <div className="flex-1">
+                        <div className="text-sm text-white">
+                          <a
+                            href={`https://discord.com/users/${voter.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-400 hover:text-blue-300 hover:underline"
+                          >
+                            {voter.name}
+                          </a>
+                        </div>
+                        <div className="text-muted text-xs">
+                          {new Date(voter.timestamp * 1000).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                ))
+                  ),
+                )
               )}
             </div>
           </DialogContent>
-          <DialogActions
-            sx={{ bgcolor: "#212A31", borderTop: "1px solid #2E3944" }}
-          >
+          <DialogActions sx={{ bgcolor: '#212A31', borderTop: '1px solid #2E3944' }}>
             <Button onClick={() => setVotersOpen(false)} variant="contained">
               Close
             </Button>
@@ -668,60 +623,56 @@ export default function ChangelogDetailsClient({
           <Masonry
             columns={isAtLeast1440 ? 3 : isAtLeast1024 ? 2 : 1}
             spacing={2}
-            sx={{ mx: "auto", maxWidth: { xs: 640, sm: "none" } }}
+            sx={{ mx: 'auto', maxWidth: { xs: 640, sm: 'none' } }}
           >
             {paginatedChanges.map((change) => (
               <div
                 key={change.change_id}
-                className="bg-[#212A31] rounded-lg p-4 border border-[#37424D] relative"
+                className="relative rounded-lg border border-[#37424D] bg-[#212A31] p-4"
               >
                 {/* Suggestion # Pill - Responsive placement */}
                 {change.suggestion && (
-                  <div className="mb-2 lg:mb-0 lg:absolute lg:top-3 lg:right-3">
+                  <div className="mb-2 lg:absolute lg:top-3 lg:right-3 lg:mb-0">
                     <Chip
                       label={`Suggestion #${change.suggestion.id}`}
                       size="small"
                       sx={{
-                        backgroundColor: "#5865F2",
-                        color: "white",
-                        fontSize: "0.75rem",
-                        "& .MuiChip-label": { color: "white", fontWeight: 700 },
+                        backgroundColor: '#5865F2',
+                        color: 'white',
+                        fontSize: '0.75rem',
+                        '& .MuiChip-label': { color: 'white', fontWeight: 700 },
                       }}
                     />
                   </div>
                 )}
 
                 {/* Item Header */}
-                <div className="flex flex-wrap items-center gap-3 mb-4">
-                  <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-[#37424D]">
+                <div className="mb-4 flex flex-wrap items-center gap-3">
+                  <div className="relative h-16 w-16 overflow-hidden rounded-lg bg-[#37424D]">
                     {isVideoItem(change.item.name) ? (
                       <video
                         src={getVideoPath(change.item.type, change.item.name)}
-                        className="w-full h-full object-cover"
+                        className="h-full w-full object-cover"
                         muted
                         loop
                         onError={() => {}}
                       />
                     ) : (
                       <Image
-                        src={getItemImagePath(
-                          change.item.type,
-                          change.item.name,
-                          true,
-                        )}
+                        src={getItemImagePath(change.item.type, change.item.name, true)}
                         alt={change.item.name}
                         width={64}
                         height={64}
-                        className="w-full h-full object-cover"
+                        className="h-full w-full object-cover"
                         onError={handleImageError}
                       />
                     )}
                   </div>
-                  <div className="flex-1 min-w-0">
+                  <div className="min-w-0 flex-1">
                     <div className="mb-1">
                       <Link
                         href={`/item/${change.item.type}/${encodeURIComponent(change.item.name)}`}
-                        className="text-white font-semibold hover:text-[#40C0E7] transition-colors break-words whitespace-normal block lg:pr-24"
+                        className="block font-semibold break-words whitespace-normal text-white transition-colors hover:text-[#40C0E7] lg:pr-24"
                       >
                         {change.item.name}
                       </Link>
@@ -730,9 +681,9 @@ export default function ChangelogDetailsClient({
                         size="small"
                         sx={{
                           backgroundColor: getItemTypeColor(change.item.type),
-                          color: "white",
-                          fontSize: "0.75rem",
-                          marginTop: "4px",
+                          color: 'white',
+                          fontSize: '0.75rem',
+                          marginTop: '4px',
                         }}
                       />
                     </div>
@@ -741,12 +692,12 @@ export default function ChangelogDetailsClient({
 
                 {/* Suggestion Data - Show First if Exists */}
                 {change.suggestion && (
-                  <div className="mt-4 p-3 bg-[#5865F2]/10 border border-[#5865F2]/20 rounded-lg relative">
+                  <div className="relative mt-4 rounded-lg border border-[#5865F2]/20 bg-[#5865F2]/10 p-3">
                     {/* Header: avatar, name, type chip, and votes */}
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2 mb-2">
-                      <div className="flex items-center gap-2 min-w-0">
+                    <div className="mb-2 flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+                      <div className="flex min-w-0 items-center gap-2">
                         {change.suggestion.metadata?.avatar_hash && (
-                          <div className="w-6 h-6 rounded-full overflow-hidden bg-[#2E3944] relative flex-shrink-0">
+                          <div className="relative h-6 w-6 flex-shrink-0 overflow-hidden rounded-full bg-[#2E3944]">
                             <DefaultAvatar />
                             <Image
                               src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(`https://cdn.discordapp.com/avatars/${change.suggestion.user_id}/${change.suggestion.metadata.avatar_hash}?size=128`)}`}
@@ -756,13 +707,13 @@ export default function ChangelogDetailsClient({
                               onError={(e) => {
                                 (
                                   e as unknown as { currentTarget: HTMLElement }
-                                ).currentTarget.style.display = "none";
+                                ).currentTarget.style.display = 'none';
                               }}
                             />
                           </div>
                         )}
-                        <span className="text-sm font-medium text-white truncate">
-                          Suggested by{" "}
+                        <span className="truncate text-sm font-medium text-white">
+                          Suggested by{' '}
                           <a
                             href={`https://discord.com/users/${change.suggestion.user_id}`}
                             target="_blank"
@@ -774,62 +725,46 @@ export default function ChangelogDetailsClient({
                         </span>
                       </div>
                       <div className="flex items-center justify-center text-xs">
-                        <div className="flex items-center justify-center rounded-full border border-gray-600 overflow-hidden">
+                        <div className="flex items-center justify-center overflow-hidden rounded-full border border-gray-600">
                           <button
                             type="button"
                             onClick={() => {
-                              const voters =
-                                change.suggestion?.vote_data.voters || [];
-                              const up = voters.filter(
-                                (v) => v.vote_type === "upvote",
-                              );
-                              const down = voters.filter(
-                                (v) => v.vote_type === "downvote",
-                              );
-                              const upCount =
-                                change.suggestion?.vote_data.upvotes || 0;
-                              const downCount =
-                                change.suggestion?.vote_data.downvotes || 0;
+                              const voters = change.suggestion?.vote_data.voters || [];
+                              const up = voters.filter((v) => v.vote_type === 'upvote');
+                              const down = voters.filter((v) => v.vote_type === 'downvote');
+                              const upCount = change.suggestion?.vote_data.upvotes || 0;
+                              const downCount = change.suggestion?.vote_data.downvotes || 0;
                               if (up.length === 0 && down.length === 0) return;
                               setActiveVoters({ up, down, upCount, downCount });
-                              setVotersTab("up");
+                              setVotersTab('up');
                               setVotersOpen(true);
                             }}
-                            className="flex items-center justify-center gap-1 bg-green-500/10 border-r border-gray-600 px-2 py-1 hover:bg-green-500/20 focus:outline-none"
+                            className="flex items-center justify-center gap-1 border-r border-gray-600 bg-green-500/10 px-2 py-1 hover:bg-green-500/20 focus:outline-none"
                             aria-label="View voters"
                           >
-                            <span className="text-green-400 font-medium">
-                              ↑
-                            </span>
-                            <span className="text-green-400 font-semibold">
+                            <span className="font-medium text-green-400">↑</span>
+                            <span className="font-semibold text-green-400">
                               {change.suggestion.vote_data.upvotes}
                             </span>
                           </button>
                           <button
                             type="button"
                             onClick={() => {
-                              const voters =
-                                change.suggestion?.vote_data.voters || [];
-                              const up = voters.filter(
-                                (v) => v.vote_type === "upvote",
-                              );
-                              const down = voters.filter(
-                                (v) => v.vote_type === "downvote",
-                              );
-                              const upCount =
-                                change.suggestion?.vote_data.upvotes || 0;
-                              const downCount =
-                                change.suggestion?.vote_data.downvotes || 0;
+                              const voters = change.suggestion?.vote_data.voters || [];
+                              const up = voters.filter((v) => v.vote_type === 'upvote');
+                              const down = voters.filter((v) => v.vote_type === 'downvote');
+                              const upCount = change.suggestion?.vote_data.upvotes || 0;
+                              const downCount = change.suggestion?.vote_data.downvotes || 0;
                               if (up.length === 0 && down.length === 0) return;
                               setActiveVoters({ up, down, upCount, downCount });
-                              setVotersTab("down");
+                              setVotersTab('down');
                               setVotersOpen(true);
                             }}
                             className="flex items-center justify-center gap-1 bg-red-500/10 px-2 py-1 hover:bg-red-500/20 focus:outline-none"
                             aria-label="View voters"
                           >
-                            <span className="text-red-400 font-medium">↓</span>
-                            <span className="text-red-400 font-semibold">
+                            <span className="font-medium text-red-400">↓</span>
+                            <span className="font-semibold text-red-400">
                               {change.suggestion.vote_data.downvotes}
                             </span>
                           </button>
@@ -838,189 +773,161 @@ export default function ChangelogDetailsClient({
                     </div>
 
                     {/* Reason (full) */}
-                    <div className="text-sm text-[#D3D9D4] mb-2">
+                    <div className="mb-2 text-sm text-[#D3D9D4]">
                       <ReactMarkdown
                         components={{
-                          strong: (props) => (
-                            <strong
-                              className="font-bold text-white"
-                              {...props}
-                            />
-                          ),
-                          p: (props) => (
-                            <div className="whitespace-pre-line" {...props} />
-                          ),
+                          strong: (props) => <strong className="font-bold text-white" {...props} />,
+                          p: (props) => <div className="whitespace-pre-line" {...props} />,
                         }}
                       >
-                        {change.suggestion.data.reason?.replace(
-                          /(Common Trades?:?)/gi,
-                          "**$1**",
-                        )}
+                        {change.suggestion.data.reason?.replace(/(Common Trades?:?)/gi, '**$1**')}
                       </ReactMarkdown>
                     </div>
 
                     <div className="text-xs text-[#D3D9D4]">
-                      Suggested on{" "}
-                      {formatMessageDate(change.suggestion.created_at * 1000)}
+                      Suggested on {formatMessageDate(change.suggestion.created_at * 1000)}
                     </div>
                   </div>
                 )}
 
                 {/* Changes */}
-                <div className="space-y-4 mb-4 mt-6">
-                  {Object.entries(change.changes.old).map(
-                    ([key, oldValue], index) => {
-                      if (key === "last_updated") return null;
-                      const newValue = change.changes.new[key];
-                      // Hide rows where both current (old) and suggested (new) are effectively N/A
-                      // Treat null/undefined and the literal string "N/A" (case-insensitive) as N/A
-                      const isNA = (v: unknown) =>
-                        v == null ||
-                        (typeof v === "string" &&
-                          v.trim().toUpperCase() === "N/A");
-                      if (isNA(oldValue) && isNA(newValue)) return null;
-                      if (oldValue === newValue) return null;
+                <div className="mt-6 mb-4 space-y-4">
+                  {Object.entries(change.changes.old).map(([key, oldValue], index) => {
+                    if (key === 'last_updated') return null;
+                    const newValue = change.changes.new[key];
+                    // Hide rows where both current (old) and suggested (new) are effectively N/A
+                    // Treat null/undefined and the literal string "N/A" (case-insensitive) as N/A
+                    const isNA = (v: unknown) =>
+                      v == null || (typeof v === 'string' && v.trim().toUpperCase() === 'N/A');
+                    if (isNA(oldValue) && isNA(newValue)) return null;
+                    if (oldValue === newValue) return null;
 
-                      return (
-                        <div key={key}>
-                          <div className="flex items-start gap-2">
-                            <div className="flex-1 min-w-0">
-                              <div className="text-sm text-[#D3D9D4] capitalize">
-                                {doesSuggestionTypeApplyToKey(
-                                  change.suggestion?.metadata?.suggestion_type,
-                                  key,
-                                ) ? (
-                                  <Chip
-                                    label={(() => {
-                                      const text =
-                                        change.suggestion!.metadata!.suggestion_type!.replace(
-                                          /_/g,
-                                          " ",
-                                        );
-                                      return text
-                                        .split(" ")
-                                        .map(
-                                          (w) =>
-                                            w.charAt(0).toUpperCase() +
-                                            w.slice(1),
-                                        )
-                                        .join(" ");
-                                    })()}
-                                    size="small"
-                                    sx={{
-                                      backgroundColor: "#124E66",
-                                      color: "#FFFFFF",
-                                      "& .MuiChip-label": {
-                                        color: "#FFFFFF",
-                                        fontWeight: 600,
-                                      },
-                                    }}
-                                  />
-                                ) : (
-                                  <>{key.replace(/_/g, " ")}:</>
-                                )}
-                              </div>
-                              <div className="grid grid-cols-2 gap-4 mt-1">
-                                <div className="min-w-0">
-                                  <div className="text-xs text-[#9CA3AF] mb-1 font-medium flex items-center gap-1">
-                                    <FaCircleMinus className="text-red-400 w-3 h-3" />
-                                    OLD VALUE
-                                  </div>
-                                  <div
-                                    className="text-sm text-[#D3D9D4] line-through break-words overflow-hidden"
-                                    style={{
-                                      wordBreak: "normal",
-                                      overflowWrap: "anywhere",
-                                    }}
-                                  >
-                                    {key === "cash_value" ||
-                                    key === "duped_value"
-                                      ? formatFullValue(oldValue as string)
-                                      : key === "creator"
-                                        ? (() => {
-                                            const creatorInfo =
-                                              formatCreatorValue(oldValue);
-                                            if (creatorInfo.robloxId) {
-                                              return (
-                                                <a
-                                                  href={`https://www.roblox.com/users/${creatorInfo.robloxId}/profile`}
-                                                  target="_blank"
-                                                  rel="noopener noreferrer"
-                                                  className="text-blue-400 hover:text-blue-300 hover:underline transition-colors"
-                                                >
-                                                  {creatorInfo.display}
-                                                </a>
-                                              );
-                                            }
-                                            return creatorInfo.display;
-                                          })()
-                                        : formatBooleanLikeValue(oldValue)}
-                                  </div>
+                    return (
+                      <div key={key}>
+                        <div className="flex items-start gap-2">
+                          <div className="min-w-0 flex-1">
+                            <div className="text-sm text-[#D3D9D4] capitalize">
+                              {doesSuggestionTypeApplyToKey(
+                                change.suggestion?.metadata?.suggestion_type,
+                                key,
+                              ) ? (
+                                <Chip
+                                  label={(() => {
+                                    const text =
+                                      change.suggestion!.metadata!.suggestion_type!.replace(
+                                        /_/g,
+                                        ' ',
+                                      );
+                                    return text
+                                      .split(' ')
+                                      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                                      .join(' ');
+                                  })()}
+                                  size="small"
+                                  sx={{
+                                    backgroundColor: '#124E66',
+                                    color: '#FFFFFF',
+                                    '& .MuiChip-label': {
+                                      color: '#FFFFFF',
+                                      fontWeight: 600,
+                                    },
+                                  }}
+                                />
+                              ) : (
+                                <>{key.replace(/_/g, ' ')}:</>
+                              )}
+                            </div>
+                            <div className="mt-1 grid grid-cols-2 gap-4">
+                              <div className="min-w-0">
+                                <div className="mb-1 flex items-center gap-1 text-xs font-medium text-[#9CA3AF]">
+                                  <FaCircleMinus className="h-3 w-3 text-red-400" />
+                                  OLD VALUE
                                 </div>
-                                <div className="min-w-0">
-                                  <div className="text-xs text-[#9CA3AF] mb-1 font-medium flex items-center gap-1">
-                                    <FaPlusCircle className="text-green-400 w-3 h-3" />
-                                    NEW VALUE
-                                  </div>
-                                  <div
-                                    className="text-sm text-white font-medium break-words overflow-hidden"
-                                    style={{
-                                      wordBreak: "normal",
-                                      overflowWrap: "anywhere",
-                                    }}
-                                  >
-                                    {key === "cash_value" ||
-                                    key === "duped_value"
-                                      ? formatFullValue(newValue as string)
-                                      : key === "creator"
-                                        ? (() => {
-                                            const creatorInfo =
-                                              formatCreatorValue(newValue);
-                                            if (creatorInfo.robloxId) {
-                                              return (
-                                                <a
-                                                  href={`https://www.roblox.com/users/${creatorInfo.robloxId}/profile`}
-                                                  target="_blank"
-                                                  rel="noopener noreferrer"
-                                                  className="text-blue-400 hover:text-blue-300 hover:underline transition-colors"
-                                                >
-                                                  {creatorInfo.display}
-                                                </a>
-                                              );
-                                            }
-                                            return creatorInfo.display;
-                                          })()
-                                        : formatBooleanLikeValue(newValue)}
-                                  </div>
+                                <div
+                                  className="overflow-hidden text-sm break-words text-[#D3D9D4] line-through"
+                                  style={{
+                                    wordBreak: 'normal',
+                                    overflowWrap: 'anywhere',
+                                  }}
+                                >
+                                  {key === 'cash_value' || key === 'duped_value'
+                                    ? formatFullValue(oldValue as string)
+                                    : key === 'creator'
+                                      ? (() => {
+                                          const creatorInfo = formatCreatorValue(oldValue);
+                                          if (creatorInfo.robloxId) {
+                                            return (
+                                              <a
+                                                href={`https://www.roblox.com/users/${creatorInfo.robloxId}/profile`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-blue-400 transition-colors hover:text-blue-300 hover:underline"
+                                              >
+                                                {creatorInfo.display}
+                                              </a>
+                                            );
+                                          }
+                                          return creatorInfo.display;
+                                        })()
+                                      : formatBooleanLikeValue(oldValue)}
+                                </div>
+                              </div>
+                              <div className="min-w-0">
+                                <div className="mb-1 flex items-center gap-1 text-xs font-medium text-[#9CA3AF]">
+                                  <FaPlusCircle className="h-3 w-3 text-green-400" />
+                                  NEW VALUE
+                                </div>
+                                <div
+                                  className="overflow-hidden text-sm font-medium break-words text-white"
+                                  style={{
+                                    wordBreak: 'normal',
+                                    overflowWrap: 'anywhere',
+                                  }}
+                                >
+                                  {key === 'cash_value' || key === 'duped_value'
+                                    ? formatFullValue(newValue as string)
+                                    : key === 'creator'
+                                      ? (() => {
+                                          const creatorInfo = formatCreatorValue(newValue);
+                                          if (creatorInfo.robloxId) {
+                                            return (
+                                              <a
+                                                href={`https://www.roblox.com/users/${creatorInfo.robloxId}/profile`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-blue-400 transition-colors hover:text-blue-300 hover:underline"
+                                              >
+                                                {creatorInfo.display}
+                                              </a>
+                                            );
+                                          }
+                                          return creatorInfo.display;
+                                        })()
+                                      : formatBooleanLikeValue(newValue)}
                                 </div>
                               </div>
                             </div>
                           </div>
-                          {index <
-                            Object.entries(change.changes.old).filter(
-                              ([k, v]) => {
-                                if (k === "last_updated") return false;
-                                const nv = change.changes.new[k];
-                                const isNA = (val: unknown) =>
-                                  val == null ||
-                                  (typeof val === "string" &&
-                                    val.trim().toUpperCase() === "N/A");
-                                if (isNA(v) && isNA(nv)) return false;
-                                return v !== nv;
-                              },
-                            ).length -
-                              1 && (
-                            <div className="border-t border-[#2E3944] mt-4 pt-4"></div>
-                          )}
                         </div>
-                      );
-                    },
-                  )}
+                        {index <
+                          Object.entries(change.changes.old).filter(([k, v]) => {
+                            if (k === 'last_updated') return false;
+                            const nv = change.changes.new[k];
+                            const isNA = (val: unknown) =>
+                              val == null ||
+                              (typeof val === 'string' && val.trim().toUpperCase() === 'N/A');
+                            if (isNA(v) && isNA(nv)) return false;
+                            return v !== nv;
+                          }).length -
+                            1 && <div className="mt-4 border-t border-[#2E3944] pt-4"></div>}
+                      </div>
+                    );
+                  })}
                 </div>
 
                 {/* Footer */}
-                <div className="flex items-center gap-2 pt-4 border-t border-[#37424D]">
-                  <div className="w-6 h-6 rounded-full overflow-hidden">
+                <div className="flex items-center gap-2 border-t border-[#37424D] pt-4">
+                  <div className="h-6 w-6 overflow-hidden rounded-full">
                     <Image
                       src={
                         userData[change.changed_by_id]?.avatar
@@ -1030,17 +937,17 @@ export default function ChangelogDetailsClient({
                       alt={change.changed_by}
                       width={24}
                       height={24}
-                      className="w-full h-full object-cover"
+                      className="h-full w-full object-cover"
                     />
                   </div>
                   <span className="text-sm text-[#D3D9D4]">
-                    Changed by{" "}
+                    Changed by{' '}
                     <Link
                       href={`/users/${change.changed_by_id}`}
                       className="text-[#40C0E7] hover:text-[#2B9CD9] hover:underline"
                     >
                       {change.changed_by}
-                    </Link>{" "}
+                    </Link>{' '}
                     on {formatMessageDate(change.created_at * 1000)}
                   </span>
                 </div>
@@ -1048,21 +955,18 @@ export default function ChangelogDetailsClient({
             ))}
           </Masonry>
         ) : (
-          <div className="text-center text-white py-8">
-            <p className="text-lg font-medium mb-2">No changes found</p>
-            <p className="text-[#D3D9D4] text-sm">
+          <div className="py-8 text-center text-white">
+            <p className="mb-2 text-lg font-medium">No changes found</p>
+            <p className="text-sm text-[#D3D9D4]">
               {searchQuery && `No changes match "${displayQuery}"`}
-              {searchQuery && selectedType && " and "}
-              {selectedType &&
-                `No changes found for item type "${selectedType}"`}
-              {!searchQuery &&
-                !selectedType &&
-                "No changes available in this changelog"}
+              {searchQuery && selectedType && ' and '}
+              {selectedType && `No changes found for item type "${selectedType}"`}
+              {!searchQuery && !selectedType && 'No changes available in this changelog'}
             </p>
             {(searchQuery || selectedType) && (
               <button
                 onClick={clearSearch}
-                className="mt-3 px-4 py-2 bg-[#5865F2] hover:bg-[#4752C4] text-white rounded-lg transition-colors duration-200"
+                className="mt-3 rounded-lg bg-[#5865F2] px-4 py-2 text-white transition-colors duration-200 hover:bg-[#4752C4]"
               >
                 Clear filters
               </button>
@@ -1079,16 +983,16 @@ export default function ChangelogDetailsClient({
               onChange={handlePageChange}
               color="primary"
               sx={{
-                "& .MuiPaginationItem-root": {
-                  color: "#D3D9D4",
-                  "&.Mui-selected": {
-                    backgroundColor: "#5865F2",
-                    "&:hover": {
-                      backgroundColor: "#4752C4",
+                '& .MuiPaginationItem-root': {
+                  color: '#D3D9D4',
+                  '&.Mui-selected': {
+                    backgroundColor: '#5865F2',
+                    '&:hover': {
+                      backgroundColor: '#4752C4',
                     },
                   },
-                  "&:hover": {
-                    backgroundColor: "rgba(88, 101, 242, 0.1)",
+                  '&:hover': {
+                    backgroundColor: 'rgba(88, 101, 242, 0.1)',
                   },
                 },
               }}

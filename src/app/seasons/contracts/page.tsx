@@ -1,10 +1,10 @@
-import React from "react";
-import Link from "next/link";
-import Breadcrumb from "@/components/Layout/Breadcrumb";
-import SeasonContractsClient from "@/components/Seasons/SeasonContractsClient";
-import WeeklyContractsCountdown from "@/components/Seasons/WeeklyContractsCountdown";
-import { fetchLatestSeason } from "@/utils/api";
-import { fetchSeasonContracts } from "@/utils/api";
+import React from 'react';
+import Link from 'next/link';
+import Breadcrumb from '@/components/Layout/Breadcrumb';
+import SeasonContractsClient from '@/components/Seasons/SeasonContractsClient';
+import WeeklyContractsCountdown from '@/components/Seasons/WeeklyContractsCountdown';
+import { fetchLatestSeason } from '@/utils/api';
+import { fetchSeasonContracts } from '@/utils/api';
 
 export const revalidate = 300; // Revalidate every 5 minutes
 
@@ -14,25 +14,17 @@ export default async function SeasonContractsPage() {
     fetchLatestSeason(),
   ]);
 
-  if (
-    !contractsData ||
-    !contractsData.data ||
-    contractsData.data.length === 0
-  ) {
+  if (!contractsData || !contractsData.data || contractsData.data.length === 0) {
     return (
-      <div className="min-h-screen bg-[#2E3944] flex items-center justify-center">
-        <div className="text-white text-xl">
-          No contracts available right now.
-        </div>
+      <div className="flex min-h-screen items-center justify-center bg-[#2E3944]">
+        <div className="text-xl text-white">No contracts available right now.</div>
       </div>
     );
   }
 
   // If no season data, or season is over, do not show contracts
   const now = Math.floor(Date.now() / 1000);
-  const seasonEnded = latestSeason?.end_date
-    ? now >= latestSeason.end_date
-    : false;
+  const seasonEnded = latestSeason?.end_date ? now >= latestSeason.end_date : false;
 
   return (
     <div className="min-h-screen bg-[#2E3944]">
@@ -40,15 +32,15 @@ export default async function SeasonContractsPage() {
         <Breadcrumb />
 
         <div className="mt-8">
-          <div className="flex items-center gap-3 mb-4">
+          <div className="mb-4 flex items-center gap-3">
             <h1 className="text-4xl font-bold text-white">Weekly Contracts</h1>
             {!seasonEnded && (
-              <span className="text-[12px] uppercase font-semibold text-white bg-[#5865F2] px-2 py-1 rounded">
+              <span className="rounded bg-[#5865F2] px-2 py-1 text-[12px] font-semibold text-white uppercase">
                 New
               </span>
             )}
           </div>
-          <p className="text-gray-300 text-lg mb-8">
+          <p className="mb-8 text-lg text-gray-300">
             Quickly check your current weekly contracts for Roblox Jailbreak.
           </p>
           {!seasonEnded && (
@@ -83,21 +75,19 @@ export default async function SeasonContractsPage() {
                 </svg>
               </div>
               <div className="flex-1">
-                <div className="inline-flex items-center gap-2 mb-2">
-                  <span className="text-[10px] tracking-wider uppercase font-semibold text-white/90 bg-[#2E3944] px-2 py-1 rounded">
+                <div className="mb-2 inline-flex items-center gap-2">
+                  <span className="rounded bg-[#2E3944] px-2 py-1 text-[10px] font-semibold tracking-wider text-white/90 uppercase">
                     Season Ended
                   </span>
                 </div>
-                <h2 className="text-xl font-bold text-white mb-1">
-                  Season has ended
-                </h2>
-                <p className="text-gray-300 mb-4">
+                <h2 className="mb-1 text-xl font-bold text-white">Season has ended</h2>
+                <p className="mb-4 text-gray-300">
                   Weekly contracts are unavailable. Check back next season.
                 </p>
                 <div className="flex flex-wrap gap-3">
                   <Link
                     href="/seasons"
-                    className="px-4 py-2 rounded bg-[#5865F2] text-white hover:bg-[#4752C4] transition-colors"
+                    className="rounded bg-[#5865F2] px-4 py-2 text-white transition-colors hover:bg-[#4752C4]"
                   >
                     View Season Summary
                   </Link>

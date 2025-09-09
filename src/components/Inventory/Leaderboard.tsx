@@ -1,12 +1,9 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
-import {
-  fetchMissingRobloxData,
-  fetchOriginalOwnerAvatars,
-} from "@/app/inventories/actions";
-import CopyButton from "@/app/inventories/CopyButton";
+import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
+import { fetchMissingRobloxData, fetchOriginalOwnerAvatars } from '@/app/inventories/actions';
+import CopyButton from '@/app/inventories/CopyButton';
 
 interface LeaderboardUser {
   user_id: string;
@@ -23,12 +20,8 @@ interface LeaderboardProps {
 }
 
 export default function Leaderboard({ leaderboard }: LeaderboardProps) {
-  const [robloxUsers, setRobloxUsers] = useState<Record<string, RobloxUser>>(
-    {},
-  );
-  const [robloxAvatars, setRobloxAvatars] = useState<Record<string, string>>(
-    {},
-  );
+  const [robloxUsers, setRobloxUsers] = useState<Record<string, RobloxUser>>({});
+  const [robloxAvatars, setRobloxAvatars] = useState<Record<string, string>>({});
   const [visibleUsers, setVisibleUsers] = useState<LeaderboardUser[]>([]);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
@@ -45,16 +38,16 @@ export default function Leaderboard({ leaderboard }: LeaderboardProps) {
         const result = await fetchMissingRobloxData(missingIds);
 
         // Update state with new user data
-        if (result.userData && typeof result.userData === "object") {
+        if (result.userData && typeof result.userData === 'object') {
           setRobloxUsers((prev) => ({ ...prev, ...result.userData }));
         }
 
         // Update state with new avatar data
-        if (result.avatarData && typeof result.avatarData === "object") {
+        if (result.avatarData && typeof result.avatarData === 'object') {
           setRobloxAvatars((prev) => ({ ...prev, ...result.avatarData }));
         }
       } catch (error) {
-        console.error("Failed to fetch missing user data:", error);
+        console.error('Failed to fetch missing user data:', error);
       }
     },
     [robloxUsers],
@@ -71,11 +64,11 @@ export default function Leaderboard({ leaderboard }: LeaderboardProps) {
         const avatarData = await fetchOriginalOwnerAvatars(missingIds);
 
         // Update state with new avatar data
-        if (avatarData && typeof avatarData === "object") {
+        if (avatarData && typeof avatarData === 'object') {
           setRobloxAvatars((prev) => ({ ...prev, ...avatarData }));
         }
       } catch (error) {
-        console.error("Failed to fetch user avatars:", error);
+        console.error('Failed to fetch user avatars:', error);
       }
     },
     [robloxAvatars],
@@ -107,10 +100,7 @@ export default function Leaderboard({ leaderboard }: LeaderboardProps) {
     // Simulate loading delay
     setTimeout(() => {
       const currentCount = visibleUsers.length;
-      const nextBatch = leaderboard.slice(
-        currentCount,
-        currentCount + USERS_PER_BATCH,
-      );
+      const nextBatch = leaderboard.slice(currentCount, currentCount + USERS_PER_BATCH);
 
       if (nextBatch.length > 0) {
         setVisibleUsers((prev) => [...prev, ...nextBatch]);
@@ -143,11 +133,9 @@ export default function Leaderboard({ leaderboard }: LeaderboardProps) {
 
   return (
     <div className="mt-8">
-      <h2 className="text-xl font-bold mb-4 text-gray-300">
-        Most Scanned Players
-      </h2>
-      <div className="bg-[#212A31] rounded-lg p-4 shadow-sm border border-[#2E3944]">
-        <div className="max-h-[32rem] overflow-y-auto space-y-3 pr-2">
+      <h2 className="mb-4 text-xl font-bold text-gray-300">Most Scanned Players</h2>
+      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4 shadow-sm">
+        <div className="max-h-[32rem] space-y-3 overflow-y-auto pr-2">
           {visibleUsers.map((user, index) => {
             const displayName = getUserDisplay(user.user_id);
             const username = getUsername(user.user_id);
@@ -156,37 +144,37 @@ export default function Leaderboard({ leaderboard }: LeaderboardProps) {
             return (
               <div
                 key={user.user_id}
-                className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 rounded-lg bg-[#2E3944] border border-[#37424D]"
+                className="flex flex-col gap-3 rounded-lg border border-[#37424D] bg-[#2E3944] p-3 sm:flex-row sm:items-center"
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                    className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${
                       index === 0
-                        ? "bg-yellow-500 text-black"
+                        ? 'bg-yellow-500 text-black'
                         : index === 1
-                          ? "bg-gray-400 text-black"
+                          ? 'bg-gray-400 text-black'
                           : index === 2
-                            ? "bg-amber-600 text-white"
-                            : "bg-[#37424D] text-gray-300"
+                            ? 'bg-amber-600 text-white'
+                            : 'bg-[#37424D] text-gray-300'
                     }`}
                   >
                     {index + 1}
                   </div>
 
                   {/* Avatar */}
-                  <div className="w-10 h-10 rounded-full overflow-hidden bg-[#37424D] flex-shrink-0">
+                  <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full bg-[#37424D]">
                     {avatarUrl ? (
                       <Image
                         src={avatarUrl}
                         alt={`${displayName}'s avatar`}
                         width={40}
                         height={40}
-                        className="w-full h-full object-cover"
+                        className="h-full w-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <div className="w-6 h-6 bg-[#5865F2] rounded-full flex items-center justify-center">
-                          <span className="text-white text-xs font-bold">
+                      <div className="flex h-full w-full items-center justify-center">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#5865F2]">
+                          <span className="text-xs font-bold text-white">
                             {displayName.charAt(0).toUpperCase()}
                           </span>
                         </div>
@@ -195,25 +183,22 @@ export default function Leaderboard({ leaderboard }: LeaderboardProps) {
                   </div>
                 </div>
 
-                <div className="flex-1 min-w-0">
+                <div className="min-w-0 flex-1">
                   <div className="flex items-start gap-2">
-                    <div className="flex-1 min-w-0">
+                    <div className="min-w-0 flex-1">
                       <a
                         href={`https://www.roblox.com/users/${user.user_id}/profile`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-400 font-medium hover:text-blue-300 transition-colors break-words"
+                        className="font-medium break-words text-blue-400 transition-colors hover:text-blue-300"
                       >
                         {displayName}
                       </a>
-                      <div className="text-sm text-gray-400 break-words">
+                      <div className="text-sm break-words text-gray-400">
                         @{username} • {user.upsert_count.toLocaleString()} scans
                       </div>
                     </div>
-                    <CopyButton
-                      text={user.user_id}
-                      className="flex-shrink-0 mt-1"
-                    />
+                    <CopyButton text={user.user_id} className="mt-1 flex-shrink-0" />
                   </div>
                 </div>
               </div>
@@ -226,12 +211,12 @@ export default function Leaderboard({ leaderboard }: LeaderboardProps) {
               <button
                 onClick={loadMoreUsers}
                 disabled={isLoadingMore}
-                className="px-4 py-2 bg-[#5865F2] hover:bg-[#4752C4] disabled:bg-[#37424D] text-white rounded-lg transition-colors flex items-center gap-2"
+                className="flex items-center gap-2 rounded-lg bg-[#5865F2] px-4 py-2 text-white transition-colors hover:bg-[#4752C4] disabled:bg-[#37424D]"
               >
                 {isLoadingMore ? (
                   <>
                     <svg
-                      className="animate-spin h-4 w-4"
+                      className="h-4 w-4 animate-spin"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"

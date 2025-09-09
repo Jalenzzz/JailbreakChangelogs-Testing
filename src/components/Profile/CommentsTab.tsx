@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { CircularProgress, Box, Pagination, Chip, Button } from "@mui/material";
-import Comment from "../ProfileComments/Comments";
-import CommentIcon from "@mui/icons-material/Comment";
-import { ArrowUpIcon, ArrowDownIcon } from "@heroicons/react/24/outline";
+import { useState } from 'react';
+import { CircularProgress, Box, Pagination, Chip, Button } from '@mui/material';
+import Comment from '../ProfileComments/Comments';
+import CommentIcon from '@mui/icons-material/Comment';
+import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline';
 
 interface CommentData {
   id: number;
@@ -30,7 +30,7 @@ interface CommentsTabProps {
 }
 
 // Main filter categories
-const MAIN_CATEGORIES = ["changelog", "season", "trade"];
+const MAIN_CATEGORIES = ['changelog', 'season', 'trade'];
 
 export default function CommentsTab({
   comments,
@@ -42,48 +42,39 @@ export default function CommentsTab({
 }: CommentsTabProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
-  const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
+  const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
   const commentsPerPage = 6;
 
   // Check if comments should be hidden
-  const shouldHideComments =
-    settings?.show_recent_comments === 0 && currentUserId !== userId;
+  const shouldHideComments = settings?.show_recent_comments === 0 && currentUserId !== userId;
 
   // Sort comments based on selected order
   const sortedComments = [...comments].sort((a, b) => {
-    return sortOrder === "newest"
+    return sortOrder === 'newest'
       ? parseInt(b.date) - parseInt(a.date)
       : parseInt(a.date) - parseInt(b.date);
   });
 
   // Filter comments based on selected filter
   const filteredComments = activeFilter
-    ? activeFilter === "item"
+    ? activeFilter === 'item'
       ? // For "item" filter, show all types that aren't in the main categories
         sortedComments.filter(
-          (comment) =>
-            !MAIN_CATEGORIES.includes(comment.item_type.toLowerCase()),
+          (comment) => !MAIN_CATEGORIES.includes(comment.item_type.toLowerCase()),
         )
       : // For specific filters, show only that type (case-insensitive)
         sortedComments.filter(
-          (comment) =>
-            comment.item_type.toLowerCase() === activeFilter.toLowerCase(),
+          (comment) => comment.item_type.toLowerCase() === activeFilter.toLowerCase(),
         )
     : sortedComments;
 
   // Get current page comments
   const indexOfLastComment = currentPage * commentsPerPage;
   const indexOfFirstComment = indexOfLastComment - commentsPerPage;
-  const currentComments = filteredComments.slice(
-    indexOfFirstComment,
-    indexOfLastComment,
-  );
+  const currentComments = filteredComments.slice(indexOfFirstComment, indexOfLastComment);
 
   // Change page
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    value: number,
-  ) => {
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setCurrentPage(value);
     // Remove the scroll behavior
   };
@@ -100,13 +91,8 @@ export default function CommentsTab({
 
   if (loading) {
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight={200}
-      >
-        <CircularProgress sx={{ color: "#5865F2" }} />
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight={200}>
+        <CircularProgress sx={{ color: '#5865F2' }} />
       </Box>
     );
   }
@@ -114,10 +100,10 @@ export default function CommentsTab({
   if (error) {
     return (
       <div className="space-y-6">
-        <div className="bg-[#2E3944] rounded-lg p-4 border border-[#5865F2]">
-          <div className="flex items-center gap-2 mb-3">
+        <div className="rounded-lg border border-[#5865F2] bg-[#2E3944] p-4">
+          <div className="mb-3 flex items-center gap-2">
             <CommentIcon className="text-[#5865F2]" />
-            <h2 className="text-lg font-semibold text-muted">
+            <h2 className="text-muted text-lg font-semibold">
               Recent Comments [{comments.length}]
             </h2>
           </div>
@@ -130,20 +116,13 @@ export default function CommentsTab({
   if (shouldHideComments) {
     return (
       <div className="space-y-6">
-        <div className="bg-[#2E3944] rounded-lg p-4 border border-[#5865F2]">
-          <div className="flex items-center gap-2 mb-3">
+        <div className="rounded-lg border border-[#5865F2] bg-[#2E3944] p-4">
+          <div className="mb-3 flex items-center gap-2">
             <CommentIcon className="text-[#5865F2]" />
-            <h2 className="text-lg font-semibold text-muted">
-              Recent Comments
-            </h2>
+            <h2 className="text-muted text-lg font-semibold">Recent Comments</h2>
           </div>
           <div className="flex items-center gap-2 text-[#FFFFFF]">
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -160,25 +139,23 @@ export default function CommentsTab({
 
   return (
     <div className="space-y-6" id="comments-section">
-      <div className="bg-[#2E3944] rounded-lg p-4 border border-[#5865F2]">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+      <div className="rounded-lg border border-[#5865F2] bg-[#2E3944] p-4">
+        <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <CommentIcon className="text-[#5865F2]" />
-            <h2 className="text-lg font-semibold text-muted">
-              Recent{" "}
+            <h2 className="text-muted text-lg font-semibold">
+              Recent{' '}
               {activeFilter
                 ? `${activeFilter.charAt(0).toUpperCase() + activeFilter.slice(1)} `
-                : ""}
+                : ''}
               Comments [{filteredComments.length}]
             </h2>
           </div>
           <Button
             variant="outlined"
-            onClick={() =>
-              setSortOrder((prev) => (prev === "newest" ? "oldest" : "newest"))
-            }
+            onClick={() => setSortOrder((prev) => (prev === 'newest' ? 'oldest' : 'newest'))}
             startIcon={
-              sortOrder === "newest" ? (
+              sortOrder === 'newest' ? (
                 <ArrowDownIcon className="h-4 w-4" />
               ) : (
                 <ArrowUpIcon className="h-4 w-4" />
@@ -186,16 +163,16 @@ export default function CommentsTab({
             }
             size="small"
             sx={{
-              borderColor: "#5865F2",
-              color: "#5865F2",
-              backgroundColor: "#212A31",
-              "&:hover": {
-                borderColor: "#4752C4",
-                backgroundColor: "#2B2F4C",
+              borderColor: '#5865F2',
+              color: '#5865F2',
+              backgroundColor: '#212A31',
+              '&:hover': {
+                borderColor: '#4752C4',
+                backgroundColor: '#2B2F4C',
               },
             }}
           >
-            {sortOrder === "newest" ? "Newest First" : "Oldest First"}
+            {sortOrder === 'newest' ? 'Newest First' : 'Oldest First'}
           </Button>
         </div>
 
@@ -204,21 +181,19 @@ export default function CommentsTab({
         ) : (
           <>
             {/* Filter chips */}
-            <div className="flex flex-wrap gap-2 mb-4">
+            <div className="mb-4 flex flex-wrap gap-2">
               {/* Main category filters */}
               {MAIN_CATEGORIES.map((type) => (
                 <Chip
                   key={type}
                   label={type.charAt(0).toUpperCase() + type.slice(1)}
                   onClick={() => handleFilterChange(type)}
-                  color={activeFilter === type ? "primary" : "default"}
+                  color={activeFilter === type ? 'primary' : 'default'}
                   sx={{
-                    backgroundColor:
-                      activeFilter === type ? "#5865F2" : "#212A31",
-                    color: activeFilter === type ? "#fff" : "#FFFFFF",
-                    "&:hover": {
-                      backgroundColor:
-                        activeFilter === type ? "#4752C4" : "#292f6e",
+                    backgroundColor: activeFilter === type ? '#5865F2' : '#212A31',
+                    color: activeFilter === type ? '#fff' : '#FFFFFF',
+                    '&:hover': {
+                      backgroundColor: activeFilter === type ? '#4752C4' : '#292f6e',
                     },
                   }}
                 />
@@ -228,15 +203,13 @@ export default function CommentsTab({
               <Chip
                 key="item"
                 label="Items"
-                onClick={() => handleFilterChange("item")}
-                color={activeFilter === "item" ? "primary" : "default"}
+                onClick={() => handleFilterChange('item')}
+                color={activeFilter === 'item' ? 'primary' : 'default'}
                 sx={{
-                  backgroundColor:
-                    activeFilter === "item" ? "#5865F2" : "#212A31",
-                  color: activeFilter === "item" ? "#fff" : "#FFFFFF",
-                  "&:hover": {
-                    backgroundColor:
-                      activeFilter === "item" ? "#4752C4" : "#292f6e",
+                  backgroundColor: activeFilter === 'item' ? '#5865F2' : '#212A31',
+                  color: activeFilter === 'item' ? '#fff' : '#FFFFFF',
+                  '&:hover': {
+                    backgroundColor: activeFilter === 'item' ? '#4752C4' : '#292f6e',
                   },
                 }}
               />
@@ -246,11 +219,11 @@ export default function CommentsTab({
               {currentComments.length === 0 ? (
                 <p className="text-[#FFFFFF] italic">
                   {activeFilter
-                    ? `No ${activeFilter === "item" ? "item" : activeFilter} comments yet`
-                    : "No comments yet"}
+                    ? `No ${activeFilter === 'item' ? 'item' : activeFilter} comments yet`
+                    : 'No comments yet'}
                 </p>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   {currentComments.map((comment) => (
                     <Comment key={comment.id} {...comment} />
                   ))}
@@ -260,18 +233,18 @@ export default function CommentsTab({
 
             {/* Pagination controls */}
             {filteredComments.length > commentsPerPage && (
-              <div className="flex justify-center mt-6">
+              <div className="mt-6 flex justify-center">
                 <Pagination
                   count={Math.ceil(filteredComments.length / commentsPerPage)}
                   page={currentPage}
                   onChange={handlePageChange}
                   color="primary"
                   sx={{
-                    "& .MuiPaginationItem-root": {
-                      color: "#D3D9D4",
+                    '& .MuiPaginationItem-root': {
+                      color: '#D3D9D4',
                     },
-                    "& .Mui-selected": {
-                      backgroundColor: "#5865F2 !important",
+                    '& .Mui-selected': {
+                      backgroundColor: '#5865F2 !important',
                     },
                   }}
                 />

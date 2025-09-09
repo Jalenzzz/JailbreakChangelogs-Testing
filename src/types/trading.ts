@@ -9,7 +9,7 @@ export interface TradeItem {
   tradable: number;
   trend?: string | null;
   base_name?: string;
-  side?: "offering" | "requesting";
+  side?: 'offering' | 'requesting';
   metadata?: {
     TimesTraded?: number;
     UniqueCirculation?: number;

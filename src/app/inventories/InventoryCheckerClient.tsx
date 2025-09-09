@@ -1,19 +1,16 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { Dialog } from "@headlessui/react";
-import {
-  XMarkIcon,
-  ExclamationTriangleIcon,
-} from "@heroicons/react/24/outline";
-import { fetchMissingRobloxData, fetchOriginalOwnerAvatars } from "./actions";
-import { fetchItems } from "@/utils/api";
-import { RobloxUser, Item } from "@/types";
-import SearchForm from "@/components/Inventory/SearchForm";
-import UserStats from "@/components/Inventory/UserStats";
-import InventoryItems from "@/components/Inventory/InventoryItems";
+import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { Dialog } from '@headlessui/react';
+import { XMarkIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { fetchMissingRobloxData, fetchOriginalOwnerAvatars } from './actions';
+import { fetchItems } from '@/utils/api';
+import { RobloxUser, Item } from '@/types';
+import SearchForm from '@/components/Inventory/SearchForm';
+import UserStats from '@/components/Inventory/UserStats';
+import InventoryItems from '@/components/Inventory/InventoryItems';
 
 interface TradeHistoryEntry {
   UserId: number;
@@ -73,18 +70,14 @@ export default function InventoryCheckerClient({
   error,
   isLoading: externalIsLoading,
 }: InventoryCheckerClientProps) {
-  const [searchId, setSearchId] = useState(
-    originalSearchTerm || robloxId || "",
-  );
+  const [searchId, setSearchId] = useState(originalSearchTerm || robloxId || '');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [robloxUsers, setRobloxUsers] = useState<Record<string, RobloxUser>>(
     initialRobloxUsers || {},
   );
-  const [robloxAvatars, setRobloxAvatars] = useState(
-    initialRobloxAvatars || {},
-  );
+  const [robloxAvatars, setRobloxAvatars] = useState(initialRobloxAvatars || {});
   const [itemsData, setItemsData] = useState<Item[]>([]);
 
   const router = useRouter();
@@ -102,9 +95,7 @@ export default function InventoryCheckerClient({
   const getUserAvatar = useCallback(
     (userId: string) => {
       const avatar = robloxAvatars[userId] || initialRobloxAvatars?.[userId];
-      return avatar && typeof avatar === "string" && avatar.trim() !== ""
-        ? avatar
-        : null;
+      return avatar && typeof avatar === 'string' && avatar.trim() !== '' ? avatar : null;
     },
     [robloxAvatars, initialRobloxAvatars],
   );
@@ -112,9 +103,7 @@ export default function InventoryCheckerClient({
   // Progressive loading of missing user data
   const fetchMissingUserData = useCallback(
     async (userIds: string[]) => {
-      const missingIds = userIds.filter(
-        (id) => !robloxUsers[id] && !initialRobloxUsers?.[id],
-      );
+      const missingIds = userIds.filter((id) => !robloxUsers[id] && !initialRobloxUsers?.[id]);
 
       if (missingIds.length === 0) return;
 
@@ -122,16 +111,16 @@ export default function InventoryCheckerClient({
         const result = await fetchMissingRobloxData(missingIds);
 
         // Update state with new user data
-        if (result.userData && typeof result.userData === "object") {
+        if (result.userData && typeof result.userData === 'object') {
           setRobloxUsers((prev) => ({ ...prev, ...result.userData }));
         }
 
         // Update state with new avatar data
-        if (result.avatarData && typeof result.avatarData === "object") {
+        if (result.avatarData && typeof result.avatarData === 'object') {
           setRobloxAvatars((prev) => ({ ...prev, ...result.avatarData }));
         }
       } catch (error) {
-        console.error("Failed to fetch missing user data:", error);
+        console.error('Failed to fetch missing user data:', error);
       }
     },
     [robloxUsers, initialRobloxUsers, setRobloxUsers, setRobloxAvatars],
@@ -140,9 +129,7 @@ export default function InventoryCheckerClient({
   // Fetch avatars for original owners separately (for inventories with 1000 items or less)
   const fetchOriginalOwnerAvatarsData = useCallback(
     async (userIds: string[]) => {
-      const missingIds = userIds.filter(
-        (id) => !robloxAvatars[id] && !initialRobloxAvatars?.[id],
-      );
+      const missingIds = userIds.filter((id) => !robloxAvatars[id] && !initialRobloxAvatars?.[id]);
 
       if (missingIds.length === 0) return;
 
@@ -150,11 +137,11 @@ export default function InventoryCheckerClient({
         const avatarData = await fetchOriginalOwnerAvatars(missingIds);
 
         // Update state with new avatar data
-        if (avatarData && typeof avatarData === "object") {
+        if (avatarData && typeof avatarData === 'object') {
           setRobloxAvatars((prev) => ({ ...prev, ...avatarData }));
         }
       } catch (error) {
-        console.error("Failed to fetch original owner avatars:", error);
+        console.error('Failed to fetch original owner avatars:', error);
       }
     },
     [robloxAvatars, initialRobloxAvatars, setRobloxAvatars],
@@ -167,7 +154,7 @@ export default function InventoryCheckerClient({
         const items = await fetchItems();
         setItemsData(items);
       } catch (error) {
-        console.error("Failed to fetch items data:", error);
+        console.error('Failed to fetch items data:', error);
       }
     };
 
@@ -186,10 +173,7 @@ export default function InventoryCheckerClient({
     selectedItem.history.forEach((trade) => {
       if (trade.UserId) {
         const tradeUserId = trade.UserId.toString();
-        if (
-          !getUserDisplay(tradeUserId) ||
-          getUserDisplay(tradeUserId) === tradeUserId
-        ) {
+        if (!getUserDisplay(tradeUserId) || getUserDisplay(tradeUserId) === tradeUserId) {
           userIdsToLoad.push(tradeUserId);
         }
 
@@ -231,12 +215,12 @@ export default function InventoryCheckerClient({
   }, [initialData, error, externalIsLoading]);
 
   const formatDate = (timestamp: number) => {
-    return new Date(timestamp * 1000).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+    return new Date(timestamp * 1000).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     });
   };
 
@@ -275,14 +259,14 @@ export default function InventoryCheckerClient({
 
       {/* Error Display */}
       {error && !initialData && (
-        <div className="bg-[#212A31] rounded-lg p-6 shadow-sm border border-[#2E3944]">
+        <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6 shadow-sm">
           <div className="text-center">
-            <div className="flex justify-center mb-4">
-              <div className="p-3 bg-red-500/10 rounded-full">
+            <div className="mb-4 flex justify-center">
+              <div className="rounded-full bg-red-500/10 p-3">
                 <ExclamationTriangleIcon className="h-8 w-8 text-red-400" />
               </div>
             </div>
-            <h3 className="text-lg font-semibold text-red-400 mb-2">
+            <h3 className="mb-2 text-lg font-semibold text-red-400">
               Unable to Fetch Inventory Data
             </h3>
             <p className="text-gray-300">{error}</p>
@@ -312,53 +296,40 @@ export default function InventoryCheckerClient({
 
           {/* Trade History Modal */}
           {selectedItem && (
-            <Dialog
-              open={showHistoryModal}
-              onClose={closeHistoryModal}
-              className="relative z-50"
-            >
-              <div
-                className="fixed inset-0 bg-black/30 backdrop-blur-sm"
-                aria-hidden="true"
-              />
+            <Dialog open={showHistoryModal} onClose={closeHistoryModal} className="relative z-50">
+              <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
 
               <div className="fixed inset-0 flex items-center justify-center p-4">
-                <div className="mx-auto w-full max-w-2xl rounded-lg bg-[#212A31] border border-[#2E3944] max-h-[80vh] overflow-hidden">
+                <div className="mx-auto max-h-[80vh] w-full max-w-2xl overflow-hidden rounded-lg border border-[#2E3944] bg-[#212A31]">
                   {/* Modal Header */}
-                  <div className="flex items-start sm:items-center justify-between p-4 sm:p-6 border-b border-[#2E3944] gap-4">
+                  <div className="flex items-start justify-between gap-4 border-b border-[#2E3944] p-4 sm:items-center sm:p-6">
                     <div className="min-w-0 flex-1">
-                      <Dialog.Title className="text-lg sm:text-xl font-semibold text-muted">
+                      <Dialog.Title className="text-muted text-lg font-semibold sm:text-xl">
                         Trade History
                       </Dialog.Title>
-                      <p className="text-sm text-muted opacity-75 truncate">
-                        {selectedItem.title}
-                      </p>
+                      <p className="text-muted truncate text-sm opacity-75">{selectedItem.title}</p>
                     </div>
                     <button
                       onClick={closeHistoryModal}
-                      className="rounded-full p-1 text-muted hover:bg-[#2E3944] hover:text-white"
+                      className="text-muted rounded-full p-1 hover:bg-[#2E3944] hover:text-white"
                     >
                       <XMarkIcon className="h-6 w-6" />
                     </button>
                   </div>
 
                   {/* Modal Content */}
-                  <div className="p-6 overflow-y-auto max-h-[60vh]">
+                  <div className="max-h-[60vh] overflow-y-auto p-6">
                     {selectedItem.history && selectedItem.history.length > 0 ? (
                       <div className="space-y-4">
                         {(() => {
                           // Process history to show actual trades between users
-                          const history = selectedItem.history
-                            .slice()
-                            .reverse();
+                          const history = selectedItem.history.slice().reverse();
 
                           // If there's only one history entry, hide it (user obtained the item)
                           if (history.length === 1) {
                             return (
-                              <div className="text-center py-8">
-                                <p className="text-muted">
-                                  This item has no trade history.
-                                </p>
+                              <div className="py-8 text-center">
+                                <p className="text-muted">This item has no trade history.</p>
                               </div>
                             );
                           }
@@ -377,7 +348,7 @@ export default function InventoryCheckerClient({
 
                           return (
                             <>
-                              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-muted mb-4">
+                              <div className="text-muted mb-4 flex flex-col gap-2 text-sm sm:flex-row sm:items-center sm:justify-between">
                                 <span>Total Trades: {trades.length}</span>
                               </div>
 
@@ -386,19 +357,19 @@ export default function InventoryCheckerClient({
                                   return (
                                     <div
                                       key={`${trade.fromUser.UserId}-${trade.toUser.UserId}-${trade.toUser.TradeTime}`}
-                                      className={`p-3 rounded-lg border ${
+                                      className={`rounded-lg border p-3 ${
                                         index === trades.length - 1
-                                          ? "bg-[#1A5F7A] border-[#124E66] shadow-lg"
-                                          : "bg-[#2E3944] border-[#37424D]"
+                                          ? 'border-[#124E66] bg-[#1A5F7A] shadow-lg'
+                                          : 'border-[#37424D] bg-[#2E3944]'
                                       }`}
                                     >
-                                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                         <div className="flex items-center gap-3">
                                           <div className="min-w-0 flex-1">
-                                            <div className="flex items-center gap-2 flex-wrap">
+                                            <div className="flex flex-wrap items-center gap-2">
                                               {/* From User */}
                                               <div className="flex items-center gap-2">
-                                                <div className="w-6 h-6 rounded-full bg-[#212A31] border border-[#2E3944] flex-shrink-0 flex items-center justify-center">
+                                                <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-[#2E3944] bg-[#212A31]">
                                                   {getUserAvatar(
                                                     trade.fromUser.UserId.toString(),
                                                   ) ? (
@@ -415,7 +386,7 @@ export default function InventoryCheckerClient({
                                                     />
                                                   ) : (
                                                     <svg
-                                                      className="w-3 h-3 text-muted"
+                                                      className="text-muted h-3 w-3"
                                                       fill="none"
                                                       stroke="currentColor"
                                                       viewBox="0 0 24 24"
@@ -433,18 +404,16 @@ export default function InventoryCheckerClient({
                                                   href={`https://www.roblox.com/users/${trade.fromUser.UserId}/profile`}
                                                   target="_blank"
                                                   rel="noopener noreferrer"
-                                                  className="text-blue-300 hover:text-blue-400 hover:underline transition-colors font-medium truncate"
+                                                  className="truncate font-medium text-blue-300 transition-colors hover:text-blue-400 hover:underline"
                                                 >
-                                                  {getUserDisplay(
-                                                    trade.fromUser.UserId.toString(),
-                                                  )}
+                                                  {getUserDisplay(trade.fromUser.UserId.toString())}
                                                 </a>
                                               </div>
 
                                               {/* Arrow */}
-                                              <div className="flex items-center gap-1 text-muted">
+                                              <div className="text-muted flex items-center gap-1">
                                                 <svg
-                                                  className="w-4 h-4"
+                                                  className="h-4 w-4"
                                                   fill="none"
                                                   stroke="currentColor"
                                                   viewBox="0 0 24 24"
@@ -463,10 +432,8 @@ export default function InventoryCheckerClient({
 
                                               {/* To User */}
                                               <div className="flex items-center gap-2">
-                                                <div className="w-6 h-6 rounded-full bg-[#212A31] border border-[#2E3944] flex-shrink-0 flex items-center justify-center">
-                                                  {getUserAvatar(
-                                                    trade.toUser.UserId.toString(),
-                                                  ) ? (
+                                                <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-[#2E3944] bg-[#212A31]">
+                                                  {getUserAvatar(trade.toUser.UserId.toString()) ? (
                                                     <Image
                                                       src={
                                                         getUserAvatar(
@@ -480,7 +447,7 @@ export default function InventoryCheckerClient({
                                                     />
                                                   ) : (
                                                     <svg
-                                                      className="w-3 h-3 text-muted"
+                                                      className="text-muted h-3 w-3"
                                                       fill="none"
                                                       stroke="currentColor"
                                                       viewBox="0 0 24 24"
@@ -498,11 +465,9 @@ export default function InventoryCheckerClient({
                                                   href={`https://www.roblox.com/users/${trade.toUser.UserId}/profile`}
                                                   target="_blank"
                                                   rel="noopener noreferrer"
-                                                  className="text-blue-300 hover:text-blue-400 hover:underline transition-colors font-medium truncate"
+                                                  className="truncate font-medium text-blue-300 transition-colors hover:text-blue-400 hover:underline"
                                                 >
-                                                  {getUserDisplay(
-                                                    trade.toUser.UserId.toString(),
-                                                  )}
+                                                  {getUserDisplay(trade.toUser.UserId.toString())}
                                                 </a>
                                               </div>
                                             </div>
@@ -510,7 +475,7 @@ export default function InventoryCheckerClient({
                                         </div>
 
                                         {/* Trade Date */}
-                                        <div className="text-sm text-muted flex-shrink-0">
+                                        <div className="text-muted flex-shrink-0 text-sm">
                                           {formatDate(trade.toUser.TradeTime)}
                                         </div>
                                       </div>
@@ -523,10 +488,8 @@ export default function InventoryCheckerClient({
                         })()}
                       </div>
                     ) : (
-                      <div className="text-center py-8">
-                        <p className="text-muted">
-                          This item has no trade history.
-                        </p>
+                      <div className="py-8 text-center">
+                        <p className="text-muted">This item has no trade history.</p>
                       </div>
                     )}
                   </div>

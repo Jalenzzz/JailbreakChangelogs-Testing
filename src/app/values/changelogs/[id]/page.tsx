@@ -1,9 +1,9 @@
-import { Suspense } from "react";
-import { notFound } from "next/navigation";
-import Breadcrumb from "@/components/Layout/Breadcrumb";
-import { fetchItemsChangelog, fetchUsersBatch } from "@/utils/api";
-import ChangelogDetailsClient from "@/components/Values/ChangelogDetailsClient";
-import Loading from "./loading";
+import { Suspense } from 'react';
+import { notFound } from 'next/navigation';
+import Breadcrumb from '@/components/Layout/Breadcrumb';
+import { fetchItemsChangelog, fetchUsersBatch } from '@/utils/api';
+import ChangelogDetailsClient from '@/components/Values/ChangelogDetailsClient';
+import Loading from './loading';
 
 export const revalidate = 120; // Revalidate every 2 minutes
 
@@ -72,7 +72,7 @@ export default async function ChangelogDetailsPage({
   const userData = await fetchUsersBatch(uniqueUserIds);
 
   return (
-    <main className="min-h-screen bg-[#2E3944] mb-8">
+    <main className="mb-8 min-h-screen bg-[#2E3944]">
       <div className="container mx-auto px-4">
         <Breadcrumb />
         <Suspense fallback={<Loading />}>

@@ -1,6 +1,6 @@
 export const RobloxIcon = ({ className }: { className?: string }) => (
   <svg
-    className={`text-muted ${className || ""}`}
+    className={`text-muted ${className || ''}`}
     viewBox="0 0 24 24"
     fill="currentColor"
     xmlns="http://www.w3.org/2000/svg"

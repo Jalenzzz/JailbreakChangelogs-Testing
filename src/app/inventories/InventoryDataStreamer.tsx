@@ -1,7 +1,7 @@
-import { Suspense } from "react";
-import { fetchInventoryData, fetchRobloxUserByUsername } from "@/utils/api";
-import InventoryCheckerClient from "./InventoryCheckerClient";
-import UserDataStreamer from "./UserDataStreamer";
+import { Suspense } from 'react';
+import { fetchInventoryData, fetchRobloxUserByUsername } from '@/utils/api';
+import InventoryCheckerClient from './InventoryCheckerClient';
+import UserDataStreamer from './UserDataStreamer';
 
 interface InventoryDataStreamerProps {
   robloxId: string;
@@ -11,26 +11,26 @@ interface InventoryDataStreamerProps {
 function InventoryLoadingFallback({ robloxId }: { robloxId: string }) {
   return (
     <div className="space-y-6">
-      <div className="bg-[#212A31] rounded-lg border border-[#2E3944] p-6">
-        <form className="flex flex-col sm:flex-row gap-3">
+      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
+        <form className="flex flex-col gap-3 sm:flex-row">
           <div className="flex-1">
-            <label className="block text-sm font-medium text-muted mb-2">
+            <label className="text-muted mb-2 block text-sm font-medium">
               Username or Roblox ID
             </label>
             <input
               type="text"
               value={robloxId}
               readOnly
-              className="w-full px-3 py-2 border border-[#2E3944] bg-[#37424D] rounded-lg shadow-sm text-muted"
+              className="text-muted w-full rounded-lg border border-[#2E3944] bg-[#37424D] px-3 py-2 shadow-sm"
             />
           </div>
           <div className="flex items-end">
             <button
               disabled
-              className="h-10 px-6 bg-[#2E3944] text-white text-sm font-medium rounded-lg flex items-center justify-center gap-2 min-w-[100px] cursor-not-allowed"
+              className="flex h-10 min-w-[100px] cursor-not-allowed items-center justify-center gap-2 rounded-lg bg-[#2E3944] px-6 text-sm font-medium text-white"
             >
               <svg
-                className="animate-spin h-4 w-4"
+                className="h-4 w-4 animate-spin"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -55,19 +55,19 @@ function InventoryLoadingFallback({ robloxId }: { robloxId: string }) {
         </form>
       </div>
 
-      <div className="bg-[#212A31] rounded-lg border border-[#2E3944] p-6">
-        <div className="flex items-center gap-4 mb-4">
-          <div className="w-16 h-16 bg-[#37424D] rounded-full animate-pulse"></div>
+      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
+        <div className="mb-4 flex items-center gap-4">
+          <div className="h-16 w-16 animate-pulse rounded-full bg-[#37424D]"></div>
           <div className="flex-1">
-            <div className="h-6 bg-[#37424D] rounded animate-pulse mb-2"></div>
-            <div className="h-4 bg-[#37424D] rounded animate-pulse w-1/2"></div>
+            <div className="mb-2 h-6 animate-pulse rounded bg-[#37424D]"></div>
+            <div className="h-4 w-1/2 animate-pulse rounded bg-[#37424D]"></div>
           </div>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
           {[...Array(6)].map((_, i) => (
             <div key={i} className="text-center">
-              <div className="h-4 bg-[#37424D] rounded animate-pulse mb-2"></div>
-              <div className="h-8 bg-[#37424D] rounded animate-pulse"></div>
+              <div className="mb-2 h-4 animate-pulse rounded bg-[#37424D]"></div>
+              <div className="h-8 animate-pulse rounded bg-[#37424D]"></div>
             </div>
           ))}
         </div>
@@ -98,7 +98,7 @@ async function InventoryDataFetcher({ robloxId }: { robloxId: string }) {
         );
       }
     } catch (error) {
-      console.error("Error fetching user by username:", error);
+      console.error('Error fetching user by username:', error);
       return (
         <InventoryCheckerClient
           robloxId={robloxId}
@@ -111,18 +111,11 @@ async function InventoryDataFetcher({ robloxId }: { robloxId: string }) {
   const result = await fetchInventoryData(actualRobloxId);
 
   // Check if the result contains an error
-  if (
-    (result && typeof result === "object" && "error" in result) ||
-    typeof result === "string"
-  ) {
+  if ((result && typeof result === 'object' && 'error' in result) || typeof result === 'string') {
     return (
       <InventoryCheckerClient
         robloxId={actualRobloxId}
-        error={
-          typeof result === "string"
-            ? result
-            : (result as { message?: string }).message
-        }
+        error={typeof result === 'string' ? result : (result as { message?: string }).message}
       />
     );
   }
@@ -140,11 +133,7 @@ async function InventoryDataFetcher({ robloxId }: { robloxId: string }) {
   return (
     <Suspense
       fallback={
-        <InventoryCheckerClient
-          robloxId={actualRobloxId}
-          initialData={result}
-          isLoading={true}
-        />
+        <InventoryCheckerClient robloxId={actualRobloxId} initialData={result} isLoading={true} />
       }
     >
       <UserDataStreamer robloxId={actualRobloxId} inventoryData={result} />
@@ -152,9 +141,7 @@ async function InventoryDataFetcher({ robloxId }: { robloxId: string }) {
   );
 }
 
-export default function InventoryDataStreamer({
-  robloxId,
-}: InventoryDataStreamerProps) {
+export default function InventoryDataStreamer({ robloxId }: InventoryDataStreamerProps) {
   return (
     <Suspense fallback={<InventoryLoadingFallback robloxId={robloxId} />}>
       <InventoryDataFetcher robloxId={robloxId} />

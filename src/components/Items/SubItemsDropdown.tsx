@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
 interface SubItem {
   id: number;
@@ -46,14 +46,12 @@ export default function SubItemsDropdown({
   });
 
   // Find the 2023 variant
-  const defaultVariant = sortedChildren.find(
-    (child) => child.sub_name === "2023",
-  );
+  const defaultVariant = sortedChildren.find((child) => child.sub_name === '2023');
 
   // Get the display text for the dropdown button
   const getDisplayText = () => {
     if (selectedSubItem === null) {
-      return "2025"; // Show 2025 when parent item details are shown
+      return '2025'; // Show 2025 when parent item details are shown
     }
     return selectedSubItem.sub_name;
   };
@@ -70,11 +68,11 @@ export default function SubItemsDropdown({
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 rounded-lg border border-[#2E3944] bg-[#37424D] px-2 py-0.5 sm:px-3 sm:py-1.5 text-xs sm:text-sm text-muted hover:bg-[#124E66] focus:outline-none"
+        className="text-muted flex items-center gap-1 rounded-lg border border-[#2E3944] bg-[#37424D] px-2 py-0.5 text-xs hover:bg-[#124E66] focus:outline-none sm:px-3 sm:py-1.5 sm:text-sm"
       >
         {getDisplayText()}
         <ChevronDownIcon
-          className={`h-3 w-3 sm:h-4 sm:w-4 transition-transform ${isOpen ? "rotate-180" : ""}`}
+          className={`h-3 w-3 transition-transform sm:h-4 sm:w-4 ${isOpen ? 'rotate-180' : ''}`}
         />
       </button>
 
@@ -85,16 +83,16 @@ export default function SubItemsDropdown({
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.18, ease: "easeOut" }}
-            className="absolute right-0 z-10 mt-1 w-24 sm:w-32 rounded-lg border border-[#2E3944] bg-[#37424D] shadow-lg"
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+            className="absolute right-0 z-10 mt-1 w-24 rounded-lg border border-[#2E3944] bg-[#37424D] shadow-lg sm:w-32"
           >
             <button
               onClick={() => {
                 onSelect(null);
                 setIsOpen(false);
               }}
-              className={`w-full px-2 py-1 sm:px-3 sm:py-2 text-left text-xs sm:text-sm text-muted hover:bg-[#124E66] ${
-                selectedSubItem === null ? "bg-[#124E66]" : ""
+              className={`text-muted w-full px-2 py-1 text-left text-xs hover:bg-[#124E66] sm:px-3 sm:py-2 sm:text-sm ${
+                selectedSubItem === null ? 'bg-[#124E66]' : ''
               }`}
             >
               2025
@@ -106,8 +104,8 @@ export default function SubItemsDropdown({
                   onSelect(child);
                   setIsOpen(false);
                 }}
-                className={`w-full px-2 py-1 sm:px-3 sm:py-2 text-left text-xs sm:text-sm text-muted hover:bg-[#124E66] ${
-                  selectedSubItem?.id === child.id ? "bg-[#124E66]" : ""
+                className={`text-muted w-full px-2 py-1 text-left text-xs hover:bg-[#124E66] sm:px-3 sm:py-2 sm:text-sm ${
+                  selectedSubItem?.id === child.id ? 'bg-[#124E66]' : ''
                 }`}
               >
                 {child.sub_name}

@@ -1,19 +1,15 @@
-import React, { Suspense } from "react";
-import { notFound } from "next/navigation";
-import { fetchTradeAd, fetchUsersBatch, fetchComments } from "@/utils/api";
-import { fetchItems } from "@/utils/api";
-import type { Item } from "@/types";
-import TradeDetailsClient from "./TradeDetailsClient";
-import Loading from "./loading";
-import type { TradeItem, TradeAd } from "@/types/trading";
+import React, { Suspense } from 'react';
+import { notFound } from 'next/navigation';
+import { fetchTradeAd, fetchUsersBatch, fetchComments } from '@/utils/api';
+import { fetchItems } from '@/utils/api';
+import type { Item } from '@/types';
+import TradeDetailsClient from './TradeDetailsClient';
+import Loading from './loading';
+import type { TradeItem, TradeAd } from '@/types/trading';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
-export default function TradeDetailsPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default function TradeDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   return (
     <Suspense fallback={<Loading />}>
       <TradeDetailsWrapper params={params} />
@@ -21,11 +17,7 @@ export default function TradeDetailsPage({
   );
 }
 
-async function TradeDetailsWrapper({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+async function TradeDetailsWrapper({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
   const trade = await fetchTradeAd(id);
@@ -63,7 +55,7 @@ async function TradeDetailsWrapper({
     if (subName && Array.isArray(match.children)) {
       const child = match.children.find((c) => c.sub_name === subName);
       const childTrend = child?.data?.trend;
-      if (childTrend && childTrend !== "N/A") return childTrend;
+      if (childTrend && childTrend !== 'N/A') return childTrend;
     }
     return match.trend ?? undefined;
   };
@@ -83,15 +75,11 @@ async function TradeDetailsWrapper({
   };
 
   // Hide if no roblox_id or roblox_username
-  if (
-    !enriched.user ||
-    !enriched.user.roblox_id ||
-    !enriched.user.roblox_username
-  ) {
+  if (!enriched.user || !enriched.user.roblox_id || !enriched.user.roblox_username) {
     notFound();
   }
 
-  const commentsData = await fetchComments("trade", id);
+  const commentsData = await fetchComments('trade', id);
 
   return (
     <TradeDetailsClient

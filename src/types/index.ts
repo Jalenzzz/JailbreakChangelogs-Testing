@@ -1,70 +1,70 @@
 export type ItemType =
-  | "Vehicle"
-  | "Spoiler"
-  | "Rim"
-  | "Body Color"
-  | "HyperChrome"
-  | "Texture"
-  | "Tire Sticker"
-  | "Tire Style"
-  | "Drift"
-  | "Furniture"
-  | "Horn"
-  | "Weapon Skin";
+  | 'Vehicle'
+  | 'Spoiler'
+  | 'Rim'
+  | 'Body Color'
+  | 'HyperChrome'
+  | 'Texture'
+  | 'Tire Sticker'
+  | 'Tire Style'
+  | 'Drift'
+  | 'Furniture'
+  | 'Horn'
+  | 'Weapon Skin';
 
 export type FilterSort =
-  | "name-all-items"
-  | "name-limited-items"
-  | "name-seasonal-items"
-  | "name-vehicles"
-  | "name-spoilers"
-  | "name-rims"
-  | "name-body-colors"
-  | "name-hyperchromes"
-  | "name-textures"
-  | "name-tire-stickers"
-  | "name-tire-styles"
-  | "name-drifts"
-  | "name-furnitures"
-  | "name-horns"
-  | "name-weapon-skins"
-  | "favorites";
+  | 'name-all-items'
+  | 'name-limited-items'
+  | 'name-seasonal-items'
+  | 'name-vehicles'
+  | 'name-spoilers'
+  | 'name-rims'
+  | 'name-body-colors'
+  | 'name-hyperchromes'
+  | 'name-textures'
+  | 'name-tire-stickers'
+  | 'name-tire-styles'
+  | 'name-drifts'
+  | 'name-furnitures'
+  | 'name-horns'
+  | 'name-weapon-skins'
+  | 'favorites';
 
 export type ValueSort =
-  | "random"
-  | "alpha-asc"
-  | "alpha-desc"
-  | "cash-desc"
-  | "cash-asc"
-  | "duped-desc"
-  | "duped-asc"
-  | "demand-desc"
-  | "demand-asc"
-  | "last-updated-desc"
-  | "last-updated-asc"
-  | "times-traded-desc"
-  | "times-traded-asc"
-  | "unique-circulation-desc"
-  | "unique-circulation-asc"
-  | "demand-multiple-desc"
-  | "demand-multiple-asc"
-  | "demand-close-to-none"
-  | "demand-very-low"
-  | "demand-low"
-  | "demand-medium"
-  | "demand-decent"
-  | "demand-high"
-  | "demand-very-high"
-  | "demand-extremely-high"
-  | "trend-stable"
-  | "trend-rising"
-  | "trend-hyped"
-  | "trend-avoided"
-  | "trend-dropping"
-  | "trend-unstable"
-  | "trend-hoarded"
-  | "trend-projected"
-  | "trend-recovering";
+  | 'random'
+  | 'alpha-asc'
+  | 'alpha-desc'
+  | 'cash-desc'
+  | 'cash-asc'
+  | 'duped-desc'
+  | 'duped-asc'
+  | 'demand-desc'
+  | 'demand-asc'
+  | 'last-updated-desc'
+  | 'last-updated-asc'
+  | 'times-traded-desc'
+  | 'times-traded-asc'
+  | 'unique-circulation-desc'
+  | 'unique-circulation-asc'
+  | 'demand-multiple-desc'
+  | 'demand-multiple-asc'
+  | 'demand-close-to-none'
+  | 'demand-very-low'
+  | 'demand-low'
+  | 'demand-medium'
+  | 'demand-decent'
+  | 'demand-high'
+  | 'demand-very-high'
+  | 'demand-extremely-high'
+  | 'trend-stable'
+  | 'trend-rising'
+  | 'trend-hyped'
+  | 'trend-avoided'
+  | 'trend-dropping'
+  | 'trend-unstable'
+  | 'trend-hoarded'
+  | 'trend-projected'
+  | 'trend-recovering';
 
 export interface DupedOwner {
   item_id: number;
@@ -146,8 +146,8 @@ export interface SearchFilters {
   isTradable?: boolean;
 }
 
-export type SortOption = "cash_value";
-export type SortOrder = "asc" | "desc";
+export type SortOption = 'cash_value';
+export type SortOrder = 'asc' | 'desc';
 
 export interface ItemDetails {
   id: number;

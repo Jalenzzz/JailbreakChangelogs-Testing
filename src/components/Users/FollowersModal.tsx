@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -7,14 +7,14 @@ import {
   CircularProgress,
   TextField,
   InputAdornment,
-} from "@mui/material";
-import { XMarkIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { PUBLIC_API_URL } from "@/utils/api";
-import { UserAvatar } from "@/utils/avatar";
-import Link from "next/link";
-import { getToken } from "@/utils/auth";
-import { toast } from "react-hot-toast";
-import { UserSettings } from "@/types/auth";
+} from '@mui/material';
+import { XMarkIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { PUBLIC_API_URL } from '@/utils/api';
+import { UserAvatar } from '@/utils/avatar';
+import Link from 'next/link';
+import { getToken } from '@/utils/auth';
+import { toast } from 'react-hot-toast';
+import { UserSettings } from '@/types/auth';
 
 interface Follower {
   user_id: string;
@@ -46,7 +46,7 @@ interface FollowersModalProps {
   userId: string;
   isOwnProfile: boolean;
   currentUserId: string | null;
-  onFollowChange?: (type: "add" | "remove") => void;
+  onFollowChange?: (type: 'add' | 'remove') => void;
   userData: User;
 }
 
@@ -65,7 +65,7 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
   }>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [followingStatus, setFollowingStatus] = useState<{
     [key: string]: boolean;
   }>({});
@@ -91,9 +91,7 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
           return;
         }
 
-        const response = await fetch(
-          `${PUBLIC_API_URL}/users/followers/get?user=${userId}`,
-        );
+        const response = await fetch(`${PUBLIC_API_URL}/users/followers/get?user=${userId}`);
 
         if (response.status === 404) {
           setFollowers([]);
@@ -102,7 +100,7 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
         }
 
         if (!response.ok) {
-          throw new Error("Failed to fetch followers");
+          throw new Error('Failed to fetch followers');
         }
 
         const data = await response.json();
@@ -116,9 +114,7 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
         setFollowers(data);
 
         // Fetch details for each follower
-        const followerIds = data.map(
-          (follower: Follower) => follower.follower_id,
-        );
+        const followerIds = data.map((follower: Follower) => follower.follower_id);
         const uniqueFollowerIds = [...new Set(followerIds)];
 
         // Filter out the current user's own ID since we already have that data
@@ -127,7 +123,7 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
         try {
           if (idsToFetch.length > 0) {
             const userResponse = await fetch(
-              `${PUBLIC_API_URL}/users/get/batch?ids=${idsToFetch.join(",")}&nocache=true`,
+              `${PUBLIC_API_URL}/users/get/batch?ids=${idsToFetch.join(',')}&nocache=true`,
             );
             if (userResponse.ok) {
               const userDataArray = await userResponse.json();
@@ -153,12 +149,12 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
             setFollowerDetails({});
           }
         } catch (err) {
-          console.error("Error fetching follower details:", err);
+          console.error('Error fetching follower details:', err);
           setFollowerDetails({});
         }
       } catch (err) {
-        console.error("Error fetching followers:", err);
-        setError("Failed to load followers");
+        console.error('Error fetching followers:', err);
+        setError('Failed to load followers');
       } finally {
         setLoading(false);
         setIsInitialLoad(false);
@@ -175,9 +171,7 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
       if (!isOpen || !currentUserId) return;
 
       try {
-        const response = await fetch(
-          `${PUBLIC_API_URL}/users/following/get?user=${currentUserId}`,
-        );
+        const response = await fetch(`${PUBLIC_API_URL}/users/following/get?user=${currentUserId}`);
         if (!response.ok) return;
 
         const followingData = await response.json();
@@ -193,7 +187,7 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
 
         setFollowingStatus(statusMap);
       } catch (err) {
-        console.error("Error fetching following status:", err);
+        console.error('Error fetching following status:', err);
       }
     };
 
@@ -207,29 +201,29 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
     try {
       const token = getToken();
       if (!token) {
-        toast.error("You need to be logged in to follow users");
+        toast.error('You need to be logged in to follow users');
         return;
       }
 
       const response = await fetch(`${PUBLIC_API_URL}/users/followers/add`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ follower: token, following: followerId }),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to follow user");
+        throw new Error('Failed to follow user');
       }
 
       setFollowingStatus((prev) => ({ ...prev, [followerId]: true }));
-      onFollowChange?.("add");
-      toast.success("Successfully followed user");
+      onFollowChange?.('add');
+      toast.success('Successfully followed user');
 
       // Refresh followers list after successful follow
       setIsInitialLoad(true);
     } catch (err) {
-      console.error("Error following user:", err);
-      toast.error("Failed to follow user");
+      console.error('Error following user:', err);
+      toast.error('Failed to follow user');
     } finally {
       setLoadingFollow((prev) => ({ ...prev, [followerId]: false }));
     }
@@ -254,35 +248,35 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
       slotProps={{
         paper: {
           style: {
-            backgroundColor: "#212A31",
-            color: "#D3D9D4",
-            maxHeight: "70vh",
-            margin: "8px",
-            width: "calc(100% - 16px)",
+            backgroundColor: '#212A31',
+            color: '#D3D9D4',
+            maxHeight: '70vh',
+            margin: '8px',
+            width: 'calc(100% - 16px)',
           },
         },
       }}
     >
       <DialogTitle className="flex items-center justify-between border-b border-[#2E3944] p-2 sm:p-4">
-        <span className="text-muted font-semibold w-full text-center text-sm sm:text-base">
+        <span className="text-muted w-full text-center text-sm font-semibold sm:text-base">
           Followers
         </span>
         <IconButton
           onClick={onClose}
           className="text-muted hover:text-[#FFFFFF]"
           size="small"
-          sx={{ position: "absolute", right: 4, top: 4 }}
+          sx={{ position: 'absolute', right: 4, top: 4 }}
         >
-          <XMarkIcon className="h-4 w-4 sm:h-5 sm:w-5 text-[#FFFFFF]" />
+          <XMarkIcon className="h-4 w-4 text-[#FFFFFF] sm:h-5 sm:w-5" />
         </IconButton>
       </DialogTitle>
-      <DialogContent sx={{ padding: "12px !important", overflowY: "auto" }}>
+      <DialogContent sx={{ padding: '12px !important', overflowY: 'auto' }}>
         {loading ? (
           <div className="flex justify-center py-4 sm:py-8">
-            <CircularProgress sx={{ color: "#5865F2" }} />
+            <CircularProgress sx={{ color: '#5865F2' }} />
           </div>
         ) : isPrivate ? (
-          <div className="text-center py-4 sm:py-8 text-[#FFFFFF] text-sm">
+          <div className="py-4 text-center text-sm text-[#FFFFFF] sm:py-8">
             This user has hidden their followers
           </div>
         ) : (
@@ -297,54 +291,52 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <MagnifyingGlassIcon className="h-4 w-4 sm:h-5 sm:w-5 text-[#FFFFFF]" />
+                      <MagnifyingGlassIcon className="h-4 w-4 text-[#FFFFFF] sm:h-5 sm:w-5" />
                     </InputAdornment>
                   ),
                   endAdornment: searchQuery && (
                     <InputAdornment position="end">
                       <IconButton
-                        onClick={() => setSearchQuery("")}
+                        onClick={() => setSearchQuery('')}
                         size="small"
                         className="text-muted hover:text-[#FFFFFF]"
                       >
-                        <XMarkIcon className="h-3 w-3 sm:h-4 sm:w-4 text-[#FFFFFF]" />
+                        <XMarkIcon className="h-3 w-3 text-[#FFFFFF] sm:h-4 sm:w-4" />
                       </IconButton>
                     </InputAdornment>
                   ),
                 }}
                 sx={{
-                  "& .MuiOutlinedInput-root": {
-                    color: "#D3D9D4",
-                    backgroundColor: "#1A2228",
-                    "& fieldset": {
-                      borderColor: "#2E3944",
+                  '& .MuiOutlinedInput-root': {
+                    color: '#D3D9D4',
+                    backgroundColor: '#1A2228',
+                    '& fieldset': {
+                      borderColor: '#2E3944',
                     },
-                    "&:hover fieldset": {
-                      borderColor: "#FFFFFF",
+                    '&:hover fieldset': {
+                      borderColor: '#FFFFFF',
                     },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#5865F2",
+                    '&.Mui-focused fieldset': {
+                      borderColor: '#5865F2',
                     },
                   },
-                  "& .MuiInputBase-input": {
-                    color: "#D3D9D4",
-                    padding: "8px 12px",
-                    fontSize: "14px",
+                  '& .MuiInputBase-input': {
+                    color: '#D3D9D4',
+                    padding: '8px 12px',
+                    fontSize: '14px',
                   },
-                  "& .MuiInputBase-input::placeholder": {
-                    color: "#FFFFFF",
+                  '& .MuiInputBase-input::placeholder': {
+                    color: '#FFFFFF',
                     opacity: 1,
                   },
                 }}
               />
             </div>
             {error ? (
-              <div className="text-center py-4 sm:py-8 text-[#FF6B6B] text-sm">
-                {error}
-              </div>
+              <div className="py-4 text-center text-sm text-[#FF6B6B] sm:py-8">{error}</div>
             ) : filteredFollowers.length === 0 ? (
-              <div className="text-center py-4 sm:py-8 text-[#FFFFFF] text-sm">
-                {searchQuery ? "No results found" : "No followers yet"}
+              <div className="py-4 text-center text-sm text-[#FFFFFF] sm:py-8">
+                {searchQuery ? 'No results found' : 'No followers yet'}
               </div>
             ) : (
               <div className="space-y-1 sm:space-y-4">
@@ -353,38 +345,28 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
                   if (!user) return null;
 
                   const isCurrentUser = currentUserId === user.id;
-                  const isPrivateProfile =
-                    user.settings?.profile_public === 0 && !isCurrentUser;
+                  const isPrivateProfile = user.settings?.profile_public === 0 && !isCurrentUser;
 
                   return (
-                    <div
-                      key={follower.follower_id}
-                      className="flex items-center justify-between"
-                    >
+                    <div key={follower.follower_id} className="flex items-center justify-between">
                       <Link
-                        href={isPrivateProfile ? "#" : `/users/${user.id}`}
+                        href={isPrivateProfile ? '#' : `/users/${user.id}`}
                         prefetch={false}
-                        className={`flex-1 block p-1.5 sm:p-3 rounded-lg transition-colors ${
-                          isPrivateProfile
-                            ? "cursor-not-allowed opacity-75"
-                            : "hover:bg-[#2E3944]"
+                        className={`block flex-1 rounded-lg p-1.5 transition-colors sm:p-3 ${
+                          isPrivateProfile ? 'cursor-not-allowed opacity-75' : 'hover:bg-[#2E3944]'
                         }`}
                         onClick={(e) => {
                           if (isPrivateProfile) {
                             e.preventDefault();
                           }
                         }}
-                        title={
-                          isPrivateProfile
-                            ? "This profile is private"
-                            : undefined
-                        }
+                        title={isPrivateProfile ? 'This profile is private' : undefined}
                       >
                         <div className="flex items-center space-x-1.5 sm:space-x-3">
                           {isPrivateProfile ? (
-                            <div className="w-10 h-10 rounded-full bg-[#1E2328] flex items-center justify-center border border-[#2E3944]">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#2E3944] bg-[#1E2328]">
                               <svg
-                                className="w-5 h-5 text-[#FFFFFF]"
+                                className="h-5 w-5 text-[#FFFFFF]"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -412,11 +394,10 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
                           )}
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-1 sm:gap-2">
-                              <h3 className="text-sm sm:text-base font-semibold text-muted truncate max-w-[180px] sm:max-w-[250px]">
+                              <h3 className="text-muted max-w-[180px] truncate text-sm font-semibold sm:max-w-[250px] sm:text-base">
                                 {isPrivateProfile
-                                  ? "Hidden User"
-                                  : user.global_name &&
-                                      user.global_name !== "None"
+                                  ? 'Hidden User'
+                                  : user.global_name && user.global_name !== 'None'
                                     ? user.global_name
                                     : user.username}
                               </h3>
@@ -432,24 +413,19 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
                                       handleFollow(user.id);
                                     }}
                                     disabled={loadingFollow[user.id]}
-                                    className="text-[#5865F2] hover:text-[#4752C4] disabled:text-[#FFFFFF] disabled:cursor-not-allowed text-xs sm:text-sm whitespace-nowrap"
+                                    className="text-xs whitespace-nowrap text-[#5865F2] hover:text-[#4752C4] disabled:cursor-not-allowed disabled:text-[#FFFFFF] sm:text-sm"
                                   >
                                     {loadingFollow[user.id] ? (
-                                      <CircularProgress
-                                        size={10}
-                                        sx={{ color: "#5865F2" }}
-                                      />
+                                      <CircularProgress size={10} sx={{ color: '#5865F2' }} />
                                     ) : (
-                                      "Follow"
+                                      'Follow'
                                     )}
                                   </button>
                                 </>
                               )}
                             </div>
-                            <p className="text-[10px] sm:text-sm text-[#FFFFFF] truncate max-w-[180px] sm:max-w-[250px]">
-                              {isPrivateProfile
-                                ? "Private Profile"
-                                : `@${user.username}`}
+                            <p className="max-w-[180px] truncate text-[10px] text-[#FFFFFF] sm:max-w-[250px] sm:text-sm">
+                              {isPrivateProfile ? 'Private Profile' : `@${user.username}`}
                             </p>
                           </div>
                         </div>

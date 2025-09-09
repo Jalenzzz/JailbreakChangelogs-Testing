@@ -1,11 +1,11 @@
-import React from "react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
-import { toast } from "react-hot-toast";
-import { PUBLIC_API_URL } from "@/utils/api";
-import { getToken } from "@/utils/auth";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import React from 'react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
+import { toast } from 'react-hot-toast';
+import { PUBLIC_API_URL } from '@/utils/api';
+import { getToken } from '@/utils/auth';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 interface AddServerModalProps {
   isOpen: boolean;
@@ -26,13 +26,11 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
   onServerAdded,
   editingServer,
 }) => {
-  const [link, setLink] = React.useState("");
-  const [rules, setRules] = React.useState("");
+  const [link, setLink] = React.useState('');
+  const [rules, setRules] = React.useState('');
   const [expires, setExpires] = React.useState<Date | null>(null);
   const [neverExpires, setNeverExpires] = React.useState(false);
-  const [originalExpires, setOriginalExpires] = React.useState<Date | null>(
-    null,
-  );
+  const [originalExpires, setOriginalExpires] = React.useState<Date | null>(null);
   const [loading, setLoading] = React.useState(false);
 
   // Character limits
@@ -50,18 +48,18 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
       .split(/\r?\n/)
       .map((line) => line.trim())
       .filter((line) => line.length > 0)
-      .join("\n");
+      .join('\n');
   };
 
   // Prevent background scrolling when modal is open
   React.useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = 'unset';
     }
     return () => {
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = 'unset';
     };
   }, [isOpen]);
 
@@ -70,7 +68,7 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
     if (isOpen) {
       const token = getToken();
       if (!token) {
-        toast.error("Please log in to add a server");
+        toast.error('Please log in to add a server');
         onClose();
         return;
       }
@@ -78,22 +76,20 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
       if (editingServer) {
         setLink(editingServer.link);
         setRules(editingServer.rules);
-        if (editingServer.expires === "Never") {
+        if (editingServer.expires === 'Never') {
           setNeverExpires(true);
           setExpires(null);
           setOriginalExpires(null);
         } else {
-          const expirationDate = new Date(
-            parseInt(editingServer.expires) * 1000,
-          );
+          const expirationDate = new Date(parseInt(editingServer.expires) * 1000);
           setNeverExpires(false);
           setExpires(expirationDate);
           setOriginalExpires(expirationDate);
         }
       } else {
         // Reset form for new server
-        setLink("");
-        setRules("");
+        setLink('');
+        setRules('');
         setExpires(null);
         setOriginalExpires(null);
         setNeverExpires(false);
@@ -103,7 +99,7 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
 
   const handleSubmit = async () => {
     if (!link.trim()) {
-      toast.error("Please enter a server link");
+      toast.error('Please enter a server link');
       return;
     }
 
@@ -113,7 +109,7 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
     }
 
     if (!neverExpires && !expires) {
-      toast.error("Please select an expiration date");
+      toast.error('Please select an expiration date');
       return;
     }
 
@@ -121,7 +117,7 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
     if (!neverExpires && expires) {
       const now = new Date();
       if (expires < now) {
-        toast.error("Expiration date cannot be in the past");
+        toast.error('Expiration date cannot be in the past');
         return;
       }
 
@@ -129,14 +125,14 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
       const sevenDaysFromNow = new Date();
       sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
       if (expires < sevenDaysFromNow) {
-        toast.error("Expiration date must be at least 7 days from now");
+        toast.error('Expiration date must be at least 7 days from now');
         return;
       }
     }
 
     const token = getToken();
     if (!token) {
-      toast.error("You must be logged in to add a server");
+      toast.error('You must be logged in to add a server');
       return;
     }
 
@@ -151,16 +147,16 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
         : `${PUBLIC_API_URL}/servers/add`;
 
       const response = await fetch(endpoint, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           link: link.trim(),
-          rules: cleanRulesText(rules) || "N/A",
+          rules: cleanRulesText(rules) || 'N/A',
           expires:
             neverExpires || (expires && expires > oneYearFromNow)
-              ? "Never"
+              ? 'Never'
               : expires
                 ? String(Math.floor(expires.getTime() / 1000))
                 : null,
@@ -170,29 +166,23 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
 
       if (response.ok) {
         toast.success(
-          editingServer
-            ? "Server updated successfully!"
-            : "Server added successfully!",
+          editingServer ? 'Server updated successfully!' : 'Server added successfully!',
         );
         onServerAdded();
         onClose();
       } else {
-        const errorData = await response
-          .json()
-          .catch(() => ({ message: "Failed to save server" }));
+        const errorData = await response.json().catch(() => ({ message: 'Failed to save server' }));
         if (response.status === 409) {
-          toast.error("This server already exists");
+          toast.error('This server already exists');
         } else if (response.status === 403) {
-          toast.error(
-            "Server link must start with: https://www.roblox.com/share?code=",
-          );
+          toast.error('Server link must start with: https://www.roblox.com/share?code=');
         } else {
           toast.error(`Error saving server: ${errorData.message}`);
         }
       }
     } catch (err) {
-      toast.error("An error occurred while saving the server");
-      console.error("Save server error:", err);
+      toast.error('An error occurred while saving the server');
+      console.error('Save server error:', err);
     } finally {
       setLoading(false);
     }
@@ -203,21 +193,18 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
-      />
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal */}
       <div className="relative w-full max-w-md rounded-lg bg-[#212A31] shadow-xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[#2E3944] p-4">
-          <h2 className="text-xl font-semibold text-muted">
-            {editingServer ? "Edit Server" : "Add New Server"}
+          <h2 className="text-muted text-xl font-semibold">
+            {editingServer ? 'Edit Server' : 'Add New Server'}
           </h2>
           <button
             onClick={onClose}
-            className="rounded-md p-1 text-[#FFFFFF] hover:bg-[#2E3944] hover:text-muted"
+            className="hover:text-muted rounded-md p-1 text-[#FFFFFF] hover:bg-[#2E3944]"
           >
             <XMarkIcon className="h-5 w-5" />
           </button>
@@ -227,10 +214,7 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
         <div className="max-h-[calc(100vh-200px)] overflow-y-auto p-6">
           <div className="space-y-6">
             <div>
-              <label
-                htmlFor="server-link"
-                className="mb-2 block text-sm font-medium text-muted"
-              >
+              <label htmlFor="server-link" className="text-muted mb-2 block text-sm font-medium">
                 Server Link <span className="text-red-500">*</span>
               </label>
               <input
@@ -238,7 +222,7 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
                 type="text"
                 value={link}
                 onChange={(e) => setLink(e.target.value)}
-                className="w-full rounded-md border border-[#2E3944] bg-[#2E3944] px-3 py-2 text-muted placeholder-[#FFFFFF] focus:border-[#5865F2] focus:outline-none"
+                className="text-muted w-full rounded-md border border-[#2E3944] bg-[#2E3944] px-3 py-2 placeholder-[#FFFFFF] focus:border-[#5865F2] focus:outline-none"
                 placeholder="Enter the server link"
               />
               <p className="mt-1 text-sm text-[#FFFFFF]">
@@ -247,10 +231,7 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
             </div>
 
             <div>
-              <label
-                htmlFor="server-rules"
-                className="mb-2 block text-sm font-medium text-muted"
-              >
+              <label htmlFor="server-rules" className="text-muted mb-2 block text-sm font-medium">
                 Server Rules
               </label>
               <textarea
@@ -259,12 +240,11 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
                 onChange={(e) => handleRulesChange(e.target.value)}
                 rows={4}
                 maxLength={MAX_RULES_LENGTH}
-                className="w-full rounded-md border border-[#2E3944] bg-[#2E3944] px-3 py-2 text-muted placeholder-[#FFFFFF] focus:border-[#5865F2] focus:outline-none"
+                className="text-muted w-full rounded-md border border-[#2E3944] bg-[#2E3944] px-3 py-2 placeholder-[#FFFFFF] focus:border-[#5865F2] focus:outline-none"
                 placeholder="Enter the server rules"
               />
               <p className="mt-1 text-sm text-[#FFFFFF]">
-                Optional: Add any specific rules or requirements for joining the
-                server
+                Optional: Add any specific rules or requirements for joining the server
               </p>
             </div>
 
@@ -283,7 +263,7 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
                   }}
                   className="h-4 w-4 rounded border-[#2E3944] bg-[#2E3944] text-[#5865F2] focus:ring-[#5865F2]"
                 />
-                <span className="text-sm text-muted">Never Expires</span>
+                <span className="text-muted text-sm">Never Expires</span>
               </label>
               <p className="mt-1 text-sm text-[#FFFFFF]">
                 Check this if the server link should remain active indefinitely
@@ -291,7 +271,7 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
             </div>
 
             <div>
-              <div className="mb-2 flex items-center text-sm font-medium text-muted">
+              <div className="text-muted mb-2 flex items-center text-sm font-medium">
                 Expires <span className="text-red-500">*</span>
               </div>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -303,22 +283,22 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
                   slotProps={{
                     textField: {
                       fullWidth: true,
-                      variant: "outlined",
-                      placeholder: "Select expiration date",
+                      variant: 'outlined',
+                      placeholder: 'Select expiration date',
                       sx: {
-                        "& .MuiOutlinedInput-root": {
-                          backgroundColor: "#2E3944",
-                          borderColor: "#2E3944",
-                          color: "#D3D9D4",
-                          "&:hover": {
-                            borderColor: "#5865F2",
+                        '& .MuiOutlinedInput-root': {
+                          backgroundColor: '#2E3944',
+                          borderColor: '#2E3944',
+                          color: '#D3D9D4',
+                          '&:hover': {
+                            borderColor: '#5865F2',
                           },
-                          "&.Mui-focused": {
-                            borderColor: "#5865F2",
+                          '&.Mui-focused': {
+                            borderColor: '#5865F2',
                           },
                         },
-                        "& .MuiInputLabel-root": {
-                          color: "#D3D9D4",
+                        '& .MuiInputLabel-root': {
+                          color: '#D3D9D4',
                         },
                       },
                     },
@@ -326,8 +306,7 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
                 />
               </LocalizationProvider>
               <p className="mt-1 text-sm text-[#FFFFFF]">
-                When will this server link expire? Must be at least 7 days from
-                now
+                When will this server link expire? Must be at least 7 days from now
               </p>
             </div>
 
@@ -335,22 +314,22 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
             <div className="mt-8 flex justify-end space-x-4 border-t border-[#2E3944] pt-6">
               <button
                 onClick={onClose}
-                className="rounded-md px-4 py-2 text-sm font-medium text-muted hover:bg-[#2E3944]"
+                className="text-muted rounded-md px-4 py-2 text-sm font-medium hover:bg-[#2E3944]"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={loading}
-                className="rounded-md bg-[#5865F2] px-4 py-2 text-sm font-medium text-white hover:bg-[#4752C4] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="rounded-md bg-[#5865F2] px-4 py-2 text-sm font-medium text-white hover:bg-[#4752C4] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {loading
                   ? editingServer
-                    ? "Saving Changes..."
-                    : "Adding Server..."
+                    ? 'Saving Changes...'
+                    : 'Adding Server...'
                   : editingServer
-                    ? "Edit Server"
-                    : "Add Server"}
+                    ? 'Edit Server'
+                    : 'Add Server'}
               </button>
             </div>
           </div>

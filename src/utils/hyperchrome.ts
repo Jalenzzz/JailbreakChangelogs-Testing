@@ -23,7 +23,5 @@ export function calculateAllLevelPercentages(
     (baseForLevel * Math.min(Math.max(currentPityPercent, 0), 100)) / 100,
   );
 
-  return HYPERCHROME_PITY.map((value) =>
-    ((currentProgressAbsolute / value) * 100).toFixed(2),
-  );
+  return HYPERCHROME_PITY.map((value) => ((currentProgressAbsolute / value) * 100).toFixed(2));
 }

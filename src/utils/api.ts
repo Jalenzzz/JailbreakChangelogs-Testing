@@ -7,7 +7,7 @@ interface User {
   accent_color: string;
   custom_avatar?: string;
   presence?: {
-    status: "Online" | "Offline";
+    status: 'Online' | 'Offline';
     last_updated: number;
   };
 }
@@ -39,22 +39,20 @@ export interface Season {
   rewards: Reward[];
 }
 
-import { Item, ItemDetails, RobloxUser } from "@/types";
-import { UserData } from "@/types/auth";
-import type WebSocket from "ws";
+import { Item, ItemDetails, RobloxUser } from '@/types';
+import { UserData } from '@/types/auth';
+import type WebSocket from 'ws';
 
 export const BASE_API_URL =
-  process.env.NEXT_PHASE === "phase-production-build" ||
-  process.env.RAILWAY_ENVIRONMENT_NAME !== "production"
+  process.env.NEXT_PHASE === 'phase-production-build' ||
+  process.env.RAILWAY_ENVIRONMENT_NAME !== 'production'
     ? process.env.NEXT_PUBLIC_API_URL
     : process.env.RAILWAY_INTERNAL_API_URL;
 
 export const PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 export const INVENTORY_API_URL = process.env.NEXT_PUBLIC_INVENTORY_API_URL;
-export const CREW_LEADERBOARD_BASE_URL =
-  process.env.NEXT_PUBLIC_CREW_LEADERBOARD_BASE_URL;
-export const INVENTORY_WS_URL = process.env
-  .NEXT_PUBLIC_INVENTORY_WS_URL as string;
+export const CREW_LEADERBOARD_BASE_URL = process.env.NEXT_PUBLIC_CREW_LEADERBOARD_BASE_URL;
+export const INVENTORY_WS_URL = process.env.NEXT_PUBLIC_INVENTORY_WS_URL as string;
 export interface OnlineUser {
   id: string;
   username: string;
@@ -74,21 +72,18 @@ export const fetchUsers = async () => {
 
 export async function fetchUserById(id: string) {
   try {
-    const response = await fetch(
-      `${BASE_API_URL}/users/get?id=${id}&nocache=true`,
-    );
+    const response = await fetch(`${BASE_API_URL}/users/get?id=${id}&nocache=true`);
     const data = await response.json();
 
     if (!response.ok) {
       // Handle banned users specifically without logging the error response
       if (response.status === 403) {
-        const errorMessage =
-          data.detail || "This user is banned from Jailbreak Changelogs.";
+        const errorMessage = data.detail || 'This user is banned from Jailbreak Changelogs.';
         throw new Error(`BANNED_USER: ${errorMessage}`);
       }
 
       // Log error response for other types of errors
-      console.error("Error response:", {
+      console.error('Error response:', {
         status: response.status,
         statusText: response.statusText,
         data: JSON.stringify(data, null, 2),
@@ -104,15 +99,15 @@ export async function fetchUserById(id: string) {
 
     return data;
   } catch (error) {
-    console.error("Error fetching user by ID:", error);
+    console.error('Error fetching user by ID:', error);
 
     // Re-throw BANNED_USER errors so calling code can handle them
     if (
       error &&
-      typeof error === "object" &&
-      "message" in error &&
-      typeof error.message === "string" &&
-      error.message.startsWith("BANNED_USER:")
+      typeof error === 'object' &&
+      'message' in error &&
+      typeof error.message === 'string' &&
+      error.message.startsWith('BANNED_USER:')
     ) {
       throw error;
     }
@@ -124,33 +119,30 @@ export async function fetchUserById(id: string) {
 export async function fetchUserByIdForOG(id: string) {
   try {
     const fields = [
-      "id",
-      "username",
-      "global_name",
-      "usernumber",
-      "accent_color",
-      "avatar",
-      "banner",
-      "custom_avatar",
-      "custom_banner",
-      "settings",
-    ].join(",");
+      'id',
+      'username',
+      'global_name',
+      'usernumber',
+      'accent_color',
+      'avatar',
+      'banner',
+      'custom_avatar',
+      'custom_banner',
+      'settings',
+    ].join(',');
 
-    const response = await fetch(
-      `${BASE_API_URL}/users/get?id=${id}&fields=${fields}`,
-    );
+    const response = await fetch(`${BASE_API_URL}/users/get?id=${id}&fields=${fields}`);
     const data = await response.json();
 
     if (!response.ok) {
       // Handle banned users specifically without logging the error response
       if (response.status === 403) {
-        const errorMessage =
-          data.detail || "This user is banned from Jailbreak Changelogs.";
+        const errorMessage = data.detail || 'This user is banned from Jailbreak Changelogs.';
         throw new Error(`BANNED_USER: ${errorMessage}`);
       }
 
       // Log error response for other types of errors
-      console.error("Error response:", {
+      console.error('Error response:', {
         status: response.status,
         statusText: response.statusText,
         data: JSON.stringify(data, null, 2),
@@ -166,15 +158,15 @@ export async function fetchUserByIdForOG(id: string) {
 
     return data;
   } catch (error) {
-    console.error("Error fetching user by ID for OG:", error);
+    console.error('Error fetching user by ID for OG:', error);
 
     // Re-throw BANNED_USER errors so calling code can handle them
     if (
       error &&
-      typeof error === "object" &&
-      "message" in error &&
-      typeof error.message === "string" &&
-      error.message.startsWith("BANNED_USER:")
+      typeof error === 'object' &&
+      'message' in error &&
+      typeof error.message === 'string' &&
+      error.message.startsWith('BANNED_USER:')
     ) {
       throw error;
     }
@@ -185,23 +177,20 @@ export async function fetchUserByIdForOG(id: string) {
 
 export async function fetchUserByIdForMetadata(id: string) {
   try {
-    const fields = ["accent_color", "global_name", "username"].join(",");
+    const fields = ['accent_color', 'global_name', 'username'].join(',');
 
-    const response = await fetch(
-      `${BASE_API_URL}/users/get?id=${id}&fields=${fields}`,
-    );
+    const response = await fetch(`${BASE_API_URL}/users/get?id=${id}&fields=${fields}`);
     const data = await response.json();
 
     if (!response.ok) {
       // Handle banned users specifically without logging the error response
       if (response.status === 403) {
-        const errorMessage =
-          data.detail || "This user is banned from Jailbreak Changelogs.";
+        const errorMessage = data.detail || 'This user is banned from Jailbreak Changelogs.';
         throw new Error(`BANNED_USER: ${errorMessage}`);
       }
 
       // Log error response for other types of errors
-      console.error("Error response:", {
+      console.error('Error response:', {
         status: response.status,
         statusText: response.statusText,
         data: JSON.stringify(data, null, 2),
@@ -217,15 +206,15 @@ export async function fetchUserByIdForMetadata(id: string) {
 
     return data;
   } catch (error) {
-    console.error("Error fetching user by ID for metadata:", error);
+    console.error('Error fetching user by ID for metadata:', error);
 
     // Re-throw BANNED_USER errors so calling code can handle them
     if (
       error &&
-      typeof error === "object" &&
-      "message" in error &&
-      typeof error.message === "string" &&
-      error.message.startsWith("BANNED_USER:")
+      typeof error === 'object' &&
+      'message' in error &&
+      typeof error.message === 'string' &&
+      error.message.startsWith('BANNED_USER:')
     ) {
       throw error;
     }
@@ -236,26 +225,24 @@ export async function fetchUserByIdForMetadata(id: string) {
 
 export const fetchUsersForList = async () => {
   const fields = [
-    "id",
-    "username",
-    "global_name",
-    "avatar",
-    "usernumber",
-    "accent_color",
-    "custom_avatar",
-    "settings",
-    "premiumtype",
-    "created_at",
-    "roblox_id",
-    "roblox_username",
-    "roblox_display_name",
-    "roblox_avatar",
-    "roblox_join_date",
-  ].join(",");
+    'id',
+    'username',
+    'global_name',
+    'avatar',
+    'usernumber',
+    'accent_color',
+    'custom_avatar',
+    'settings',
+    'premiumtype',
+    'created_at',
+    'roblox_id',
+    'roblox_username',
+    'roblox_display_name',
+    'roblox_avatar',
+    'roblox_join_date',
+  ].join(',');
 
-  const response = await fetch(
-    `${BASE_API_URL}/users/list?fields=${fields}&nocache=true`,
-  );
+  const response = await fetch(`${BASE_API_URL}/users/list?fields=${fields}&nocache=true`);
   const data = await response.json();
   return data.sort((a: User, b: User) => a.usernumber - b.usernumber);
 };
@@ -263,11 +250,11 @@ export const fetchUsersForList = async () => {
 export async function fetchItems() {
   try {
     const response = await fetch(`${BASE_API_URL}/items/list`);
-    if (!response.ok) throw new Error("Failed to fetch items");
+    if (!response.ok) throw new Error('Failed to fetch items');
     const data = await response.json();
     return data as Item[];
   } catch (err) {
-    console.error("[SERVER] Error fetching items:", err);
+    console.error('[SERVER] Error fetching items:', err);
     return [];
   }
 }
@@ -275,7 +262,7 @@ export async function fetchItems() {
 export async function fetchLastUpdated(items: Item[]) {
   try {
     if (!items || items.length === 0) {
-      console.log("No items provided for last updated");
+      console.log('No items provided for last updated');
       return null;
     }
 
@@ -298,10 +285,8 @@ export async function fetchLastUpdated(items: Item[]) {
 
     // Sort all items by last_updated in descending order and get the most recent
     const mostRecentItem = [...allItems].sort((a, b) => {
-      const aTime =
-        a.last_updated < 10000000000 ? a.last_updated * 1000 : a.last_updated;
-      const bTime =
-        b.last_updated < 10000000000 ? b.last_updated * 1000 : b.last_updated;
+      const aTime = a.last_updated < 10000000000 ? a.last_updated * 1000 : a.last_updated;
+      const bTime = b.last_updated < 10000000000 ? b.last_updated * 1000 : b.last_updated;
       return bTime - aTime;
     })[0];
 
@@ -312,15 +297,12 @@ export async function fetchLastUpdated(items: Item[]) {
         : mostRecentItem.last_updated;
     return rawTimestamp;
   } catch (err) {
-    console.error("Error getting last updated time:", err);
+    console.error('Error getting last updated time:', err);
     return null;
   }
 }
 
-export async function fetchItem(
-  type: string,
-  name: string,
-): Promise<ItemDetails | null> {
+export async function fetchItem(type: string, name: string): Promise<ItemDetails | null> {
   try {
     const itemName = decodeURIComponent(name);
     const itemType = decodeURIComponent(type);
@@ -330,7 +312,7 @@ export async function fetchItem(
     );
 
     if (!response.ok) {
-      console.log("[SERVER] Item not found:", {
+      console.log('[SERVER] Item not found:', {
         type: itemType,
         name: itemName,
       });
@@ -340,34 +322,32 @@ export async function fetchItem(
     const data = await response.json();
     return data as ItemDetails;
   } catch (err) {
-    console.error("[SERVER] Error fetching item:", err);
+    console.error('[SERVER] Error fetching item:', err);
     return null;
   }
 }
 
 export async function fetchChangelogList(): Promise<Changelog[]> {
   const response = await fetch(`${BASE_API_URL}/changelogs/list`);
-  if (!response.ok) throw new Error("Failed to fetch changelog list");
+  if (!response.ok) throw new Error('Failed to fetch changelog list');
   return response.json();
 }
 
 export async function fetchChangelog(id: string): Promise<Changelog> {
   const response = await fetch(`${BASE_API_URL}/changelogs/get?id=${id}`);
-  if (!response.ok) throw new Error("Failed to fetch changelog");
+  if (!response.ok) throw new Error('Failed to fetch changelog');
   return response.json();
 }
 
 export async function fetchLatestChangelog(): Promise<Changelog> {
   const response = await fetch(`${BASE_API_URL}/changelogs/latest`);
-  if (!response.ok) throw new Error("Failed to fetch latest changelog");
+  if (!response.ok) throw new Error('Failed to fetch latest changelog');
   return response.json();
 }
 
 export async function fetchItemsChangelog(id: string) {
   try {
-    const response = await fetch(
-      `${BASE_API_URL}/items/changelogs/get?id=${id}`,
-    );
+    const response = await fetch(`${BASE_API_URL}/items/changelogs/get?id=${id}`);
 
     if (response.status === 404) {
       console.log(`[SERVER] Items changelog ${id} not found`);
@@ -375,13 +355,13 @@ export async function fetchItemsChangelog(id: string) {
     }
 
     if (!response.ok) {
-      throw new Error("Failed to fetch items changelog");
+      throw new Error('Failed to fetch items changelog');
     }
 
     const data = await response.json();
     return data;
   } catch (err) {
-    console.error("[SERVER] Error fetching items changelog:", err);
+    console.error('[SERVER] Error fetching items changelog:', err);
     return null;
   }
 }
@@ -393,12 +373,12 @@ export async function fetchItemChanges(id: string) {
       return [] as unknown[];
     }
     if (!response.ok) {
-      throw new Error("Failed to fetch item changes");
+      throw new Error('Failed to fetch item changes');
     }
     const data = await response.json();
     return data;
   } catch (err) {
-    console.error("[SERVER] Error fetching item changes:", err);
+    console.error('[SERVER] Error fetching item changes:', err);
     return [] as unknown[];
   }
 }
@@ -413,13 +393,13 @@ export async function fetchTradeAds() {
     }
 
     if (!response.ok) {
-      throw new Error("Failed to fetch trade ads");
+      throw new Error('Failed to fetch trade ads');
     }
 
     const data = await response.json();
     return data;
   } catch (err) {
-    console.error("[SERVER] Error fetching trade ads:", err);
+    console.error('[SERVER] Error fetching trade ads:', err);
     return [];
   }
 }
@@ -434,13 +414,13 @@ export async function fetchTradeAd(id: string) {
     }
 
     if (!response.ok) {
-      throw new Error("Failed to fetch trade ad");
+      throw new Error('Failed to fetch trade ad');
     }
 
     const data = await response.json();
     return data;
   } catch (err) {
-    console.error("[SERVER] Error fetching trade ad:", err);
+    console.error('[SERVER] Error fetching trade ad:', err);
     return null;
   }
 }
@@ -451,26 +431,21 @@ export async function fetchUsersBatch(userIds: string[]) {
       return {};
     }
 
-    const response = await fetch(
-      `${BASE_API_URL}/users/get/batch?ids=${userIds.join(",")}`,
-    );
+    const response = await fetch(`${BASE_API_URL}/users/get/batch?ids=${userIds.join(',')}`);
 
     if (!response.ok) {
-      throw new Error("Failed to fetch users batch");
+      throw new Error('Failed to fetch users batch');
     }
 
     const userDataArray = await response.json();
-    const userMap = userDataArray.reduce(
-      (acc: Record<string, UserData>, user: UserData) => {
-        acc[user.id] = user;
-        return acc;
-      },
-      {},
-    );
+    const userMap = userDataArray.reduce((acc: Record<string, UserData>, user: UserData) => {
+      acc[user.id] = user;
+      return acc;
+    }, {});
 
     return userMap;
   } catch (err) {
-    console.error("[SERVER] Error fetching users batch:", err);
+    console.error('[SERVER] Error fetching users batch:', err);
     return {};
   }
 }
@@ -480,13 +455,13 @@ export async function fetchDupes() {
     const response = await fetch(`${BASE_API_URL}/dupes/list`);
 
     if (!response.ok) {
-      throw new Error("Failed to fetch dupes");
+      throw new Error('Failed to fetch dupes');
     }
 
     const data = await response.json();
     return data;
   } catch (err) {
-    console.error("[SERVER] Error fetching dupes:", err);
+    console.error('[SERVER] Error fetching dupes:', err);
     return [];
   }
 }
@@ -497,16 +472,16 @@ export async function fetchDupeFinderData(userId: string) {
     const response = await fetch(url);
     if (!response.ok) {
       if (response.status === 404) {
-        return { error: "No recorded dupes found for this user." };
+        return { error: 'No recorded dupes found for this user.' };
       }
-      throw new Error("Failed to fetch dupe finder data");
+      throw new Error('Failed to fetch dupe finder data');
     }
 
     const data = await response.json();
     return data;
   } catch (err) {
-    console.error("[SERVER] Error fetching dupe finder data:", err);
-    return { error: "Failed to fetch dupe finder data. Please try again." };
+    console.error('[SERVER] Error fetching dupe finder data:', err);
+    return { error: 'Failed to fetch dupe finder data. Please try again.' };
   }
 }
 
@@ -515,19 +490,19 @@ export async function fetchLatestSeason() {
     const response = await fetch(`${BASE_API_URL}/seasons/latest`);
 
     if (!response.ok) {
-      throw new Error("Failed to fetch latest season");
+      throw new Error('Failed to fetch latest season');
     }
 
     const data = await response.json();
     return data;
   } catch (err) {
-    console.error("[SERVER] Error fetching latest season:", err);
+    console.error('[SERVER] Error fetching latest season:', err);
     return null;
   }
 }
 
 export interface SeasonContract {
-  team: "Criminal" | "Police";
+  team: 'Criminal' | 'Police';
   name: string;
   description: string;
   reqseasonpass: boolean;
@@ -548,13 +523,13 @@ export async function fetchSeasonContracts(): Promise<SeasonContractsResponse | 
       if (response.status === 404) {
         return null;
       }
-      throw new Error("Failed to fetch season contracts");
+      throw new Error('Failed to fetch season contracts');
     }
 
     const data = await response.json();
     return data as SeasonContractsResponse;
   } catch (err) {
-    console.error("[SERVER] Error fetching season contracts:", err);
+    console.error('[SERVER] Error fetching season contracts:', err);
     return null;
   }
 }
@@ -564,13 +539,13 @@ export async function fetchSeasonsList() {
     const response = await fetch(`${BASE_API_URL}/seasons/list`);
 
     if (!response.ok) {
-      throw new Error("Failed to fetch seasons list");
+      throw new Error('Failed to fetch seasons list');
     }
 
     const data = await response.json();
     return data;
   } catch (err) {
-    console.error("[SERVER] Error fetching seasons list:", err);
+    console.error('[SERVER] Error fetching seasons list:', err);
     return [];
   }
 }
@@ -580,13 +555,13 @@ export async function fetchSeason(id: string) {
     const response = await fetch(`${BASE_API_URL}/seasons/get?id=${id}`);
 
     if (!response.ok) {
-      throw new Error("Failed to fetch season");
+      throw new Error('Failed to fetch season');
     }
 
     const data = await response.json();
     return data;
   } catch (err) {
-    console.error("[SERVER] Error fetching season:", err);
+    console.error('[SERVER] Error fetching season:', err);
     return null;
   }
 }
@@ -595,13 +570,13 @@ export async function fetchOnlineUsers(): Promise<OnlineUser[]> {
   try {
     const response = await fetch(`${BASE_API_URL}/users/list/online`);
     if (!response.ok) {
-      throw new Error("Failed to fetch online users");
+      throw new Error('Failed to fetch online users');
     }
     const data = await response.json();
     const list = Array.isArray(data) ? (data as OnlineUser[]) : [];
     return list;
   } catch (err) {
-    console.error("[SERVER] Error fetching online users:", err);
+    console.error('[SERVER] Error fetching online users:', err);
     return [];
   }
 }
@@ -616,22 +591,20 @@ export async function fetchItemFavorites(id: string) {
     }
 
     if (!response.ok) {
-      throw new Error("Failed to fetch item favorites");
+      throw new Error('Failed to fetch item favorites');
     }
 
     const data = await response.json();
     return data;
   } catch (err) {
-    console.error("[SERVER] Error fetching item favorites:", err);
+    console.error('[SERVER] Error fetching item favorites:', err);
     return null;
   }
 }
 
 export async function fetchUserFavorites(userId: string) {
   try {
-    const response = await fetch(
-      `${PUBLIC_API_URL}/favorites/get?user=${userId}`,
-    );
+    const response = await fetch(`${PUBLIC_API_URL}/favorites/get?user=${userId}`);
 
     if (response.status === 404) {
       console.log(`[CLIENT] User favorites ${userId} not found`);
@@ -639,13 +612,13 @@ export async function fetchUserFavorites(userId: string) {
     }
 
     if (!response.ok) {
-      throw new Error("Failed to fetch user favorites");
+      throw new Error('Failed to fetch user favorites');
     }
 
     const data = await response.json();
     return data;
   } catch (err) {
-    console.error("[CLIENT] Error fetching user favorites:", err);
+    console.error('[CLIENT] Error fetching user favorites:', err);
     return null;
   }
 }
@@ -655,13 +628,13 @@ export async function fetchRandomItem() {
     const response = await fetch(`${BASE_API_URL}/items/random`);
 
     if (!response.ok) {
-      throw new Error("Failed to fetch random item");
+      throw new Error('Failed to fetch random item');
     }
 
     const data = await response.json();
     return data;
   } catch (err) {
-    console.error("[SERVER] Error fetching random item:", err);
+    console.error('[SERVER] Error fetching random item:', err);
     throw err;
   }
 }
@@ -676,22 +649,20 @@ export async function fetchItemHistory(id: string) {
     }
 
     if (!response.ok) {
-      throw new Error("Failed to fetch item history");
+      throw new Error('Failed to fetch item history');
     }
 
     const data = await response.json();
     return data;
   } catch (err) {
-    console.error("[CLIENT] Error fetching item history:", err);
+    console.error('[CLIENT] Error fetching item history:', err);
     return null;
   }
 }
 
 export async function fetchItemsByType(type: string) {
   try {
-    const response = await fetch(
-      `${BASE_API_URL}/items/get?type=${encodeURIComponent(type)}`,
-    );
+    const response = await fetch(`${BASE_API_URL}/items/get?type=${encodeURIComponent(type)}`);
 
     if (response.status === 404) {
       console.log(`[SERVER] Items with type ${type} not found`);
@@ -699,13 +670,13 @@ export async function fetchItemsByType(type: string) {
     }
 
     if (!response.ok) {
-      throw new Error("Failed to fetch items by type");
+      throw new Error('Failed to fetch items by type');
     }
 
     const data = await response.json();
     return data;
   } catch (err) {
-    console.error("[SERVER] Error fetching items by type:", err);
+    console.error('[SERVER] Error fetching items by type:', err);
     return null;
   }
 }
@@ -713,10 +684,10 @@ export async function fetchItemsByType(type: string) {
 // Convenience wrapper for HyperChrome items only
 export async function fetchHyperchromes() {
   try {
-    const data = await fetchItemsByType("HyperChrome");
+    const data = await fetchItemsByType('HyperChrome');
     return data; // Same structure as values page, filtered to HyperChromes
   } catch (err) {
-    console.error("[SERVER] Error fetching hyperchromes:", err);
+    console.error('[SERVER] Error fetching hyperchromes:', err);
     return null;
   }
 }
@@ -733,13 +704,9 @@ export interface CommentData {
   owner: string;
 }
 
-export async function fetchComments(
-  type: string,
-  id: string,
-  itemType?: string,
-) {
+export async function fetchComments(type: string, id: string, itemType?: string) {
   try {
-    const commentType = type === "item" ? itemType : type;
+    const commentType = type === 'item' ? itemType : type;
     const response = await fetch(
       `${BASE_API_URL}/comments/get?type=${commentType}&id=${id}&nocache=true`,
     );
@@ -749,7 +716,7 @@ export async function fetchComments(
     }
 
     if (!response.ok) {
-      throw new Error("Failed to fetch comments");
+      throw new Error('Failed to fetch comments');
     }
 
     const data = await response.json();
@@ -757,38 +724,36 @@ export async function fetchComments(
 
     // Fetch user data for comments server-side
     if (commentsArray.length > 0) {
-      const userIds = Array.from(
-        new Set(commentsArray.map((comment) => comment.user_id)),
-      ).filter(Boolean) as string[];
+      const userIds = Array.from(new Set(commentsArray.map((comment) => comment.user_id))).filter(
+        Boolean,
+      ) as string[];
       const userMap = await fetchUsersBatch(userIds);
       return { comments: commentsArray, userMap };
     }
 
     return { comments: commentsArray, userMap: {} };
   } catch (err) {
-    console.error("[SERVER] Error fetching comments:", err);
+    console.error('[SERVER] Error fetching comments:', err);
     return { comments: [], userMap: {} };
   }
 }
 
 export async function fetchInventoryData(robloxId: string) {
-  console.log("[SERVER] fetchInventoryData called with robloxId:", robloxId);
+  console.log('[SERVER] fetchInventoryData called with robloxId:', robloxId);
   try {
     const wsResult = await (async () => {
       try {
         // Dynamically import ws to avoid bundling on the client
-        const wsModule = await import("ws");
+        const wsModule = await import('ws');
         const WS: typeof WebSocket =
           (wsModule as { default?: typeof WebSocket }).default ||
           (wsModule as { WebSocket?: typeof WebSocket }).WebSocket ||
           (wsModule as unknown as typeof WebSocket);
         return await new Promise((resolve) => {
-          console.log(
-            `[WS] Connecting to ${INVENTORY_WS_URL} for user ${robloxId}`,
-          );
+          console.log(`[WS] Connecting to ${INVENTORY_WS_URL} for user ${robloxId}`);
           const socket = new WS(INVENTORY_WS_URL, {
             headers: {
-              "User-Agent": "JailbreakChangelogs-InventoryChecker/1.0",
+              'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0',
             },
           });
 
@@ -799,21 +764,17 @@ export async function fetchInventoryData(robloxId: string) {
             try {
               socket.close();
             } catch {}
-            console.warn(
-              `[WS] Timeout after 10s waiting for data for user ${robloxId}`,
-            );
+            console.warn(`[WS] Timeout after 10s waiting for data for user ${robloxId}`);
             resolve({
-              error: "timeout",
-              message: "WebSocket request timed out. Please try again.",
+              error: 'timeout',
+              message: 'WebSocket request timed out. Please try again.',
             });
           }, 10000);
 
-          socket.on("open", () => {
+          socket.on('open', () => {
             console.log(`[WS] Connected for user ${robloxId}`);
             try {
-              socket.send(
-                JSON.stringify({ action: "get_data", user_id: robloxId }),
-              );
+              socket.send(JSON.stringify({ action: 'get_data', user_id: robloxId }));
               console.log(`[WS] Sent get_data for user ${robloxId}`);
             } catch (e) {
               // If send fails, resolve with error and close
@@ -825,27 +786,24 @@ export async function fetchInventoryData(robloxId: string) {
                 } catch {}
                 console.error(`[WS] Send failed for user ${robloxId}:`, e);
                 resolve({
-                  error: "ws_send_error",
-                  message: "Failed to send WebSocket request.",
+                  error: 'ws_send_error',
+                  message: 'Failed to send WebSocket request.',
                 });
               }
             }
           });
 
-          socket.on("message", (data: Buffer | string) => {
+          socket.on('message', (data: Buffer | string) => {
             if (settled) return;
             settled = true;
             clearTimeout(timeout);
             try {
-              const text =
-                typeof data === "string" ? data : data.toString("utf-8");
-              console.log(
-                `[WS] Received message for user ${robloxId} (${text.length} bytes)`,
-              );
+              const text = typeof data === 'string' ? data : data.toString('utf-8');
+              console.log(`[WS] Received message for user ${robloxId} (${text.length} bytes)`);
               const parsed = JSON.parse(text);
-              if (parsed && typeof parsed === "object" && "action" in parsed) {
+              if (parsed && typeof parsed === 'object' && 'action' in parsed) {
                 const action = (parsed as Record<string, unknown>).action;
-                if (typeof action === "string") {
+                if (typeof action === 'string') {
                   console.log(`[WS] Payload action: ${action}`);
                 }
               }
@@ -853,8 +811,8 @@ export async function fetchInventoryData(robloxId: string) {
             } catch (e) {
               console.error(`[WS] Parse error for user ${robloxId}:`, e);
               resolve({
-                error: "ws_parse_error",
-                message: "Invalid response from WebSocket server.",
+                error: 'ws_parse_error',
+                message: 'Invalid response from WebSocket server.',
               });
             } finally {
               try {
@@ -863,7 +821,7 @@ export async function fetchInventoryData(robloxId: string) {
             }
           });
 
-          socket.on("error", (err: unknown) => {
+          socket.on('error', (err: unknown) => {
             if (settled) return;
             settled = true;
             clearTimeout(timeout);
@@ -872,65 +830,59 @@ export async function fetchInventoryData(robloxId: string) {
             } catch {}
             console.error(`[WS] Connection error for user ${robloxId}:`, err);
             resolve({
-              error: "ws_error",
-              message: "WebSocket connection error.",
+              error: 'ws_error',
+              message: 'WebSocket connection error.',
             });
           });
 
-          socket.on("close", (code: number, reason: Buffer) => {
+          socket.on('close', (code: number, reason: Buffer) => {
             // If closed before message and not settled, treat as error
             if (!settled) {
               settled = true;
               clearTimeout(timeout);
               const reasonText = (() => {
                 try {
-                  return reason?.toString?.("utf-8") || "";
+                  return reason?.toString?.('utf-8') || '';
                 } catch {
-                  return "";
+                  return '';
                 }
               })();
               console.warn(
-                `[WS] Closed before data for user ${robloxId} (code=${code}${reasonText ? `, reason=${reasonText}` : ""})`,
+                `[WS] Closed before data for user ${robloxId} (code=${code}${reasonText ? `, reason=${reasonText}` : ''})`,
               );
               resolve({
-                error: "ws_closed",
-                message: "WebSocket closed before receiving data.",
+                error: 'ws_closed',
+                message: 'WebSocket closed before receiving data.',
               });
             }
           });
         });
       } catch (err) {
-        console.error("[WS] Failed to initialize WebSocket client:", err);
+        console.error('[WS] Failed to initialize WebSocket client:', err);
         return {
-          error: "ws_init_error",
-          message: "Failed to initialize WebSocket client.",
+          error: 'ws_init_error',
+          message: 'Failed to initialize WebSocket client.',
         };
       }
     })();
 
-    if (
-      wsResult &&
-      typeof wsResult === "object" &&
-      "action" in wsResult &&
-      "data" in wsResult
-    ) {
+    if (wsResult && typeof wsResult === 'object' && 'action' in wsResult && 'data' in wsResult) {
       const envelope = wsResult as { action?: string; data?: unknown };
       const payload = envelope.data;
 
       // Some responses come back as ["Inventory not found.", 404]
       if (Array.isArray(payload)) {
         const [errorMessage, statusCode] = payload as unknown[];
-        const isErrorTuple =
-          typeof errorMessage === "string" && typeof statusCode === "number";
+        const isErrorTuple = typeof errorMessage === 'string' && typeof statusCode === 'number';
         if (isErrorTuple) {
-          return { error: "not_found", message: errorMessage } as const;
+          return { error: 'not_found', message: errorMessage } as const;
         }
         return payload[0] ?? null;
       }
 
       // If payload is a string error message, normalize it
-      if (typeof payload === "string") {
-        return { error: "ws_error", message: payload };
+      if (typeof payload === 'string') {
+        return { error: 'ws_error', message: payload };
       }
 
       return payload ?? null;
@@ -938,26 +890,26 @@ export async function fetchInventoryData(robloxId: string) {
 
     return wsResult;
   } catch (err) {
-    console.error("[SERVER] Error fetching inventory data:", err);
+    console.error('[SERVER] Error fetching inventory data:', err);
 
     // Handle specific error types
-    if (err instanceof TypeError && err.message.includes("fetch")) {
+    if (err instanceof TypeError && err.message.includes('fetch')) {
       return {
-        error: "network_error",
-        message: "Network error. Please check your connection and try again.",
+        error: 'network_error',
+        message: 'Network error. Please check your connection and try again.',
       };
     }
 
     if (err instanceof Error) {
       return {
-        error: "fetch_error",
+        error: 'fetch_error',
         message: `Failed to fetch inventory data: ${err.message}`,
       };
     }
 
     return {
-      error: "fetch_error",
-      message: "Failed to fetch inventory data. Please try again.",
+      error: 'fetch_error',
+      message: 'Failed to fetch inventory data. Please try again.',
     };
   }
 }
@@ -966,20 +918,18 @@ export async function fetchRobloxUsersBatch(userIds: string[]) {
   try {
     // Validate input
     if (!userIds || userIds.length === 0) {
-      console.log(
-        "[SERVER] fetchRobloxUsersBatch: No userIds provided, returning empty data",
-      );
+      console.log('[SERVER] fetchRobloxUsersBatch: No userIds provided, returning empty data');
       return { data: [] };
     }
 
     // Filter out any invalid IDs and convert to numbers
     const validUserIds = userIds
-      .filter((id) => id && typeof id === "string" && /^\d+$/.test(id))
+      .filter((id) => id && typeof id === 'string' && /^\d+$/.test(id))
       .map((id) => parseInt(id, 10));
 
     if (validUserIds.length === 0) {
       console.warn(
-        "[SERVER] fetchRobloxUsersBatch: No valid userIds found after filtering, returning empty data",
+        '[SERVER] fetchRobloxUsersBatch: No valid userIds found after filtering, returning empty data',
       );
       return { data: [] };
     }
@@ -997,10 +947,10 @@ export async function fetchRobloxUsersBatch(userIds: string[]) {
       const chunk = chunks[i];
       try {
         const response = await fetch(
-          `${INVENTORY_API_URL}/proxy/users?userIds=${chunk.join(",")}`,
+          `${INVENTORY_API_URL}/proxy/users?userIds=${chunk.join(',')}`,
           {
             headers: {
-              "User-Agent": "JailbreakChangelogs-InventoryChecker/1.0",
+              'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0',
             },
           },
         );
@@ -1015,15 +965,12 @@ export async function fetchRobloxUsersBatch(userIds: string[]) {
         const data = await response.json();
         if (data && data.data && Array.isArray(data.data)) {
           allData.push(...data.data);
-        } else if (data && typeof data === "object") {
+        } else if (data && typeof data === 'object') {
           // If the API returns the object directly (not wrapped in data array)
           allData.push(data);
         }
       } catch (err) {
-        console.error(
-          "[SERVER] fetchRobloxUsersBatch: Error fetching chunk:",
-          err,
-        );
+        console.error('[SERVER] fetchRobloxUsersBatch: Error fetching chunk:', err);
         continue;
       }
     }
@@ -1032,26 +979,24 @@ export async function fetchRobloxUsersBatch(userIds: string[]) {
     const userDataObject: Record<string, RobloxUser> = {};
 
     allData.forEach((chunkData) => {
-      if (chunkData && typeof chunkData === "object") {
+      if (chunkData && typeof chunkData === 'object') {
         Object.assign(userDataObject, chunkData);
       }
     });
 
     return userDataObject;
   } catch (err) {
-    console.error("[SERVER] fetchRobloxUsersBatch: Unexpected error:", err);
+    console.error('[SERVER] fetchRobloxUsersBatch: Unexpected error:', err);
     return null;
   }
 }
 
-export async function fetchRobloxUser(
-  robloxId: string,
-): Promise<RobloxUser | null> {
+export async function fetchRobloxUser(robloxId: string): Promise<RobloxUser | null> {
   try {
     // Use the batch endpoint for single user as well
     const result = await fetchRobloxUsersBatch([robloxId]);
 
-    if (!result || typeof result !== "object" || !(robloxId in result)) {
+    if (!result || typeof result !== 'object' || !(robloxId in result)) {
       throw new Error(`Failed to fetch Roblox user: ${robloxId}`);
     }
 
@@ -1067,29 +1012,29 @@ export async function fetchRobloxUsersBatchLeaderboard(userIds: string[]) {
     // Validate input
     if (!userIds || userIds.length === 0) {
       console.log(
-        "[SERVER] fetchRobloxUsersBatchLeaderboard: No userIds provided, returning empty data",
+        '[SERVER] fetchRobloxUsersBatchLeaderboard: No userIds provided, returning empty data',
       );
       return {};
     }
 
     // Filter out any invalid IDs
     const validUserIds = userIds
-      .filter((id) => id && typeof id === "string" && /^\d+$/.test(id))
+      .filter((id) => id && typeof id === 'string' && /^\d+$/.test(id))
       .map((id) => parseInt(id, 10));
 
     if (validUserIds.length === 0) {
       console.warn(
-        "[SERVER] fetchRobloxUsersBatchLeaderboard: No valid userIds found after filtering, returning empty data",
+        '[SERVER] fetchRobloxUsersBatchLeaderboard: No valid userIds found after filtering, returning empty data',
       );
       return {};
     }
 
     try {
       const response = await fetch(
-        `${INVENTORY_API_URL}/proxy/users?userIds=${validUserIds.join(",")}`,
+        `${INVENTORY_API_URL}/proxy/users?userIds=${validUserIds.join(',')}`,
         {
           headers: {
-            "User-Agent": "JailbreakChangelogs-InventoryChecker/1.0",
+            'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0',
           },
         },
       );
@@ -1102,27 +1047,21 @@ export async function fetchRobloxUsersBatchLeaderboard(userIds: string[]) {
       }
 
       const data = await response.json();
-      if (data && typeof data === "object") {
+      if (data && typeof data === 'object') {
         return data;
       } else {
         console.warn(
-          "[SERVER] fetchRobloxUsersBatchLeaderboard: Returned invalid data structure:",
+          '[SERVER] fetchRobloxUsersBatchLeaderboard: Returned invalid data structure:',
           data,
         );
         return {};
       }
     } catch (err) {
-      console.error(
-        "[SERVER] fetchRobloxUsersBatchLeaderboard: Error fetching users:",
-        err,
-      );
+      console.error('[SERVER] fetchRobloxUsersBatchLeaderboard: Error fetching users:', err);
       return {};
     }
   } catch (err) {
-    console.error(
-      "[SERVER] fetchRobloxUsersBatchLeaderboard: Unexpected error:",
-      err,
-    );
+    console.error('[SERVER] fetchRobloxUsersBatchLeaderboard: Unexpected error:', err);
     return null;
   }
 }
@@ -1131,20 +1070,16 @@ export async function fetchRobloxAvatars(userIds: string[]) {
   try {
     // Validate input
     if (!userIds || userIds.length === 0) {
-      console.log(
-        "[SERVER] fetchRobloxAvatars: No userIds provided, returning empty data",
-      );
+      console.log('[SERVER] fetchRobloxAvatars: No userIds provided, returning empty data');
       return {};
     }
 
     // Filter out any invalid IDs
-    const validUserIds = userIds.filter(
-      (id) => id && typeof id === "string" && /^\d+$/.test(id),
-    );
+    const validUserIds = userIds.filter((id) => id && typeof id === 'string' && /^\d+$/.test(id));
 
     if (validUserIds.length === 0) {
       console.warn(
-        "[SERVER] fetchRobloxAvatars: No valid userIds found after filtering, returning empty data",
+        '[SERVER] fetchRobloxAvatars: No valid userIds found after filtering, returning empty data',
       );
       return {};
     }
@@ -1162,13 +1097,13 @@ export async function fetchRobloxAvatars(userIds: string[]) {
       const chunk = chunks[i];
       try {
         if (!INVENTORY_API_URL) {
-          throw new TypeError("Missing INVENTORY_API_URL");
+          throw new TypeError('Missing INVENTORY_API_URL');
         }
         const response = await fetch(
-          `${INVENTORY_API_URL}/proxy/users/avatar-headshot?userIds=${chunk.join(",")}`,
+          `${INVENTORY_API_URL}/proxy/users/avatar-headshot?userIds=${chunk.join(',')}`,
           {
             headers: {
-              "User-Agent": "JailbreakChangelogs-InventoryChecker/1.0",
+              'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0',
             },
           },
         );
@@ -1181,21 +1116,18 @@ export async function fetchRobloxAvatars(userIds: string[]) {
         }
 
         const data = await response.json();
-        if (data && typeof data === "object") {
+        if (data && typeof data === 'object') {
           Object.assign(allData, data);
         }
       } catch (err) {
-        console.error(
-          "[SERVER] fetchRobloxAvatars: Error fetching chunk:",
-          err,
-        );
+        console.error('[SERVER] fetchRobloxAvatars: Error fetching chunk:', err);
         continue;
       }
     }
 
     return allData;
   } catch (err) {
-    console.error("[SERVER] fetchRobloxAvatars: Unexpected error:", err);
+    console.error('[SERVER] fetchRobloxAvatars: Unexpected error:', err);
     return null;
   }
 }
@@ -1217,13 +1149,13 @@ export async function fetchItemCountStats(): Promise<ItemCountStats | null> {
     const response = await fetch(`${INVENTORY_API_URL}/items/count`);
 
     if (!response.ok) {
-      throw new Error("Failed to fetch item count stats");
+      throw new Error('Failed to fetch item count stats');
     }
 
     const data = await response.json();
     return data as ItemCountStats;
   } catch (err) {
-    console.error("[SERVER] Error fetching item count stats:", err);
+    console.error('[SERVER] Error fetching item count stats:', err);
     return null;
   }
 }
@@ -1233,13 +1165,13 @@ export async function fetchUserScansLeaderboard(): Promise<UserScan[]> {
     const response = await fetch(`${INVENTORY_API_URL}/users/scans`);
 
     if (!response.ok) {
-      throw new Error("Failed to fetch user scans leaderboard");
+      throw new Error('Failed to fetch user scans leaderboard');
     }
 
     const data = await response.json();
     return data as UserScan[];
   } catch (err) {
-    console.error("[SERVER] Error fetching user scans leaderboard:", err);
+    console.error('[SERVER] Error fetching user scans leaderboard:', err);
     return [];
   }
 }
@@ -1281,37 +1213,27 @@ export const AVAILABLE_CREW_SEASONS = Object.keys(CREW_LEADERBOARD_URLS)
   .map(Number)
   .sort((a, b) => b - a);
 
-export async function fetchCrewLeaderboard(
-  season?: number,
-): Promise<CrewLeaderboardEntry[]> {
+export async function fetchCrewLeaderboard(season?: number): Promise<CrewLeaderboardEntry[]> {
   try {
     // Default to latest season (19) if no season specified
     const targetSeason = season || 19;
 
-    if (
-      !CREW_LEADERBOARD_URLS[targetSeason as keyof typeof CREW_LEADERBOARD_URLS]
-    ) {
+    if (!CREW_LEADERBOARD_URLS[targetSeason as keyof typeof CREW_LEADERBOARD_URLS]) {
       throw new Error(`Season ${targetSeason} not available`);
     }
 
-    const url =
-      CREW_LEADERBOARD_URLS[targetSeason as keyof typeof CREW_LEADERBOARD_URLS];
+    const url = CREW_LEADERBOARD_URLS[targetSeason as keyof typeof CREW_LEADERBOARD_URLS];
     const response = await fetch(url);
 
     if (!response.ok) {
-      throw new Error(
-        `Failed to fetch crew leaderboard for season ${targetSeason}`,
-      );
+      throw new Error(`Failed to fetch crew leaderboard for season ${targetSeason}`);
     }
 
     const data = await response.json();
 
     // Validate that we got data
     if (!Array.isArray(data) || data.length === 0) {
-      console.error(
-        `[ERROR] Season ${targetSeason} API returned invalid data:`,
-        data,
-      );
+      console.error(`[ERROR] Season ${targetSeason} API returned invalid data:`, data);
       throw new Error(`Invalid data returned for season ${targetSeason}`);
     }
 
@@ -1335,25 +1257,20 @@ export async function fetchCrewLeaderboard(
         // Generate a fallback ClanId for older seasons that don't have it
         ClanId: crew.ClanId || `season_${targetSeason}_rank_${index + 1}`,
         // Ensure all required fields exist
-        ClanName: crew.ClanName || "Unknown Crew",
+        ClanName: crew.ClanName || 'Unknown Crew',
         OwnerUserId: crew.OwnerUserId || 0,
         BattlesPlayed: crew.BattlesPlayed || 0,
         BattlesWon: crew.BattlesWon || 0,
-        MemberUserIds: Array.isArray(crew.MemberUserIds)
-          ? crew.MemberUserIds
-          : [],
+        MemberUserIds: Array.isArray(crew.MemberUserIds) ? crew.MemberUserIds : [],
         Rating: crew.Rating || 0,
         LastBattlePlayedUTC: crew.LastBattlePlayedUTC || 0,
-        LastBattlePlayedUTCStr: crew.LastBattlePlayedUTCStr || "Unknown",
+        LastBattlePlayedUTCStr: crew.LastBattlePlayedUTCStr || 'Unknown',
       }),
     );
 
     return normalizedData as CrewLeaderboardEntry[];
   } catch (err) {
-    console.error(
-      `[SERVER] Error fetching crew leaderboard for season ${season}:`,
-      err,
-    );
+    console.error(`[SERVER] Error fetching crew leaderboard for season ${season}:`, err);
     return [];
   }
 }
@@ -1361,10 +1278,10 @@ export async function fetchCrewLeaderboard(
 export async function fetchRobloxUserByUsername(username: string) {
   try {
     const response = await fetch(`${INVENTORY_API_URL}/proxy/users`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        "User-Agent": "JailbreakChangelogs-InventoryChecker/1.0",
+        'Content-Type': 'application/json',
+        'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0',
       },
       body: JSON.stringify({
         usernames: [username],
@@ -1384,17 +1301,11 @@ export async function fetchRobloxUserByUsername(username: string) {
     if (data && data.data && Array.isArray(data.data) && data.data.length > 0) {
       return data.data[0];
     } else {
-      console.warn(
-        "[SERVER] fetchRobloxUserByUsername: No user found for username:",
-        username,
-      );
+      console.warn('[SERVER] fetchRobloxUserByUsername: No user found for username:', username);
       return null;
     }
   } catch (err) {
-    console.error(
-      "[SERVER] fetchRobloxUserByUsername: Error fetching user by username:",
-      err,
-    );
+    console.error('[SERVER] fetchRobloxUserByUsername: Error fetching user by username:', err);
     return null;
   }
 }
@@ -1414,38 +1325,33 @@ export async function fetchUsersWithFlags(): Promise<UserWithFlags[]> {
     const response = await fetch(`${BASE_API_URL}/users/list/flags`);
 
     if (!response.ok) {
-      throw new Error("Failed to fetch users with flags");
+      throw new Error('Failed to fetch users with flags');
     }
 
     const data = await response.json();
     return data as UserWithFlags[];
   } catch (err) {
-    console.error("[SERVER] Error fetching users with flags:", err);
+    console.error('[SERVER] Error fetching users with flags:', err);
     return [];
   }
 }
 
 export async function fetchOGSearchData(robloxId: string) {
-  console.log("[SERVER] fetchOGSearchData called with robloxId:", robloxId);
+  console.log('[SERVER] fetchOGSearchData called with robloxId:', robloxId);
   try {
-    const response = await fetch(
-      `${INVENTORY_API_URL}/search?username=${robloxId}`,
-      {
-        headers: {
-          "User-Agent": "JailbreakChangelogs-OGFinder/1.0",
-        },
+    const response = await fetch(`${INVENTORY_API_URL}/search?username=${robloxId}`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-OGFinder/1.0',
       },
-    );
+    });
 
     if (!response.ok) {
-      console.error(
-        `[SERVER] OG Search API returned ${response.status} for ID: ${robloxId}`,
-      );
+      console.error(`[SERVER] OG Search API returned ${response.status} for ID: ${robloxId}`);
       if (response.status === 404) {
         return {
-          error: "not_found",
+          error: 'not_found',
           message:
-            "This user has not been scanned by our bots yet. Their OG item data is not available.",
+            'This user has not been scanned by our bots yet. Their OG item data is not available.',
         };
       }
       throw new Error(`Failed to fetch OG search data: ${response.status}`);
@@ -1454,10 +1360,10 @@ export async function fetchOGSearchData(robloxId: string) {
     const data = await response.json();
     return data;
   } catch (err) {
-    console.error("[SERVER] Error fetching OG search data:", err);
+    console.error('[SERVER] Error fetching OG search data:', err);
     return {
-      error: "fetch_error",
-      message: "Failed to fetch OG search data. Please try again.",
+      error: 'fetch_error',
+      message: 'Failed to fetch OG search data. Please try again.',
     };
   }
 }

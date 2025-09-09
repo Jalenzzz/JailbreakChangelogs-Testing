@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import Image from "next/image";
-import { UserSettings } from "@/types/auth";
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { UserSettings } from '@/types/auth';
 
 interface BannerProps {
   userId: string;
@@ -14,8 +14,7 @@ interface BannerProps {
 const BACKGROUND_COUNT = 19;
 const BACKGROUNDS = Array.from(
   { length: BACKGROUND_COUNT },
-  (_, i) =>
-    `https://assets.jailbreakchangelogs.xyz/assets/backgrounds/background${i + 1}.webp`,
+  (_, i) => `https://assets.jailbreakchangelogs.xyz/assets/backgrounds/background${i + 1}.webp`,
 );
 
 // Optimized seed calculation - converts string to number more efficiently
@@ -32,13 +31,7 @@ const getBannerUrl = (userId: string, bannerHash: string) => {
   return `https://cdn.discordapp.com/banners/${userId}/${bannerHash}?size=4096`;
 };
 
-export const Banner = ({
-  userId,
-  username,
-  banner,
-  customBanner,
-  settings,
-}: BannerProps) => {
+export const Banner = ({ userId, username, banner, customBanner, settings }: BannerProps) => {
   const [fallbackBanner, setFallbackBanner] = useState<string | null>(null);
   const [primaryBannerFailed, setPrimaryBannerFailed] = useState(false);
 
@@ -63,36 +56,32 @@ export const Banner = ({
     if (primaryBannerFailed) {
       return {
         src: fallbackBanner || calculatedBackground,
-        alt: "Profile banner",
+        alt: 'Profile banner',
       };
     }
 
     // If user wants to use Discord banner
     if (settings?.banner_discord === 1) {
       // Only show Discord banner if it exists and is not "None"
-      if (banner && banner !== "None") {
+      if (banner && banner !== 'None') {
         return {
           src: getBannerUrl(userId, banner),
-          alt: "Profile banner",
+          alt: 'Profile banner',
           onError: handleBannerError,
         };
       }
       // If no Discord banner available, use the calculated fallback
       return {
         src: fallbackBanner || calculatedBackground,
-        alt: "Profile banner",
+        alt: 'Profile banner',
       };
     }
 
     // If user has explicitly chosen to use custom banner (Discord toggle off)
-    if (
-      settings?.banner_discord === 0 &&
-      customBanner &&
-      customBanner !== "N/A"
-    ) {
+    if (settings?.banner_discord === 0 && customBanner && customBanner !== 'N/A') {
       return {
         src: customBanner,
-        alt: "Profile banner",
+        alt: 'Profile banner',
         onError: handleBannerError,
       };
     }
@@ -100,7 +89,7 @@ export const Banner = ({
     // Default to the calculated fallback
     return {
       src: fallbackBanner || calculatedBackground,
-      alt: "Profile banner",
+      alt: 'Profile banner',
     };
   };
 
@@ -110,7 +99,7 @@ export const Banner = ({
   }, [userId]);
 
   return (
-    <div className="relative h-48 md:h-80 bg-[#2E3944]">
+    <div className="relative h-48 bg-[#2E3944] md:h-80">
       <Image
         {...getBannerSource()}
         fill

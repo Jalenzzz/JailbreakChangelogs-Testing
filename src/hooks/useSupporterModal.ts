@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback } from 'react';
 
 interface SupporterModalState {
   isOpen: boolean;
@@ -17,29 +17,26 @@ const COMMENT_CHAR_LIMITS = {
 } as const;
 
 const TIER_NAMES = {
-  0: "Free",
-  1: "Supporter I",
-  2: "Supporter II",
-  3: "Supporter III",
+  0: 'Free',
+  1: 'Supporter I',
+  2: 'Supporter II',
+  3: 'Supporter III',
 } as const;
 
 export const useSupporterModal = () => {
   const [modalState, setModalState] = useState<SupporterModalState>({
     isOpen: false,
-    feature: "",
+    feature: '',
     currentTier: 0,
     requiredTier: 0,
   });
 
-  const openModal = useCallback(
-    (state: Omit<SupporterModalState, "isOpen">) => {
-      setModalState({
-        ...state,
-        isOpen: true,
-      });
-    },
-    [],
-  );
+  const openModal = useCallback((state: Omit<SupporterModalState, 'isOpen'>) => {
+    setModalState({
+      ...state,
+      isOpen: true,
+    });
+  }, []);
 
   const closeModal = useCallback(() => {
     setModalState((prev) => ({
@@ -50,8 +47,7 @@ export const useSupporterModal = () => {
 
   const checkCommentLength = useCallback(
     (content: string, userTier: number) => {
-      const currentLimit =
-        COMMENT_CHAR_LIMITS[userTier as keyof typeof COMMENT_CHAR_LIMITS];
+      const currentLimit = COMMENT_CHAR_LIMITS[userTier as keyof typeof COMMENT_CHAR_LIMITS];
       const contentLength = content.length;
 
       if (contentLength > currentLimit) {
@@ -64,9 +60,7 @@ export const useSupporterModal = () => {
         let requiredTier = userTier + 1;
         while (requiredTier <= 3) {
           const requiredLimit =
-            COMMENT_CHAR_LIMITS[
-              requiredTier as keyof typeof COMMENT_CHAR_LIMITS
-            ];
+            COMMENT_CHAR_LIMITS[requiredTier as keyof typeof COMMENT_CHAR_LIMITS];
           if (contentLength <= requiredLimit) {
             break;
           }
@@ -79,12 +73,11 @@ export const useSupporterModal = () => {
         }
 
         // Format the required limit for display
-        const requiredLimit =
-          COMMENT_CHAR_LIMITS[requiredTier as keyof typeof COMMENT_CHAR_LIMITS];
+        const requiredLimit = COMMENT_CHAR_LIMITS[requiredTier as keyof typeof COMMENT_CHAR_LIMITS];
         const displayRequiredLimit = requiredLimit;
 
         openModal({
-          feature: "comment_length",
+          feature: 'comment_length',
           currentTier: userTier,
           requiredTier,
           currentLimit: currentLimit,
@@ -103,11 +96,11 @@ export const useSupporterModal = () => {
     (userTier: number) => {
       if (userTier < 1) {
         openModal({
-          feature: "custom_avatar",
+          feature: 'custom_avatar',
           currentTier: userTier,
           requiredTier: 1,
           currentLimit: TIER_NAMES[userTier as keyof typeof TIER_NAMES],
-          requiredLimit: "Supporter I",
+          requiredLimit: 'Supporter I',
         });
         return false; // Access denied
       }
@@ -120,11 +113,11 @@ export const useSupporterModal = () => {
     (userTier: number) => {
       if (userTier < 2) {
         openModal({
-          feature: "custom_banner",
+          feature: 'custom_banner',
           currentTier: userTier,
           requiredTier: 2,
           currentLimit: TIER_NAMES[userTier as keyof typeof TIER_NAMES],
-          requiredLimit: "Supporter II",
+          requiredLimit: 'Supporter II',
         });
         return false; // Access denied
       }
@@ -137,11 +130,11 @@ export const useSupporterModal = () => {
     (userTier: number) => {
       if (userTier < 3) {
         openModal({
-          feature: "animated_avatar",
+          feature: 'animated_avatar',
           currentTier: userTier,
           requiredTier: 3,
           currentLimit: TIER_NAMES[userTier as keyof typeof TIER_NAMES],
-          requiredLimit: "Supporter III",
+          requiredLimit: 'Supporter III',
         });
         return false; // Access denied
       }
@@ -154,11 +147,11 @@ export const useSupporterModal = () => {
     (userTier: number) => {
       if (userTier < 3) {
         openModal({
-          feature: "animated_banner",
+          feature: 'animated_banner',
           currentTier: userTier,
           requiredTier: 3,
           currentLimit: TIER_NAMES[userTier as keyof typeof TIER_NAMES],
-          requiredLimit: "Supporter III",
+          requiredLimit: 'Supporter III',
         });
         return false; // Access denied
       }
@@ -177,10 +170,10 @@ export const useSupporterModal = () => {
         3: 48,
       };
       const tierNames = {
-        0: "Free",
-        1: "Supporter I",
-        2: "Supporter II",
-        3: "Supporter III",
+        0: 'Free',
+        1: 'Supporter I',
+        2: 'Supporter II',
+        3: 'Supporter III',
       };
       const allowed = tierMax[userTier as keyof typeof tierMax];
       if (selectedDuration > allowed) {
@@ -192,7 +185,7 @@ export const useSupporterModal = () => {
           }
         }
         openModal({
-          feature: "trade_ad_duration",
+          feature: 'trade_ad_duration',
           currentTier: userTier,
           requiredTier,
           currentLimit: tierNames[userTier as keyof typeof tierNames],

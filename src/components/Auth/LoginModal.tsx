@@ -1,22 +1,14 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import Image from "next/image";
-import toast from "react-hot-toast";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Tabs,
-  Tab,
-  Box,
-  Dialog,
-  DialogContent,
-  Checkbox,
-  FormControlLabel,
-} from "@mui/material";
-import { PUBLIC_API_URL } from "@/utils/api";
-import { useAuth } from "@/hooks/useAuth";
-import { storeCampaign } from "@/utils/campaign";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect, useRef, useCallback } from 'react';
+import Image from 'next/image';
+import toast from 'react-hot-toast';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Tabs, Tab, Box, Dialog, DialogContent, Checkbox, FormControlLabel } from '@mui/material';
+import { PUBLIC_API_URL } from '@/utils/api';
+import { useAuth } from '@/hooks/useAuth';
+import { storeCampaign } from '@/utils/campaign';
+import { useSearchParams } from 'next/navigation';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -45,7 +37,7 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
   const tokenProcessedRef = useRef(false);
   const { login, showLoginModal, setShowLoginModal } = useAuth();
   const searchParams = useSearchParams();
-  const campaign = searchParams.get("campaign");
+  const campaign = searchParams.get('campaign');
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -58,9 +50,9 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
 
   useEffect(() => {
     // Check if we have a token in the URL and haven't processed it yet
-    if (typeof window !== "undefined" && !tokenProcessedRef.current) {
+    if (typeof window !== 'undefined' && !tokenProcessedRef.current) {
       // Use Next.js useSearchParams to get token from URL
-      const token = searchParams.get("token");
+      const token = searchParams.get('token');
 
       if (campaign) {
         storeCampaign(campaign);
@@ -70,9 +62,9 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
         tokenProcessedRef.current = true;
         // Only show loading toast if we're not already redirecting
         if (!isRedirecting) {
-          const loadingToast = toast.loading("Processing authentication...", {
+          const loadingToast = toast.loading('Processing authentication...', {
             duration: Infinity,
-            position: "bottom-right",
+            position: 'bottom-right',
           });
 
           login(token)
@@ -88,20 +80,20 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
 
                 // Remove token from main URL parameters if it exists
                 const urlParams = new URLSearchParams(window.location.search);
-                urlParams.delete("token");
+                urlParams.delete('token');
                 const newSearch = urlParams.toString();
                 if (newSearch) {
-                  newUrl += "?" + newSearch;
+                  newUrl += '?' + newSearch;
                 }
 
-                window.history.replaceState({}, "", newUrl);
+                window.history.replaceState({}, '', newUrl);
                 handleClose();
               } else {
-                throw new Error(response.error || "Authentication failed");
+                throw new Error(response.error || 'Authentication failed');
               }
             })
             .catch((error) => {
-              console.error("Authentication error:", error);
+              console.error('Authentication error:', error);
 
               // Clean up the URL by removing the token parameter on any auth error
               let newUrl = window.location.pathname;
@@ -113,13 +105,13 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
 
               // Remove token from main URL parameters if it exists
               const urlParams = new URLSearchParams(window.location.search);
-              urlParams.delete("token");
+              urlParams.delete('token');
               const newSearch = urlParams.toString();
               if (newSearch) {
-                newUrl += "?" + newSearch;
+                newUrl += '?' + newSearch;
               }
 
-              window.history.replaceState({}, "", newUrl);
+              window.history.replaceState({}, '', newUrl);
               // Reset the processed token state on error
               tokenProcessedRef.current = false;
             })
@@ -134,13 +126,10 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
       setTabValue(event.detail);
     };
 
-    window.addEventListener("setLoginTab", handleSetLoginTab as EventListener);
+    window.addEventListener('setLoginTab', handleSetLoginTab as EventListener);
 
     return () => {
-      window.removeEventListener(
-        "setLoginTab",
-        handleSetLoginTab as EventListener,
-      );
+      window.removeEventListener('setLoginTab', handleSetLoginTab as EventListener);
     };
   }, [onClose, isRedirecting, login, handleClose, searchParams, campaign]);
 
@@ -155,18 +144,18 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
           slotProps={{
             paper: {
               sx: {
-                backgroundColor: "transparent",
-                border: "none",
-                borderRadius: "8px",
-                boxShadow: "none",
-                overflow: "visible",
-                "& .MuiDialogContent-root": {
-                  backgroundColor: "#212A31",
-                  padding: "24px",
-                  borderRadius: "8px",
-                  border: "1px solid #2E3944",
-                  "&:first-of-type": {
-                    paddingTop: "24px",
+                backgroundColor: 'transparent',
+                border: 'none',
+                borderRadius: '8px',
+                boxShadow: 'none',
+                overflow: 'visible',
+                '& .MuiDialogContent-root': {
+                  backgroundColor: '#212A31',
+                  padding: '24px',
+                  borderRadius: '8px',
+                  border: '1px solid #2E3944',
+                  '&:first-of-type': {
+                    paddingTop: '24px',
                   },
                 },
               },
@@ -203,22 +192,22 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
             }}
             className="relative z-10"
           >
-            <DialogContent sx={{ p: 3, backgroundColor: "#212A31 !important" }}>
+            <DialogContent sx={{ p: 3, backgroundColor: '#212A31 !important' }}>
               {!campaign && (
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1, duration: 0.3 }}
                 >
-                  <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
+                  <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
                     <Tabs
                       value={tabValue}
                       onChange={handleTabChange}
                       variant="fullWidth"
                       sx={{
-                        "& .MuiTabs-indicator": { backgroundColor: "#5865F2" },
-                        "& .Mui-selected": { color: "#5865F2 !important" },
-                        "& .MuiTab-root": { color: "#D3D9D4" },
+                        '& .MuiTabs-indicator': { backgroundColor: '#5865F2' },
+                        '& .Mui-selected': { color: '#5865F2 !important' },
+                        '& .MuiTab-root': { color: '#D3D9D4' },
                       }}
                     >
                       <Tab
@@ -234,7 +223,7 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
                         }
                         iconPosition="top"
                         sx={{
-                          "&.Mui-selected .opacity-70": {
+                          '&.Mui-selected .opacity-70': {
                             opacity: 1,
                           },
                         }}
@@ -252,7 +241,7 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
                         }
                         iconPosition="top"
                         sx={{
-                          "&.Mui-selected .opacity-70": {
+                          '&.Mui-selected .opacity-70': {
                             opacity: 1,
                           },
                         }}
@@ -272,36 +261,31 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
                 >
                   <TabPanel value={tabValue} index={0}>
                     <motion.div
-                      className="flex flex-col items-center gap-6 mb-8"
+                      className="mb-8 flex flex-col items-center gap-6"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.2, duration: 0.4 }}
                     >
-                      <h2 className="text-xl font-semibold text-white mb-2">
+                      <h2 className="mb-2 text-xl font-semibold text-white">
                         Connect with Discord
                       </h2>
-                      <p className="text-sm text-center text-white">
+                      <p className="text-center text-sm text-white">
                         {campaign ? (
                           <>
-                            Log in with Discord to support the{" "}
-                            <span className="text-[#5865F2] font-medium">
-                              {campaign}
-                            </span>{" "}
-                            campaign! Your login helps the campaign owner track
-                            participation and engagement. We only collect your
-                            publicly available Discord details. Your data
-                            security is important to us - there&apos;s no need
-                            to provide a password.
+                            Log in with Discord to support the{' '}
+                            <span className="font-medium text-[#5865F2]">{campaign}</span> campaign!
+                            Your login helps the campaign owner track participation and engagement.
+                            We only collect your publicly available Discord details. Your data
+                            security is important to us - there&apos;s no need to provide a
+                            password.
                           </>
                         ) : (
                           <>
-                            Jailbreak Changelogs connects with Discord to build
-                            your user profile. We only collect your publicly
-                            available Discord details. To use our trading
-                            features, you&apos;ll need to link your Roblox
-                            account after signing in. Your data security is
-                            important to us - there&apos;s no need to provide a
-                            password.
+                            Jailbreak Changelogs connects with Discord to build your user profile.
+                            We only collect your publicly available Discord details. To use our
+                            trading features, you&apos;ll need to link your Roblox account after
+                            signing in. Your data security is important to us - there&apos;s no need
+                            to provide a password.
                           </>
                         )}
                       </p>
@@ -313,22 +297,22 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3, duration: 0.4 }}
                     >
-                      <p className="text-xs text-[#A0A7AC] mb-4">
-                        By continuing, you agree to our{" "}
+                      <p className="mb-4 text-xs text-[#A0A7AC]">
+                        By continuing, you agree to our{' '}
                         <a
                           href="/tos"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="underline hover:text-muted"
+                          className="hover:text-muted underline"
                         >
                           Terms of Service
-                        </a>{" "}
-                        and{" "}
+                        </a>{' '}
+                        and{' '}
                         <a
                           href="/privacy"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="underline hover:text-muted"
+                          className="hover:text-muted underline"
                         >
                           Privacy Policy
                         </a>
@@ -345,37 +329,37 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
                               checked={joinDiscord}
                               onChange={(e) => setJoinDiscord(e.target.checked)}
                               sx={{
-                                color: "#5865F2",
-                                "&.Mui-checked": {
-                                  color: "#5865F2",
+                                color: '#5865F2',
+                                '&.Mui-checked': {
+                                  color: '#5865F2',
                                 },
-                                "& .MuiSvgIcon-root": {
-                                  color: "#5865F2",
-                                  fontSize: "1.25rem",
+                                '& .MuiSvgIcon-root': {
+                                  color: '#5865F2',
+                                  fontSize: '1.25rem',
                                 },
-                                "&.Mui-checked .MuiSvgIcon-root": {
-                                  color: "#5865F2",
+                                '&.Mui-checked .MuiSvgIcon-root': {
+                                  color: '#5865F2',
                                 },
                               }}
                             />
                           }
                           label={
-                            <span className="text-sm font-medium text-white cursor-pointer">
+                            <span className="cursor-pointer text-sm font-medium text-white">
                               Join our Discord server
                             </span>
                           }
                           sx={{
                             mb: 2,
-                            padding: "8px 12px",
-                            borderRadius: "8px",
+                            padding: '8px 12px',
+                            borderRadius: '8px',
                             backgroundColor: joinDiscord
-                              ? "rgba(88, 101, 242, 0.1)"
-                              : "rgba(88, 101, 242, 0.05)",
-                            border: `1px solid ${joinDiscord ? "#5865F2" : "rgba(88, 101, 242, 0.3)"}`,
-                            transition: "all 0.2s ease",
-                            "&:hover": {
-                              backgroundColor: "rgba(88, 101, 242, 0.08)",
-                              borderColor: "#5865F2",
+                              ? 'rgba(88, 101, 242, 0.1)'
+                              : 'rgba(88, 101, 242, 0.05)',
+                            border: `1px solid ${joinDiscord ? '#5865F2' : 'rgba(88, 101, 242, 0.3)'}`,
+                            transition: 'all 0.2s ease',
+                            '&:hover': {
+                              backgroundColor: 'rgba(88, 101, 242, 0.08)',
+                              borderColor: '#5865F2',
                             },
                           }}
                         />
@@ -386,20 +370,18 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
                         onClick={() => {
                           setIsRedirecting(true);
                           const currentURL = window.location.href;
-                          const oauthRedirect = `${PUBLIC_API_URL}/oauth?redirect=${encodeURIComponent(currentURL)}${joinDiscord ? "&join_discord=true" : ""}`;
+                          const oauthRedirect = `${PUBLIC_API_URL}/oauth?redirect=${encodeURIComponent(currentURL)}${joinDiscord ? '&join_discord=true' : ''}`;
 
-                          toast.loading("Redirecting to Discord...", {
+                          toast.loading('Redirecting to Discord...', {
                             duration: 2000,
-                            position: "bottom-right",
+                            position: 'bottom-right',
                           });
 
                           window.location.href = oauthRedirect;
                         }}
-                        className={`w-full py-3 px-4 rounded-md flex items-center justify-center gap-2 font-medium transition-all duration-200 bg-[#5865F2] hover:bg-[#4752C4] text-white shadow-lg hover:shadow-[#4752C4]/25`}
+                        className={`flex w-full items-center justify-center gap-2 rounded-md bg-[#5865F2] px-4 py-3 font-medium text-white shadow-lg transition-all duration-200 hover:bg-[#4752C4] hover:shadow-[#4752C4]/25`}
                       >
-                        {campaign
-                          ? "Login to Support Campaign"
-                          : "Continue with Discord"}
+                        {campaign ? 'Login to Support Campaign' : 'Continue with Discord'}
                       </motion.button>
                     </motion.div>
                   </TabPanel>
@@ -417,21 +399,20 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
                   >
                     <TabPanel value={tabValue} index={1}>
                       <motion.div
-                        className="flex flex-col items-center gap-6 mb-8"
+                        className="mb-8 flex flex-col items-center gap-6"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2, duration: 0.4 }}
                       >
-                        <h2 className="text-xl font-semibold text-white mb-2">
+                        <h2 className="mb-2 text-xl font-semibold text-white">
                           Connect with Roblox
                         </h2>
-                        <p className="text-sm text-center text-white">
-                          Jailbreak Changelogs connects with Roblox to build
-                          your user profile. We only collect your publicly
-                          available Roblox details. To use our trading features,
-                          you&apos;ll need to link your Roblox account after
-                          signing in. Your data security is important to us -
-                          there&apos;s no need to provide a password.
+                        <p className="text-center text-sm text-white">
+                          Jailbreak Changelogs connects with Roblox to build your user profile. We
+                          only collect your publicly available Roblox details. To use our trading
+                          features, you&apos;ll need to link your Roblox account after signing in.
+                          Your data security is important to us - there&apos;s no need to provide a
+                          password.
                         </p>
                       </motion.div>
                       <motion.div
@@ -440,22 +421,22 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3, duration: 0.4 }}
                       >
-                        <p className="text-xs text-[#A0A7AC] mb-4">
-                          By continuing, you agree to our{" "}
+                        <p className="mb-4 text-xs text-[#A0A7AC]">
+                          By continuing, you agree to our{' '}
                           <a
                             href="/tos"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="underline hover:text-muted"
+                            className="hover:text-muted underline"
                           >
                             Terms of Service
-                          </a>{" "}
-                          and{" "}
+                          </a>{' '}
+                          and{' '}
                           <a
                             href="/privacy"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="underline hover:text-muted"
+                            className="hover:text-muted underline"
                           >
                             Privacy Policy
                           </a>
@@ -467,14 +448,14 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
                           onClick={() => {
                             // Get token from cookie
                             const token = document.cookie
-                              .split("; ")
-                              .find((row) => row.startsWith("token="))
-                              ?.split("=")[1];
+                              .split('; ')
+                              .find((row) => row.startsWith('token='))
+                              ?.split('=')[1];
 
                             if (!token) {
-                              toast.error("Please log in with Discord first", {
+                              toast.error('Please log in with Discord first', {
                                 duration: 3000,
-                                position: "bottom-right",
+                                position: 'bottom-right',
                               });
                               return;
                             }
@@ -483,14 +464,14 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
                             const currentURL = window.location.href;
                             const oauthRedirect = `${PUBLIC_API_URL}/oauth/roblox?redirect=${encodeURIComponent(currentURL)}&owner=${encodeURIComponent(token)}`;
 
-                            toast.loading("Redirecting to Roblox...", {
+                            toast.loading('Redirecting to Roblox...', {
                               duration: 2000,
-                              position: "bottom-right",
+                              position: 'bottom-right',
                             });
 
                             window.location.href = oauthRedirect;
                           }}
-                          className={`w-full py-3 px-4 rounded-md flex items-center justify-center gap-2 font-medium transition-all duration-200 bg-[#FF5630] hover:bg-[#E54B2C] text-white shadow-lg hover:shadow-[#E54B2C]/25`}
+                          className={`flex w-full items-center justify-center gap-2 rounded-md bg-[#FF5630] px-4 py-3 font-medium text-white shadow-lg transition-all duration-200 hover:bg-[#E54B2C] hover:shadow-[#E54B2C]/25`}
                         >
                           Continue with Roblox
                         </motion.button>

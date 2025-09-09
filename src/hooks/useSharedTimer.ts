@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from 'react';
 
 interface TimerSubscriber {
   id: string;
@@ -33,7 +33,7 @@ class SharedTimerService {
       }
     };
 
-    document.addEventListener("visibilitychange", handleVisibilityChange);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
   }
 
   subscribe(id: string, callback: () => void): () => void {
@@ -103,11 +103,11 @@ export const useOptimizedRealTimeRelativeDate = (
   timestamp: string | number | null | undefined,
   id: string,
 ) => {
-  const [relativeTime, setRelativeTime] = useState<string>("");
+  const [relativeTime, setRelativeTime] = useState<string>('');
 
   useEffect(() => {
     if (!timestamp) {
-      setRelativeTime("");
+      setRelativeTime('');
       return;
     }
     setRelativeTime(formatRelativeDate(timestamp));
@@ -123,4 +123,4 @@ export const useOptimizedRealTimeRelativeDate = (
 };
 
 // Import formatRelativeDate for the optimized hook
-import { formatRelativeDate } from "@/utils/timestamp";
+import { formatRelativeDate } from '@/utils/timestamp';

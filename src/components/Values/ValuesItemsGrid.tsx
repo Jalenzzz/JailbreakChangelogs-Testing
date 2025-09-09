@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { Pagination } from "@mui/material";
-import ItemCard from "@/components/Items/ItemCard";
-import { Item } from "@/types";
-import { getEffectiveCashValue } from "@/utils/values";
-import DisplayAd from "@/components/Ads/DisplayAd";
-import AdRemovalNotice from "@/components/Ads/AdRemovalNotice";
-import { getCurrentUserPremiumType } from "@/hooks/useAuth";
-import React from "react";
+import { useState, useEffect } from 'react';
+import { Pagination } from '@mui/material';
+import ItemCard from '@/components/Items/ItemCard';
+import { Item } from '@/types';
+import { getEffectiveCashValue } from '@/utils/values';
+import DisplayAd from '@/components/Ads/DisplayAd';
+import AdRemovalNotice from '@/components/Ads/AdRemovalNotice';
+import { getCurrentUserPremiumType } from '@/hooks/useAuth';
+import React from 'react';
 
 interface ValuesItemsGridProps {
   items: Item[];
@@ -38,8 +38,7 @@ export default function ValuesItemsGrid({
   debouncedSearchTerm,
 }: ValuesItemsGridProps) {
   const [page, setPage] = useState(1);
-  const [currentUserPremiumType, setCurrentUserPremiumType] =
-    useState<number>(0);
+  const [currentUserPremiumType, setCurrentUserPremiumType] = useState<number>(0);
   const [premiumStatusLoaded, setPremiumStatusLoaded] = useState(false);
   const itemsPerPage = 24;
 
@@ -53,37 +52,28 @@ export default function ValuesItemsGrid({
       setCurrentUserPremiumType(getCurrentUserPremiumType());
     };
 
-    window.addEventListener("authStateChanged", handleAuthChange);
+    window.addEventListener('authStateChanged', handleAuthChange);
     return () => {
-      window.removeEventListener("authStateChanged", handleAuthChange);
+      window.removeEventListener('authStateChanged', handleAuthChange);
     };
   }, []);
 
   useEffect(() => {
     setPage(1);
-  }, [
-    filterSort,
-    valueSort,
-    debouncedSearchTerm,
-    appliedMinValue,
-    appliedMaxValue,
-  ]);
+  }, [filterSort, valueSort, debouncedSearchTerm, appliedMinValue, appliedMaxValue]);
 
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    value: number,
-  ) => {
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 
   const parseNumericValue = (value: string | null): number => {
-    if (!value || value === "N/A") return -1;
+    if (!value || value === 'N/A') return -1;
     const lower = value.toLowerCase();
-    const num = parseFloat(lower.replace(/[^0-9.]/g, ""));
+    const num = parseFloat(lower.replace(/[^0-9.]/g, ''));
     if (Number.isNaN(num)) return -1;
-    if (lower.includes("k")) return num * 1_000;
-    if (lower.includes("m")) return num * 1_000_000;
-    if (lower.includes("b")) return num * 1_000_000_000;
+    if (lower.includes('k')) return num * 1_000;
+    if (lower.includes('m')) return num * 1_000_000;
+    if (lower.includes('b')) return num * 1_000_000_000;
     return num;
   };
 
@@ -106,14 +96,12 @@ export default function ValuesItemsGrid({
   const totalPages = Math.ceil(rangeFilteredItems.length / itemsPerPage);
 
   const getNoItemsMessage = () => {
-    const hasCategoryFilter = filterSort !== "name-all-items";
+    const hasCategoryFilter = filterSort !== 'name-all-items';
     const hasDemandFilter =
-      valueSort.startsWith("demand-") &&
-      valueSort !== "demand-desc" &&
-      valueSort !== "demand-asc";
+      valueSort.startsWith('demand-') && valueSort !== 'demand-desc' && valueSort !== 'demand-asc';
     const hasSearchTerm = debouncedSearchTerm;
 
-    let message = "No items found";
+    let message = 'No items found';
 
     // Build the message based on what filters are applied
     if (hasSearchTerm) {
@@ -121,29 +109,23 @@ export default function ValuesItemsGrid({
     }
 
     if (hasCategoryFilter && hasDemandFilter) {
-      const categoryName = filterSort
-        .replace("name-", "")
-        .replace("-items", "")
-        .replace(/-/g, " ");
-      const demandLevel = valueSort.replace("demand-", "").replace(/-/g, " ");
+      const categoryName = filterSort.replace('name-', '').replace('-items', '').replace(/-/g, ' ');
+      const demandLevel = valueSort.replace('demand-', '').replace(/-/g, ' ');
       const formattedDemand = demandLevel
-        .split(" ")
+        .split(' ')
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ");
+        .join(' ');
 
       message += ` in ${categoryName} with ${formattedDemand} demand`;
     } else if (hasCategoryFilter) {
-      const categoryName = filterSort
-        .replace("name-", "")
-        .replace("-items", "")
-        .replace(/-/g, " ");
+      const categoryName = filterSort.replace('name-', '').replace('-items', '').replace(/-/g, ' ');
       message += ` in ${categoryName}`;
     } else if (hasDemandFilter) {
-      const demandLevel = valueSort.replace("demand-", "").replace(/-/g, " ");
+      const demandLevel = valueSort.replace('demand-', '').replace(/-/g, ' ');
       const formattedDemand = demandLevel
-        .split(" ")
+        .split(' ')
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ");
+        .join(' ');
       message += ` with ${formattedDemand} demand`;
     }
 
@@ -155,8 +137,8 @@ export default function ValuesItemsGrid({
       <div className="mb-4 flex flex-col gap-4">
         <p className="text-muted">
           {debouncedSearchTerm
-            ? `Found ${rangeFilteredItems.length} ${rangeFilteredItems.length === 1 ? "item" : "items"} matching "${debouncedSearchTerm}"${filterSort !== "name-all-items" ? ` in ${filterSort.replace("name-", "").replace("-items", "").replace(/-/g, " ")}` : ""}`
-            : `Total ${filterSort !== "name-all-items" ? filterSort.replace("name-", "").replace("-items", "").replace(/-/g, " ") : "Items"}: ${rangeFilteredItems.length}`}
+            ? `Found ${rangeFilteredItems.length} ${rangeFilteredItems.length === 1 ? 'item' : 'items'} matching "${debouncedSearchTerm}"${filterSort !== 'name-all-items' ? ` in ${filterSort.replace('name-', '').replace('-items', '').replace(/-/g, ' ')}` : ''}`
+            : `Total ${filterSort !== 'name-all-items' ? filterSort.replace('name-', '').replace('-items', '').replace(/-/g, ' ') : 'Items'}: ${rangeFilteredItems.length}`}
         </p>
         {totalPages > 1 && (
           <div className="flex justify-center">
@@ -165,16 +147,16 @@ export default function ValuesItemsGrid({
               page={page}
               onChange={handlePageChange}
               sx={{
-                "& .MuiPaginationItem-root": {
-                  color: "#D3D9D4",
-                  "&.Mui-selected": {
-                    backgroundColor: "#5865F2",
-                    "&:hover": {
-                      backgroundColor: "#4752C4",
+                '& .MuiPaginationItem-root': {
+                  color: '#D3D9D4',
+                  '&.Mui-selected': {
+                    backgroundColor: '#5865F2',
+                    '&:hover': {
+                      backgroundColor: '#4752C4',
                     },
                   },
-                  "&:hover": {
-                    backgroundColor: "#2E3944",
+                  '&:hover': {
+                    backgroundColor: '#2E3944',
                   },
                 },
               }}
@@ -183,10 +165,10 @@ export default function ValuesItemsGrid({
         )}
       </div>
 
-      <div className="grid grid-cols-1 gap-4 min-[375px]:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-8">
+      <div className="mb-8 grid grid-cols-1 gap-4 min-[375px]:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {displayedItems.length === 0 ? (
           <div className="col-span-full mb-4 rounded-lg bg-[#37424D] p-8 text-center">
-            <p className="text-lg text-muted">
+            <p className="text-muted text-lg">
               {rangeFilteredItems.length === 0 && items.length > 0
                 ? `No items found in the selected value range (${appliedMinValue.toLocaleString()} - ${appliedMaxValue >= MAX_VALUE_RANGE ? `${MAX_VALUE_RANGE.toLocaleString()}+` : appliedMaxValue.toLocaleString()})`
                 : getNoItemsMessage()}
@@ -194,14 +176,14 @@ export default function ValuesItemsGrid({
             {rangeFilteredItems.length === 0 && items.length > 0 && (
               <button
                 onClick={onResetValueRange}
-                className="mt-4 mr-3 rounded-lg border border-[#2E3944] bg-[#124E66] px-6 py-2 text-muted hover:bg-[#1A5F7A] focus:outline-none"
+                className="text-muted mt-4 mr-3 rounded-lg border border-[#2E3944] bg-[#124E66] px-6 py-2 hover:bg-[#1A5F7A] focus:outline-none"
               >
                 Reset Value Range
               </button>
             )}
             <button
               onClick={onClearAllFilters}
-              className="mt-4 rounded-lg border border-[#2E3944] bg-[#124E66] px-6 py-2 text-muted hover:bg-[#1A5F7A] focus:outline-none"
+              className="text-muted mt-4 rounded-lg border border-[#2E3944] bg-[#124E66] px-6 py-2 hover:bg-[#1A5F7A] focus:outline-none"
             >
               Clear All Filters
             </button>
@@ -223,10 +205,10 @@ export default function ValuesItemsGrid({
                 index + 1 < displayedItems.length && (
                   <div className="col-span-full my-4">
                     <div
-                      className="bg-[#1a2127] rounded-lg overflow-hidden border border-[#2E3944] shadow transition-all duration-300 relative"
-                      style={{ minHeight: "450px", maxHeight: "500px" }}
+                      className="relative overflow-hidden rounded-lg border border-[#2E3944] bg-[#1a2127] shadow transition-all duration-300"
+                      style={{ minHeight: '450px', maxHeight: '500px' }}
                     >
-                      <span className="absolute top-2 left-2 text-xs font-semibold text-white bg-[#212A31] px-2 py-0.5 rounded z-10">
+                      <span className="absolute top-2 left-2 z-10 rounded bg-[#212A31] px-2 py-0.5 text-xs font-semibold text-white">
                         Advertisement
                       </span>
                       <DisplayAd
@@ -234,9 +216,9 @@ export default function ValuesItemsGrid({
                         adFormat="fluid"
                         layoutKey="-62+ck+1k-2e+cb"
                         style={{
-                          display: "block",
-                          width: "100%",
-                          height: "100%",
+                          display: 'block',
+                          width: '100%',
+                          height: '100%',
                         }}
                       />
                     </div>
@@ -249,22 +231,22 @@ export default function ValuesItemsGrid({
       </div>
 
       {totalPages > 1 && (
-        <div className="flex justify-center mt-8">
+        <div className="mt-8 flex justify-center">
           <Pagination
             count={totalPages}
             page={page}
             onChange={handlePageChange}
             sx={{
-              "& .MuiPaginationItem-root": {
-                color: "#D3D9D4",
-                "&.Mui-selected": {
-                  backgroundColor: "#5865F2",
-                  "&:hover": {
-                    backgroundColor: "#4752C4",
+              '& .MuiPaginationItem-root': {
+                color: '#D3D9D4',
+                '&.Mui-selected': {
+                  backgroundColor: '#5865F2',
+                  '&:hover': {
+                    backgroundColor: '#4752C4',
                   },
                 },
-                "&:hover": {
-                  backgroundColor: "#2E3944",
+                '&:hover': {
+                  backgroundColor: '#2E3944',
                 },
               },
             }}

@@ -1,20 +1,17 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import {
-  XMarkIcon,
-  ExclamationTriangleIcon,
-} from "@heroicons/react/24/outline";
-import { FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
-import { PUBLIC_API_URL } from "@/utils/api";
-import Image from "next/image";
-import Link from "next/link";
-import { getItemImagePath, handleImageError } from "@/utils/images";
-import { getItemTypeColor } from "@/utils/badgeColors";
-import { formatTimestamp } from "@/utils/timestamp";
-import ReportDupeModal from "./ReportDupeModal";
-import toast from "react-hot-toast";
-import { getToken } from "@/utils/auth";
+import React, { useEffect, useState } from 'react';
+import { XMarkIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
+import { PUBLIC_API_URL } from '@/utils/api';
+import Image from 'next/image';
+import Link from 'next/link';
+import { getItemImagePath, handleImageError } from '@/utils/images';
+import { getItemTypeColor } from '@/utils/badgeColors';
+import { formatTimestamp } from '@/utils/timestamp';
+import ReportDupeModal from './ReportDupeModal';
+import toast from 'react-hot-toast';
+import { getToken } from '@/utils/auth';
 
 interface DupeResult {
   item_id: number;
@@ -97,17 +94,16 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
   const [itemDetails, setItemDetails] = useState<ItemDetails[]>([]);
   const [itemLoading, setItemLoading] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
-  const uniqueItemsCount = [...new Set(results.map((result) => result.item_id))]
-    .length;
+  const uniqueItemsCount = [...new Set(results.map((result) => result.item_id))].length;
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = 'unset';
     }
     return () => {
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = 'unset';
     };
   }, [isOpen]);
 
@@ -117,19 +113,15 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
         setItemLoading(true);
         try {
           // Get unique item IDs
-          const uniqueItemIds = [
-            ...new Set(results.map((result) => result.item_id)),
-          ];
+          const uniqueItemIds = [...new Set(results.map((result) => result.item_id))];
 
           const itemPromises = uniqueItemIds.map((itemId) =>
-            fetch(`${PUBLIC_API_URL}/items/get?id=${itemId}`).then((res) =>
-              res.json(),
-            ),
+            fetch(`${PUBLIC_API_URL}/items/get?id=${itemId}`).then((res) => res.json()),
           );
           const items = await Promise.all(itemPromises);
           setItemDetails(items);
         } catch (err) {
-          console.error("Error fetching item details:", err);
+          console.error('Error fetching item details:', err);
         } finally {
           setItemLoading(false);
         }
@@ -142,7 +134,7 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
   const handleReportClick = () => {
     const token = getToken();
     if (!token) {
-      toast.error("Please log in to report dupes");
+      toast.error('Please log in to report dupes');
       return;
     }
     setIsReportModalOpen(true);
@@ -154,15 +146,10 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center">
         <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-        <div className="relative bg-[#212A31] rounded-lg shadow-xl w-full max-w-md mx-4">
-          <div className="flex items-center justify-between p-4 border-b border-[#2E3944]">
-            <h2 className="text-xl font-semibold text-[#FFFFFF]">
-              Dupe Check Results
-            </h2>
-            <button
-              onClick={onClose}
-              className="text-muted hover:text-[#FFFFFF] transition-colors"
-            >
+        <div className="relative mx-4 w-full max-w-md rounded-lg bg-[#212A31] shadow-xl">
+          <div className="flex items-center justify-between border-b border-[#2E3944] p-4">
+            <h2 className="text-xl font-semibold text-[#FFFFFF]">Dupe Check Results</h2>
+            <button onClick={onClose} className="text-muted transition-colors hover:text-[#FFFFFF]">
               <XMarkIcon className="h-6 w-6" />
             </button>
           </div>
@@ -170,26 +157,21 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
           <div className="p-4">
             {loading && (
               <div className="flex items-center justify-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#5865F2]" />
+                <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-[#5865F2]" />
               </div>
             )}
 
-            {error && !suggestion && (
-              <div className="text-red-500 text-center py-4">{error}</div>
-            )}
+            {error && !suggestion && <div className="py-4 text-center text-red-500">{error}</div>}
 
             {suggestion && (
-              <div className="text-[#FFA500] text-center py-2">
+              <div className="py-2 text-center text-[#FFA500]">
                 <div className="flex flex-col items-center">
-                  <ExclamationTriangleIcon className="h-12 w-12 mb-2" />
+                  <ExclamationTriangleIcon className="mb-2 h-12 w-12" />
                   <div>
                     {suggestion.message}
                     <br />
-                    Did you mean:{" "}
-                    <span className="font-bold">
-                      {suggestion.suggestedName}
-                    </span>
-                    ? ({suggestion.similarity.toFixed(1)}% match)
+                    Did you mean: <span className="font-bold">{suggestion.suggestedName}</span>? (
+                    {suggestion.similarity.toFixed(1)}% match)
                   </div>
                 </div>
               </div>
@@ -198,15 +180,11 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
             {!loading && !error && !suggestion && results.length === 0 && (
               <div className="space-y-4">
                 <div className="flex flex-col items-center justify-center text-green-500">
-                  <FaCheckCircle className="h-12 w-12 mb-2" />
+                  <FaCheckCircle className="mb-2 h-12 w-12" />
                   <div className="text-center">
-                    <div className="text-muted">
-                      No dupes found for {ownerName}
-                    </div>
+                    <div className="text-muted">No dupes found for {ownerName}</div>
                     {itemName && (
-                      <div className="text-muted">
-                        No dupe record found for {itemName}
-                      </div>
+                      <div className="text-muted">No dupe record found for {itemName}</div>
                     )}
                   </div>
                 </div>
@@ -214,7 +192,7 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
                   <div className="flex justify-center">
                     <button
                       onClick={handleReportClick}
-                      className="px-4 py-2 bg-[#5865F2] text-white rounded-lg hover:bg-[#4752C4] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#5865F2] focus:ring-offset-2 focus:ring-offset-[#212A31]"
+                      className="rounded-lg bg-[#5865F2] px-4 py-2 text-white transition-colors duration-200 hover:bg-[#4752C4] focus:ring-2 focus:ring-[#5865F2] focus:ring-offset-2 focus:ring-offset-[#212A31] focus:outline-none"
                     >
                       Report {itemName} as duped
                     </button>
@@ -225,36 +203,32 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
 
             {!loading && !error && results.length > 0 && (
               <div className="space-y-4">
-                <div className="flex flex-col items-center justify-center text-red-500 mb-4">
-                  <FaExclamationCircle className="h-12 w-12 mb-2" />
+                <div className="mb-4 flex flex-col items-center justify-center text-red-500">
+                  <FaExclamationCircle className="mb-2 h-12 w-12" />
                   <div className="text-muted">
                     Found {uniqueItemsCount} unique dupe item
-                    {uniqueItemsCount !== 1 ? "s" : ""} for {results[0].owner}
+                    {uniqueItemsCount !== 1 ? 's' : ''} for {results[0].owner}
                   </div>
                 </div>
 
                 {itemLoading ? (
                   <div className="flex items-center justify-center py-4">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#5865F2]" />
+                    <div className="h-6 w-6 animate-spin rounded-full border-b-2 border-[#5865F2]" />
                   </div>
                 ) : (
                   itemDetails.length > 0 && (
                     <>
-                      <div className="grid grid-cols-2 gap-3 max-h-[400px] overflow-y-auto pr-2">
+                      <div className="grid max-h-[400px] grid-cols-2 gap-3 overflow-y-auto pr-2">
                         {itemDetails.map((item, index) => (
                           <Link
                             key={`${item.id}-${index}`}
                             href={`/item/${encodeURIComponent(item.type)}/${encodeURIComponent(item.name)}`}
-                            className="block p-3 rounded-lg border border-[#2E3944] hover:border-[#5865F2] transition-colors"
+                            className="block rounded-lg border border-[#2E3944] p-3 transition-colors hover:border-[#5865F2]"
                           >
                             <div className="flex flex-col items-center text-center">
                               <div className="flex-shrink-0">
                                 <Image
-                                  src={getItemImagePath(
-                                    item.type,
-                                    item.name,
-                                    true,
-                                  )}
+                                  src={getItemImagePath(item.type, item.name, true)}
                                   alt={item.name}
                                   width={150}
                                   height={150}
@@ -263,15 +237,11 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
                                 />
                               </div>
                               <div className="mt-2">
-                                <h3 className="text-[#FFFFFF] font-medium text-sm">
-                                  {item.name}
-                                </h3>
+                                <h3 className="text-sm font-medium text-[#FFFFFF]">{item.name}</h3>
                                 <span
-                                  className="inline-block px-2 py-0.5 mt-1 text-xs rounded-full"
+                                  className="mt-1 inline-block rounded-full px-2 py-0.5 text-xs"
                                   style={{
-                                    backgroundColor: getItemTypeColor(
-                                      item.type,
-                                    ),
+                                    backgroundColor: getItemTypeColor(item.type),
                                   }}
                                 >
                                   {item.type}
@@ -282,9 +252,9 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
                         ))}
                       </div>
                       <div className="text-muted mt-4 text-center">
-                        Last recorded dupe:{" "}
+                        Last recorded dupe:{' '}
                         {formatTimestamp(results[0].created_at, {
-                          format: "long",
+                          format: 'long',
                         })}
                       </div>
                     </>
@@ -300,8 +270,8 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
         <ReportDupeModal
           isOpen={isReportModalOpen}
           onClose={() => setIsReportModalOpen(false)}
-          itemName={itemName.split(" [")[0]}
-          itemType={itemName.match(/\[(.*?)\]/)?.[1] || ""}
+          itemName={itemName.split(' [')[0]}
+          itemType={itemName.match(/\[(.*?)\]/)?.[1] || ''}
           ownerName={ownerName}
           itemId={itemId}
           isOwnerNameReadOnly={true}

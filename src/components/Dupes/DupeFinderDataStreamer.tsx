@@ -1,12 +1,12 @@
-import { Suspense } from "react";
+import { Suspense } from 'react';
 import {
   fetchDupeFinderData,
   fetchRobloxUserByUsername,
   fetchRobloxUsersBatch,
   fetchRobloxAvatars,
-} from "@/utils/api";
-import DupeFinderClient from "./DupeFinderClient";
-import type { RobloxUser } from "@/types";
+} from '@/utils/api';
+import DupeFinderClient from './DupeFinderClient';
+import type { RobloxUser } from '@/types';
 
 interface DupeFinderDataStreamerProps {
   robloxId: string;
@@ -15,25 +15,22 @@ interface DupeFinderDataStreamerProps {
 // Loading fallback component
 function DupeFinderLoadingFallback() {
   return (
-    <div className="bg-[#212A31] rounded-lg p-6 shadow-sm border border-[#2E3944]">
+    <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6 shadow-sm">
       <div className="animate-pulse space-y-4">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 bg-gray-600 rounded-full"></div>
+          <div className="h-16 w-16 rounded-full bg-gray-600"></div>
           <div className="flex-1">
-            <div className="h-6 bg-gray-600 rounded w-32 mb-2"></div>
-            <div className="h-4 bg-gray-600 rounded w-24"></div>
+            <div className="mb-2 h-6 w-32 rounded bg-gray-600"></div>
+            <div className="h-4 w-24 rounded bg-gray-600"></div>
           </div>
         </div>
         <div className="space-y-3">
           {[...Array(5)].map((_, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-4 p-4 bg-[#2E3944] rounded-lg"
-            >
-              <div className="w-12 h-12 bg-gray-600 rounded"></div>
+            <div key={i} className="flex items-center gap-4 rounded-lg bg-[#2E3944] p-4">
+              <div className="h-12 w-12 rounded bg-gray-600"></div>
               <div className="flex-1 space-y-2">
-                <div className="h-4 bg-gray-600 rounded w-48"></div>
-                <div className="h-3 bg-gray-600 rounded w-32"></div>
+                <div className="h-4 w-48 rounded bg-gray-600"></div>
+                <div className="h-3 w-32 rounded bg-gray-600"></div>
               </div>
             </div>
           ))}
@@ -65,7 +62,7 @@ async function DupeFinderDataFetcher({ robloxId }: { robloxId: string }) {
         );
       }
     } catch (error) {
-      console.error("Error fetching user by username:", error);
+      console.error('Error fetching user by username:', error);
       return (
         <DupeFinderClient
           robloxId={robloxId}
@@ -78,41 +75,32 @@ async function DupeFinderDataFetcher({ robloxId }: { robloxId: string }) {
   const result = await fetchDupeFinderData(actualRobloxId);
 
   // Check if the result contains an error
-  if (result && "error" in result) {
+  if (result && 'error' in result) {
     return <DupeFinderClient robloxId={actualRobloxId} error={result.error} />;
   }
 
   // Check if no data was returned
   if (!result || !Array.isArray(result)) {
-    return (
-      <DupeFinderClient
-        robloxId={actualRobloxId}
-        error="No dupe data found for this user."
-      />
-    );
+    return <DupeFinderClient robloxId={actualRobloxId} error="No dupe data found for this user." />;
   }
 
   // Get the main user's data (the one being searched)
-  const mainUserData = await fetchRobloxUsersBatch([actualRobloxId]).catch(
-    (error) => {
-      console.error("Failed to fetch main user data:", error);
-      return {};
-    },
-  );
+  const mainUserData = await fetchRobloxUsersBatch([actualRobloxId]).catch((error) => {
+    console.error('Failed to fetch main user data:', error);
+    return {};
+  });
 
-  const mainUserAvatar = await fetchRobloxAvatars([actualRobloxId]).catch(
-    (error) => {
-      console.error("Failed to fetch main user avatar:", error);
-      return {};
-    },
-  );
+  const mainUserAvatar = await fetchRobloxAvatars([actualRobloxId]).catch((error) => {
+    console.error('Failed to fetch main user avatar:', error);
+    return {};
+  });
 
   // Build the user data objects with just the main user
   const robloxUsers: Record<string, RobloxUser> = {};
   const robloxAvatars: Record<string, string> = {};
 
   // Add main user data
-  if (mainUserData && typeof mainUserData === "object") {
+  if (mainUserData && typeof mainUserData === 'object') {
     Object.values(mainUserData).forEach((userData) => {
       const user = userData as {
         id: number;
@@ -133,7 +121,7 @@ async function DupeFinderDataFetcher({ robloxId }: { robloxId: string }) {
   }
 
   // Add main user avatar
-  if (mainUserAvatar && typeof mainUserAvatar === "object") {
+  if (mainUserAvatar && typeof mainUserAvatar === 'object') {
     Object.values(mainUserAvatar).forEach((avatar) => {
       const avatarData = avatar as {
         targetId: number;
@@ -144,7 +132,7 @@ async function DupeFinderDataFetcher({ robloxId }: { robloxId: string }) {
       if (
         avatarData &&
         avatarData.targetId &&
-        avatarData.state === "Completed" &&
+        avatarData.state === 'Completed' &&
         avatarData.imageUrl
       ) {
         // Only add completed avatars to the data
@@ -157,11 +145,7 @@ async function DupeFinderDataFetcher({ robloxId }: { robloxId: string }) {
   return (
     <Suspense
       fallback={
-        <DupeFinderClient
-          robloxId={actualRobloxId}
-          initialData={result}
-          isLoading={true}
-        />
+        <DupeFinderClient robloxId={actualRobloxId} initialData={result} isLoading={true} />
       }
     >
       <DupeFinderClient
@@ -174,9 +158,7 @@ async function DupeFinderDataFetcher({ robloxId }: { robloxId: string }) {
   );
 }
 
-export default function DupeFinderDataStreamer({
-  robloxId,
-}: DupeFinderDataStreamerProps) {
+export default function DupeFinderDataStreamer({ robloxId }: DupeFinderDataStreamerProps) {
   return (
     <Suspense fallback={<DupeFinderLoadingFallback />}>
       <DupeFinderDataFetcher robloxId={robloxId} />

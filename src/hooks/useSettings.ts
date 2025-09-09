@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { UserData, UserSettings } from "@/types/auth";
-import { updateSettings } from "@/services/settingsService";
-import toast from "react-hot-toast";
-import { getToken } from "@/utils/auth";
+import { useState, useEffect } from 'react';
+import { UserData, UserSettings } from '@/types/auth';
+import { updateSettings } from '@/services/settingsService';
+import toast from 'react-hot-toast';
+import { getToken } from '@/utils/auth';
 
 export const useSettings = (userData: UserData | null) => {
   const [settings, setSettings] = useState<UserSettings | null>(null);
@@ -15,16 +15,13 @@ export const useSettings = (userData: UserData | null) => {
     setLoading(false);
   }, [userData]);
 
-  const handleSettingChange = async (
-    name: keyof UserSettings,
-    value: number,
-  ) => {
+  const handleSettingChange = async (name: keyof UserSettings, value: number) => {
     if (!settings || !userData) return;
 
     try {
       const token = getToken();
       if (!token) {
-        throw new Error("No authentication token found");
+        throw new Error('No authentication token found');
       }
 
       // Update local state immediately for better UX
@@ -36,7 +33,7 @@ export const useSettings = (userData: UserData | null) => {
         ...userData,
         settings: newSettings,
       };
-      localStorage.setItem("user", JSON.stringify(updatedUser));
+      localStorage.setItem('user', JSON.stringify(updatedUser));
 
       // Prepare all settings for the API call
       const updatedSettings = {
@@ -63,18 +60,16 @@ export const useSettings = (userData: UserData | null) => {
         ...userData,
         settings: serverSettings,
       };
-      localStorage.setItem("user", JSON.stringify(finalUser));
+      localStorage.setItem('user', JSON.stringify(finalUser));
 
       // Dispatch authStateChanged event to notify other components
-      window.dispatchEvent(
-        new CustomEvent("authStateChanged", { detail: finalUser }),
-      );
+      window.dispatchEvent(new CustomEvent('authStateChanged', { detail: finalUser }));
 
       // Show success toast
-      toast.success("Setting updated successfully");
+      toast.success('Setting updated successfully');
     } catch (error) {
-      console.error("Error updating settings:", error);
-      toast.error("Failed to update settings");
+      console.error('Error updating settings:', error);
+      toast.error('Failed to update settings');
 
       // Revert local state on error
       setSettings(settings);
@@ -82,7 +77,7 @@ export const useSettings = (userData: UserData | null) => {
         ...userData,
         settings,
       };
-      localStorage.setItem("user", JSON.stringify(revertedUser));
+      localStorage.setItem('user', JSON.stringify(revertedUser));
     }
   };
 

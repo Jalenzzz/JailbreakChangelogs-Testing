@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
 // Weekly contracts reset every Monday at 17:00 UTC
 const RESET_WEEKDAY = 1;
@@ -68,10 +68,10 @@ function formatTime(seconds: number): string {
   const hours = Math.floor((seconds % (24 * 60 * 60)) / (60 * 60));
   const minutes = Math.floor((seconds % (60 * 60)) / 60);
   const secs = seconds % 60;
-  const dLabel = days === 1 ? "day" : "days";
-  const hLabel = hours === 1 ? "hour" : "hours";
-  const mLabel = minutes === 1 ? "minute" : "minutes";
-  const sLabel = secs === 1 ? "second" : "seconds";
+  const dLabel = days === 1 ? 'day' : 'days';
+  const hLabel = hours === 1 ? 'hour' : 'hours';
+  const mLabel = minutes === 1 ? 'minute' : 'minutes';
+  const sLabel = secs === 1 ? 'second' : 'seconds';
   return `${days} ${dLabel} ${hours} ${hLabel} ${minutes} ${mLabel} ${secs} ${sLabel}`;
 }
 
@@ -89,12 +89,12 @@ const WeeklyContractsCountdown: React.FC = () => {
     try {
       const date = new Date(nextResetUnix * 1000);
       return new Intl.DateTimeFormat(undefined, {
-        hour: "2-digit",
-        minute: "2-digit",
+        hour: '2-digit',
+        minute: '2-digit',
         hour12: true,
       }).format(date);
     } catch {
-      return "5:00 PM";
+      return '5:00 PM';
     }
   }, [nextResetUnix]);
 
@@ -102,12 +102,12 @@ const WeeklyContractsCountdown: React.FC = () => {
     try {
       const date = new Date(nextDailyResetUnix * 1000);
       return new Intl.DateTimeFormat(undefined, {
-        hour: "2-digit",
-        minute: "2-digit",
+        hour: '2-digit',
+        minute: '2-digit',
         hour12: true,
       }).format(date);
     } catch {
-      return "1:00 PM";
+      return '1:00 PM';
     }
   }, [nextDailyResetUnix]);
 
@@ -137,54 +137,38 @@ const WeeklyContractsCountdown: React.FC = () => {
     return () => clearInterval(id);
   }, [nextResetUnix, nextDailyResetUnix]);
 
-  const statusColor = "#A8B3BC";
+  const statusColor = '#A8B3BC';
 
   return (
     <div className="rounded-lg border border-[#2E3944] bg-[#37424D] p-4">
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
-          <span
-            className="text-lg font-semibold"
-            style={{ color: statusColor }}
-          >
+          <span className="text-lg font-semibold" style={{ color: statusColor }}>
             New Weekly contracts in
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <span
-            className="text-2xl font-mono font-bold"
-            style={{ color: statusColor }}
-          >
+          <span className="font-mono text-2xl font-bold" style={{ color: statusColor }}>
             {formatTime(secondsLeft)}
           </span>
         </div>
-        <div className="text-xs text-gray-300">
-          Resets every Monday at {localResetTime}.
-        </div>
+        <div className="text-xs text-gray-300">Resets every Monday at {localResetTime}.</div>
 
         {/* Divider */}
         <div className="mt-4 border-t border-[#2E3944]" />
 
         {/* Daily XP reset section */}
-        <div className="flex items-center gap-2 mt-4">
-          <span
-            className="text-lg font-semibold"
-            style={{ color: statusColor }}
-          >
+        <div className="mt-4 flex items-center gap-2">
+          <span className="text-lg font-semibold" style={{ color: statusColor }}>
             Daily XP resets in
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <span
-            className="text-2xl font-mono font-bold"
-            style={{ color: statusColor }}
-          >
+          <span className="font-mono text-2xl font-bold" style={{ color: statusColor }}>
             {formatTime(dailySecondsLeft)}
           </span>
         </div>
-        <div className="text-xs text-gray-300">
-          Resets daily at {localDailyResetTime}.
-        </div>
+        <div className="text-xs text-gray-300">Resets daily at {localDailyResetTime}.</div>
       </div>
     </div>
   );

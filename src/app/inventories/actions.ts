@@ -1,6 +1,6 @@
-"use server";
+'use server';
 
-import { fetchRobloxUsersBatch, fetchRobloxAvatars } from "@/utils/api";
+import { fetchRobloxUsersBatch, fetchRobloxAvatars } from '@/utils/api';
 
 export async function fetchMissingRobloxData(userIds: string[]) {
   try {
@@ -18,7 +18,7 @@ export async function fetchMissingRobloxData(userIds: string[]) {
 
     // Process avatar data to extract imageUrl strings
     const processedAvatarData: Record<string, string> = {};
-    if (avatarData && typeof avatarData === "object") {
+    if (avatarData && typeof avatarData === 'object') {
       Object.values(avatarData).forEach((avatar) => {
         const avatarData = avatar as {
           targetId: number;
@@ -28,8 +28,7 @@ export async function fetchMissingRobloxData(userIds: string[]) {
         };
         if (avatarData && avatarData.targetId && avatarData.imageUrl) {
           // Include both completed and blocked avatars since blocked avatars still have valid images
-          processedAvatarData[avatarData.targetId.toString()] =
-            avatarData.imageUrl;
+          processedAvatarData[avatarData.targetId.toString()] = avatarData.imageUrl;
         }
       });
     }
@@ -39,10 +38,7 @@ export async function fetchMissingRobloxData(userIds: string[]) {
       avatarData: processedAvatarData,
     };
   } catch (error) {
-    console.error(
-      "[SERVER ACTION] Failed to fetch missing Roblox data:",
-      error,
-    );
+    console.error('[SERVER ACTION] Failed to fetch missing Roblox data:', error);
     return { userData: {}, avatarData: {} };
   }
 }
@@ -60,7 +56,7 @@ export async function fetchOriginalOwnerAvatars(userIds: string[]) {
 
     // Process avatar data to extract imageUrl strings
     const processedAvatarData: Record<string, string> = {};
-    if (avatarData && typeof avatarData === "object") {
+    if (avatarData && typeof avatarData === 'object') {
       Object.values(avatarData).forEach((avatar) => {
         const avatarData = avatar as {
           targetId: number;
@@ -71,12 +67,11 @@ export async function fetchOriginalOwnerAvatars(userIds: string[]) {
         if (
           avatarData &&
           avatarData.targetId &&
-          avatarData.state === "Completed" &&
+          avatarData.state === 'Completed' &&
           avatarData.imageUrl
         ) {
           // Only add completed avatars to the data
-          processedAvatarData[avatarData.targetId.toString()] =
-            avatarData.imageUrl;
+          processedAvatarData[avatarData.targetId.toString()] = avatarData.imageUrl;
         }
         // For blocked avatars, don't add them to the data so components can use their own fallback
       });
@@ -84,10 +79,7 @@ export async function fetchOriginalOwnerAvatars(userIds: string[]) {
 
     return processedAvatarData;
   } catch (error) {
-    console.error(
-      "[SERVER ACTION] Failed to fetch original owner avatars:",
-      error,
-    );
+    console.error('[SERVER ACTION] Failed to fetch original owner avatars:', error);
     return {};
   }
 }

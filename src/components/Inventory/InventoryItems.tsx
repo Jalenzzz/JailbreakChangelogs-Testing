@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useState, useMemo, useEffect, useCallback } from "react";
-import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Pagination } from "@mui/material";
-import Image from "next/image";
-import dynamic from "next/dynamic";
-import localFont from "next/font/local";
+import { useState, useMemo, useEffect, useCallback } from 'react';
+import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Pagination } from '@mui/material';
+import Image from 'next/image';
+import dynamic from 'next/dynamic';
+import localFont from 'next/font/local';
 import {
   getItemImagePath,
   isVideoItem,
@@ -13,18 +13,15 @@ import {
   getDriftVideoPath,
   getVideoPath,
   handleImageError,
-} from "@/utils/images";
-import {
-  fetchMissingRobloxData,
-  fetchOriginalOwnerAvatars,
-} from "@/app/inventories/actions";
-import { RobloxUser, Item } from "@/types";
-import { formatCurrencyValue, parseCurrencyValue } from "@/utils/currency";
+} from '@/utils/images';
+import { fetchMissingRobloxData, fetchOriginalOwnerAvatars } from '@/app/inventories/actions';
+import { RobloxUser, Item } from '@/types';
+import { formatCurrencyValue, parseCurrencyValue } from '@/utils/currency';
 
-const Select = dynamic(() => import("react-select"), { ssr: false });
+const Select = dynamic(() => import('react-select'), { ssr: false });
 
 const bangers = localFont({
-  src: "../../../public/fonts/Bangers.ttf",
+  src: '../../../public/fonts/Bangers.ttf',
 });
 
 interface TradeHistoryEntry {
@@ -81,29 +78,28 @@ export default function InventoryItems({
   onItemClick,
   itemsData: propItemsData,
 }: InventoryItemsProps) {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sortOrder, setSortOrder] = useState<
-    | "alpha-asc"
-    | "alpha-desc"
-    | "traded-desc"
-    | "unique-desc"
-    | "created-asc"
-    | "created-desc"
-    | "random"
-    | "duplicates"
-    | "cash-desc"
-    | "cash-asc"
-    | "duped-desc"
-    | "duped-asc"
-  >("cash-desc");
+    | 'alpha-asc'
+    | 'alpha-desc'
+    | 'traded-desc'
+    | 'unique-desc'
+    | 'created-asc'
+    | 'created-desc'
+    | 'random'
+    | 'duplicates'
+    | 'cash-desc'
+    | 'cash-asc'
+    | 'duped-desc'
+    | 'duped-asc'
+  >('cash-desc');
 
   const [page, setPage] = useState(1);
   const [showOnlyOriginal, setShowOnlyOriginal] = useState(false);
   const [selectLoaded, setSelectLoaded] = useState(false);
   const [isFiltering, setIsFiltering] = useState(false);
-  const [localRobloxUsers, setLocalRobloxUsers] =
-    useState<Record<string, RobloxUser>>(robloxUsers);
+  const [localRobloxUsers, setLocalRobloxUsers] = useState<Record<string, RobloxUser>>(robloxUsers);
   const [localRobloxAvatars, setLocalRobloxAvatars] =
     useState<Record<string, string>>(robloxAvatars);
   const [itemsData, setItemsData] = useState<Item[]>(propItemsData || []);
@@ -113,21 +109,21 @@ export default function InventoryItems({
 
   // Helper function to parse cash value strings for totals (returns 0 for N/A)
   const parseCashValueForTotal = (value: string | null): number => {
-    if (value === null || value === "N/A") return 0;
-    const num = parseFloat(value.replace(/[^0-9.]/g, ""));
-    if (value.toLowerCase().includes("k")) return num * 1000;
-    if (value.toLowerCase().includes("m")) return num * 1000000;
-    if (value.toLowerCase().includes("b")) return num * 1000000000;
+    if (value === null || value === 'N/A') return 0;
+    const num = parseFloat(value.replace(/[^0-9.]/g, ''));
+    if (value.toLowerCase().includes('k')) return num * 1000;
+    if (value.toLowerCase().includes('m')) return num * 1000000;
+    if (value.toLowerCase().includes('b')) return num * 1000000000;
     return num;
   };
 
   // Helper function to parse duped value strings for totals (returns 0 for N/A)
   const parseDupedValueForTotal = (value: string | null): number => {
-    if (value === null || value === "N/A") return 0;
-    const num = parseFloat(value.replace(/[^0-9.]/g, ""));
-    if (value.toLowerCase().includes("k")) return num * 1000;
-    if (value.toLowerCase().includes("m")) return num * 1000000;
-    if (value.toLowerCase().includes("b")) return num * 1000000000;
+    if (value === null || value === 'N/A') return 0;
+    const num = parseFloat(value.replace(/[^0-9.]/g, ''));
+    if (value.toLowerCase().includes('k')) return num * 1000;
+    if (value.toLowerCase().includes('m')) return num * 1000000;
+    if (value.toLowerCase().includes('b')) return num * 1000000000;
     return num;
   };
 
@@ -162,9 +158,7 @@ export default function InventoryItems({
   const getUserAvatar = useCallback(
     (userId: string) => {
       const avatar = localRobloxAvatars[userId];
-      return avatar && typeof avatar === "string" && avatar.trim() !== ""
-        ? avatar
-        : null;
+      return avatar && typeof avatar === 'string' && avatar.trim() !== '' ? avatar : null;
     },
     [localRobloxAvatars],
   );
@@ -172,9 +166,7 @@ export default function InventoryItems({
   // Progressive loading of missing user data
   const fetchMissingUserData = useCallback(
     async (userIds: string[]) => {
-      const missingIds = userIds.filter(
-        (id) => !localRobloxUsers[id] && !robloxUsers[id],
-      );
+      const missingIds = userIds.filter((id) => !localRobloxUsers[id] && !robloxUsers[id]);
 
       if (missingIds.length === 0) return;
 
@@ -182,16 +174,16 @@ export default function InventoryItems({
         const result = await fetchMissingRobloxData(missingIds);
 
         // Update state with new user data
-        if (result.userData && typeof result.userData === "object") {
+        if (result.userData && typeof result.userData === 'object') {
           setLocalRobloxUsers((prev) => ({ ...prev, ...result.userData }));
         }
 
         // Update state with new avatar data
-        if (result.avatarData && typeof result.avatarData === "object") {
+        if (result.avatarData && typeof result.avatarData === 'object') {
           setLocalRobloxAvatars((prev) => ({ ...prev, ...result.avatarData }));
         }
       } catch (error) {
-        console.error("Failed to fetch missing user data:", error);
+        console.error('Failed to fetch missing user data:', error);
       }
     },
     [localRobloxUsers, robloxUsers],
@@ -200,9 +192,7 @@ export default function InventoryItems({
   // Fetch avatars for original owners separately
   const fetchOriginalOwnerAvatarsData = useCallback(
     async (userIds: string[]) => {
-      const missingIds = userIds.filter(
-        (id) => !localRobloxAvatars[id] && !robloxAvatars[id],
-      );
+      const missingIds = userIds.filter((id) => !localRobloxAvatars[id] && !robloxAvatars[id]);
 
       if (missingIds.length === 0) return;
 
@@ -210,11 +200,11 @@ export default function InventoryItems({
         const avatarData = await fetchOriginalOwnerAvatars(missingIds);
 
         // Update state with new avatar data
-        if (avatarData && typeof avatarData === "object") {
+        if (avatarData && typeof avatarData === 'object') {
           setLocalRobloxAvatars((prev) => ({ ...prev, ...avatarData }));
         }
       } catch (error) {
-        console.error("Failed to fetch original owner avatars:", error);
+        console.error('Failed to fetch original owner avatars:', error);
       }
     },
     [localRobloxAvatars, robloxAvatars],
@@ -260,9 +250,7 @@ export default function InventoryItems({
 
     // Apply category filter
     if (selectedCategories.length > 0) {
-      items = items.filter((item) =>
-        selectedCategories.includes(item.categoryTitle),
-      );
+      items = items.filter((item) => selectedCategories.includes(item.categoryTitle));
     }
 
     // Apply search filter
@@ -276,18 +264,14 @@ export default function InventoryItems({
         if (item.categoryTitle.toLowerCase().includes(searchLower)) return true;
 
         // Search in season (if exists)
-        if (item.season && item.season.toString().includes(searchLower))
-          return true;
+        if (item.season && item.season.toString().includes(searchLower)) return true;
 
         // Search in level (if exists)
-        if (item.level && item.level.toString().includes(searchLower))
-          return true;
+        if (item.level && item.level.toString().includes(searchLower)) return true;
 
         // Search in original owner status
-        if (item.isOriginalOwner && searchLower.includes("original"))
-          return true;
-        if (!item.isOriginalOwner && searchLower.includes("not original"))
-          return true;
+        if (item.isOriginalOwner && searchLower.includes('original')) return true;
+        if (!item.isOriginalOwner && searchLower.includes('not original')) return true;
 
         return false;
       });
@@ -296,72 +280,45 @@ export default function InventoryItems({
     // Apply sorting
     items = items.sort((a, b) => {
       switch (sortOrder) {
-        case "random":
+        case 'random':
           return Math.random() - 0.5;
-        case "duplicates":
-          const categoryCompare = a.categoryTitle.localeCompare(
-            b.categoryTitle,
-          );
+        case 'duplicates':
+          const categoryCompare = a.categoryTitle.localeCompare(b.categoryTitle);
           if (categoryCompare !== 0) return categoryCompare;
           return a.title.localeCompare(b.title);
-        case "alpha-asc":
+        case 'alpha-asc':
           return a.title.localeCompare(b.title);
-        case "alpha-desc":
+        case 'alpha-desc':
           return b.title.localeCompare(a.title);
-        case "traded-desc":
+        case 'traded-desc':
           return (b.timesTraded || 0) - (a.timesTraded || 0);
-        case "unique-desc":
+        case 'unique-desc':
           return (b.uniqueCirculation || 0) - (a.uniqueCirculation || 0);
-        case "created-asc":
-          const aCreatedAt = a.info.find(
-            (info) => info.title === "Created At",
-          )?.value;
-          const bCreatedAt = b.info.find(
-            (info) => info.title === "Created At",
-          )?.value;
+        case 'created-asc':
+          const aCreatedAt = a.info.find((info) => info.title === 'Created At')?.value;
+          const bCreatedAt = b.info.find((info) => info.title === 'Created At')?.value;
           if (!aCreatedAt || !bCreatedAt) return 0;
-          return (
-            new Date(aCreatedAt).getTime() - new Date(bCreatedAt).getTime()
-          );
-        case "created-desc":
-          const aCreatedAtDesc = a.info.find(
-            (info) => info.title === "Created At",
-          )?.value;
-          const bCreatedAtDesc = b.info.find(
-            (info) => info.title === "Created At",
-          )?.value;
+          return new Date(aCreatedAt).getTime() - new Date(bCreatedAt).getTime();
+        case 'created-desc':
+          const aCreatedAtDesc = a.info.find((info) => info.title === 'Created At')?.value;
+          const bCreatedAtDesc = b.info.find((info) => info.title === 'Created At')?.value;
           if (!aCreatedAtDesc || !bCreatedAtDesc) return 0;
-          return (
-            new Date(bCreatedAtDesc).getTime() -
-            new Date(aCreatedAtDesc).getTime()
-          );
-        case "cash-desc":
+          return new Date(bCreatedAtDesc).getTime() - new Date(aCreatedAtDesc).getTime();
+        case 'cash-desc':
           const aItemData = itemsData.find((item) => item.id === a.item_id);
           const bItemData = itemsData.find((item) => item.id === b.item_id);
-          const aCashValue = aItemData
-            ? parseCashValueForTotal(aItemData.cash_value)
-            : 0;
-          const bCashValue = bItemData
-            ? parseCashValueForTotal(bItemData.cash_value)
-            : 0;
+          const aCashValue = aItemData ? parseCashValueForTotal(aItemData.cash_value) : 0;
+          const bCashValue = bItemData ? parseCashValueForTotal(bItemData.cash_value) : 0;
           return bCashValue - aCashValue;
-        case "cash-asc":
+        case 'cash-asc':
           const aItemDataAsc = itemsData.find((item) => item.id === a.item_id);
           const bItemDataAsc = itemsData.find((item) => item.id === b.item_id);
-          const aCashValueAsc = aItemDataAsc
-            ? parseCashValueForTotal(aItemDataAsc.cash_value)
-            : 0;
-          const bCashValueAsc = bItemDataAsc
-            ? parseCashValueForTotal(bItemDataAsc.cash_value)
-            : 0;
+          const aCashValueAsc = aItemDataAsc ? parseCashValueForTotal(aItemDataAsc.cash_value) : 0;
+          const bCashValueAsc = bItemDataAsc ? parseCashValueForTotal(bItemDataAsc.cash_value) : 0;
           return aCashValueAsc - bCashValueAsc;
-        case "duped-desc":
-          const aItemDataDupedDesc = itemsData.find(
-            (item) => item.id === a.item_id,
-          );
-          const bItemDataDupedDesc = itemsData.find(
-            (item) => item.id === b.item_id,
-          );
+        case 'duped-desc':
+          const aItemDataDupedDesc = itemsData.find((item) => item.id === a.item_id);
+          const bItemDataDupedDesc = itemsData.find((item) => item.id === b.item_id);
           const aDupedValueDesc = aItemDataDupedDesc
             ? parseDupedValueForTotal(aItemDataDupedDesc.duped_value)
             : 0;
@@ -369,13 +326,9 @@ export default function InventoryItems({
             ? parseDupedValueForTotal(bItemDataDupedDesc.duped_value)
             : 0;
           return bDupedValueDesc - aDupedValueDesc;
-        case "duped-asc":
-          const aItemDataDupedAsc = itemsData.find(
-            (item) => item.id === a.item_id,
-          );
-          const bItemDataDupedAsc = itemsData.find(
-            (item) => item.id === b.item_id,
-          );
+        case 'duped-asc':
+          const aItemDataDupedAsc = itemsData.find((item) => item.id === a.item_id);
+          const bItemDataDupedAsc = itemsData.find((item) => item.id === b.item_id);
           const aDupedValueAsc = aItemDataDupedAsc
             ? parseDupedValueForTotal(aItemDataDupedAsc.duped_value)
             : 0;
@@ -390,31 +343,19 @@ export default function InventoryItems({
     });
 
     return items;
-  }, [
-    initialData,
-    searchTerm,
-    showOnlyOriginal,
-    selectedCategories,
-    sortOrder,
-    itemsData,
-  ]);
+  }, [initialData, searchTerm, showOnlyOriginal, selectedCategories, sortOrder, itemsData]);
 
   // Get unique categories from the data
   const availableCategories = useMemo(() => {
     if (!initialData) return [];
-    const categories = [
-      ...new Set(initialData.data.map((item) => item.categoryTitle)),
-    ];
+    const categories = [...new Set(initialData.data.map((item) => item.categoryTitle))];
     return categories.sort();
   }, [initialData]);
 
   // Calculate pagination
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const startIndex = (page - 1) * itemsPerPage;
-  const paginatedItems = filteredItems.slice(
-    startIndex,
-    startIndex + itemsPerPage,
-  );
+  const paginatedItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
 
   // Progressive loading for current page items
   useEffect(() => {
@@ -424,9 +365,7 @@ export default function InventoryItems({
     const avatarIdsToLoad: string[] = [];
 
     paginatedItems.forEach((item) => {
-      const originalOwnerInfo = item.info.find(
-        (info) => info.title === "Original Owner",
-      );
+      const originalOwnerInfo = item.info.find((info) => info.title === 'Original Owner');
 
       // Add original owner ID if missing
       if (originalOwnerInfo?.value && /^\d+$/.test(originalOwnerInfo.value)) {
@@ -446,10 +385,7 @@ export default function InventoryItems({
         item.history.forEach((trade) => {
           if (trade.UserId) {
             const tradeUserId = trade.UserId.toString();
-            if (
-              !getUserDisplay(tradeUserId) ||
-              getUserDisplay(tradeUserId) === tradeUserId
-            ) {
+            if (!getUserDisplay(tradeUserId) || getUserDisplay(tradeUserId) === tradeUserId) {
               userIdsToLoad.push(tradeUserId);
             }
 
@@ -481,10 +417,7 @@ export default function InventoryItems({
     initialData,
   ]);
 
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    value: number,
-  ) => {
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 
@@ -496,14 +429,12 @@ export default function InventoryItems({
     initialData.data.length === 0
   ) {
     return (
-      <div className="bg-[#212A31] rounded-lg border border-[#2E3944] p-6">
-        <h2 className="text-xl font-semibold text-muted mb-4">
-          Inventory Items
-        </h2>
-        <div className="text-center py-12">
-          <div className="mx-auto w-12 h-12 rounded-full bg-[#2E3944] flex items-center justify-center mb-4">
+      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
+        <h2 className="text-muted mb-4 text-xl font-semibold">Inventory Items</h2>
+        <div className="py-12 text-center">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#2E3944]">
             <svg
-              className="w-6 h-6 text-muted"
+              className="text-muted h-6 w-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -516,34 +447,30 @@ export default function InventoryItems({
               />
             </svg>
           </div>
-          <p className="text-muted">
-            This user has no items in their Jailbreak inventory.
-          </p>
+          <p className="text-muted">This user has no items in their Jailbreak inventory.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#212A31] rounded-lg border border-[#2E3944] p-6">
-      <h2 className="text-xl font-semibold text-muted mb-4">Inventory Items</h2>
+    <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
+      <h2 className="text-muted mb-4 text-xl font-semibold">Inventory Items</h2>
 
-      <div className="flex flex-col gap-4 mb-4">
+      <div className="mb-4 flex flex-col gap-4">
         {/* Original Owner Filter */}
-        <label className="flex items-center gap-2 cursor-pointer">
+        <label className="flex cursor-pointer items-center gap-2">
           <input
             type="checkbox"
             checked={showOnlyOriginal}
             onChange={(e) => handleOriginalFilterToggle(e.target.checked)}
-            className="w-4 h-4 text-[#5865F2] bg-[#37424D] border-[#2E3944] rounded focus:ring-[#5865F2] focus:ring-2"
+            className="h-4 w-4 rounded border-[#2E3944] bg-[#37424D] text-[#5865F2] focus:ring-2 focus:ring-[#5865F2]"
           />
-          <span className="text-sm text-muted whitespace-nowrap">
-            Original Items Only
-          </span>
+          <span className="text-muted text-sm whitespace-nowrap">Original Items Only</span>
         </label>
 
         {/* Search, Category, and Sort Filters - Side by Side */}
-        <div className="flex flex-col sm:flex-row gap-4 w-full">
+        <div className="flex w-full flex-col gap-4 sm:flex-row">
           {/* Search Bar - First */}
           <div className="relative w-full sm:w-1/3">
             <input
@@ -552,13 +479,13 @@ export default function InventoryItems({
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               maxLength={MAX_SEARCH_LENGTH}
-              className="w-full px-3 py-2 pl-10 pr-10 border border-[#2E3944] bg-[#37424D] rounded-lg shadow-sm focus:outline-none focus:border-[#5865F2] text-muted placeholder-[#D3D9D4]"
+              className="text-muted w-full rounded-lg border border-[#2E3944] bg-[#37424D] px-3 py-2 pr-10 pl-10 placeholder-[#D3D9D4] shadow-sm focus:border-[#5865F2] focus:outline-none"
             />
-            <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]" />
+            <MagnifyingGlassIcon className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]" />
             {searchTerm && (
               <button
-                onClick={() => setSearchTerm("")}
-                className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#FFFFFF] hover:text-muted"
+                onClick={() => setSearchTerm('')}
+                className="hover:text-muted absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]"
                 aria-label="Clear search"
               >
                 <XMarkIcon />
@@ -597,49 +524,46 @@ export default function InventoryItems({
                 styles={{
                   control: (base) => ({
                     ...base,
-                    backgroundColor: "#37424D",
-                    borderColor: "#2E3944",
-                    color: "#D3D9D4",
+                    backgroundColor: '#37424D',
+                    borderColor: '#2E3944',
+                    color: '#D3D9D4',
                   }),
-                  singleValue: (base) => ({ ...base, color: "#D3D9D4" }),
+                  singleValue: (base) => ({ ...base, color: '#D3D9D4' }),
                   menu: (base) => ({
                     ...base,
-                    backgroundColor: "#37424D",
-                    color: "#D3D9D4",
+                    backgroundColor: '#37424D',
+                    color: '#D3D9D4',
                     zIndex: 3000,
                   }),
                   option: (base, state) => ({
                     ...base,
                     backgroundColor: state.isSelected
-                      ? "#5865F2"
+                      ? '#5865F2'
                       : state.isFocused
-                        ? "#2E3944"
-                        : "#37424D",
-                    color:
-                      state.isSelected || state.isFocused
-                        ? "#FFFFFF"
-                        : "#D3D9D4",
-                    "&:active": {
-                      backgroundColor: "#124E66",
-                      color: "#FFFFFF",
+                        ? '#2E3944'
+                        : '#37424D',
+                    color: state.isSelected || state.isFocused ? '#FFFFFF' : '#D3D9D4',
+                    '&:active': {
+                      backgroundColor: '#124E66',
+                      color: '#FFFFFF',
                     },
                   }),
                   clearIndicator: (base) => ({
                     ...base,
-                    color: "#D3D9D4",
-                    "&:hover": {
-                      color: "#FFFFFF",
+                    color: '#D3D9D4',
+                    '&:hover': {
+                      color: '#FFFFFF',
                     },
                   }),
                   placeholder: (base) => ({
                     ...base,
-                    color: "#D3D9D4",
+                    color: '#D3D9D4',
                   }),
                 }}
                 isSearchable={false}
               />
             ) : (
-              <div className="w-full h-10 bg-[#37424D] border border-[#2E3944] rounded-md animate-pulse"></div>
+              <div className="h-10 w-full animate-pulse rounded-md border border-[#2E3944] bg-[#37424D]"></div>
             )}
           </div>
 
@@ -651,116 +575,114 @@ export default function InventoryItems({
                   value: sortOrder,
                   label: (() => {
                     switch (sortOrder) {
-                      case "random":
-                        return "Random Order";
-                      case "duplicates":
-                        return "Group Duplicates";
-                      case "alpha-asc":
-                        return "Name (A to Z)";
-                      case "alpha-desc":
-                        return "Name (Z to A)";
-                      case "traded-desc":
-                        return "Monthly Traded (High to Low)";
-                      case "unique-desc":
-                        return "Monthly Unique (High to Low)";
-                      case "created-asc":
-                        return "Created On (Oldest to Newest)";
-                      case "created-desc":
-                        return "Created On (Newest to Oldest)";
-                      case "cash-desc":
-                        return "Cash Value (High to Low)";
-                      case "cash-asc":
-                        return "Cash Value (Low to High)";
-                      case "duped-desc":
-                        return "Duped Value (High to Low)";
-                      case "duped-asc":
-                        return "Duped Value (Low to High)";
+                      case 'random':
+                        return 'Random Order';
+                      case 'duplicates':
+                        return 'Group Duplicates';
+                      case 'alpha-asc':
+                        return 'Name (A to Z)';
+                      case 'alpha-desc':
+                        return 'Name (Z to A)';
+                      case 'traded-desc':
+                        return 'Monthly Traded (High to Low)';
+                      case 'unique-desc':
+                        return 'Monthly Unique (High to Low)';
+                      case 'created-asc':
+                        return 'Created On (Oldest to Newest)';
+                      case 'created-desc':
+                        return 'Created On (Newest to Oldest)';
+                      case 'cash-desc':
+                        return 'Cash Value (High to Low)';
+                      case 'cash-asc':
+                        return 'Cash Value (Low to High)';
+                      case 'duped-desc':
+                        return 'Duped Value (High to Low)';
+                      case 'duped-asc':
+                        return 'Duped Value (Low to High)';
                       default:
-                        return "Random Order";
+                        return 'Random Order';
                     }
                   })(),
                 }}
                 onChange={(option) => {
                   if (!option) {
-                    setSortOrder("random");
+                    setSortOrder('random');
                     return;
                   }
                   setSortOrder(
                     (
                       option as {
                         value:
-                          | "alpha-asc"
-                          | "alpha-desc"
-                          | "traded-desc"
-                          | "unique-desc"
-                          | "created-asc"
-                          | "created-desc"
-                          | "random"
-                          | "duplicates"
-                          | "cash-desc"
-                          | "cash-asc"
-                          | "duped-desc"
-                          | "duped-asc";
+                          | 'alpha-asc'
+                          | 'alpha-desc'
+                          | 'traded-desc'
+                          | 'unique-desc'
+                          | 'created-asc'
+                          | 'created-desc'
+                          | 'random'
+                          | 'duplicates'
+                          | 'cash-desc'
+                          | 'cash-asc'
+                          | 'duped-desc'
+                          | 'duped-asc';
                       }
                     ).value,
                   );
                 }}
                 options={[
                   {
-                    label: "Random",
-                    options: [{ value: "random", label: "Random Order" }],
+                    label: 'Random',
+                    options: [{ value: 'random', label: 'Random Order' }],
                   },
                   {
-                    label: "Duplicates",
+                    label: 'Duplicates',
+                    options: [{ value: 'duplicates', label: 'Group Duplicates' }],
+                  },
+                  {
+                    label: 'Alphabetically',
                     options: [
-                      { value: "duplicates", label: "Group Duplicates" },
+                      { value: 'alpha-asc', label: 'Name (A to Z)' },
+                      { value: 'alpha-desc', label: 'Name (Z to A)' },
                     ],
                   },
                   {
-                    label: "Alphabetically",
-                    options: [
-                      { value: "alpha-asc", label: "Name (A to Z)" },
-                      { value: "alpha-desc", label: "Name (Z to A)" },
-                    ],
-                  },
-                  {
-                    label: "Activity",
+                    label: 'Activity',
                     options: [
                       {
-                        value: "traded-desc",
-                        label: "Monthly Traded (High to Low)",
+                        value: 'traded-desc',
+                        label: 'Monthly Traded (High to Low)',
                       },
                       {
-                        value: "unique-desc",
-                        label: "Monthly Unique (High to Low)",
-                      },
-                    ],
-                  },
-                  {
-                    label: "Value",
-                    options: [
-                      { value: "cash-desc", label: "Cash Value (High to Low)" },
-                      { value: "cash-asc", label: "Cash Value (Low to High)" },
-                      {
-                        value: "duped-desc",
-                        label: "Duped Value (High to Low)",
-                      },
-                      {
-                        value: "duped-asc",
-                        label: "Duped Value (Low to High)",
+                        value: 'unique-desc',
+                        label: 'Monthly Unique (High to Low)',
                       },
                     ],
                   },
                   {
-                    label: "Date",
+                    label: 'Value',
                     options: [
+                      { value: 'cash-desc', label: 'Cash Value (High to Low)' },
+                      { value: 'cash-asc', label: 'Cash Value (Low to High)' },
                       {
-                        value: "created-desc",
-                        label: "Created On (Newest to Oldest)",
+                        value: 'duped-desc',
+                        label: 'Duped Value (High to Low)',
                       },
                       {
-                        value: "created-asc",
-                        label: "Created On (Oldest to Newest)",
+                        value: 'duped-asc',
+                        label: 'Duped Value (Low to High)',
+                      },
+                    ],
+                  },
+                  {
+                    label: 'Date',
+                    options: [
+                      {
+                        value: 'created-desc',
+                        label: 'Created On (Newest to Oldest)',
+                      },
+                      {
+                        value: 'created-asc',
+                        label: 'Created On (Oldest to Newest)',
                       },
                     ],
                   },
@@ -773,107 +695,102 @@ export default function InventoryItems({
                 styles={{
                   control: (base) => ({
                     ...base,
-                    backgroundColor: "#37424D",
-                    borderColor: "#2E3944",
-                    color: "#D3D9D4",
+                    backgroundColor: '#37424D',
+                    borderColor: '#2E3944',
+                    color: '#D3D9D4',
                   }),
-                  singleValue: (base) => ({ ...base, color: "#D3D9D4" }),
+                  singleValue: (base) => ({ ...base, color: '#D3D9D4' }),
                   menu: (base) => ({
                     ...base,
-                    backgroundColor: "#37424D",
-                    color: "#D3D9D4",
+                    backgroundColor: '#37424D',
+                    color: '#D3D9D4',
                     zIndex: 3000,
                   }),
                   option: (base, state) => ({
                     ...base,
                     backgroundColor: state.isSelected
-                      ? "#5865F2"
+                      ? '#5865F2'
                       : state.isFocused
-                        ? "#2E3944"
-                        : "#37424D",
-                    color:
-                      state.isSelected || state.isFocused
-                        ? "#FFFFFF"
-                        : "#D3D9D4",
-                    "&:active": {
-                      backgroundColor: "#124E66",
-                      color: "#FFFFFF",
+                        ? '#2E3944'
+                        : '#37424D',
+                    color: state.isSelected || state.isFocused ? '#FFFFFF' : '#D3D9D4',
+                    '&:active': {
+                      backgroundColor: '#124E66',
+                      color: '#FFFFFF',
                     },
                   }),
                   clearIndicator: (base) => ({
                     ...base,
-                    color: "#D3D9D4",
-                    "&:hover": {
-                      color: "#FFFFFF",
+                    color: '#D3D9D4',
+                    '&:hover': {
+                      color: '#FFFFFF',
                     },
                   }),
                   placeholder: (base) => ({
                     ...base,
-                    color: "#D3D9D4",
+                    color: '#D3D9D4',
                   }),
                 }}
                 isSearchable={false}
               />
             ) : (
-              <div className="w-full h-10 bg-[#37424D] border border-[#2E3944] rounded-md animate-pulse"></div>
+              <div className="h-10 w-full animate-pulse rounded-md border border-[#2E3944] bg-[#37424D]"></div>
             )}
           </div>
         </div>
       </div>
 
-      {filteredItems.length === 0 &&
-        (searchTerm || selectedCategories.length > 0) && (
-          <div className="text-center py-8 text-muted">
-            <p className="break-words">
-              No items found
-              {searchTerm && ` matching "${searchTerm}"`}
-              {selectedCategories.length > 0 && ` in selected categories`}
-            </p>
-            <div className="flex flex-wrap justify-center gap-2 mt-2">
-              {searchTerm && (
-                <button
-                  onClick={() => setSearchTerm("")}
-                  className="text-[#5865F2] hover:text-[#4752C4] hover:underline"
-                >
-                  Clear search
-                </button>
-              )}
-              {selectedCategories.length > 0 && (
-                <button
-                  onClick={() => setSelectedCategories([])}
-                  className="text-[#5865F2] hover:text-[#4752C4] hover:underline"
-                >
-                  Clear categories
-                </button>
-              )}
-            </div>
+      {filteredItems.length === 0 && (searchTerm || selectedCategories.length > 0) && (
+        <div className="text-muted py-8 text-center">
+          <p className="break-words">
+            No items found
+            {searchTerm && ` matching "${searchTerm}"`}
+            {selectedCategories.length > 0 && ` in selected categories`}
+          </p>
+          <div className="mt-2 flex flex-wrap justify-center gap-2">
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm('')}
+                className="text-[#5865F2] hover:text-[#4752C4] hover:underline"
+              >
+                Clear search
+              </button>
+            )}
+            {selectedCategories.length > 0 && (
+              <button
+                onClick={() => setSelectedCategories([])}
+                className="text-[#5865F2] hover:text-[#4752C4] hover:underline"
+              >
+                Clear categories
+              </button>
+            )}
           </div>
-        )}
+        </div>
+      )}
 
       {/* Filter Summary - Only show when there are items */}
       {(searchTerm || selectedCategories.length > 0 || showOnlyOriginal) &&
         filteredItems.length > 0 && (
-          <div className="mb-4 p-3 bg-[#2E3944] rounded-lg border border-[#37424D]">
-            <div className="flex flex-wrap items-center gap-2 text-sm text-muted">
+          <div className="mb-4 rounded-lg border border-[#37424D] bg-[#2E3944] p-3">
+            <div className="text-muted flex flex-wrap items-center gap-2 text-sm">
               <span className="font-medium">Active filters:</span>
               {showOnlyOriginal && (
-                <span className="px-2 py-1 bg-[#5865F2] text-white rounded-md text-xs">
+                <span className="rounded-md bg-[#5865F2] px-2 py-1 text-xs text-white">
                   Original Items Only
                 </span>
               )}
               {selectedCategories.length > 0 && (
-                <span className="px-2 py-1 bg-[#5865F2] text-white rounded-md text-xs">
+                <span className="rounded-md bg-[#5865F2] px-2 py-1 text-xs text-white">
                   Category: {selectedCategories[0]}
                 </span>
               )}
               {searchTerm && (
-                <span className="px-2 py-1 bg-[#5865F2] text-white rounded-md text-xs break-words">
+                <span className="rounded-md bg-[#5865F2] px-2 py-1 text-xs break-words text-white">
                   Search: &quot;{searchTerm}&quot;
                 </span>
               )}
               <span className="text-xs opacity-75">
-                Showing {filteredItems.length} of {initialData?.item_count || 0}{" "}
-                items
+                Showing {filteredItems.length} of {initialData?.item_count || 0} items
               </span>
             </div>
           </div>
@@ -881,22 +798,22 @@ export default function InventoryItems({
 
       {/* Top Pagination */}
       {totalPages > 1 && (
-        <div className="flex justify-center mb-6">
+        <div className="mb-6 flex justify-center">
           <Pagination
             count={totalPages}
             page={page}
             onChange={handlePageChange}
             sx={{
-              "& .MuiPaginationItem-root": {
-                color: "#D3D9D4",
-                "&.Mui-selected": {
-                  backgroundColor: "#5865F2",
-                  "&:hover": {
-                    backgroundColor: "#4752C4",
+              '& .MuiPaginationItem-root': {
+                color: '#D3D9D4',
+                '&.Mui-selected': {
+                  backgroundColor: '#5865F2',
+                  '&:hover': {
+                    backgroundColor: '#4752C4',
                   },
                 },
-                "&:hover": {
-                  backgroundColor: "#2E3944",
+                '&:hover': {
+                  backgroundColor: '#2E3944',
                 },
               },
             }}
@@ -906,10 +823,10 @@ export default function InventoryItems({
 
       {/* Loading Spinner */}
       {isFiltering && (
-        <div className="flex justify-center items-center py-12">
+        <div className="flex items-center justify-center py-12">
           <div className="flex flex-col items-center gap-4">
             <svg
-              className="animate-spin h-8 w-8 text-[#5865F2]"
+              className="h-8 w-8 animate-spin text-[#5865F2]"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -935,57 +852,47 @@ export default function InventoryItems({
 
       {/* Items Grid - Only show when not filtering */}
       {!isFiltering && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {paginatedItems.map((item) => {
             const isOriginalOwner = item.isOriginalOwner;
-            const originalOwnerInfo = item.info.find(
-              (info) => info.title === "Original Owner",
-            );
+            const originalOwnerInfo = item.info.find((info) => info.title === 'Original Owner');
 
             return (
               <div
                 key={item.id}
-                className={`text-white rounded-lg p-3 border-2 relative cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg min-h-[400px] flex flex-col ${
+                className={`relative flex min-h-[400px] cursor-pointer flex-col rounded-lg border-2 p-3 text-white transition-all duration-200 hover:scale-105 hover:shadow-lg ${
                   isOriginalOwner
-                    ? "bg-yellow-600/30 backdrop-blur-sm border-yellow-400"
-                    : "bg-gray-700 border-gray-800"
+                    ? 'border-yellow-400 bg-yellow-600/30 backdrop-blur-sm'
+                    : 'border-gray-800 bg-gray-700'
                 }`}
                 onClick={() => onItemClick(item)}
               >
                 {/* Title */}
-                <div className="text-left mb-4">
-                  <p
-                    className={`${bangers.className} text-md text-gray-300 mb-1 tracking-wide`}
-                  >
+                <div className="mb-4 text-left">
+                  <p className={`${bangers.className} text-md mb-1 tracking-wide text-gray-300`}>
                     {item.categoryTitle}
                   </p>
-                  <h2
-                    className={`${bangers.className} text-2xl break-words tracking-wide`}
-                  >
+                  <h2 className={`${bangers.className} text-2xl tracking-wide break-words`}>
                     {item.title}
                   </h2>
                 </div>
 
                 {/* Item Image - Always show container for consistent layout */}
-                <div className="relative w-full h-40 mb-3 rounded-lg overflow-hidden bg-[#212A31]">
-                  {!["Brakes"].includes(item.categoryTitle) ? (
+                <div className="relative mb-3 h-40 w-full overflow-hidden rounded-lg bg-[#212A31]">
+                  {!['Brakes'].includes(item.categoryTitle) ? (
                     isVideoItem(item.title) ? (
                       <video
                         src={getVideoPath(item.categoryTitle, item.title)}
-                        className="w-full h-full object-cover"
+                        className="h-full w-full object-cover"
                         muted
                         playsInline
                         loop
                         autoPlay
                       />
                     ) : isDriftItem(item.categoryTitle) ? (
-                      <div className="relative w-full h-full">
+                      <div className="relative h-full w-full">
                         <Image
-                          src={getItemImagePath(
-                            item.categoryTitle,
-                            item.title,
-                            true,
-                          )}
+                          src={getItemImagePath(item.categoryTitle, item.title, true)}
                           alt={item.title}
                           fill
                           className="object-cover"
@@ -993,7 +900,7 @@ export default function InventoryItems({
                         />
                         <video
                           src={getDriftVideoPath(item.title)}
-                          className="absolute inset-0 w-full h-full object-cover opacity-0 hover:opacity-100 transition-opacity duration-300"
+                          className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-300 hover:opacity-100"
                           muted
                           playsInline
                           loop
@@ -1001,11 +908,7 @@ export default function InventoryItems({
                       </div>
                     ) : (
                       <Image
-                        src={getItemImagePath(
-                          item.categoryTitle,
-                          item.title,
-                          true,
-                        )}
+                        src={getItemImagePath(item.categoryTitle, item.title, true)}
                         alt={item.title}
                         fill
                         className="object-cover"
@@ -1013,10 +916,10 @@ export default function InventoryItems({
                       />
                     )
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center">
+                    <div className="flex h-full w-full items-center justify-center">
                       <div className="text-center text-gray-400">
                         <svg
-                          className="w-12 h-12 mx-auto mb-2"
+                          className="mx-auto mb-2 h-12 w-12"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -1035,34 +938,28 @@ export default function InventoryItems({
                 </div>
 
                 {/* Statistics */}
-                <div className="space-y-2 text-center flex-1 flex flex-col justify-center">
+                <div className="flex flex-1 flex-col justify-center space-y-2 text-center">
                   <div>
                     <div className="text-sm opacity-90">MONTHLY TRADED</div>
-                    <div className="text-xl font-bold">
-                      {formatNumber(item.timesTraded)}
-                    </div>
+                    <div className="text-xl font-bold">{formatNumber(item.timesTraded)}</div>
                   </div>
                   <div>
                     <div className="text-sm opacity-90">MONTHLY UNIQUE</div>
-                    <div className="text-xl font-bold">
-                      {formatNumber(item.uniqueCirculation)}
-                    </div>
+                    <div className="text-xl font-bold">{formatNumber(item.uniqueCirculation)}</div>
                   </div>
                   <div>
                     <div className="text-sm opacity-90">ORIGINAL OWNER</div>
                     <div className="text-xl font-bold italic">
                       {originalOwnerInfo ? (
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
+                        <div className="flex flex-col items-center justify-center gap-2 sm:flex-row">
                           {/* Always show avatar container - use placeholder when no avatar available */}
-                          <div className="w-6 h-6 rounded-full bg-[#212A31] border border-[#2E3944] flex-shrink-0 flex items-center justify-center">
-                            {(isOriginalOwner &&
-                              getUserAvatar(initialData?.user_id || "")) ||
-                            (!isOriginalOwner &&
-                              getUserAvatar(originalOwnerInfo.value)) ? (
+                          <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-[#2E3944] bg-[#212A31]">
+                            {(isOriginalOwner && getUserAvatar(initialData?.user_id || '')) ||
+                            (!isOriginalOwner && getUserAvatar(originalOwnerInfo.value)) ? (
                               <Image
                                 src={
                                   isOriginalOwner
-                                    ? getUserAvatar(initialData?.user_id || "")!
+                                    ? getUserAvatar(initialData?.user_id || '')!
                                     : getUserAvatar(originalOwnerInfo.value)!
                                 }
                                 alt="Original Owner Avatar"
@@ -1072,7 +969,7 @@ export default function InventoryItems({
                               />
                             ) : (
                               <svg
-                                className="w-3 h-3 text-muted"
+                                className="text-muted h-3 w-3"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -1090,48 +987,38 @@ export default function InventoryItems({
                             href={`https://www.roblox.com/users/${isOriginalOwner ? initialData?.user_id : originalOwnerInfo.value}/profile`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-300 hover:text-blue-400 hover:underline transition-colors text-center break-words"
+                            className="text-center break-words text-blue-300 transition-colors hover:text-blue-400 hover:underline"
                           >
                             {isOriginalOwner
-                              ? getRobloxUserDisplay(initialData?.user_id || "")
+                              ? getRobloxUserDisplay(initialData?.user_id || '')
                               : getRobloxUserDisplay(originalOwnerInfo.value)}
                           </a>
                         </div>
                       ) : (
-                        "N/A"
+                        'N/A'
                       )}
                     </div>
                   </div>
                   {/* Cash and Duped Values */}
                   {(() => {
-                    const itemData = itemsData.find(
-                      (dataItem) => dataItem.id === item.item_id,
-                    );
+                    const itemData = itemsData.find((dataItem) => dataItem.id === item.item_id);
                     if (itemData) {
                       return (
                         <>
                           <div>
                             <div className="text-sm opacity-90">CASH VALUE</div>
                             <div className="text-xl font-bold text-white">
-                              {itemData.cash_value === null ||
-                              itemData.cash_value === "N/A"
-                                ? "N/A"
-                                : formatCurrencyValue(
-                                    parseCurrencyValue(itemData.cash_value),
-                                  )}
+                              {itemData.cash_value === null || itemData.cash_value === 'N/A'
+                                ? 'N/A'
+                                : formatCurrencyValue(parseCurrencyValue(itemData.cash_value))}
                             </div>
                           </div>
                           <div>
-                            <div className="text-sm opacity-90">
-                              DUPED VALUE
-                            </div>
+                            <div className="text-sm opacity-90">DUPED VALUE</div>
                             <div className="text-xl font-bold text-white">
-                              {itemData.duped_value === null ||
-                              itemData.duped_value === "N/A"
-                                ? "N/A"
-                                : formatCurrencyValue(
-                                    parseCurrencyValue(itemData.duped_value),
-                                  )}
+                              {itemData.duped_value === null || itemData.duped_value === 'N/A'
+                                ? 'N/A'
+                                : formatCurrencyValue(parseCurrencyValue(itemData.duped_value))}
                             </div>
                           </div>
                         </>
@@ -1142,26 +1029,21 @@ export default function InventoryItems({
                   <div>
                     <div className="text-sm opacity-90">CREATED ON</div>
                     <div className="text-xl font-bold">
-                      {item.info.find((info) => info.title === "Created At")
-                        ?.value || "N/A"}
+                      {item.info.find((info) => info.title === 'Created At')?.value || 'N/A'}
                     </div>
                   </div>
                 </div>
 
                 {/* Season and Level badges - always show container for consistent layout */}
-                <div className="flex justify-center gap-2 mt-3 pt-3 border-t border-white/20 min-h-[40px]">
+                <div className="mt-3 flex min-h-[40px] justify-center gap-2 border-t border-white/20 pt-3">
                   {item.season && (
-                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center border-2 border-blue-400 shadow-lg">
-                      <span className="text-white text-xs font-bold">
-                        S{item.season}
-                      </span>
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-blue-400 bg-blue-600 shadow-lg">
+                      <span className="text-xs font-bold text-white">S{item.season}</span>
                     </div>
                   )}
                   {item.level && (
-                    <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center border-2 border-green-400 shadow-lg">
-                      <span className="text-white text-xs font-bold">
-                        L{item.level}
-                      </span>
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-green-400 bg-green-600 shadow-lg">
+                      <span className="text-xs font-bold text-white">L{item.level}</span>
                     </div>
                   )}
                 </div>
@@ -1173,22 +1055,22 @@ export default function InventoryItems({
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex justify-center mt-8">
+        <div className="mt-8 flex justify-center">
           <Pagination
             count={totalPages}
             page={page}
             onChange={handlePageChange}
             sx={{
-              "& .MuiPaginationItem-root": {
-                color: "#D3D9D4",
-                "&.Mui-selected": {
-                  backgroundColor: "#5865F2",
-                  "&:hover": {
-                    backgroundColor: "#4752C4",
+              '& .MuiPaginationItem-root': {
+                color: '#D3D9D4',
+                '&.Mui-selected': {
+                  backgroundColor: '#5865F2',
+                  '&:hover': {
+                    backgroundColor: '#4752C4',
                   },
                 },
-                "&:hover": {
-                  backgroundColor: "#2E3944",
+                '&:hover': {
+                  backgroundColor: '#2E3944',
                 },
               },
             }}

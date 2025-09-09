@@ -45,10 +45,7 @@ export const jaroWinklerDistance = (str1: string, str2: string): number => {
 
   // Calculate Jaro distance
   const jaro =
-    (matches / s1.length +
-      matches / s2.length +
-      (matches - transpositions / 2) / matches) /
-    3;
+    (matches / s1.length + matches / s2.length + (matches - transpositions / 2) / matches) / 3;
 
   // Calculate common prefix length (up to 4 characters)
   let prefixLength = 0;
@@ -64,9 +61,7 @@ export const jaroWinklerDistance = (str1: string, str2: string): number => {
 };
 
 // Function to find similar strings using Jaro-Winkler distance
-export const findSimilarStrings = <
-  T extends string | { [key: string]: string | number },
->(
+export const findSimilarStrings = <T extends string | { [key: string]: string | number }>(
   input: string,
   items: T[],
   options: {
@@ -80,9 +75,7 @@ export const findSimilarStrings = <
   return items
     .map((item) => {
       const compareString =
-        typeof item === "string"
-          ? item
-          : (item[key as keyof typeof item] as string);
+        typeof item === 'string' ? item : (item[key as keyof typeof item] as string);
       return {
         item,
         similarity: jaroWinklerDistance(input, compareString),

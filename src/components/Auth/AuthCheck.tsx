@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { usePathname } from "next/navigation";
-import { validateAuth } from "@/utils/auth";
-import { hasValidToken } from "@/utils/cookies";
+import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import { validateAuth } from '@/utils/auth';
+import { hasValidToken } from '@/utils/cookies';
 
 /**
  * This component checks authentication status on route changes
@@ -16,7 +16,7 @@ export default function AuthCheck() {
     // Only validate auth if we have a token
     if (hasValidToken()) {
       validateAuth().catch((error) => {
-        console.error("Auth validation error:", error);
+        console.error('Auth validation error:', error);
       });
     }
   }, [pathname]);

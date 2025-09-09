@@ -1,17 +1,15 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import { formatRelativeDate } from "@/utils/timestamp";
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { formatRelativeDate } from '@/utils/timestamp';
 
 /**
  * Hook for real-time timestamps that only updates when visible
  * @param timestamp Unix timestamp in seconds or milliseconds
  * @returns Real-time updating relative time string
  */
-export const useVisibleRealTimeRelativeDate = (
-  timestamp: string | number | null | undefined,
-) => {
-  const [relativeTime, setRelativeTime] = useState<string>("");
+export const useVisibleRealTimeRelativeDate = (timestamp: string | number | null | undefined) => {
+  const [relativeTime, setRelativeTime] = useState<string>('');
   const [isVisible, setIsVisible] = useState(false);
   const elementRef = useRef<HTMLDivElement>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -24,7 +22,7 @@ export const useVisibleRealTimeRelativeDate = (
 
   useEffect(() => {
     if (!timestamp) {
-      setRelativeTime("");
+      setRelativeTime('');
       return;
     }
 
@@ -51,7 +49,7 @@ export const useVisibleRealTimeRelativeDate = (
       },
       {
         threshold: 0.1, // Trigger when 10% of element is visible
-        rootMargin: "50px", // Start updating 50px before element comes into view
+        rootMargin: '50px', // Start updating 50px before element comes into view
       },
     );
 

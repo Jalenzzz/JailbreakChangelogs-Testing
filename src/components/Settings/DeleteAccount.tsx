@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -12,11 +12,11 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-} from "@mui/material";
-import { useRouter } from "next/navigation";
-import { deleteAccount } from "@/services/settingsService";
-import WarningIcon from "@mui/icons-material/Warning";
-import toast from "react-hot-toast";
+} from '@mui/material';
+import { useRouter } from 'next/navigation';
+import { deleteAccount } from '@/services/settingsService';
+import WarningIcon from '@mui/icons-material/Warning';
+import toast from 'react-hot-toast';
 
 export const DeleteAccount = () => {
   const [open, setOpen] = useState(false);
@@ -54,37 +54,32 @@ export const DeleteAccount = () => {
     }
 
     try {
-      const cookies = document.cookie.split(";");
-      const tokenCookie = cookies.find((cookie) =>
-        cookie.trim().startsWith("token="),
-      );
-      const token = tokenCookie ? tokenCookie.split("=")[1] : null;
+      const cookies = document.cookie.split(';');
+      const tokenCookie = cookies.find((cookie) => cookie.trim().startsWith('token='));
+      const token = tokenCookie ? tokenCookie.split('=')[1] : null;
 
       if (!token) {
-        throw new Error("No authentication token found");
+        throw new Error('No authentication token found');
       }
 
       await deleteAccount(token);
 
       // Clear user data and redirect to home
-      localStorage.removeItem("user");
-      document.cookie =
-        "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      localStorage.removeItem('user');
+      document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
 
       // Show success message before redirecting
-      toast.success("Account successfully deleted", {
+      toast.success('Account successfully deleted', {
         duration: 3000,
-        position: "bottom-right",
+        position: 'bottom-right',
       });
 
       setTimeout(() => {
-        router.push("/");
+        router.push('/');
       }, 1000);
     } catch (error) {
-      console.error("Error deleting account:", error);
-      setError(
-        error instanceof Error ? error.message : "Failed to delete account",
-      );
+      console.error('Error deleting account:', error);
+      setError(error instanceof Error ? error.message : 'Failed to delete account');
     }
   };
 
@@ -92,17 +87,14 @@ export const DeleteAccount = () => {
     <Box
       sx={{
         p: 3,
-        bgcolor: "#2e3944",
+        bgcolor: '#2e3944',
       }}
     >
       <Box sx={{ mb: 3 }}>
-        <Typography
-          variant="h6"
-          sx={{ color: "#D3D9D4", fontWeight: "bold", mb: 1 }}
-        >
+        <Typography variant="h6" sx={{ color: '#D3D9D4', fontWeight: 'bold', mb: 1 }}>
           Account Deletion
         </Typography>
-        <Typography variant="body2" sx={{ color: "#FFFFFF" }}>
+        <Typography variant="body2" sx={{ color: '#FFFFFF' }}>
           Permanently delete your account and all associated data
         </Typography>
       </Box>
@@ -112,11 +104,11 @@ export const DeleteAccount = () => {
         color="error"
         onClick={handleOpen}
         sx={{
-          borderColor: "#FF6B6B",
-          color: "#FF6B6B",
-          "&:hover": {
-            borderColor: "#FF5252",
-            backgroundColor: "rgba(255, 82, 82, 0.1)",
+          borderColor: '#FF6B6B',
+          color: '#FF6B6B',
+          '&:hover': {
+            borderColor: '#FF5252',
+            backgroundColor: 'rgba(255, 82, 82, 0.1)',
           },
         }}
       >
@@ -129,22 +121,22 @@ export const DeleteAccount = () => {
         slotProps={{
           paper: {
             sx: {
-              bgcolor: "#212A31",
-              color: "#D3D9D4",
-              border: "1px solid #2E3944",
-              maxWidth: "500px",
-              width: "100%",
+              bgcolor: '#212A31',
+              color: '#D3D9D4',
+              border: '1px solid #2E3944',
+              maxWidth: '500px',
+              width: '100%',
             },
           },
         }}
       >
         <DialogTitle
           sx={{
-            color: "#FF6B6B",
-            borderBottom: "1px solid #2E3944",
+            color: '#FF6B6B',
+            borderBottom: '1px solid #2E3944',
             pb: 2,
-            display: "flex",
-            alignItems: "center",
+            display: 'flex',
+            alignItems: 'center',
             gap: 1,
           }}
         >
@@ -154,54 +146,51 @@ export const DeleteAccount = () => {
         <DialogContent sx={{ pt: 3 }}>
           {!showFinalWarning ? (
             <>
-              <Typography variant="body1" sx={{ mb: 3, color: "#D3D9D4" }}>
+              <Typography variant="body1" sx={{ mb: 3, color: '#D3D9D4' }}>
                 Are you sure you want to delete your account?
               </Typography>
 
               <List>
                 <ListItem sx={{ py: 1 }}>
                   <ListItemIcon>
-                    <WarningIcon sx={{ color: "#FF6B6B" }} />
+                    <WarningIcon sx={{ color: '#FF6B6B' }} />
                   </ListItemIcon>
                   <ListItemText
                     primary="Permanently delete all your data"
-                    sx={{ color: "#D3D9D4" }}
+                    sx={{ color: '#D3D9D4' }}
                   />
                 </ListItem>
                 <ListItem sx={{ py: 1 }}>
                   <ListItemIcon>
-                    <WarningIcon sx={{ color: "#FF6B6B" }} />
+                    <WarningIcon sx={{ color: '#FF6B6B' }} />
                   </ListItemIcon>
-                  <ListItemText
-                    primary="Remove all your favorites"
-                    sx={{ color: "#D3D9D4" }}
-                  />
+                  <ListItemText primary="Remove all your favorites" sx={{ color: '#D3D9D4' }} />
                 </ListItem>
                 <ListItem sx={{ py: 1 }}>
                   <ListItemIcon>
-                    <WarningIcon sx={{ color: "#FF6B6B" }} />
+                    <WarningIcon sx={{ color: '#FF6B6B' }} />
                   </ListItemIcon>
                   <ListItemText
                     primary="Delete your profile and settings"
-                    sx={{ color: "#D3D9D4" }}
+                    sx={{ color: '#D3D9D4' }}
                   />
                 </ListItem>
                 <ListItem sx={{ py: 1 }}>
                   <ListItemIcon>
-                    <WarningIcon sx={{ color: "#FF6B6B" }} />
+                    <WarningIcon sx={{ color: '#FF6B6B' }} />
                   </ListItemIcon>
                   <ListItemText
                     primary="Remove your following/follower relationships"
-                    sx={{ color: "#D3D9D4" }}
+                    sx={{ color: '#D3D9D4' }}
                   />
                 </ListItem>
                 <ListItem sx={{ py: 1 }}>
                   <ListItemIcon>
-                    <WarningIcon sx={{ color: "#FF6B6B" }} />
+                    <WarningIcon sx={{ color: '#FF6B6B' }} />
                   </ListItemIcon>
                   <ListItemText
                     primary="This action cannot be undone"
-                    sx={{ color: "#FF6B6B", fontWeight: "bold" }}
+                    sx={{ color: '#FF6B6B', fontWeight: 'bold' }}
                   />
                 </ListItem>
               </List>
@@ -213,30 +202,30 @@ export const DeleteAccount = () => {
               )}
             </>
           ) : (
-            <Box sx={{ textAlign: "center", py: 2 }}>
-              <WarningIcon sx={{ fontSize: 48, color: "#FF6B6B", mb: 2 }} />
-              <Typography variant="h6" sx={{ color: "#FF6B6B", mb: 2 }}>
+            <Box sx={{ textAlign: 'center', py: 2 }}>
+              <WarningIcon sx={{ fontSize: 48, color: '#FF6B6B', mb: 2 }} />
+              <Typography variant="h6" sx={{ color: '#FF6B6B', mb: 2 }}>
                 Final Warning
               </Typography>
-              <Typography variant="body1" sx={{ color: "#D3D9D4" }}>
-                This is your last chance to cancel. Once you click delete, your
-                account will be permanently removed.
+              <Typography variant="body1" sx={{ color: '#D3D9D4' }}>
+                This is your last chance to cancel. Once you click delete, your account will be
+                permanently removed.
               </Typography>
             </Box>
           )}
         </DialogContent>
         <DialogActions
           sx={{
-            borderTop: "1px solid #2E3944",
+            borderTop: '1px solid #2E3944',
             p: 2,
           }}
         >
           <Button
             onClick={handleClose}
             sx={{
-              color: "#D3D9D4",
-              "&:hover": {
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
+              color: '#D3D9D4',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
               },
             }}
           >
@@ -248,21 +237,21 @@ export const DeleteAccount = () => {
             variant="contained"
             disabled={!showFinalWarning && timeLeft > 0}
             sx={{
-              bgcolor: "#FF6B6B",
-              "&:hover": {
-                bgcolor: "#FF5252",
+              bgcolor: '#FF6B6B',
+              '&:hover': {
+                bgcolor: '#FF5252',
               },
-              "&.Mui-disabled": {
-                bgcolor: "#2E3944",
-                color: "#FFFFFF",
+              '&.Mui-disabled': {
+                bgcolor: '#2E3944',
+                color: '#FFFFFF',
               },
             }}
           >
             {!showFinalWarning
               ? timeLeft > 0
                 ? `Please wait ${timeLeft}s`
-                : "Delete Account"
-              : "Confirm Delete"}
+                : 'Delete Account'
+              : 'Confirm Delete'}
           </Button>
         </DialogActions>
       </Dialog>
