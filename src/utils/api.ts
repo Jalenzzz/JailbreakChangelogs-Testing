@@ -757,14 +757,27 @@ export async function fetchInventoryData(robloxId: string) {
             try {
               const text = typeof data === 'string' ? data : data.toString('utf-8');
               console.log(`[WS] Received message for user ${robloxId} (${text.length} bytes)`);
-              const parsed = JSON.parse(text);
-              if (parsed && typeof parsed === 'object' && 'action' in parsed) {
-                const action = (parsed as Record<string, unknown>).action;
-                if (typeof action === 'string') {
-                  console.log(`[WS] Payload action: ${action}`);
+              // If the server responds with a plain string, normalize it to an error object
+              if (typeof text === 'string') {
+                const trimmed = text.trim();
+                // Attempt to parse JSON first
+                try {
+                  const parsed = JSON.parse(trimmed);
+                  if (parsed && typeof parsed === 'object' && 'action' in parsed) {
+                    const action = (parsed as Record<string, unknown>).action;
+                    if (typeof action === 'string') {
+                      console.log(`[WS] Payload action: ${action}`);
+                    }
+                  }
+                  resolve(parsed);
+                  return;
+                } catch {
+                  // Not JSON; treat as error string
+                  const normalized = { error: 'ws_string', message: trimmed };
+                  resolve(normalized);
+                  return;
                 }
               }
-              resolve(parsed);
             } catch (e) {
               console.error(`[WS] Parse error for user ${robloxId}:`, e);
               resolve({ error: 'ws_parse_error', message: 'Invalid response from WebSocket server.' });
@@ -800,6 +813,11 @@ export async function fetchInventoryData(robloxId: string) {
         return { error: 'ws_init_error', message: 'Failed to initialize WebSocket client.' };
       }
     })();
+
+    // If we received a raw string result somehow, normalize to an error
+    if (typeof wsResult === 'string') {
+      return { error: 'ws_string', message: wsResult };
+    }
 
     if (wsResult && typeof wsResult === 'object' && 'action' in wsResult && 'data' in wsResult) {
       const envelope = wsResult as { action?: string; data?: unknown };

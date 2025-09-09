@@ -95,11 +95,11 @@ async function InventoryDataFetcher({ robloxId }: { robloxId: string }) {
   const result = await fetchInventoryData(actualRobloxId);
 
   // Check if the result contains an error
-  if (result && 'error' in result) {
+  if (result && typeof result === 'object' && 'error' in result) {
     return (
       <InventoryCheckerClient 
         robloxId={actualRobloxId} 
-        error={result.message}
+        error={(result as { message?: string }).message || 'Failed to fetch inventory data.'}
       />
     );
   }
