@@ -99,6 +99,8 @@ export default function ValuesItemsGrid({
     const hasCategoryFilter = filterSort !== 'name-all-items';
     const hasDemandFilter =
       valueSort.startsWith('demand-') && valueSort !== 'demand-desc' && valueSort !== 'demand-asc';
+    const hasTrendFilter =
+      valueSort.startsWith('trend-') && valueSort !== 'trend-desc' && valueSort !== 'trend-asc';
     const hasSearchTerm = debouncedSearchTerm;
 
     let message = 'No items found';
@@ -117,6 +119,15 @@ export default function ValuesItemsGrid({
         .join(' ');
 
       message += ` in ${categoryName} with ${formattedDemand} demand`;
+    } else if (hasCategoryFilter && hasTrendFilter) {
+      const categoryName = filterSort.replace('name-', '').replace('-items', '').replace(/-/g, ' ');
+      const trendLevel = valueSort.replace('trend-', '').replace(/-/g, ' ');
+      const formattedTrend = trendLevel
+        .split(' ')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+
+      message += ` in ${categoryName} with ${formattedTrend} trend`;
     } else if (hasCategoryFilter) {
       const categoryName = filterSort.replace('name-', '').replace('-items', '').replace(/-/g, ' ');
       message += ` in ${categoryName}`;
@@ -127,6 +138,13 @@ export default function ValuesItemsGrid({
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
       message += ` with ${formattedDemand} demand`;
+    } else if (hasTrendFilter) {
+      const trendLevel = valueSort.replace('trend-', '').replace(/-/g, ' ');
+      const formattedTrend = trendLevel
+        .split(' ')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+      message += ` with ${formattedTrend} trend`;
     }
 
     return message;

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Tooltip, Snackbar, Alert } from '@mui/material';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 import { demandOrder, trendOrder } from '@/utils/values';
 import { getDemandColor, getTrendColor } from '@/utils/badgeColors';
@@ -18,6 +19,24 @@ export default function TradingGuides({
   onScrollToSearch,
 }: TradingGuidesProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [selectedTrendForSnackbar, setSelectedTrendForSnackbar] = useState<string | null>(null);
+
+  const trendDescriptions: Record<string, string> = {
+    Avoided: 'Items which are on a decline due to being generally avoided by the community.',
+    Dropping: 'Items which are consistently getting larger underpays from base overtime.',
+    Unstable:
+      'Items which inconsistently yet occasionally get a varying overpay/underpay from base.',
+    Hoarded: 'Rare items which have been hoarded to create scarcity artificially.',
+    Projected:
+      "Items which aren't as rare/valuable as people make it out to be yet consistently are treated as such.",
+    Stable: 'Items which get a consistent amount of value. (Consistent underpay/base/overpay)',
+    Recovering:
+      'Items which have recently dropped significantly in value which are beginning to gradually increase in demand.',
+    Rising: 'Items which are consistently getting larger overpays from base overtime.',
+    Hyped: 'Items which are on a fast rise due to short lived hype created by the community.',
+  };
 
   const getDemandValue = (demand: string): string => {
     switch (demand) {
@@ -78,6 +97,18 @@ export default function TradingGuides({
   };
 
   const handleTrendClick = (trend: string) => {
+    // On touch devices, show a snackbar-style popup with the description
+    if (
+      typeof window !== 'undefined' &&
+      (window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768)
+    ) {
+      const description = trendDescriptions[trend];
+      if (description) {
+        setSelectedTrendForSnackbar(trend);
+        setSnackbarMessage(description);
+        setSnackbarOpen(true);
+      }
+    }
     const trendValue = getTrendValue(trend);
     if (valueSort === trendValue) {
       onValueSortChange('cash-desc');
@@ -85,6 +116,11 @@ export default function TradingGuides({
       onValueSortChange(trendValue as ValueSort);
     }
     onScrollToSearch();
+  };
+
+  const handleSnackbarClose = (_event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') return;
+    setSnackbarOpen(false);
   };
 
   return (
@@ -150,112 +186,42 @@ export default function TradingGuides({
             <h3 className="text-muted mb-2 text-xl font-semibold">Trend Levels Guide</h3>
             <div className="mb-4 flex flex-wrap gap-2">
               {trendOrder.map((trend) => (
-                <button
+                <Tooltip
                   key={trend}
-                  onClick={() => handleTrendClick(trend)}
-                  className={`flex items-center gap-2 rounded-lg border border-[#2E3944] bg-[#37424D] px-3 py-1.5 transition-all hover:scale-105 focus:outline-none ${
-                    valueSort === getTrendValue(trend) ? 'ring-2 ring-[#5865F2]' : ''
-                  }`}
+                  title={trendDescriptions[trend] || ''}
+                  placement="top"
+                  arrow
+                  disableTouchListener
+                  slotProps={{
+                    tooltip: {
+                      sx: {
+                        backgroundColor: '#0F1419',
+                        color: '#D3D9D4',
+                        fontSize: '0.75rem',
+                        padding: '8px 12px',
+                        borderRadius: '8px',
+                        border: '1px solid #2E3944',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                        '& .MuiTooltip-arrow': {
+                          color: '#0F1419',
+                        },
+                      },
+                    },
+                  }}
                 >
-                  <span
-                    className={`inline-block h-2 w-2 rounded-full ${getTrendColor(trend)}`}
-                  ></span>
-                  <span className="text-sm font-bold text-white">{trend}</span>
-                </button>
+                  <button
+                    onClick={() => handleTrendClick(trend)}
+                    className={`flex items-center gap-2 rounded-lg border border-[#2E3944] bg-[#37424D] px-3 py-1.5 transition-all hover:scale-105 focus:outline-none ${
+                      valueSort === getTrendValue(trend) ? 'ring-2 ring-[#5865F2]' : ''
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-2 w-2 rounded-full ${getTrendColor(trend)}`}
+                    ></span>
+                    <span className="text-sm font-bold text-white">{trend}</span>
+                  </button>
+                </Tooltip>
               ))}
-            </div>
-            <div className="text-muted mb-4 space-y-2 text-sm">
-              <div className="flex items-start gap-2">
-                <span
-                  className={`inline-flex items-center rounded px-2 py-1 text-xs font-medium ${getTrendColor('Avoided')} bg-opacity-20`}
-                >
-                  Avoided
-                </span>
-                <span>
-                  Items which are on a decline due to being generally avoided by the community.
-                </span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span
-                  className={`inline-flex items-center rounded px-2 py-1 text-xs font-medium ${getTrendColor('Dropping')} bg-opacity-20`}
-                >
-                  Dropping
-                </span>
-                <span>
-                  Items which are consistently getting larger underpays from base overtime.
-                </span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span
-                  className={`inline-flex items-center rounded px-2 py-1 text-xs font-medium ${getTrendColor('Unstable')} bg-opacity-20`}
-                >
-                  Unstable
-                </span>
-                <span>
-                  Items which inconsistently yet occasionally get a varying overpay/underpay from
-                  base.
-                </span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span
-                  className={`inline-flex items-center rounded px-2 py-1 text-xs font-medium ${getTrendColor('Hoarded')} bg-opacity-20`}
-                >
-                  Hoarded
-                </span>
-                <span>Rare items which have been hoarded to create scarcity artificially.</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span
-                  className={`inline-flex items-center rounded px-2 py-1 text-xs font-medium ${getTrendColor('Projected')} bg-opacity-20`}
-                >
-                  Projected
-                </span>
-                <span>
-                  Items which aren&apos;t as rare/valuable as people make it out to be yet
-                  consistently are treated as such.
-                </span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span
-                  className={`inline-flex items-center rounded px-2 py-1 text-xs font-medium ${getTrendColor('Stable')} bg-opacity-20`}
-                >
-                  Stable
-                </span>
-                <span>
-                  Items which get a consistent amount of value. (Consistent underpay/base/overpay)
-                </span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span
-                  className={`inline-flex items-center rounded px-2 py-1 text-xs font-medium ${getTrendColor('Recovering')} bg-opacity-20`}
-                >
-                  Recovering
-                </span>
-                <span>
-                  Items which have recently dropped significantly in value which are beginning to
-                  gradually increase in demand.
-                </span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span
-                  className={`inline-flex items-center rounded px-2 py-1 text-xs font-medium ${getTrendColor('Rising')} bg-opacity-20`}
-                >
-                  Rising
-                </span>
-                <span>
-                  Items which are consistently getting larger overpays from base overtime.
-                </span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span
-                  className={`inline-flex items-center rounded px-2 py-1 text-xs font-medium ${getTrendColor('Hyped')} bg-opacity-20`}
-                >
-                  Hyped
-                </span>
-                <span>
-                  Items which are on a fast rise due to short lived hype created by the community.
-                </span>
-              </div>
             </div>
           </div>
           <div className="flex flex-1 items-center justify-center">
@@ -277,6 +243,42 @@ export default function TradingGuides({
           </div>
         </div>
       )}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={7000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          severity="info"
+          icon={
+            selectedTrendForSnackbar ? (
+              <span
+                className={`inline-block h-2.5 w-2.5 rounded-full ${getTrendColor(
+                  selectedTrendForSnackbar,
+                )}`}
+              />
+            ) : (
+              false
+            )
+          }
+          sx={{
+            width: '100%',
+            backgroundColor: '#0F1419',
+            color: '#D3D9D4',
+            border: '1px solid #2E3944',
+            borderRadius: '30px',
+            '& .MuiAlert-message': {
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              textAlign: 'center',
+            },
+          }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
