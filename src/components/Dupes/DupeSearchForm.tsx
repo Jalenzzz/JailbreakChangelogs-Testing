@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 import { findSimilarStrings, calculateSimilarity } from '@/utils/fuzzySearch';
 import ItemSelectionModal from './ItemSelectionModal';
 import ReportDupeModal from './ReportDupeModal';
-import { getToken } from '@/utils/auth';
+import { useAuthContext } from '@/contexts/AuthContext';
 import LoginModalWrapper from '../Auth/LoginModalWrapper';
 import type { DupeResult, Item } from '@/types';
 
@@ -49,6 +49,7 @@ const DupeSearchForm: React.FC<DupeSearchFormProps> = ({
   } | null>(null);
   const [duperName, setDuperName] = useState('');
   const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const { isAuthenticated } = useAuthContext();
 
   useEffect(() => {
     if (ownerName.trim()) {
@@ -176,8 +177,7 @@ const DupeSearchForm: React.FC<DupeSearchFormProps> = ({
   };
 
   const handleReportClick = () => {
-    const token = getToken();
-    if (!token) {
+    if (!isAuthenticated) {
       toast.error('Please log in to submit dupe reports');
       setLoginModalOpen(true);
       return;

@@ -38,7 +38,7 @@ const ChangelogComments = dynamic(() => import('@/components/PageComments/Change
 
 import SimilarItems from '@/components/Items/SimilarItems';
 
-import { PUBLIC_API_URL, fetchUserFavorites, CommentData } from '@/utils/api';
+import { fetchUserFavorites, CommentData } from '@/utils/api';
 import {
   handleImageError,
   getItemImagePath,
@@ -51,14 +51,14 @@ import {
 } from '@/utils/images';
 import { formatCustomDate } from '@/utils/timestamp';
 import { useOptimizedRealTimeRelativeDate } from '@/hooks/useSharedTimer';
-import { getToken } from '@/utils/auth';
+import { useAuthContext } from '@/contexts/AuthContext';
 import { getItemTypeColor } from '@/utils/badgeColors';
 import { CategoryIconBadge } from '@/utils/categoryIcons';
 import { convertUrlsToLinks } from '@/utils/urlConverter';
 import { ItemDetails, DupedOwner } from '@/types';
 import DisplayAd from '@/components/Ads/DisplayAd';
 import AdRemovalNotice from '@/components/Ads/AdRemovalNotice';
-import { getCurrentUserPremiumType } from '@/hooks/useAuth';
+import { getCurrentUserPremiumType } from '@/contexts/AuthContext';
 import type { UserData } from '@/types/auth';
 
 interface ItemDetailsClientProps {
@@ -94,6 +94,7 @@ export default function ItemDetailsClient({
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [currentUserPremiumType, setCurrentUserPremiumType] = useState<number>(0);
   const [premiumStatusLoaded, setPremiumStatusLoaded] = useState(false);
+  const { isAuthenticated, user } = useAuthContext();
 
   // Use optimized real-time relative date for last updated timestamp
   const relativeTime = useOptimizedRealTimeRelativeDate(
@@ -156,10 +157,8 @@ export default function ItemDetailsClient({
   useEffect(() => {
     // Check if item is favorited
     const checkFavoriteStatus = async () => {
-      const storedUser = localStorage.getItem('user');
-      if (storedUser) {
-        const userData = JSON.parse(storedUser);
-        const favoritesData = await fetchUserFavorites(userData.id);
+      if (user && user.id) {
+        const favoritesData = await fetchUserFavorites(user.id);
         if (favoritesData !== null && Array.isArray(favoritesData)) {
           const isItemFavorited = favoritesData.some((fav) => {
             const favoriteId = String(fav.item_id);
@@ -175,11 +174,10 @@ export default function ItemDetailsClient({
     };
 
     checkFavoriteStatus();
-  }, [item.id]); // Only depend on item.id, not the entire item object
+  }, [item.id, user]); // Only depend on item.id and user, not the entire item object
 
   const handleFavoriteClick = async () => {
-    const token = getToken();
-    if (!token) {
+    if (!isAuthenticated) {
       toast.error('You must be logged in to favorite items. Please log in and try again.');
       return;
     }
@@ -190,20 +188,14 @@ export default function ItemDetailsClient({
           ? String(`${item?.id}-${selectedVariant.id}`)
           : String(item?.id);
 
-      const response = await fetch(
-        `${PUBLIC_API_URL}/favorites/${isFavorited ? 'remove' : 'add'}`,
-        {
-          method: isFavorited ? 'DELETE' : 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Origin: 'https://jailbreakchangelogs.xyz',
-          },
-          body: JSON.stringify({
-            item_id: itemId,
-            owner: token,
-          }),
+      const response = await fetch(`/api/favorites/${isFavorited ? 'remove' : 'add'}`, {
+        method: isFavorited ? 'DELETE' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Origin: 'https://jailbreakchangelogs.xyz',
         },
-      );
+        body: JSON.stringify({ item_id: itemId }),
+      });
 
       if (response.ok) {
         setIsFavorited(!isFavorited);

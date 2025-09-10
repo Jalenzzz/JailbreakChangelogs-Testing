@@ -106,16 +106,8 @@ export const BannerSettings = ({ userData, onBannerUpdate }: BannerSettingsProps
     if (!isValidBanner) return;
 
     try {
-      const cookies = document.cookie.split(';');
-      const tokenCookie = cookies.find((cookie) => cookie.trim().startsWith('token='));
-      const token = tokenCookie ? tokenCookie.split('=')[1] : null;
-
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
-
       // Update the banner URL
-      const newBannerUrl = await updateBanner(customBannerUrl, token);
+      const newBannerUrl = await updateBanner(customBannerUrl);
       onBannerUpdate(newBannerUrl);
       toast.success('Custom banner updated successfully');
     } catch (error) {

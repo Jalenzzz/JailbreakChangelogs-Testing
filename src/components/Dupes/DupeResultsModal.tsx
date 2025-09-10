@@ -11,7 +11,7 @@ import { getItemTypeColor } from '@/utils/badgeColors';
 import { formatTimestamp } from '@/utils/timestamp';
 import ReportDupeModal from './ReportDupeModal';
 import toast from 'react-hot-toast';
-import { getToken } from '@/utils/auth';
+import { useAuthContext } from '@/contexts/AuthContext';
 
 interface DupeResult {
   item_id: number;
@@ -95,6 +95,7 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
   const [itemLoading, setItemLoading] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const uniqueItemsCount = [...new Set(results.map((result) => result.item_id))].length;
+  const { isAuthenticated } = useAuthContext();
 
   useEffect(() => {
     if (isOpen) {
@@ -132,8 +133,7 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
   }, [results]);
 
   const handleReportClick = () => {
-    const token = getToken();
-    if (!token) {
+    if (!isAuthenticated) {
       toast.error('Please log in to report dupes');
       return;
     }

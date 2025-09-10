@@ -23,7 +23,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { BiSolidSend } from 'react-icons/bi';
 import { FaSignInAlt } from 'react-icons/fa';
-import { getToken } from '@/utils/auth';
+import { useAuthContext } from '@/contexts/AuthContext';
 import { UserData } from '@/types/auth';
 import { Inter } from 'next/font/google';
 import Link from 'next/link';
@@ -98,6 +98,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
   const [failedUserData, setFailedUserData] = useState<Set<string>>(new Set());
   const [currentUserPremiumType, setCurrentUserPremiumType] = useState<number>(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isAuthenticated, user } = useAuthContext();
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
   const commentsPerPage = 7;
@@ -137,19 +138,15 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
 
   useEffect(() => {
     // Check if user is logged in
-    const token = getToken();
-    setIsLoggedIn(!!token);
+    setIsLoggedIn(!!isAuthenticated);
 
-    // Get current user ID and premium type from localStorage.
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      try {
-        const userData = JSON.parse(storedUser);
-        setCurrentUserId(userData.id);
-        setCurrentUserPremiumType(userData.premiumtype || 0);
-      } catch (error) {
-        console.error('Error parsing user data:', error);
-      }
+    // Get current user ID and premium type from auth hook
+    if (user) {
+      setCurrentUserId(user.id);
+      setCurrentUserPremiumType(user.premiumtype || 0);
+    } else {
+      setCurrentUserId(null);
+      setCurrentUserPremiumType(0);
     }
 
     const handleAuthChange = (event: CustomEvent) => {
@@ -171,7 +168,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
     return () => {
       window.removeEventListener('authStateChanged', handleAuthChange as EventListener);
     };
-  }, []);
+  }, [isAuthenticated, user]);
 
   const fetchUserData = useCallback(
     async (userIds: string[]) => {
@@ -287,14 +284,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
     setIsSubmittingComment(true);
 
     try {
-      const token = getToken();
-      if (!token) {
-        setGlobalErrorSnackbarMsg('You must be logged in to comment');
-        setGlobalErrorSnackbarOpen(true);
-        return;
-      }
-
-      const response = await fetch(`${PUBLIC_API_URL}/comments/add`, {
+      const response = await fetch(`/api/comments/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -303,7 +293,6 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
           content: cleanCommentText(newComment),
           item_id: changelogId,
           item_type: type === 'item' ? itemType : type,
-          owner: token,
         }),
       });
 
@@ -344,14 +333,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
     }
 
     try {
-      const token = getToken();
-      if (!token) {
-        setGlobalErrorSnackbarMsg('You must be logged in to edit comments');
-        setGlobalErrorSnackbarOpen(true);
-        return;
-      }
-
-      const response = await fetch(`${PUBLIC_API_URL}/comments/edit`, {
+      const response = await fetch(`/api/comments/edit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -360,7 +342,6 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
           id: commentId,
           content: cleanCommentText(editContent),
           item_type: type,
-          author: token,
         }),
       });
 
@@ -394,22 +375,12 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
 
   const actuallyDeleteComment = async (commentId: number) => {
     try {
-      const token = getToken();
-      if (!token) {
-        setGlobalErrorSnackbarMsg('You must be logged in to delete comments');
-        setGlobalErrorSnackbarOpen(true);
-        return;
-      }
-      const response = await fetch(`${PUBLIC_API_URL}/comments/delete`, {
-        method: 'DELETE',
+      const response = await fetch(`/api/comments/delete`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          id: commentId,
-          item_type: type,
-          owner: token,
-        }),
+        body: JSON.stringify({ id: commentId, item_type: type }),
       });
       if (!response.ok) {
         throw new Error('Failed to delete comment');
@@ -496,8 +467,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
   };
 
   const handleReportClick = () => {
-    const token = getToken();
-    if (!token) {
+    if (!isAuthenticated) {
       setGlobalErrorSnackbarMsg('You must be logged in to report comments');
       setGlobalErrorSnackbarOpen(true);
       setLoginModalOpen(true);
@@ -515,23 +485,12 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
     if (!reason.trim() || !reportingCommentId) return;
 
     try {
-      const token = getToken();
-      if (!token) {
-        setGlobalErrorSnackbarMsg('You must be logged in to report comments');
-        setGlobalErrorSnackbarOpen(true);
-        return;
-      }
-
-      const response = await fetch(`${PUBLIC_API_URL}/comments/report`, {
+      const response = await fetch(`/api/comments/report`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          owner: token,
-          comment_id: reportingCommentId,
-          reason: reason.trim(),
-        }),
+        body: JSON.stringify({ comment_id: reportingCommentId, reason: reason.trim() }),
       });
 
       if (!response.ok) {

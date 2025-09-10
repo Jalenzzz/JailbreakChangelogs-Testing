@@ -1,10 +1,8 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { getToken } from '@/utils/auth';
 import SurveyModal from './SurveyModal';
 import SurveyBanner from './SurveyBanner';
-import { PUBLIC_API_URL } from '@/utils/api';
 
 interface Survey {
   id: string;
@@ -42,10 +40,7 @@ export const SurveyProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const checkForSurvey = async () => {
     try {
-      const token = getToken();
-      if (!token) return;
-
-      const response = await fetch(`${PUBLIC_API_URL}/surveys/request?user=${token}`);
+      const response = await fetch('/api/surveys/request', { cache: 'no-store' });
       if (!response.ok) return;
 
       const data = await response.json();

@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { ArrowRightIcon, ArrowTurnDownRightIcon } from '@heroicons/react/24/outline';
 import { Inter } from 'next/font/google';
 import { parseMarkdown } from '@/utils/changelogs';
-import { getCurrentUserPremiumType } from '@/hooks/useAuth';
+import { getCurrentUserPremiumType } from '@/contexts/AuthContext';
 import { CommentData } from '@/utils/api';
 import { UserData } from '@/types/auth';
 import AdRemovalNotice from '../Ads/AdRemovalNotice';
