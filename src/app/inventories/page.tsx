@@ -5,6 +5,7 @@ import {
   fetchUserScansLeaderboard,
   fetchRobloxUsersBatchLeaderboard,
   fetchRobloxAvatars,
+  fetchOfficialScanBots,
   UserScan,
 } from '@/utils/api';
 import Image from 'next/image';
@@ -15,14 +16,6 @@ import ComingSoon from '@/components/UI/ComingSoon';
 import { isFeatureEnabled } from '@/utils/featureFlags';
 import { MdOutlineSecurity } from 'react-icons/md';
 import { RiVerifiedBadgeFill } from 'react-icons/ri';
-
-// Type definitions for bot data
-interface BotUserData {
-  id: number;
-  name: string;
-  displayName: string;
-  hasVerifiedBadge: boolean;
-}
 
 interface BotAvatarData {
   targetId: number;
@@ -99,15 +92,19 @@ function OfficialBotsSkeleton() {
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="flex items-center gap-3 rounded-lg border border-[#37424D] bg-[#2E3944] p-3"
+              className="flex flex-col gap-3 rounded-lg border border-[#37424D] bg-[#2E3944] p-3 sm:flex-row sm:items-center"
             >
               <div className="h-8 w-8 animate-pulse rounded-full bg-[#37424D]"></div>
               <div className="h-10 w-10 animate-pulse rounded-full bg-[#37424D]"></div>
-              <div className="flex-1">
-                <div className="mb-1 h-4 w-32 animate-pulse rounded bg-[#37424D]"></div>
-                <div className="h-3 w-24 animate-pulse rounded bg-[#37424D]"></div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-start gap-2">
+                  <div className="min-w-0 flex-1">
+                    <div className="mb-1 h-4 w-32 animate-pulse rounded bg-[#37424D]"></div>
+                    <div className="h-3 w-24 animate-pulse rounded bg-[#37424D]"></div>
+                  </div>
+                  <div className="h-6 w-16 flex-shrink-0 animate-pulse rounded bg-[#37424D]"></div>
+                </div>
               </div>
-              <div className="h-6 w-16 animate-pulse rounded bg-[#37424D]"></div>
             </div>
           ))}
         </div>
@@ -169,13 +166,16 @@ async function StatsSection() {
 
 // Component for official scan bots section
 async function OfficialBotsSection() {
-  const botIds = ['9256688389', '9256079769', '9256380025'];
+  const bots = await fetchOfficialScanBots();
+  const sortedBots = [...bots].sort((a, b) => {
+    const aName = (a.username || '').toLowerCase();
+    const bName = (b.username || '').toLowerCase();
+    return aName.localeCompare(bName);
+  });
+  const botIds = sortedBots.map((b) => String(b.userId));
 
-  // Fetch bot data from the API
-  const [botUserData, botAvatarData] = await Promise.all([
-    fetchRobloxUsersBatchLeaderboard(botIds),
-    fetchRobloxAvatars(botIds),
-  ]);
+  // Fetch avatar data for bots
+  const botAvatarData = botIds.length > 0 ? await fetchRobloxAvatars(botIds) : {};
 
   return (
     <div className="mt-8">
@@ -188,18 +188,10 @@ async function OfficialBotsSection() {
           </p>
         </div>
         <div className="space-y-3">
-          {botIds.map((botId, index) => {
-            // Get bot user data
-            const botUser =
-              botUserData && typeof botUserData === 'object'
-                ? Object.values(botUserData).find(
-                    (user): user is BotUserData =>
-                      typeof user === 'object' &&
-                      user !== null &&
-                      'id' in user &&
-                      user.id?.toString() === botId,
-                  )
-                : null;
+          {sortedBots.map((bot, index) => {
+            const botId = String(bot.userId);
+            const displayName = bot.displayName || bot.username || `Bot ${index + 1}`;
+            const username = bot.username || botId;
 
             // Get bot avatar data
             const botAvatar =
@@ -213,62 +205,70 @@ async function OfficialBotsSection() {
                   )
                 : null;
 
-            const displayName = botUser?.displayName || botUser?.name || `Bot ${index + 1}`;
-            const username = botUser?.name || botId;
             const avatarUrl = botAvatar?.imageUrl || null;
 
             return (
               <div
                 key={botId}
-                className="flex items-center gap-3 rounded-lg border border-[#37424D] bg-[#2E3944] p-3"
+                className="flex flex-col gap-3 rounded-lg border border-[#37424D] bg-[#2E3944] p-3 sm:flex-row sm:items-center"
               >
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-600 text-sm font-bold text-white">
-                  <RiVerifiedBadgeFill className="h-4 w-4" />
-                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-600 text-sm font-bold text-white">
+                    <RiVerifiedBadgeFill className="h-4 w-4" />
+                  </div>
 
-                {/* Bot Avatar */}
-                <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full bg-[#37424D]">
-                  {avatarUrl ? (
-                    <Image
-                      src={avatarUrl}
-                      alt={`${displayName}'s avatar`}
-                      width={40}
-                      height={40}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center">
-                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#5865F2]">
-                        <span className="text-xs font-bold text-white">
-                          {displayName.charAt(0).toUpperCase()}
-                        </span>
+                  {/* Bot Avatar */}
+                  <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full bg-[#37424D]">
+                    {avatarUrl ? (
+                      <Image
+                        src={avatarUrl}
+                        alt={`${displayName}'s avatar`}
+                        width={40}
+                        height={40}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#5865F2]">
+                          <span className="text-xs font-bold text-white">
+                            {displayName.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex-1">
-                  <div className="font-medium text-blue-400">{displayName}</div>
-                  <div className="text-sm text-gray-400">
-                    @{username} • ID: {botId}
+                    )}
                   </div>
                 </div>
-                <a
-                  href={`https://www.roblox.com/users/${botId}/profile`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs text-blue-300 transition-colors hover:text-blue-400"
-                >
-                  View Profile
-                  <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                    />
-                  </svg>
-                </a>
+
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-start gap-2">
+                    <div className="min-w-0 flex-1">
+                      <div className="font-medium break-words text-blue-400">{displayName}</div>
+                      <div className="text-sm break-words text-gray-400">@{username}</div>
+                      <a
+                        href={`https://www.roblox.com/users/${botId}/profile`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-1 inline-flex items-center gap-1 text-xs text-blue-300 transition-colors hover:text-blue-400"
+                      >
+                        View Profile
+                        <svg
+                          className="h-3 w-3"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                          />
+                        </svg>
+                      </a>
+                    </div>
+                    <CopyButton text={botId} className="mt-1 flex-shrink-0" />
+                  </div>
+                </div>
               </div>
             );
           })}
