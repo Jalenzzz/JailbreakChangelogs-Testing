@@ -51,9 +51,8 @@ export default function Header({ initialUser }: { initialUser?: UserData | null 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const { showLoginModal, setShowLoginModal, user: authUser } = useAuthContext();
-  // Use centralized auth state, fallback to initialUser for SSR
-  const userData = authUser || initialUser;
+  const { showLoginModal, setShowLoginModal, user: authUser, isAuthenticated } = useAuthContext();
+  const userData = isAuthenticated ? authUser : null;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mounted, setMounted] = useState(false);
   const [navMenuAnchorEl, setNavMenuAnchorEl] = useState<null | HTMLElement>(null);

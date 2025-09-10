@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Maintenance from './Maintenance';
 import Header from './Header';
 import { canBypassMaintenance } from '@/utils/maintenance';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 interface MaintenanceBypassProps {
   children: React.ReactNode;
@@ -66,8 +67,10 @@ export default function MaintenanceBypass({ children }: MaintenanceBypassProps) 
   // Otherwise show maintenance page with header
   return (
     <div className="flex min-h-screen flex-col">
-      <Header />
-      <Maintenance />
+      <AuthProvider>
+        <Header />
+        <Maintenance />
+      </AuthProvider>
     </div>
   );
 }
