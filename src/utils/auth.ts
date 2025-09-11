@@ -1,7 +1,7 @@
 import toast from 'react-hot-toast';
 import { UserData, AuthResponse } from '../types/auth';
 // import { PUBLIC_API_URL } from '@/utils/api';
-import { removeCookie } from './cookies';
+// Removed removeCookie import - using server-side logout instead
 
 let lastLogoutSource: string = 'Unknown';
 
@@ -179,7 +179,8 @@ export async function logout() {
 function clearAuthData(reason: string) {
   console.log(`Clearing auth data. Reason: ${reason}`);
 
-  removeCookie('token');
+  // Note: HttpOnly cookies are cleared server-side via /api/auth/logout
+  // Only clear client-side data
   localStorage.removeItem('user');
   localStorage.removeItem('userid');
   localStorage.removeItem('avatar');
