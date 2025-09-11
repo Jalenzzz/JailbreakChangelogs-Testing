@@ -26,12 +26,17 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import SettingsIcon from '@mui/icons-material/Settings';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useState, useEffect } from 'react';
-import { logout, trackLogoutSource } from '@/utils/auth';
+import {
+  logout,
+  trackLogoutSource,
+  showLogoutToast,
+  showLogoutLoadingToast,
+  dismissLogoutLoadingToast,
+} from '@/utils/auth';
 import toast from 'react-hot-toast';
 import LoginModalWrapper from '../Auth/LoginModalWrapper';
 import EscapeLoginModal from '../Auth/EscapeLoginModal';
 import { useEscapeLogin } from '@/utils/escapeLogin';
-import { UserData } from '../../types/auth';
 import { UserAvatar } from '@/utils/avatar';
 import { RobloxIcon } from '@/components/Icons/RobloxIcon';
 // import { PUBLIC_API_URL } from '@/utils/api';
@@ -40,7 +45,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { isFeatureEnabled } from '@/utils/featureFlags';
 import { useAuthContext } from '@/contexts/AuthContext';
 
-export default function Header({ initialUser }: { initialUser?: UserData | null }) {
+export default function Header() {
   const pathname = usePathname();
   const isCollabPage =
     pathname === '/values' ||
@@ -88,11 +93,8 @@ export default function Header({ initialUser }: { initialUser?: UserData | null 
     let loadingToast: string | undefined;
 
     try {
-      // Show loading toast
-      loadingToast = toast.loading('Logging you out...', {
-        duration: Infinity,
-        position: 'bottom-right',
-      });
+      // Show loading toast with deduplication
+      loadingToast = showLogoutLoadingToast();
 
       trackLogoutSource('Header Component');
       await logout();
@@ -100,10 +102,7 @@ export default function Header({ initialUser }: { initialUser?: UserData | null 
 
       // Dismiss loading toast and show success
       toast.dismiss(loadingToast);
-      toast.success('Successfully logged out!', {
-        duration: 2000,
-        position: 'bottom-right',
-      });
+      showLogoutToast();
     } catch (err) {
       console.error('Logout error:', err);
       toast.error('Failed to log out. Please try again.', {
@@ -112,9 +111,7 @@ export default function Header({ initialUser }: { initialUser?: UserData | null 
       });
     } finally {
       // Always dismiss the loading toast
-      if (loadingToast) {
-        toast.dismiss(loadingToast);
-      }
+      dismissLogoutLoadingToast(loadingToast);
     }
   };
 

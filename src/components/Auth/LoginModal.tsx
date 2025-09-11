@@ -9,6 +9,7 @@ import { PUBLIC_API_URL } from '@/utils/api';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { storeCampaign } from '@/utils/campaign';
 import { useSearchParams } from 'next/navigation';
+import { showProcessingAuthToast, dismissProcessingAuthToast } from '@/utils/auth';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -62,10 +63,7 @@ function LoginModalInner({ open, onClose }: LoginModalProps) {
         tokenProcessedRef.current = true;
         // Only show loading toast if we're not already redirecting
         if (!isRedirecting) {
-          const loadingToast = toast.loading('Processing authentication...', {
-            duration: Infinity,
-            position: 'bottom-right',
-          });
+          const loadingToast = showProcessingAuthToast();
 
           login(token)
             .then((response) => {
@@ -116,7 +114,7 @@ function LoginModalInner({ open, onClose }: LoginModalProps) {
               tokenProcessedRef.current = false;
             })
             .finally(() => {
-              toast.dismiss(loadingToast);
+              dismissProcessingAuthToast(loadingToast);
             });
         }
       }
