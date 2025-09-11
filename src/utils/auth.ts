@@ -179,13 +179,10 @@ export async function logout() {
 function clearAuthData(reason: string) {
   console.log(`Clearing auth data. Reason: ${reason}`);
 
-  // Note: HttpOnly cookies are cleared server-side via /api/auth/logout
-  // Only clear client-side data
   localStorage.removeItem('user');
   localStorage.removeItem('userid');
   localStorage.removeItem('avatar');
 
-  // Dispatch custom event for components to listen to
   window.dispatchEvent(new CustomEvent('authStateChanged'));
 }
 
