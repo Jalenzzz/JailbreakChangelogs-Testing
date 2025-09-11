@@ -20,7 +20,12 @@ import {
   dismissLogoutLoadingToast,
 } from '@/utils/auth';
 // Removed hasValidToken import - using session API instead
-import { getStoredCampaign, clearStoredCampaign, countCampaignVisit } from '@/utils/campaign';
+import {
+  getStoredCampaign,
+  clearStoredCampaign,
+  countCampaignVisit,
+  storeCampaign,
+} from '@/utils/campaign';
 import toast from 'react-hot-toast';
 
 // Helper function to track user status in Clarity
@@ -112,6 +117,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       // Track user status in Clarity
       trackUserStatus(false);
+
+      // Check for campaign parameter in URL and show login modal if not authenticated
+      if (typeof window !== 'undefined') {
+        const urlParams = new URLSearchParams(window.location.search);
+        const campaign = urlParams.get('campaign');
+        if (campaign) {
+          storeCampaign(campaign);
+          setShowLoginModal(true);
+        }
+      }
     } catch (err) {
       console.error('Auth initialization error:', err);
       setAuthState({
@@ -221,6 +236,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
       window.removeEventListener('authStateChanged', handleAuthChange as EventListener);
     };
   }, [initializeAuth]);
+
+  // Separate effect for campaign detection
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !authState.isAuthenticated && !authState.isLoading) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const campaign = urlParams.get('campaign');
+      if (campaign) {
+        storeCampaign(campaign);
+        setShowLoginModal(true);
+      }
+    }
+  }, [authState.isAuthenticated, authState.isLoading]);
 
   const handleLogin = async (token: string): Promise<AuthResponse> => {
     try {
