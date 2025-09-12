@@ -14,7 +14,6 @@ import {
   getVideoPath,
   handleImageError,
 } from '@/utils/images';
-import { fetchMissingRobloxData, fetchOriginalOwnerAvatars } from '@/app/inventories/actions';
 import { RobloxUser, Item } from '@/types';
 import { formatCurrencyValue, parseCurrencyValue } from '@/utils/currency';
 
@@ -69,6 +68,7 @@ interface InventoryItemsProps {
   robloxAvatars: Record<string, string>;
   onItemClick: (item: InventoryItem) => void;
   itemsData?: Item[];
+  onPageChange?: (page: number) => void;
 }
 
 export default function InventoryItems({
@@ -77,6 +77,7 @@ export default function InventoryItems({
   robloxAvatars,
   onItemClick,
   itemsData: propItemsData,
+  onPageChange,
 }: InventoryItemsProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -161,53 +162,6 @@ export default function InventoryItems({
       return avatar && typeof avatar === 'string' && avatar.trim() !== '' ? avatar : null;
     },
     [localRobloxAvatars],
-  );
-
-  // Progressive loading of missing user data
-  const fetchMissingUserData = useCallback(
-    async (userIds: string[]) => {
-      const missingIds = userIds.filter((id) => !localRobloxUsers[id] && !robloxUsers[id]);
-
-      if (missingIds.length === 0) return;
-
-      try {
-        const result = await fetchMissingRobloxData(missingIds);
-
-        // Update state with new user data
-        if (result.userData && typeof result.userData === 'object') {
-          setLocalRobloxUsers((prev) => ({ ...prev, ...result.userData }));
-        }
-
-        // Update state with new avatar data
-        if (result.avatarData && typeof result.avatarData === 'object') {
-          setLocalRobloxAvatars((prev) => ({ ...prev, ...result.avatarData }));
-        }
-      } catch (error) {
-        console.error('Failed to fetch missing user data:', error);
-      }
-    },
-    [localRobloxUsers, robloxUsers],
-  );
-
-  // Fetch avatars for original owners separately
-  const fetchOriginalOwnerAvatarsData = useCallback(
-    async (userIds: string[]) => {
-      const missingIds = userIds.filter((id) => !localRobloxAvatars[id] && !robloxAvatars[id]);
-
-      if (missingIds.length === 0) return;
-
-      try {
-        const avatarData = await fetchOriginalOwnerAvatars(missingIds);
-
-        // Update state with new avatar data
-        if (avatarData && typeof avatarData === 'object') {
-          setLocalRobloxAvatars((prev) => ({ ...prev, ...avatarData }));
-        }
-      } catch (error) {
-        console.error('Failed to fetch original owner avatars:', error);
-      }
-    },
-    [localRobloxAvatars, robloxAvatars],
   );
 
   // Helper function to get Roblox user display name
@@ -357,68 +311,12 @@ export default function InventoryItems({
   const startIndex = (page - 1) * itemsPerPage;
   const paginatedItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
 
-  // Progressive loading for current page items
-  useEffect(() => {
-    if (!paginatedItems || paginatedItems.length === 0) return;
-
-    const userIdsToLoad: string[] = [];
-    const avatarIdsToLoad: string[] = [];
-
-    paginatedItems.forEach((item) => {
-      const originalOwnerInfo = item.info.find((info) => info.title === 'Original Owner');
-
-      // Add original owner ID if missing
-      if (originalOwnerInfo?.value && /^\d+$/.test(originalOwnerInfo.value)) {
-        const ownerId = originalOwnerInfo.value;
-        if (!getUserDisplay(ownerId) || getUserDisplay(ownerId) === ownerId) {
-          userIdsToLoad.push(ownerId);
-        }
-
-        // Fetch avatars for original owners as well
-        if (!getUserAvatar(ownerId)) {
-          avatarIdsToLoad.push(ownerId);
-        }
-      }
-
-      // Add trade history user IDs if missing
-      if (item.history && item.history.length > 0) {
-        item.history.forEach((trade) => {
-          if (trade.UserId) {
-            const tradeUserId = trade.UserId.toString();
-            if (!getUserDisplay(tradeUserId) || getUserDisplay(tradeUserId) === tradeUserId) {
-              userIdsToLoad.push(tradeUserId);
-            }
-
-            // Fetch avatars for all trade history users
-            if (!getUserAvatar(tradeUserId)) {
-              avatarIdsToLoad.push(tradeUserId);
-            }
-          }
-        });
-      }
-    });
-
-    // Fetch missing user data if any
-    if (userIdsToLoad.length > 0) {
-      fetchMissingUserData(userIdsToLoad);
-    }
-
-    // Fetch avatars for original owners and trade history users
-    if (avatarIdsToLoad.length > 0) {
-      fetchOriginalOwnerAvatarsData(avatarIdsToLoad);
-    }
-  }, [
-    paginatedItems,
-    initialData?.item_count,
-    fetchMissingUserData,
-    fetchOriginalOwnerAvatarsData,
-    getUserDisplay,
-    getUserAvatar,
-    initialData,
-  ]);
-
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
+    // Notify parent component about page change for progressive loading
+    if (onPageChange) {
+      onPageChange(value);
+    }
   };
 
   // Empty state: no inventory items

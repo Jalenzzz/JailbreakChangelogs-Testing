@@ -1,10 +1,15 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Dialog } from '@headlessui/react';
-import { XMarkIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import {
+  XMarkIcon,
+  ExclamationTriangleIcon,
+  ArrowDownIcon,
+  ArrowUpIcon,
+} from '@heroicons/react/24/outline';
 import { fetchMissingRobloxData, fetchOriginalOwnerAvatars } from './actions';
 import { fetchItems } from '@/utils/api';
 import { RobloxUser, Item } from '@/types';
@@ -74,11 +79,16 @@ export default function InventoryCheckerClient({
   const [isLoading, setIsLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const progressiveLoadingRef = useRef<Set<string>>(new Set());
+  const loadedPagesRef = useRef<Set<number>>(new Set());
+  const preloadingPagesRef = useRef<Set<number>>(new Set());
   const [robloxUsers, setRobloxUsers] = useState<Record<string, RobloxUser>>(
     initialRobloxUsers || {},
   );
   const [robloxAvatars, setRobloxAvatars] = useState(initialRobloxAvatars || {});
   const [itemsData, setItemsData] = useState<Item[]>([]);
+  const [loadingUserIds, setLoadingUserIds] = useState<Set<string>>(new Set());
+  const [tradeSortOrder, setTradeSortOrder] = useState<'newest' | 'oldest'>('newest');
 
   const router = useRouter();
 
@@ -100,48 +110,104 @@ export default function InventoryCheckerClient({
     [robloxAvatars, initialRobloxAvatars],
   );
 
-  // Progressive loading of missing user data
+  // Progressive loading of missing user data (only for trade history users)
   const fetchMissingUserData = useCallback(
     async (userIds: string[]) => {
       const missingIds = userIds.filter((id) => !robloxUsers[id] && !initialRobloxUsers?.[id]);
 
-      if (missingIds.length === 0) return;
+      if (missingIds.length === 0) {
+        return;
+      }
+
+      // Check if we're already loading these IDs
+      const newIds = missingIds.filter((id) => !progressiveLoadingRef.current.has(id));
+      if (newIds.length === 0) {
+        return;
+      }
+
+      // Mark as loading
+      newIds.forEach((id) => progressiveLoadingRef.current.add(id));
+
+      // Update loading state for UI
+      setLoadingUserIds((prev) => {
+        const newSet = new Set(prev);
+        newIds.forEach((id) => newSet.add(id));
+        return newSet;
+      });
 
       try {
-        const result = await fetchMissingRobloxData(missingIds);
+        const result = await fetchMissingRobloxData(newIds);
 
-        // Update state with new user data
+        // Update state with new user data immediately
         if (result.userData && typeof result.userData === 'object') {
           setRobloxUsers((prev) => ({ ...prev, ...result.userData }));
         }
 
-        // Update state with new avatar data
+        // Update state with new avatar data immediately
         if (result.avatarData && typeof result.avatarData === 'object') {
           setRobloxAvatars((prev) => ({ ...prev, ...result.avatarData }));
         }
       } catch (error) {
-        console.error('Failed to fetch missing user data:', error);
+        console.error('[INVENTORY] Failed to fetch missing user data:', error);
+      } finally {
+        // Remove from loading set
+        newIds.forEach((id) => progressiveLoadingRef.current.delete(id));
+
+        // Update loading state for UI
+        setLoadingUserIds((prev) => {
+          const newSet = new Set(prev);
+          newIds.forEach((id) => newSet.delete(id));
+          return newSet;
+        });
       }
     },
     [robloxUsers, initialRobloxUsers, setRobloxUsers, setRobloxAvatars],
   );
 
-  // Fetch avatars for original owners separately (for inventories with 1000 items or less)
-  const fetchOriginalOwnerAvatarsData = useCallback(
+  // Fetch avatars for trade history users (not original owners since they're loaded server-side)
+  const fetchTradeHistoryAvatarsData = useCallback(
     async (userIds: string[]) => {
       const missingIds = userIds.filter((id) => !robloxAvatars[id] && !initialRobloxAvatars?.[id]);
 
-      if (missingIds.length === 0) return;
+      if (missingIds.length === 0) {
+        return;
+      }
+
+      // Check if we're already loading these IDs
+      const newIds = missingIds.filter((id) => !progressiveLoadingRef.current.has(id));
+      if (newIds.length === 0) {
+        return;
+      }
+
+      // Mark as loading
+      newIds.forEach((id) => progressiveLoadingRef.current.add(id));
+
+      // Update loading state for UI
+      setLoadingUserIds((prev) => {
+        const newSet = new Set(prev);
+        newIds.forEach((id) => newSet.add(id));
+        return newSet;
+      });
 
       try {
-        const avatarData = await fetchOriginalOwnerAvatars(missingIds);
+        const avatarData = await fetchOriginalOwnerAvatars(newIds);
 
         // Update state with new avatar data
         if (avatarData && typeof avatarData === 'object') {
           setRobloxAvatars((prev) => ({ ...prev, ...avatarData }));
         }
       } catch (error) {
-        console.error('Failed to fetch original owner avatars:', error);
+        console.error('[INVENTORY] Failed to fetch trade history avatars:', error);
+      } finally {
+        // Remove from loading set
+        newIds.forEach((id) => progressiveLoadingRef.current.delete(id));
+
+        // Update loading state for UI
+        setLoadingUserIds((prev) => {
+          const newSet = new Set(prev);
+          newIds.forEach((id) => newSet.delete(id));
+          return newSet;
+        });
       }
     },
     [robloxAvatars, initialRobloxAvatars, setRobloxAvatars],
@@ -163,41 +229,143 @@ export default function InventoryCheckerClient({
     }
   }, [initialData]);
 
-  // Progressive loading for trade history modal
-  useEffect(() => {
-    if (!selectedItem?.history || selectedItem.history.length === 0) return;
+  // Progressive loading for trade history users and missing original owners
+  const loadPageData = useCallback(
+    (pageNumber: number, isPreload = false) => {
+      if (!initialData?.data || initialData.data.length === 0) return;
 
-    const userIdsToLoad: string[] = [];
-    const avatarIdsToLoad: string[] = [];
-
-    selectedItem.history.forEach((trade) => {
-      if (trade.UserId) {
-        const tradeUserId = trade.UserId.toString();
-        if (!getUserDisplay(tradeUserId) || getUserDisplay(tradeUserId) === tradeUserId) {
-          userIdsToLoad.push(tradeUserId);
-        }
-
-        if (!getUserAvatar(tradeUserId)) {
-          avatarIdsToLoad.push(tradeUserId);
-        }
+      // Check if we've already loaded this page
+      if (loadedPagesRef.current.has(pageNumber)) {
+        return;
       }
-    });
 
-    if (userIdsToLoad.length > 0) {
-      fetchMissingUserData(userIdsToLoad);
-    }
+      // Check if we're already preloading this page
+      if (isPreload && preloadingPagesRef.current.has(pageNumber)) {
+        return;
+      }
 
-    if (avatarIdsToLoad.length > 0) {
-      fetchOriginalOwnerAvatarsData(avatarIdsToLoad);
+      const itemsPerPage = 20;
+
+      // Calculate which items are on the current page
+      const startIndex = (pageNumber - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const currentPageItems = initialData.data.slice(startIndex, endIndex);
+
+      const userIdsToLoad: string[] = [];
+      const avatarIdsToLoad: string[] = [];
+
+      // Collect user IDs from both trade history and original owners
+      currentPageItems.forEach((item) => {
+        // Check original owner data
+        const originalOwnerInfo = item.info.find((info) => info.title === 'Original Owner');
+        if (originalOwnerInfo && originalOwnerInfo.value && /^\d+$/.test(originalOwnerInfo.value)) {
+          const originalOwnerId = originalOwnerInfo.value;
+          const hasUserData = robloxUsers[originalOwnerId] || initialRobloxUsers?.[originalOwnerId];
+          const hasAvatarData =
+            robloxAvatars[originalOwnerId] || initialRobloxAvatars?.[originalOwnerId];
+
+          if (!hasUserData) {
+            userIdsToLoad.push(originalOwnerId);
+          }
+          if (!hasAvatarData) {
+            avatarIdsToLoad.push(originalOwnerId);
+          }
+        }
+
+        // Check trade history users
+        if (item.history && item.history.length > 0) {
+          item.history.forEach((trade) => {
+            if (trade.UserId) {
+              const tradeUserId = trade.UserId.toString();
+              // Check if we already have this user's data
+              const hasUserData = robloxUsers[tradeUserId] || initialRobloxUsers?.[tradeUserId];
+              const hasAvatarData =
+                robloxAvatars[tradeUserId] || initialRobloxAvatars?.[tradeUserId];
+
+              if (!hasUserData) {
+                userIdsToLoad.push(tradeUserId);
+              }
+
+              if (!hasAvatarData) {
+                avatarIdsToLoad.push(tradeUserId);
+              }
+            }
+          });
+        }
+      });
+
+      // Remove duplicates
+      const uniqueUserIds = [...new Set(userIdsToLoad)];
+      const uniqueAvatarIds = [...new Set(avatarIdsToLoad)];
+
+      // Mark this page as loaded or preloading
+      if (isPreload) {
+        preloadingPagesRef.current.add(pageNumber);
+      } else {
+        loadedPagesRef.current.add(pageNumber);
+      }
+
+      // Only fetch if we have IDs to load
+      if (uniqueUserIds.length > 0) {
+        fetchMissingUserData(uniqueUserIds);
+      }
+
+      if (uniqueAvatarIds.length > 0) {
+        fetchTradeHistoryAvatarsData(uniqueAvatarIds);
+      }
+    },
+    [
+      initialData?.data,
+      robloxUsers,
+      initialRobloxUsers,
+      robloxAvatars,
+      initialRobloxAvatars,
+      fetchMissingUserData,
+      fetchTradeHistoryAvatarsData,
+    ],
+  );
+
+  // Preload next page for smoother experience
+  const preloadNextPage = useCallback(
+    (currentPage: number) => {
+      if (!initialData?.data || initialData.data.length === 0) return;
+
+      const itemsPerPage = 20;
+      const totalPages = Math.ceil(initialData.data.length / itemsPerPage);
+      const nextPage = currentPage + 1;
+
+      // Only preload if next page exists and we haven't loaded it yet
+      if (
+        nextPage <= totalPages &&
+        !loadedPagesRef.current.has(nextPage) &&
+        !preloadingPagesRef.current.has(nextPage)
+      ) {
+        loadPageData(nextPage, true);
+      }
+    },
+    [initialData?.data, loadPageData],
+  );
+
+  // Load data for page 1 initially and preload page 2 - but only after itemsData is loaded for sorting
+  useEffect(() => {
+    if (initialData?.data && initialData.data.length > 0 && itemsData.length > 0) {
+      loadPageData(1);
+      // Preload page 2 for smoother experience
+      setTimeout(() => preloadNextPage(1), 1000);
     }
-  }, [
-    selectedItem?.id,
-    selectedItem?.history,
-    fetchMissingUserData,
-    fetchOriginalOwnerAvatarsData,
-    getUserDisplay,
-    getUserAvatar,
-  ]);
+  }, [initialData?.data, itemsData, loadPageData, preloadNextPage]);
+
+  // Enhanced page change handler with preloading
+  const handlePageChangeWithPreload = useCallback(
+    (pageNumber: number) => {
+      // Load current page data
+      loadPageData(pageNumber);
+
+      // Preload next page for smoother experience
+      setTimeout(() => preloadNextPage(pageNumber), 500);
+    },
+    [loadPageData, preloadNextPage],
+  );
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -232,11 +400,52 @@ export default function InventoryCheckerClient({
   const handleItemClick = (item: InventoryItem) => {
     setSelectedItem(item);
     setShowHistoryModal(true);
+
+    // Load Roblox data for history users if not already loaded
+    if (item.history && item.history.length > 0) {
+      const historyUserIds: string[] = [];
+      const historyAvatarIds: string[] = [];
+
+      item.history.forEach((trade) => {
+        if (trade.UserId) {
+          const tradeUserId = trade.UserId.toString();
+
+          // Check if we need user data
+          const hasUserData = robloxUsers[tradeUserId] || initialRobloxUsers?.[tradeUserId];
+          if (!hasUserData) {
+            historyUserIds.push(tradeUserId);
+          }
+
+          // Check if we need avatar data
+          const hasAvatarData = robloxAvatars[tradeUserId] || initialRobloxAvatars?.[tradeUserId];
+          if (!hasAvatarData) {
+            historyAvatarIds.push(tradeUserId);
+          }
+        }
+      });
+
+      // Remove duplicates
+      const uniqueUserIds = [...new Set(historyUserIds)];
+      const uniqueAvatarIds = [...new Set(historyAvatarIds)];
+
+      // Load missing data
+      if (uniqueUserIds.length > 0) {
+        fetchMissingUserData(uniqueUserIds);
+      }
+
+      if (uniqueAvatarIds.length > 0) {
+        fetchTradeHistoryAvatarsData(uniqueAvatarIds);
+      }
+    }
   };
 
   const closeHistoryModal = () => {
     setShowHistoryModal(false);
     setSelectedItem(null);
+  };
+
+  const toggleTradeSortOrder = () => {
+    setTradeSortOrder((prev) => (prev === 'newest' ? 'oldest' : 'newest'));
   };
 
   if (isLoading || externalIsLoading) {
@@ -297,6 +506,7 @@ export default function InventoryCheckerClient({
             robloxAvatars={robloxAvatars}
             onItemClick={handleItemClick}
             itemsData={itemsData}
+            onPageChange={handlePageChangeWithPreload}
           />
 
           {/* Trade History Modal */}
@@ -307,19 +517,44 @@ export default function InventoryCheckerClient({
               <div className="fixed inset-0 flex items-center justify-center p-4">
                 <div className="mx-auto max-h-[80vh] w-full max-w-2xl overflow-hidden rounded-lg border border-[#2E3944] bg-[#212A31]">
                   {/* Modal Header */}
-                  <div className="flex items-start justify-between gap-4 border-b border-[#2E3944] p-4 sm:items-center sm:p-6">
-                    <div className="min-w-0 flex-1">
-                      <Dialog.Title className="text-muted text-lg font-semibold sm:text-xl">
-                        Trade History
-                      </Dialog.Title>
-                      <p className="text-muted truncate text-sm opacity-75">{selectedItem.title}</p>
+                  <div className="border-b border-[#2E3944] p-4 sm:p-6">
+                    <div className="flex items-start justify-between gap-4 sm:items-center">
+                      <div className="min-w-0 flex-1">
+                        <Dialog.Title className="text-muted text-lg font-semibold sm:text-xl">
+                          Trade History
+                        </Dialog.Title>
+                        <p className="text-muted truncate text-sm opacity-75">
+                          {selectedItem.title} ({selectedItem.categoryTitle})
+                        </p>
+                        {selectedItem.history && selectedItem.history.length > 1 && (
+                          <p className="text-muted mt-1 text-xs opacity-75">
+                            Total Trades: {selectedItem.history.length - 1}
+                          </p>
+                        )}
+                      </div>
+                      <button
+                        onClick={closeHistoryModal}
+                        className="text-muted rounded-full p-1 hover:bg-[#2E3944] hover:text-white"
+                      >
+                        <XMarkIcon className="h-6 w-6" />
+                      </button>
                     </div>
-                    <button
-                      onClick={closeHistoryModal}
-                      className="text-muted rounded-full p-1 hover:bg-[#2E3944] hover:text-white"
-                    >
-                      <XMarkIcon className="h-6 w-6" />
-                    </button>
+                    {/* Sort button - below on mobile, inline on desktop */}
+                    {selectedItem.history && selectedItem.history.length > 1 && (
+                      <div className="mt-3 flex justify-start">
+                        <button
+                          onClick={toggleTradeSortOrder}
+                          className="flex items-center gap-1 rounded-lg border border-[#2E3944] bg-[#37424D] px-3 py-1.5 text-sm text-white transition-colors hover:bg-[#2E3944]"
+                        >
+                          {tradeSortOrder === 'newest' ? (
+                            <ArrowDownIcon className="h-4 w-4" />
+                          ) : (
+                            <ArrowUpIcon className="h-4 w-4" />
+                          )}
+                          {tradeSortOrder === 'newest' ? 'Newest First' : 'Oldest First'}
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   {/* Modal Content */}
@@ -351,19 +586,50 @@ export default function InventoryCheckerClient({
                             });
                           }
 
+                          // Sort trades based on sort order
+                          const sortedTrades = [...trades].sort((a, b) => {
+                            const dateA = a.toUser.TradeTime;
+                            const dateB = b.toUser.TradeTime;
+                            return tradeSortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+                          });
+
                           return (
                             <>
-                              <div className="text-muted mb-4 flex flex-col gap-2 text-sm sm:flex-row sm:items-center sm:justify-between">
-                                <span>Total Trades: {trades.length}</span>
-                              </div>
+                              {loadingUserIds.size > 0 && (
+                                <div className="mb-4 flex items-center justify-center gap-2 text-blue-400">
+                                  <svg
+                                    className="h-4 w-4 animate-spin"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <circle
+                                      className="opacity-25"
+                                      cx="12"
+                                      cy="12"
+                                      r="10"
+                                      stroke="currentColor"
+                                      strokeWidth="4"
+                                    ></circle>
+                                    <path
+                                      className="opacity-75"
+                                      fill="currentColor"
+                                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                    ></path>
+                                  </svg>
+                                  <span className="text-sm">Loading user profiles...</span>
+                                </div>
+                              )}
 
                               <div className="space-y-3">
-                                {trades.map((trade, index) => {
+                                {sortedTrades.map((trade, index) => {
                                   return (
                                     <div
                                       key={`${trade.fromUser.UserId}-${trade.toUser.UserId}-${trade.toUser.TradeTime}`}
                                       className={`rounded-lg border p-3 ${
-                                        index === trades.length - 1
+                                        (tradeSortOrder === 'newest' && index === 0) ||
+                                        (tradeSortOrder === 'oldest' &&
+                                          index === sortedTrades.length - 1)
                                           ? 'border-[#124E66] bg-[#1A5F7A] shadow-lg'
                                           : 'border-[#37424D] bg-[#2E3944]'
                                       }`}
