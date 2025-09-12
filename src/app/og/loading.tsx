@@ -6,7 +6,7 @@ export default function OGFinderLoading() {
       <Breadcrumb />
       <h1 className="mb-6 text-3xl font-bold">OG Finder</h1>
 
-      <p className="mb-4 text-gray-600 dark:text-gray-400">
+      <p className="mb-4 text-white">
         Search for items that were originally owned by a specific user. Enter a Roblox ID or
         username to find their original items.
       </p>

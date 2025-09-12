@@ -44,7 +44,7 @@ export default function InventoriesPage() {
 
       <ExperimentalFeatureBanner className="mb-6" />
 
-      <p className="mb-4 text-gray-600 dark:text-gray-400">
+      <p className="mb-4 text-white">
         Enter a username or Roblox ID to check their Jailbreak inventory.
       </p>
 
@@ -301,11 +301,11 @@ async function LeaderboardSection() {
   return (
     <div className="mt-8">
       <h2 className="mb-4 text-xl font-bold text-gray-300">
-        Most Scanned Players ({leaderboard.slice(3).length})
+        Most Scanned Players ({leaderboard.length})
       </h2>
       <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4 shadow-sm">
         <div className="max-h-[32rem] space-y-3 overflow-y-auto pr-2">
-          {leaderboard.slice(3).map((user, index) => (
+          {leaderboard.map((user, index) => (
             <Suspense
               key={user.user_id}
               fallback={<BasicLeaderboardUser user={user} index={index} />}

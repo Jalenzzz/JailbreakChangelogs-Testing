@@ -212,7 +212,12 @@ export default function InventoryCheckerClient({
     if (initialData || error) {
       setIsLoading(false);
     }
-  }, [initialData, error, externalIsLoading]);
+  }, [initialData, error]);
+
+  // Sync with external loading state
+  useEffect(() => {
+    setIsLoading(externalIsLoading || false);
+  }, [externalIsLoading]);
 
   const formatDate = (timestamp: number) => {
     return new Date(timestamp * 1000).toLocaleDateString('en-US', {

@@ -82,7 +82,7 @@ function OGFinderLoadingFallback({ robloxId }: { robloxId: string }) {
           <div className="flex items-end">
             <button
               disabled
-              className="flex h-10 min-w-[100px] cursor-not-allowed items-center justify-center gap-2 rounded-lg bg-[#2E3944] px-6 text-sm font-medium text-white"
+              className="flex h-10 min-w-[100px] cursor-progress items-center justify-center gap-2 rounded-lg bg-[#2E3944] px-6 text-sm font-medium text-white"
             >
               <svg
                 className="h-4 w-4 animate-spin"
