@@ -22,7 +22,7 @@ export default function TermsOfServicePage() {
           <DocumentTextIcon className="text-muted h-6 w-6" />
           <h1 className="text-muted text-2xl font-bold">Terms of Service</h1>
         </div>
-        <p className="text-muted mb-6 text-sm">Last updated: July 22nd, 2025</p>
+        <p className="text-muted mb-6 text-sm">Last updated: September 12th, 2025</p>
 
         <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6 transition-colors hover:border-[#5865F2]">
           <Typography className="text-muted">
@@ -91,10 +91,10 @@ export default function TermsOfServicePage() {
             <div>
               <h2 className="text-muted mb-4 text-xl font-semibold">4. Limitations</h2>
               <Typography className="text-muted">
-                In no event shall Jailbreak Changelogs or its suppliers be liable for any damages
-                (including, without limitation, damages for loss of data or profit, or due to
-                business interruption) arising out of the use or inability to use the materials on
-                our website.
+                In no event shall Jailbreak Changelogs LLC or its suppliers be liable for any
+                damages (including, without limitation, damages for loss of data or profit, or due
+                to business interruption) arising out of the use or inability to use the materials
+                on our website.
               </Typography>
             </div>
 
