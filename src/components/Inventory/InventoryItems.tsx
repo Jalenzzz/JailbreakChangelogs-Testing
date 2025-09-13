@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { Pagination } from '@mui/material';
+import { Pagination, Tooltip } from '@mui/material';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import localFont from 'next/font/local';
@@ -16,6 +16,7 @@ import {
 } from '@/utils/images';
 import { RobloxUser, Item } from '@/types';
 import { formatCurrencyValue, parseCurrencyValue } from '@/utils/currency';
+import ItemActionModal from '@/components/Modals/ItemActionModal';
 
 const Select = dynamic(() => import('react-select'), { ssr: false });
 
@@ -104,8 +105,29 @@ export default function InventoryItems({
   const [localRobloxAvatars, setLocalRobloxAvatars] =
     useState<Record<string, string>>(robloxAvatars);
   const [itemsData, setItemsData] = useState<Item[]>(propItemsData || []);
+  const [showActionModal, setShowActionModal] = useState(false);
+  const [selectedItemForAction, setSelectedItemForAction] = useState<InventoryItem | null>(null);
 
   const MAX_SEARCH_LENGTH = 50;
+
+  // Handler for card click - show action modal
+  const handleCardClick = (item: InventoryItem) => {
+    setSelectedItemForAction(item);
+    setShowActionModal(true);
+  };
+
+  // Handler for viewing trade history from modal
+  const handleViewTradeHistory = () => {
+    if (selectedItemForAction) {
+      onItemClick(selectedItemForAction);
+    }
+  };
+
+  // Handler for closing action modal
+  const closeActionModal = () => {
+    setShowActionModal(false);
+    setSelectedItemForAction(null);
+  };
   const itemsPerPage = 20;
 
   // Helper function to parse cash value strings for totals (returns 0 for N/A)
@@ -869,12 +891,12 @@ export default function InventoryItems({
             return (
               <div
                 key={item.id}
-                className={`relative flex min-h-[400px] cursor-pointer flex-col rounded-lg border-2 p-3 text-white transition-all duration-200 hover:scale-105 hover:shadow-lg ${
+                className={`relative flex min-h-[400px] cursor-pointer flex-col rounded-lg border-2 p-3 text-white transition-all duration-200 hover:shadow-lg ${
                   isOriginalOwner
-                    ? 'border-yellow-400 bg-yellow-600/30 backdrop-blur-sm'
-                    : 'border-gray-800 bg-gray-700'
+                    ? 'border-yellow-400 bg-yellow-600/30 backdrop-blur-sm hover:border-yellow-300'
+                    : 'border-gray-800 bg-gray-700 hover:border-gray-600'
                 }`}
-                onClick={() => onItemClick(item)}
+                onClick={() => handleCardClick(item)}
               >
                 {/* Duplicate Indicator */}
                 {isDuplicate && (
@@ -1023,16 +1045,42 @@ export default function InventoryItems({
                         <>
                           <div>
                             <div className="text-sm opacity-90">CASH VALUE</div>
-                            <div className="text-xl font-bold text-white">
-                              {itemData.cash_value === null || itemData.cash_value === 'N/A'
-                                ? 'N/A'
-                                : formatCurrencyValue(parseCurrencyValue(itemData.cash_value))}
-                            </div>
+                            <Tooltip
+                              title={
+                                itemData.cash_value === null || itemData.cash_value === 'N/A'
+                                  ? 'N/A'
+                                  : `$${parseCurrencyValue(itemData.cash_value).toLocaleString()}`
+                              }
+                              placement="top"
+                              arrow
+                              slotProps={{
+                                tooltip: {
+                                  sx: {
+                                    backgroundColor: '#0F1419',
+                                    color: '#D3D9D4',
+                                    fontSize: '0.75rem',
+                                    padding: '8px 12px',
+                                    borderRadius: '8px',
+                                    border: '1px solid #2E3944',
+                                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                                    '& .MuiTooltip-arrow': {
+                                      color: '#0F1419',
+                                    },
+                                  },
+                                },
+                              }}
+                            >
+                              <div className="cursor-help text-xl font-bold text-white">
+                                {itemData.cash_value === null || itemData.cash_value === 'N/A'
+                                  ? 'N/A'
+                                  : formatCurrencyValue(parseCurrencyValue(itemData.cash_value))}
+                              </div>
+                            </Tooltip>
                           </div>
                           <div>
                             <div className="text-sm opacity-90">DUPED VALUE</div>
-                            <div className="text-xl font-bold text-white">
-                              {(() => {
+                            <Tooltip
+                              title={(() => {
                                 let dupedValue = itemData.duped_value;
 
                                 // If main item doesn't have duped value, check children/variants based on created date
@@ -1062,27 +1110,72 @@ export default function InventoryItems({
 
                                   if (matchingChild) {
                                     dupedValue = matchingChild.data.duped_value;
-                                  } else {
-                                    // If no matching year found, fall back to first child with valid duped value
-                                    const childWithDupedValue = itemData.children.find(
-                                      (child) =>
-                                        child.data &&
-                                        child.data.duped_value &&
-                                        child.data.duped_value !== 'N/A' &&
-                                        child.data.duped_value !== null,
-                                    );
-
-                                    if (childWithDupedValue) {
-                                      dupedValue = childWithDupedValue.data.duped_value;
-                                    }
                                   }
                                 }
 
                                 return dupedValue === null || dupedValue === 'N/A'
                                   ? 'N/A'
-                                  : formatCurrencyValue(parseCurrencyValue(dupedValue));
+                                  : `$${parseCurrencyValue(dupedValue).toLocaleString()}`;
                               })()}
-                            </div>
+                              placement="top"
+                              arrow
+                              slotProps={{
+                                tooltip: {
+                                  sx: {
+                                    backgroundColor: '#0F1419',
+                                    color: '#D3D9D4',
+                                    fontSize: '0.75rem',
+                                    padding: '8px 12px',
+                                    borderRadius: '8px',
+                                    border: '1px solid #2E3944',
+                                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                                    '& .MuiTooltip-arrow': {
+                                      color: '#0F1419',
+                                    },
+                                  },
+                                },
+                              }}
+                            >
+                              <div className="cursor-help text-xl font-bold text-white">
+                                {(() => {
+                                  let dupedValue = itemData.duped_value;
+
+                                  // If main item doesn't have duped value, check children/variants based on created date
+                                  if (
+                                    (dupedValue === null || dupedValue === 'N/A') &&
+                                    itemData.children
+                                  ) {
+                                    // Get the year from the created date (from item info)
+                                    const createdAtInfo = item.info.find(
+                                      (info) => info.title === 'Created At',
+                                    );
+                                    const createdYear = createdAtInfo
+                                      ? new Date(createdAtInfo.value).getFullYear().toString()
+                                      : null;
+
+                                    // Find the child variant that matches the created year
+                                    const matchingChild = createdYear
+                                      ? itemData.children.find(
+                                          (child) =>
+                                            child.sub_name === createdYear &&
+                                            child.data &&
+                                            child.data.duped_value &&
+                                            child.data.duped_value !== 'N/A' &&
+                                            child.data.duped_value !== null,
+                                        )
+                                      : null;
+
+                                    if (matchingChild) {
+                                      dupedValue = matchingChild.data.duped_value;
+                                    }
+                                  }
+
+                                  return dupedValue === null || dupedValue === 'N/A'
+                                    ? 'N/A'
+                                    : formatCurrencyValue(parseCurrencyValue(dupedValue));
+                                })()}
+                              </div>
+                            </Tooltip>
                           </div>
                         </>
                       );
@@ -1140,6 +1233,14 @@ export default function InventoryItems({
           />
         </div>
       )}
+
+      {/* Item Action Modal */}
+      <ItemActionModal
+        isOpen={showActionModal}
+        onClose={closeActionModal}
+        item={selectedItemForAction}
+        onViewTradeHistory={handleViewTradeHistory}
+      />
     </div>
   );
 }

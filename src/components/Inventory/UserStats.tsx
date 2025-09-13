@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { RobloxUser, Item } from '@/types';
 import { Tooltip } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { useRealTimeRelativeDate } from '@/hooks/useRealTimeRelativeDate';
 
 // Helper function to parse cash value strings for totals (returns 0 for N/A)
 const parseCashValueForTotal = (value: string | null): number => {
@@ -168,6 +169,10 @@ export default function UserStats({
   const [totalCashValue, setTotalCashValue] = useState<number>(0);
   const [totalDupedValue, setTotalDupedValue] = useState<number>(0);
   const [isLoadingValues, setIsLoadingValues] = useState<boolean>(true);
+
+  // Real-time relative timestamps
+  const createdRelativeTime = useRealTimeRelativeDate(initialData.created_at);
+  const updatedRelativeTime = useRealTimeRelativeDate(initialData.updated_at);
 
   // Helper function to get user display name
   const getUserDisplay = (userId: string) => {
@@ -588,42 +593,61 @@ export default function UserStats({
         <div className="mt-6">
           <h3 className="text-muted mb-2 text-lg font-medium">Gamepasses</h3>
           <div className="flex flex-wrap gap-3">
-            {[...new Set(initialData.gamepasses)].map((gamepass) => {
-              const gamepassInfo = gamepassData[gamepass as keyof typeof gamepassData];
-              if (!gamepassInfo) return null;
+            {(() => {
+              const gamepassOrder = [
+                'VIP',
+                'PremiumGarage',
+                'BOSS',
+                'SWAT',
+                'TradingVIP',
+                'DuffelBag',
+                'Stereo',
+                'Walmart',
+              ];
 
-              const GamepassContent = () => (
-                <div className="text-muted flex items-center gap-2 rounded-lg border border-[#5865F2] bg-[#2B2F4C] px-3 py-2 text-sm transition-colors hover:bg-[#32365A]">
-                  <div className="relative h-6 w-6">
-                    <Image
-                      src={`/assets/images/gamepasses/${gamepassInfo.image}.webp`}
-                      alt={gamepass}
-                      width={24}
-                      height={24}
-                      className="object-contain"
-                      onError={handleImageError}
-                    />
+              // Get unique gamepasses and sort them according to the specified order
+              const uniqueGamepasses = [...new Set(initialData.gamepasses)];
+              const orderedGamepasses = gamepassOrder.filter((gamepass) =>
+                uniqueGamepasses.includes(gamepass),
+              );
+
+              return orderedGamepasses.map((gamepass) => {
+                const gamepassInfo = gamepassData[gamepass as keyof typeof gamepassData];
+                if (!gamepassInfo) return null;
+
+                const GamepassContent = () => (
+                  <div className="text-muted flex items-center gap-2 rounded-lg border border-[#5865F2] bg-[#2B2F4C] px-3 py-2 text-sm transition-colors hover:bg-[#32365A]">
+                    <div className="relative h-6 w-6">
+                      <Image
+                        src={`/assets/images/gamepasses/${gamepassInfo.image}.webp`}
+                        alt={gamepass}
+                        width={24}
+                        height={24}
+                        className="object-contain"
+                        onError={handleImageError}
+                      />
+                    </div>
+                    <span>{gamepass}</span>
                   </div>
-                  <span>{gamepass}</span>
-                </div>
-              );
+                );
 
-              return gamepassInfo.link ? (
-                <a
-                  key={gamepass}
-                  href={gamepassInfo.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block"
-                >
-                  <GamepassContent />
-                </a>
-              ) : (
-                <div key={gamepass}>
-                  <GamepassContent />
-                </div>
-              );
-            })}
+                return gamepassInfo.link ? (
+                  <a
+                    key={gamepass}
+                    href={gamepassInfo.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block"
+                  >
+                    <GamepassContent />
+                  </a>
+                ) : (
+                  <div key={gamepass}>
+                    <GamepassContent />
+                  </div>
+                );
+              });
+            })()}
           </div>
         </div>
       )}
@@ -631,8 +655,12 @@ export default function UserStats({
       {/* Metadata */}
       <div className="text-muted mt-4 space-y-1 text-sm">
         <p>Scan Count: {initialData.scan_count}</p>
-        <p>Created: {formatDate(initialData.created_at)}</p>
-        <p>Last Updated: {formatDate(initialData.updated_at)}</p>
+        <p>
+          First Scanned: {formatDate(initialData.created_at)} ({createdRelativeTime})
+        </p>
+        <p>
+          Last Scanned: {formatDate(initialData.updated_at)} ({updatedRelativeTime})
+        </p>
       </div>
     </div>
   );

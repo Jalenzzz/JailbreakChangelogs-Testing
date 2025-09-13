@@ -18,6 +18,7 @@ import {
   handleImageError,
 } from '@/utils/images';
 import type { DupeFinderItem, RobloxUser, Item } from '@/types';
+import ItemActionModal from '@/components/Modals/ItemActionModal';
 import TradeHistoryModal from '@/components/Modals/TradeHistoryModal';
 
 const Select = dynamic(() => import('react-select'), { ssr: false });
@@ -82,6 +83,8 @@ export default function DupeFinderResults({
   const [totalDupedValue, setTotalDupedValue] = useState<number>(0);
   const [isLoadingValues, setIsLoadingValues] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [showActionModal, setShowActionModal] = useState(false);
+  const [selectedItemForAction, setSelectedItemForAction] = useState<DupeFinderItem | null>(null);
 
   const itemsPerPage = 20;
   const MAX_SEARCH_LENGTH = 50;
@@ -94,6 +97,25 @@ export default function DupeFinderResults({
   const closeHistoryModal = () => {
     setShowHistoryModal(false);
     setSelectedItem(null);
+  };
+
+  // Handler for card click - show action modal
+  const handleCardClick = (item: DupeFinderItem) => {
+    setSelectedItemForAction(item);
+    setShowActionModal(true);
+  };
+
+  // Handler for viewing trade history from modal
+  const handleViewTradeHistory = () => {
+    if (selectedItemForAction) {
+      handleItemClick(selectedItemForAction);
+    }
+  };
+
+  // Handler for closing action modal
+  const closeActionModal = () => {
+    setShowActionModal(false);
+    setSelectedItemForAction(null);
   };
 
   // Load Select component and set client flag
@@ -614,9 +636,31 @@ export default function DupeFinderResults({
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="rounded-lg border border-[#37424D] bg-[#2E3944] p-4 text-center">
             <div className="text-muted mb-2 text-sm">Dupe Items Found</div>
-            <div className="text-2xl font-bold text-[#ef4444]">
-              {initialData.length?.toLocaleString()}
-            </div>
+            <Tooltip
+              title={`${initialData.length?.toLocaleString()}`}
+              placement="top"
+              arrow
+              slotProps={{
+                tooltip: {
+                  sx: {
+                    backgroundColor: '#0F1419',
+                    color: '#D3D9D4',
+                    fontSize: '0.75rem',
+                    padding: '8px 12px',
+                    borderRadius: '8px',
+                    border: '1px solid #2E3944',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                    '& .MuiTooltip-arrow': {
+                      color: '#0F1419',
+                    },
+                  },
+                },
+              }}
+            >
+              <div className="cursor-help text-2xl font-bold text-[#ef4444]">
+                {initialData.length?.toLocaleString()}
+              </div>
+            </Tooltip>
           </div>
           <div className="rounded-lg border border-[#37424D] bg-[#2E3944] p-4 text-center">
             <div className="text-muted mb-2 text-sm">Total Duped Value</div>
@@ -990,8 +1034,8 @@ export default function DupeFinderResults({
             return (
               <div
                 key={item.id}
-                className="relative flex min-h-[400px] cursor-pointer flex-col rounded-lg border-2 border-gray-800 bg-gray-700 p-3 text-white transition-all duration-200 hover:scale-105 hover:shadow-lg"
-                onClick={() => handleItemClick(item)}
+                className="relative flex min-h-[400px] cursor-pointer flex-col rounded-lg border-2 border-gray-800 bg-gray-700 p-3 text-white transition-all duration-200 hover:border-gray-600 hover:shadow-lg"
+                onClick={() => handleCardClick(item)}
               >
                 {/* Duplicate Indicator */}
                 {isDuplicate && (
@@ -1156,18 +1200,66 @@ export default function DupeFinderResults({
                       return (
                         <div>
                           <div className="text-sm opacity-90">DUPED VALUE</div>
-                          <div className="text-xl font-bold text-white">
-                            {dupedValue === null || dupedValue === 'N/A'
-                              ? 'N/A'
-                              : formatCurrencyValue(parseCurrencyValue(dupedValue))}
-                          </div>
+                          <Tooltip
+                            title={
+                              dupedValue === null || dupedValue === 'N/A'
+                                ? 'N/A'
+                                : `$${parseCurrencyValue(dupedValue).toLocaleString()}`
+                            }
+                            placement="top"
+                            arrow
+                            slotProps={{
+                              tooltip: {
+                                sx: {
+                                  backgroundColor: '#0F1419',
+                                  color: '#D3D9D4',
+                                  fontSize: '0.75rem',
+                                  padding: '8px 12px',
+                                  borderRadius: '8px',
+                                  border: '1px solid #2E3944',
+                                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                                  '& .MuiTooltip-arrow': {
+                                    color: '#0F1419',
+                                  },
+                                },
+                              },
+                            }}
+                          >
+                            <div className="cursor-help text-xl font-bold text-white">
+                              {dupedValue === null || dupedValue === 'N/A'
+                                ? 'N/A'
+                                : formatCurrencyValue(parseCurrencyValue(dupedValue))}
+                            </div>
+                          </Tooltip>
                         </div>
                       );
                     }
                     return (
                       <div>
                         <div className="text-sm opacity-90">DUPED VALUE</div>
-                        <div className="text-xl font-bold text-white">N/A</div>
+                        <Tooltip
+                          title="N/A"
+                          placement="top"
+                          arrow
+                          slotProps={{
+                            tooltip: {
+                              sx: {
+                                backgroundColor: '#0F1419',
+                                color: '#D3D9D4',
+                                fontSize: '0.75rem',
+                                padding: '8px 12px',
+                                borderRadius: '8px',
+                                border: '1px solid #2E3944',
+                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                                '& .MuiTooltip-arrow': {
+                                  color: '#0F1419',
+                                },
+                              },
+                            },
+                          }}
+                        >
+                          <div className="cursor-help text-xl font-bold text-white">N/A</div>
+                        </Tooltip>
                       </div>
                     );
                   })()}
@@ -1240,6 +1332,14 @@ export default function DupeFinderResults({
           getUserDisplay={getUserDisplay}
           formatDate={formatDate}
           loadingUserIds={loadingUserIds}
+        />
+
+        {/* Item Action Modal */}
+        <ItemActionModal
+          isOpen={showActionModal}
+          onClose={closeActionModal}
+          item={selectedItemForAction}
+          onViewTradeHistory={handleViewTradeHistory}
         />
       </div>
     </div>

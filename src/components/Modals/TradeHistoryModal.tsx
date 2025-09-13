@@ -48,9 +48,9 @@ export default function TradeHistoryModal({
       <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <div className="mx-auto max-h-[80vh] w-full max-w-4xl overflow-hidden rounded-lg border border-[#2E3944] bg-[#212A31]">
+        <div className="mx-auto max-h-[80vh] w-full max-w-4xl overflow-hidden rounded-lg border border-[#2E3944] bg-[#2E3944]">
           {/* Modal Header */}
-          <div className="border-b border-[#2E3944] p-4 sm:p-6">
+          <div className="border-b border-[#2E3944] bg-[#212A31] p-4 sm:p-6">
             <div className="flex items-start justify-between gap-4 sm:items-center">
               <div className="min-w-0 flex-1">
                 <Dialog.Title className="text-muted text-lg font-semibold sm:text-xl">
@@ -164,8 +164,8 @@ export default function TradeHistoryModal({
                               key={`${trade.fromUser.UserId}-${trade.toUser.UserId}-${trade.toUser.TradeTime}`}
                               className={`rounded-lg border p-3 ${
                                 trade.tradeNumber === firstTradeNumber
-                                  ? 'border-[#124E66] bg-[#1A5F7A] shadow-lg'
-                                  : 'border-[#37424D] bg-[#2E3944]'
+                                  ? 'border-[#37424D] bg-[#1A2332] shadow-lg'
+                                  : 'border-[#37424D] bg-[#212A31]'
                               }`}
                             >
                               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { RobloxUser } from '@/types';
 import Image from 'next/image';
-import { Pagination } from '@mui/material';
+import { Pagination, Tooltip } from '@mui/material';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { fetchMissingRobloxData, fetchOriginalOwnerAvatars } from '@/app/inventories/actions';
 import {
@@ -18,6 +18,7 @@ import {
 import localFont from 'next/font/local';
 import dynamic from 'next/dynamic';
 import SearchForm from './SearchForm';
+import ItemActionModal from '@/components/Modals/ItemActionModal';
 import TradeHistoryModal from '@/components/Modals/TradeHistoryModal';
 
 const Select = dynamic(() => import('react-select'), { ssr: false });
@@ -94,6 +95,8 @@ export default function OGFinderResults({
   const [selectedItem, setSelectedItem] = useState<OGItem | null>(null);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [loadingUserIds, setLoadingUserIds] = useState<Set<string>>(new Set());
+  const [showActionModal, setShowActionModal] = useState(false);
+  const [selectedItemForAction, setSelectedItemForAction] = useState<OGItem | null>(null);
 
   const router = useRouter();
 
@@ -116,6 +119,25 @@ export default function OGFinderResults({
   const closeHistoryModal = () => {
     setShowHistoryModal(false);
     setSelectedItem(null);
+  };
+
+  // Handler for card click - show action modal
+  const handleCardClick = (item: OGItem) => {
+    setSelectedItemForAction(item);
+    setShowActionModal(true);
+  };
+
+  // Handler for viewing trade history from modal
+  const handleViewTradeHistory = () => {
+    if (selectedItemForAction) {
+      handleItemClick(selectedItemForAction);
+    }
+  };
+
+  // Handler for closing action modal
+  const closeActionModal = () => {
+    setShowActionModal(false);
+    setSelectedItemForAction(null);
   };
 
   // Load Select component
@@ -903,8 +925,8 @@ export default function OGFinderResults({
                 return (
                   <div
                     key={item.id}
-                    className="relative flex min-h-[400px] cursor-pointer flex-col rounded-lg border-2 border-gray-800 bg-gray-700 p-3 text-white transition-all duration-200 hover:scale-105 hover:shadow-lg"
-                    onClick={() => handleItemClick(item)}
+                    className="relative flex min-h-[400px] cursor-pointer flex-col rounded-lg border-2 border-gray-800 bg-gray-700 p-3 text-white transition-all duration-200 hover:border-gray-600 hover:shadow-lg"
+                    onClick={() => handleCardClick(item)}
                   >
                     {/* Duplicate Indicator */}
                     {isDuplicate && (
@@ -989,13 +1011,59 @@ export default function OGFinderResults({
                     <div className="flex flex-1 flex-col justify-center space-y-2 text-center">
                       <div>
                         <div className="text-sm opacity-90">MONTHLY TRADED</div>
-                        <div className="text-xl font-bold">{item.timesTraded.toLocaleString()}</div>
+                        <Tooltip
+                          title={item.timesTraded.toString()}
+                          placement="top"
+                          arrow
+                          slotProps={{
+                            tooltip: {
+                              sx: {
+                                backgroundColor: '#0F1419',
+                                color: '#D3D9D4',
+                                fontSize: '0.75rem',
+                                padding: '8px 12px',
+                                borderRadius: '8px',
+                                border: '1px solid #2E3944',
+                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                                '& .MuiTooltip-arrow': {
+                                  color: '#0F1419',
+                                },
+                              },
+                            },
+                          }}
+                        >
+                          <div className="cursor-help text-xl font-bold">
+                            {item.timesTraded.toLocaleString()}
+                          </div>
+                        </Tooltip>
                       </div>
                       <div>
                         <div className="text-sm opacity-90">MONTHLY UNIQUE</div>
-                        <div className="text-xl font-bold">
-                          {item.uniqueCirculation.toLocaleString()}
-                        </div>
+                        <Tooltip
+                          title={item.uniqueCirculation.toString()}
+                          placement="top"
+                          arrow
+                          slotProps={{
+                            tooltip: {
+                              sx: {
+                                backgroundColor: '#0F1419',
+                                color: '#D3D9D4',
+                                fontSize: '0.75rem',
+                                padding: '8px 12px',
+                                borderRadius: '8px',
+                                border: '1px solid #2E3944',
+                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                                '& .MuiTooltip-arrow': {
+                                  color: '#0F1419',
+                                },
+                              },
+                            },
+                          }}
+                        >
+                          <div className="cursor-help text-xl font-bold">
+                            {item.uniqueCirculation.toLocaleString()}
+                          </div>
+                        </Tooltip>
                       </div>
                       <div>
                         <div className="text-sm opacity-90">CURRENT OWNER</div>
@@ -1096,6 +1164,14 @@ export default function OGFinderResults({
             getUserDisplay={getUserDisplay}
             formatDate={formatDate}
             loadingUserIds={loadingUserIds}
+          />
+
+          {/* Item Action Modal */}
+          <ItemActionModal
+            isOpen={showActionModal}
+            onClose={closeActionModal}
+            item={selectedItemForAction}
+            onViewTradeHistory={handleViewTradeHistory}
           />
         </>
       )}
