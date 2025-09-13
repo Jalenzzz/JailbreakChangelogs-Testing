@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { RobloxUser } from '@/types';
 import Image from 'next/image';
 import { Pagination, Tooltip } from '@mui/material';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import { fetchMissingRobloxData, fetchOriginalOwnerAvatars } from '@/app/inventories/actions';
+import { fetchMissingRobloxData } from '@/app/inventories/actions';
 import {
   getItemImagePath,
   isVideoItem,
@@ -91,6 +91,10 @@ export default function OGFinderResults({
   const [localRobloxAvatars, setLocalRobloxAvatars] = useState<Record<string, string>>(
     initialRobloxAvatars || {},
   );
+
+  // Use refs to access current values without causing dependency cycles
+  const localRobloxUsersRef = useRef(localRobloxUsers);
+  const localRobloxAvatarsRef = useRef(localRobloxAvatars);
   const [selectLoaded, setSelectLoaded] = useState(false);
   const [selectedItem, setSelectedItem] = useState<OGItem | null>(null);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
@@ -154,10 +158,21 @@ export default function OGFinderResults({
     setLocalRobloxAvatars(initialRobloxAvatars || {});
   }, [initialRobloxAvatars]);
 
+  // Update refs when state changes
+  useEffect(() => {
+    localRobloxUsersRef.current = localRobloxUsers;
+  }, [localRobloxUsers]);
+
+  useEffect(() => {
+    localRobloxAvatarsRef.current = localRobloxAvatars;
+  }, [localRobloxAvatars]);
+
   const fetchMissingUserData = useCallback(
     async (userIds: string[]) => {
       // Filter out users that are already available
-      const missingIds = userIds.filter((id) => !localRobloxUsers[id] && !initialRobloxUsers?.[id]);
+      const missingIds = userIds.filter(
+        (id) => !localRobloxUsersRef.current[id] && !initialRobloxUsers?.[id],
+      );
 
       if (missingIds.length === 0) {
         return;
@@ -191,20 +206,10 @@ export default function OGFinderResults({
         });
       }
     },
-    [localRobloxUsers, initialRobloxUsers],
+    [initialRobloxUsers],
   );
 
-  const fetchOriginalOwnerAvatarsData = useCallback(async (userIds: string[]) => {
-    try {
-      const avatarData = await fetchOriginalOwnerAvatars(userIds);
-
-      if (avatarData && Object.keys(avatarData).length > 0) {
-        setLocalRobloxAvatars((prev) => ({ ...prev, ...avatarData }));
-      }
-    } catch (error) {
-      console.error('Failed to fetch original owner avatars:', error);
-    }
-  }, []);
+  // Note: fetchOriginalOwnerAvatarsData removed - avatar data is now fetched by fetchMissingUserData
 
   const getUserDisplay = useCallback(
     (userId: string): string => {
@@ -268,16 +273,10 @@ export default function OGFinderResults({
       const uniqueUserIds = [...new Set(userIdsToLoad)];
       fetchMissingUserData(uniqueUserIds);
     }
-
-    if (avatarIdsToLoad.length > 0) {
-      const uniqueAvatarIds = [...new Set(avatarIdsToLoad)];
-      fetchOriginalOwnerAvatarsData(uniqueAvatarIds);
-    }
   }, [
     selectedItem?.id,
     selectedItem?.history,
     fetchMissingUserData,
-    fetchOriginalOwnerAvatarsData,
     localRobloxUsers,
     localRobloxAvatars,
   ]);
@@ -301,64 +300,80 @@ export default function OGFinderResults({
   };
 
   // Filter and sort items
-  const filteredItems =
-    initialData?.results?.filter((item) => {
-      const matchesSearch =
-        !searchTerm ||
-        item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.categoryTitle.toLowerCase().includes(searchTerm.toLowerCase());
-
-      const matchesCategory =
-        selectedCategories.length === 0 || selectedCategories.includes(item.categoryTitle);
-
-      return matchesSearch && matchesCategory;
-    }) || [];
-
-  // Sort items
-  const sortedItems = [...filteredItems].sort((a, b) => {
-    switch (sortOrder) {
-      case 'duplicates':
-        // Group duplicates together and sort by creation date
-        const aKey = `${a.categoryTitle}-${a.title}`;
-        const bKey = `${b.categoryTitle}-${b.title}`;
-
-        // Count how many of each item exist
-        const aCount = filteredItems.filter(
-          (item) => `${item.categoryTitle}-${item.title}` === aKey,
-        ).length;
-        const bCount = filteredItems.filter(
-          (item) => `${item.categoryTitle}-${item.title}` === bKey,
-        ).length;
-
-        // Prioritize duplicates (items with count > 1) over singles
-        if (aCount > 1 && bCount === 1) return -1; // a is duplicate, b is single
-        if (aCount === 1 && bCount > 1) return 1; // a is single, b is duplicate
-
-        // If both are duplicates or both are singles, sort by category then title
-        const categoryCompare = a.categoryTitle.localeCompare(b.categoryTitle);
-        if (categoryCompare !== 0) return categoryCompare;
-        return a.title.localeCompare(b.title);
-      case 'alpha-asc':
-        return a.title.localeCompare(b.title);
-      case 'alpha-desc':
-        return b.title.localeCompare(a.title);
-      case 'traded-desc':
-        return b.timesTraded - a.timesTraded;
-      case 'unique-desc':
-        return b.uniqueCirculation - a.uniqueCirculation;
-      case 'created-asc':
-        return a.logged_at - b.logged_at;
-      case 'created-desc':
-        return b.logged_at - a.logged_at;
-
-      default:
-        return 0;
+  const filteredItems: OGItem[] = useMemo(() => {
+    if (!initialData?.results) {
+      return [];
     }
-  });
+
+    let items = initialData.results;
+
+    // Apply search filter
+    if (searchTerm.trim()) {
+      const searchLower = searchTerm.toLowerCase().trim();
+      items = items.filter((item) => {
+        // Search in item title
+        if (item.title.toLowerCase().includes(searchLower)) return true;
+
+        // Search in category title
+        if (item.categoryTitle.toLowerCase().includes(searchLower)) return true;
+
+        return false;
+      });
+    }
+
+    // Apply category filter
+    if (selectedCategories.length > 0) {
+      items = items.filter((item) => selectedCategories.includes(item.categoryTitle));
+    }
+
+    // Apply sorting
+    items = items.sort((a, b) => {
+      switch (sortOrder) {
+        case 'duplicates':
+          // Group duplicates together and sort by creation date
+          const aKey = `${a.categoryTitle}-${a.title}`;
+          const bKey = `${b.categoryTitle}-${b.title}`;
+
+          // Count how many of each item exist
+          const aCount = items.filter(
+            (item) => `${item.categoryTitle}-${item.title}` === aKey,
+          ).length;
+          const bCount = items.filter(
+            (item) => `${item.categoryTitle}-${item.title}` === bKey,
+          ).length;
+
+          // Prioritize duplicates (items with count > 1) over singles
+          if (aCount > 1 && bCount === 1) return -1; // a is duplicate, b is single
+          if (aCount === 1 && bCount > 1) return 1; // a is single, b is duplicate
+
+          // If both are duplicates or both are singles, sort by category then title
+          const categoryCompare = a.categoryTitle.localeCompare(b.categoryTitle);
+          if (categoryCompare !== 0) return categoryCompare;
+          return a.title.localeCompare(b.title);
+        case 'alpha-asc':
+          return a.title.localeCompare(b.title);
+        case 'alpha-desc':
+          return b.title.localeCompare(a.title);
+        case 'traded-desc':
+          return b.timesTraded - a.timesTraded;
+        case 'unique-desc':
+          return b.uniqueCirculation - a.uniqueCirculation;
+        case 'created-asc':
+          return a.logged_at - b.logged_at;
+        case 'created-desc':
+          return b.logged_at - a.logged_at;
+
+        default:
+          return 0;
+      }
+    });
+
+    return items;
+  }, [initialData?.results, searchTerm, selectedCategories, sortOrder]);
 
   const startIndex = (page - 1) * itemsPerPage;
-  const paginatedItems = sortedItems.slice(startIndex, startIndex + itemsPerPage);
-  const totalPages = Math.ceil(sortedItems.length / itemsPerPage);
+  const paginatedItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
 
   // Create a map to track duplicate items
   const itemCounts = useMemo(() => {
@@ -427,7 +442,7 @@ export default function OGFinderResults({
 
     // Only load users for items on the current page
     const currentPageStartIndex = (page - 1) * itemsPerPage;
-    const currentPageItems = sortedItems.slice(
+    const currentPageItems = filteredItems.slice(
       currentPageStartIndex,
       currentPageStartIndex + itemsPerPage,
     );
@@ -453,17 +468,13 @@ export default function OGFinderResults({
       fetchMissingUserData(uniqueUserIds);
     }
 
-    if (avatarIdsToLoad.length > 0) {
-      const uniqueAvatarIds = [...new Set(avatarIdsToLoad)];
-      fetchOriginalOwnerAvatarsData(uniqueAvatarIds);
-    }
+    // Note: Avatar data is already fetched by fetchMissingUserData above
   }, [
     initialData?.results,
     page,
     itemsPerPage,
-    sortedItems,
+    filteredItems,
     fetchMissingUserData,
-    fetchOriginalOwnerAvatarsData,
     localRobloxUsers,
     localRobloxAvatars,
   ]);
