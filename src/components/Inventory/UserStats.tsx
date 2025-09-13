@@ -8,6 +8,9 @@ import { useEffect, useState } from 'react';
 import { useRealTimeRelativeDate } from '@/hooks/useRealTimeRelativeDate';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { useScanWebSocket } from '@/hooks/useScanWebSocket';
+import { DiscordIcon } from '@/components/Icons/DiscordIcon';
+import { RobloxIcon } from '@/components/Icons/RobloxIcon';
+import { UserConnectionData } from '@/app/inventories/UserDataStreamer';
 import toast from 'react-hot-toast';
 
 // Helper function to parse cash value strings for totals (returns 0 for N/A)
@@ -61,6 +64,7 @@ interface UserStatsProps {
   initialData: InventoryData;
   robloxUsers: Record<string, RobloxUser>;
   robloxAvatars: Record<string, string>;
+  userConnectionData?: UserConnectionData | null;
   itemsData?: Item[];
   dupedItems?: unknown[];
   isLoadingDupes?: boolean;
@@ -166,6 +170,7 @@ export default function UserStats({
   initialData,
   robloxUsers,
   robloxAvatars,
+  userConnectionData,
   itemsData: propItemsData,
   dupedItems = [],
   isLoadingDupes = false,
@@ -363,17 +368,17 @@ export default function UserStats({
 
       {/* Roblox User Profile */}
       {initialData?.user_id && (
-        <div className="mb-6 flex flex-col gap-4 rounded-lg border border-[#37424D] bg-[#2E3944] p-4 sm:flex-row sm:items-center">
+        <div className="mb-6 flex flex-col gap-4 rounded-lg p-4 sm:flex-row sm:items-center">
           {getUserAvatar(initialData.user_id) ? (
             <Image
               src={getUserAvatar(initialData.user_id)!}
               alt="Roblox Avatar"
               width={64}
               height={64}
-              className="flex-shrink-0 rounded-full bg-[#212A31]"
+              className="flex-shrink-0 rounded-full bg-[#2E3944]"
             />
           ) : (
-            <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-[#37424D]">
+            <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-[#2E3944]">
               <svg
                 className="text-muted h-8 w-8"
                 fill="none"
@@ -396,22 +401,111 @@ export default function UserStats({
             <p className="text-muted text-sm break-words opacity-75">
               @{getUsername(initialData.user_id)}
             </p>
-            <a
-              href={`https://www.roblox.com/users/${initialData.user_id}/profile`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-1 inline-flex items-center gap-1 text-sm text-blue-300 transition-colors hover:text-blue-400"
-            >
-              View Roblox Profile
-              <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                />
-              </svg>
-            </a>
+
+            {/* Connection Icons */}
+            {userConnectionData && (
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <Tooltip
+                  title="Visit Discord Profile"
+                  placement="top"
+                  arrow
+                  slotProps={{
+                    tooltip: {
+                      sx: {
+                        backgroundColor: '#0F1419',
+                        color: '#D3D9D4',
+                        fontSize: '0.75rem',
+                        padding: '8px 12px',
+                        borderRadius: '8px',
+                        border: '1px solid #2E3944',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                        '& .MuiTooltip-arrow': {
+                          color: '#0F1419',
+                        },
+                      },
+                    },
+                  }}
+                >
+                  <a
+                    href={`https://discord.com/users/${userConnectionData.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-muted flex items-center gap-2 rounded-full bg-gray-600 px-3 py-1.5 transition-colors hover:bg-gray-500"
+                  >
+                    <DiscordIcon className="h-4 w-4 flex-shrink-0 text-[#5865F2]" />
+                    <span className="text-sm font-medium">Discord</span>
+                  </a>
+                </Tooltip>
+
+                <Tooltip
+                  title="Visit Roblox Profile"
+                  placement="top"
+                  arrow
+                  slotProps={{
+                    tooltip: {
+                      sx: {
+                        backgroundColor: '#0F1419',
+                        color: '#D3D9D4',
+                        fontSize: '0.75rem',
+                        padding: '8px 12px',
+                        borderRadius: '8px',
+                        border: '1px solid #2E3944',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                        '& .MuiTooltip-arrow': {
+                          color: '#0F1419',
+                        },
+                      },
+                    },
+                  }}
+                >
+                  <a
+                    href={`https://www.roblox.com/users/${initialData.user_id}/profile`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-muted flex items-center gap-2 rounded-full bg-gray-600 px-3 py-1.5 transition-colors hover:bg-gray-500"
+                  >
+                    <RobloxIcon className="h-4 w-4 flex-shrink-0" />
+                    <span className="text-sm font-medium">Roblox</span>
+                  </a>
+                </Tooltip>
+
+                <Tooltip
+                  title="Visit Website Profile"
+                  placement="top"
+                  arrow
+                  slotProps={{
+                    tooltip: {
+                      sx: {
+                        backgroundColor: '#0F1419',
+                        color: '#D3D9D4',
+                        fontSize: '0.75rem',
+                        padding: '8px 12px',
+                        borderRadius: '8px',
+                        border: '1px solid #2E3944',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                        '& .MuiTooltip-arrow': {
+                          color: '#0F1419',
+                        },
+                      },
+                    },
+                  }}
+                >
+                  <Link
+                    href={`/users/${userConnectionData.id}`}
+                    className="text-muted flex items-center gap-2 rounded-full bg-gray-600 px-3 py-1.5 transition-colors hover:bg-gray-500"
+                  >
+                    <Image
+                      src="https://assets.jailbreakchangelogs.xyz/assets/logos/JBCL_Short_Transparent.webp"
+                      alt="JBCL Logo"
+                      width={16}
+                      height={16}
+                      className="h-4 w-4 flex-shrink-0"
+                    />
+                    <span className="text-sm font-medium">Website Profile</span>
+                  </Link>
+                </Tooltip>
+              </div>
+            )}
           </div>
 
           {/* Scan Button or Login Prompt */}
@@ -539,7 +633,7 @@ export default function UserStats({
             </div>
           ) : (
             <div className="mt-4">
-              <div className="rounded-lg border border-[#37424D] bg-[#212A31] p-4">
+              <div className="rounded-lg border border-[#37424D] bg-[#2E3944] p-4">
                 <div className="flex items-start gap-3">
                   <div className="flex-shrink-0">
                     <svg

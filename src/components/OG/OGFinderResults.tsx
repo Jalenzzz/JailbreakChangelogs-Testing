@@ -2,10 +2,13 @@
 
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { RobloxUser } from '@/types';
 import Image from 'next/image';
 import { Pagination, Tooltip } from '@mui/material';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { DiscordIcon } from '@/components/Icons/DiscordIcon';
+import { RobloxIcon } from '@/components/Icons/RobloxIcon';
 import { fetchMissingRobloxData } from '@/app/inventories/actions';
 import {
   getItemImagePath,
@@ -56,11 +59,20 @@ interface OGSearchData {
   count: number;
 }
 
+interface UserConnectionData {
+  id: string;
+  username: string;
+  global_name: string;
+  roblox_id: string | null;
+  roblox_username?: string;
+}
+
 interface OGFinderResultsProps {
   initialData?: OGSearchData;
   robloxId: string;
   robloxUsers?: Record<string, RobloxUser>;
   robloxAvatars?: Record<string, string>;
+  userConnectionData?: UserConnectionData | null;
   error?: string;
 }
 
@@ -69,6 +81,7 @@ export default function OGFinderResults({
   robloxId,
   robloxUsers: initialRobloxUsers,
   robloxAvatars: initialRobloxAvatars,
+  userConnectionData,
   error,
 }: OGFinderResultsProps) {
   const [searchId, setSearchId] = useState(robloxId || '');
@@ -565,22 +578,124 @@ export default function OGFinderResults({
                 <p className="text-muted text-sm break-words opacity-75">
                   @{getUsername(robloxId)}
                 </p>
-                <a
-                  href={`https://www.roblox.com/users/${robloxId}/profile`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-1 inline-flex items-center gap-1 text-sm text-blue-300 transition-colors hover:text-blue-400"
-                >
-                  View Roblox Profile
-                  <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                    />
-                  </svg>
-                </a>
+
+                {/* Connection Icons */}
+                {userConnectionData && (
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <Tooltip
+                      title="Visit Discord Profile"
+                      placement="top"
+                      arrow
+                      slotProps={{
+                        tooltip: {
+                          sx: {
+                            backgroundColor: '#0F1419',
+                            color: '#D3D9D4',
+                            fontSize: '0.75rem',
+                            padding: '8px 12px',
+                            borderRadius: '8px',
+                            border: '1px solid #2E3944',
+                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                            '& .MuiTooltip-arrow': {
+                              color: '#0F1419',
+                            },
+                          },
+                        },
+                      }}
+                    >
+                      <a
+                        href={`https://discord.com/users/${userConnectionData.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-muted flex items-center gap-2 rounded-full bg-gray-600 px-3 py-1.5 transition-colors hover:bg-gray-500"
+                      >
+                        <DiscordIcon className="h-4 w-4 flex-shrink-0 text-[#5865F2]" />
+                        <span className="text-sm font-medium">Discord</span>
+                      </a>
+                    </Tooltip>
+
+                    <Tooltip
+                      title="Visit Roblox Profile"
+                      placement="top"
+                      arrow
+                      slotProps={{
+                        tooltip: {
+                          sx: {
+                            backgroundColor: '#0F1419',
+                            color: '#D3D9D4',
+                            fontSize: '0.75rem',
+                            padding: '8px 12px',
+                            borderRadius: '8px',
+                            border: '1px solid #2E3944',
+                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                            '& .MuiTooltip-arrow': {
+                              color: '#0F1419',
+                            },
+                          },
+                        },
+                      }}
+                    >
+                      <a
+                        href={`https://www.roblox.com/users/${robloxId}/profile`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-muted flex items-center gap-2 rounded-full bg-gray-600 px-3 py-1.5 transition-colors hover:bg-gray-500"
+                      >
+                        <RobloxIcon className="h-4 w-4 flex-shrink-0" />
+                        <span className="text-sm font-medium">Roblox</span>
+                      </a>
+                    </Tooltip>
+
+                    <Tooltip
+                      title="Visit Website Profile"
+                      placement="top"
+                      arrow
+                      slotProps={{
+                        tooltip: {
+                          sx: {
+                            backgroundColor: '#0F1419',
+                            color: '#D3D9D4',
+                            fontSize: '0.75rem',
+                            padding: '8px 12px',
+                            borderRadius: '8px',
+                            border: '1px solid #2E3944',
+                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                            '& .MuiTooltip-arrow': {
+                              color: '#0F1419',
+                            },
+                          },
+                        },
+                      }}
+                    >
+                      <Link
+                        href={`/users/${userConnectionData.id}`}
+                        className="text-muted flex items-center gap-2 rounded-full bg-gray-600 px-3 py-1.5 transition-colors hover:bg-gray-500"
+                      >
+                        <Image
+                          src="https://assets.jailbreakchangelogs.xyz/assets/logos/JBCL_Short_Transparent.webp"
+                          alt="JBCL Logo"
+                          width={16}
+                          height={16}
+                          className="h-4 w-4 flex-shrink-0"
+                        />
+                        <span className="text-sm font-medium">Website Profile</span>
+                      </Link>
+                    </Tooltip>
+                  </div>
+                )}
+
+                {/* Show standalone Roblox button when no connection data */}
+                {!userConnectionData && (
+                  <a
+                    href={`https://www.roblox.com/users/${robloxId}/profile`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-muted mt-3 inline-flex items-center gap-2 rounded-full bg-gray-600 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-gray-500"
+                  >
+                    <RobloxIcon className="h-4 w-4 flex-shrink-0" />
+                    Roblox
+                  </a>
+                )}
               </div>
             </div>
 

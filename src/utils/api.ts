@@ -223,6 +223,52 @@ export async function fetchUserByIdForMetadata(id: string) {
   }
 }
 
+export async function fetchUserByRobloxId(robloxId: string) {
+  try {
+    const response = await fetch(`${BASE_API_URL}/users/get/roblox?id=${robloxId}&nocache=true`);
+    const data = await response.json();
+
+    if (!response.ok) {
+      // Handle banned users specifically without logging the error response
+      if (response.status === 403) {
+        const errorMessage = data.detail || 'This user is banned from Jailbreak Changelogs.';
+        throw new Error(`BANNED_USER: ${errorMessage}`);
+      }
+
+      // Log error response for other types of errors
+      console.error('Error response:', {
+        status: response.status,
+        statusText: response.statusText,
+        data: JSON.stringify(data, null, 2),
+      });
+
+      if (data.detail) {
+        throw new Error(
+          `Failed to fetch user: ${response.status} - ${JSON.stringify(data.detail)}`,
+        );
+      }
+      throw new Error(`Failed to fetch user: ${response.status}`);
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching user by Roblox ID:', error);
+
+    // Re-throw BANNED_USER errors so calling code can handle them
+    if (
+      error &&
+      typeof error === 'object' &&
+      'message' in error &&
+      typeof error.message === 'string' &&
+      error.message.startsWith('BANNED_USER:')
+    ) {
+      throw error;
+    }
+
+    return null;
+  }
+}
+
 export const fetchUsersForList = async () => {
   const fields = [
     'id',

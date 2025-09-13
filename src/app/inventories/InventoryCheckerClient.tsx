@@ -6,6 +6,7 @@ import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { fetchMissingRobloxData, fetchOriginalOwnerAvatars } from './actions';
 import { fetchItems, fetchDupeFinderData } from '@/utils/api';
 import { RobloxUser, Item } from '@/types';
+import { UserConnectionData } from './UserDataStreamer';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { useScanWebSocket } from '@/hooks/useScanWebSocket';
 import toast from 'react-hot-toast';
@@ -59,6 +60,7 @@ interface InventoryCheckerClientProps {
   originalSearchTerm?: string;
   robloxUsers?: Record<string, RobloxUser>;
   robloxAvatars?: Record<string, string>;
+  userConnectionData?: UserConnectionData | null;
   error?: string;
   isLoading?: boolean;
 }
@@ -69,6 +71,7 @@ export default function InventoryCheckerClient({
   originalSearchTerm,
   robloxUsers: initialRobloxUsers,
   robloxAvatars: initialRobloxAvatars,
+  userConnectionData,
   error,
   isLoading: externalIsLoading,
 }: InventoryCheckerClientProps) {
@@ -748,6 +751,7 @@ export default function InventoryCheckerClient({
             initialData={initialData}
             robloxUsers={robloxUsers}
             robloxAvatars={robloxAvatars}
+            userConnectionData={userConnectionData}
             itemsData={itemsData}
             dupedItems={dupedItems}
             isLoadingDupes={isLoadingDupes}

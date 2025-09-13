@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { fetchRobloxUsersBatch, fetchRobloxAvatars } from '@/utils/api';
+import { fetchRobloxUsersBatch, fetchRobloxAvatars, fetchUserByRobloxId } from '@/utils/api';
 import InventoryCheckerClient from './InventoryCheckerClient';
 import { RobloxUser } from '@/types';
 
@@ -38,6 +38,14 @@ interface InventoryData {
   scan_count: number;
   created_at: number;
   updated_at: number;
+}
+
+export interface UserConnectionData {
+  id: string;
+  username: string;
+  global_name: string;
+  roblox_id: string | null;
+  roblox_username?: string;
 }
 
 interface UserDataStreamerProps {
@@ -231,8 +239,8 @@ async function UserDataFetcher({ robloxId, inventoryData }: UserDataStreamerProp
     );
   }
 
-  // Fetch all user data and avatars in parallel
-  const [allUserData, allAvatarData] = await Promise.all([
+  // Fetch all user data, avatars, and main user connection data in parallel
+  const [allUserData, allAvatarData, userConnectionData] = await Promise.all([
     fetchRobloxUsersBatch(finalUserIdsArray).catch((error) => {
       console.error('Failed to fetch user data:', error);
       return {};
@@ -240,6 +248,10 @@ async function UserDataFetcher({ robloxId, inventoryData }: UserDataStreamerProp
     fetchRobloxAvatars(finalUserIdsArray).catch((error) => {
       console.error('Failed to fetch avatar data:', error);
       return {};
+    }),
+    fetchUserByRobloxId(robloxId).catch((error) => {
+      console.error('Failed to fetch user connection data:', error);
+      return null;
     }),
   ]);
 
@@ -296,6 +308,7 @@ async function UserDataFetcher({ robloxId, inventoryData }: UserDataStreamerProp
       robloxId={robloxId}
       robloxUsers={robloxUsers}
       robloxAvatars={robloxAvatars}
+      userConnectionData={userConnectionData}
     />
   );
 }

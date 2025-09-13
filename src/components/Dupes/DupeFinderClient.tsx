@@ -10,11 +10,20 @@ import {
 import DupeFinderResults from './DupeFinderResults';
 import type { DupeFinderItem, RobloxUser } from '@/types';
 
+interface UserConnectionData {
+  id: string;
+  username: string;
+  global_name: string;
+  roblox_id: string | null;
+  roblox_username?: string;
+}
+
 interface DupeFinderClientProps {
   initialData?: DupeFinderItem[];
   robloxId?: string;
   robloxUsers?: Record<string, RobloxUser>;
   robloxAvatars?: Record<string, string>;
+  userConnectionData?: UserConnectionData | null;
   error?: string;
   isLoading?: boolean;
 }
@@ -24,6 +33,7 @@ export default function DupeFinderClient({
   robloxId,
   robloxUsers: initialRobloxUsers,
   robloxAvatars: initialRobloxAvatars,
+  userConnectionData,
   error,
   isLoading: externalIsLoading,
 }: DupeFinderClientProps) {
@@ -142,6 +152,7 @@ export default function DupeFinderClient({
           robloxId={robloxId}
           robloxUsers={localRobloxUsers}
           robloxAvatars={localRobloxAvatars}
+          userConnectionData={userConnectionData}
           error={error}
         />
       )}
