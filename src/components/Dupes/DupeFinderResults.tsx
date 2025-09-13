@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { XMarkIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import { Dialog } from '@headlessui/react';
-import { Pagination } from '@mui/material';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { Pagination, Tooltip } from '@mui/material';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import localFont from 'next/font/local';
 import { fetchMissingRobloxData, fetchOriginalOwnerAvatars } from '@/app/inventories/actions';
+import { fetchItems } from '@/utils/api';
+import { formatCurrencyValue, parseCurrencyValue } from '@/utils/currency';
 import {
   getItemImagePath,
   isVideoItem,
@@ -16,13 +17,29 @@ import {
   getVideoPath,
   handleImageError,
 } from '@/utils/images';
-import type { DupeFinderItem, RobloxUser } from '@/types';
+import type { DupeFinderItem, RobloxUser, Item } from '@/types';
+import TradeHistoryModal from '@/components/Modals/TradeHistoryModal';
 
 const Select = dynamic(() => import('react-select'), { ssr: false });
 
 const bangers = localFont({
   src: '../../../public/fonts/Bangers.ttf',
 });
+
+// Helper function to format money with precise values (matches inventory style)
+const formatPreciseMoney = (money: number) => {
+  if (money >= 1000000000) {
+    const value = Math.floor(money / 100000000) / 10;
+    return `$${value % 1 === 0 ? value.toFixed(0) : value.toFixed(1)}B`;
+  } else if (money >= 1000000) {
+    const value = Math.floor(money / 100000) / 10;
+    return `$${value % 1 === 0 ? value.toFixed(0) : value.toFixed(1)}M`;
+  } else if (money >= 1000) {
+    const value = Math.floor(money / 100) / 10;
+    return `$${value % 1 === 0 ? value.toFixed(0) : value.toFixed(1)}K`;
+  }
+  return `$${money.toLocaleString()}`;
+};
 
 interface DupeFinderResultsProps {
   initialData: DupeFinderItem[];
@@ -42,7 +59,13 @@ export default function DupeFinderResults({
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sortOrder, setSortOrder] = useState<
-    'alpha-asc' | 'alpha-desc' | 'traded-desc' | 'unique-desc' | 'created-asc' | 'created-desc'
+    | 'alpha-asc'
+    | 'alpha-desc'
+    | 'traded-desc'
+    | 'unique-desc'
+    | 'created-asc'
+    | 'created-desc'
+    | 'duplicates'
   >('created-desc');
   const [page, setPage] = useState(1);
   const [localRobloxUsers, setLocalRobloxUsers] = useState<Record<string, RobloxUser>>(
@@ -54,6 +77,11 @@ export default function DupeFinderResults({
   const [selectedItem, setSelectedItem] = useState<DupeFinderItem | null>(null);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [selectLoaded, setSelectLoaded] = useState(false);
+  const [loadingUserIds, setLoadingUserIds] = useState<Set<string>>(new Set());
+  const [itemsData, setItemsData] = useState<Item[]>([]);
+  const [totalDupedValue, setTotalDupedValue] = useState<number>(0);
+  const [isLoadingValues, setIsLoadingValues] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   const itemsPerPage = 20;
   const MAX_SEARCH_LENGTH = 50;
@@ -68,10 +96,93 @@ export default function DupeFinderResults({
     setSelectedItem(null);
   };
 
-  // Load Select component
+  // Load Select component and set client flag
   useEffect(() => {
     setSelectLoaded(true);
+    setIsClient(true);
   }, []);
+
+  // Fetch items data only for dupe items and calculate total duped value
+  useEffect(() => {
+    // Only run on client side to prevent hydration mismatch
+    if (!isClient) return;
+
+    const loadItemsData = async () => {
+      if (!initialData || initialData.length === 0) return;
+
+      try {
+        setIsLoadingValues(true);
+
+        // Get unique item IDs from dupe data
+        const itemIds = [...new Set(initialData.map((item) => item.item_id))];
+
+        // Fetch all items and filter to only the ones we need
+        const allItems = await fetchItems();
+        const relevantItems = allItems.filter((item) => itemIds.includes(item.id));
+
+        setItemsData(relevantItems);
+
+        // Calculate total duped value only for the dupe items
+        let totalDuped = 0;
+        initialData.forEach((dupeItem) => {
+          const itemData = relevantItems.find((item) => item.id === dupeItem.item_id);
+          if (!itemData) return;
+
+          let dupedValue = parseCurrencyValue(itemData.duped_value);
+
+          // If main item doesn't have duped value, check children/variants based on created date
+          if ((isNaN(dupedValue) || dupedValue <= 0) && itemData.children) {
+            // Get the year from the created date (from item info)
+            const createdAtInfo = dupeItem.info.find((info) => info.title === 'Created At');
+            const createdYear = createdAtInfo
+              ? new Date(createdAtInfo.value).getFullYear().toString()
+              : null;
+
+            // Find the child variant that matches the created year
+            const matchingChild = createdYear
+              ? itemData.children.find(
+                  (child) =>
+                    child.sub_name === createdYear &&
+                    child.data &&
+                    child.data.duped_value &&
+                    child.data.duped_value !== 'N/A' &&
+                    child.data.duped_value !== null,
+                )
+              : null;
+
+            if (matchingChild) {
+              dupedValue = parseCurrencyValue(matchingChild.data.duped_value);
+            } else {
+              // If no matching year found, fall back to first child with valid duped value
+              const childWithDupedValue = itemData.children.find(
+                (child) =>
+                  child.data &&
+                  child.data.duped_value &&
+                  child.data.duped_value !== 'N/A' &&
+                  child.data.duped_value !== null,
+              );
+
+              if (childWithDupedValue) {
+                dupedValue = parseCurrencyValue(childWithDupedValue.data.duped_value);
+              }
+            }
+          }
+
+          // Only use duped values, ignore cash values
+          if (!isNaN(dupedValue) && dupedValue > 0) {
+            totalDuped += dupedValue;
+          }
+        });
+        setTotalDupedValue(totalDuped);
+      } catch (error) {
+        console.error('Failed to fetch items data:', error);
+      } finally {
+        setIsLoadingValues(false);
+      }
+    };
+
+    loadItemsData();
+  }, [initialData, isClient]);
 
   // Update local state when props change
   useEffect(() => {
@@ -82,21 +193,45 @@ export default function DupeFinderResults({
     setLocalRobloxAvatars(initialRobloxAvatars || {});
   }, [initialRobloxAvatars]);
 
-  const fetchMissingUserData = useCallback(async (userIds: string[]) => {
-    try {
-      const { userData, avatarData } = await fetchMissingRobloxData(userIds);
+  const fetchMissingUserData = useCallback(
+    async (userIds: string[]) => {
+      // Filter out users that are already available
+      const missingIds = userIds.filter((id) => !localRobloxUsers[id] && !initialRobloxUsers?.[id]);
 
-      if (userData && Object.keys(userData).length > 0) {
-        setLocalRobloxUsers((prev) => ({ ...prev, ...userData }));
+      if (missingIds.length === 0) {
+        return;
       }
 
-      if (avatarData && Object.keys(avatarData).length > 0) {
-        setLocalRobloxAvatars((prev) => ({ ...prev, ...avatarData }));
+      try {
+        // Add only missing user IDs to loading state
+        setLoadingUserIds((prev) => {
+          const newSet = new Set(prev);
+          missingIds.forEach((id) => newSet.add(id));
+          return newSet;
+        });
+
+        const { userData, avatarData } = await fetchMissingRobloxData(missingIds);
+
+        if (userData && Object.keys(userData).length > 0) {
+          setLocalRobloxUsers((prev) => ({ ...prev, ...userData }));
+        }
+
+        if (avatarData && Object.keys(avatarData).length > 0) {
+          setLocalRobloxAvatars((prev) => ({ ...prev, ...avatarData }));
+        }
+      } catch (error) {
+        console.error('Failed to fetch missing user data:', error);
+      } finally {
+        // Remove user IDs from loading state
+        setLoadingUserIds((prev) => {
+          const newSet = new Set(prev);
+          missingIds.forEach((id) => newSet.delete(id));
+          return newSet;
+        });
       }
-    } catch (error) {
-      console.error('Failed to fetch missing user data:', error);
-    }
-  }, []);
+    },
+    [localRobloxUsers, initialRobloxUsers],
+  );
 
   const fetchOriginalOwnerAvatarsData = useCallback(async (userIds: string[]) => {
     try {
@@ -134,45 +269,13 @@ export default function DupeFinderResults({
     [localRobloxAvatars],
   );
 
-  // Progressive loading for current page items
-  useEffect(() => {
-    if (!initialData || initialData.length === 0) return;
-
-    const userIdsToLoad: string[] = [];
-    const avatarIdsToLoad: string[] = [];
-
-    initialData.forEach((item) => {
-      // Add current owner ID if missing
-      if (item.latest_owner && /^\d+$/.test(item.latest_owner)) {
-        const user = localRobloxUsers[item.latest_owner];
-        if (!user?.displayName && !user?.name) {
-          userIdsToLoad.push(item.latest_owner);
-        }
-
-        const avatar = localRobloxAvatars[item.latest_owner];
-        if (!avatar || typeof avatar !== 'string' || avatar.trim() === '') {
-          avatarIdsToLoad.push(item.latest_owner);
-        }
-      }
-    });
-
-    // Fetch missing user data if any (deduplicate arrays)
-    if (userIdsToLoad.length > 0) {
-      const uniqueUserIds = [...new Set(userIdsToLoad)];
-      fetchMissingUserData(uniqueUserIds);
-    }
-
-    if (avatarIdsToLoad.length > 0) {
-      const uniqueAvatarIds = [...new Set(avatarIdsToLoad)];
-      fetchOriginalOwnerAvatarsData(uniqueAvatarIds);
-    }
-  }, [
-    initialData,
-    fetchMissingUserData,
-    fetchOriginalOwnerAvatarsData,
-    localRobloxUsers,
-    localRobloxAvatars,
-  ]);
+  // Memoize item data lookup for better performance
+  const getItemData = useCallback(
+    (itemId: number) => {
+      return itemsData.find((dataItem) => dataItem.id === itemId);
+    },
+    [itemsData],
+  );
 
   // Progressive loading for trade history modal
   useEffect(() => {
@@ -244,45 +347,179 @@ export default function DupeFinderResults({
     });
   };
 
-  // Filter and sort data
-  const filteredData = initialData.filter((item) => {
-    const matchesSearch =
-      !searchTerm ||
-      item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.categoryTitle.toLowerCase().includes(searchTerm.toLowerCase());
+  // Filter and sort data with memoization
+  const filteredData = useMemo(() => {
+    return initialData.filter((item) => {
+      const matchesSearch =
+        !searchTerm ||
+        item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.categoryTitle.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesCategory =
-      selectedCategories.length === 0 || selectedCategories.includes(item.categoryTitle);
+      const matchesCategory =
+        selectedCategories.length === 0 || selectedCategories.includes(item.categoryTitle);
 
-    return matchesSearch && matchesCategory;
-  });
+      return matchesSearch && matchesCategory;
+    });
+  }, [initialData, searchTerm, selectedCategories]);
 
-  const sortedData = [...filteredData].sort((a, b) => {
-    switch (sortOrder) {
-      case 'alpha-asc':
-        return a.title.localeCompare(b.title);
-      case 'alpha-desc':
-        return b.title.localeCompare(a.title);
-      case 'traded-desc':
-        return b.timesTraded - a.timesTraded;
-      case 'unique-desc':
-        return b.uniqueCirculation - a.uniqueCirculation;
-      case 'created-asc':
-        return a.logged_at - b.logged_at;
-      case 'created-desc':
-        return b.logged_at - a.logged_at;
-      default:
-        return 0;
-    }
-  });
+  const sortedData = useMemo(() => {
+    return [...filteredData].sort((a, b) => {
+      switch (sortOrder) {
+        case 'duplicates':
+          // Group duplicates together and sort by creation date
+          const aKey = `${a.categoryTitle}-${a.title}`;
+          const bKey = `${b.categoryTitle}-${b.title}`;
 
-  const startIndex = (page - 1) * itemsPerPage;
-  const paginatedData = sortedData.slice(startIndex, startIndex + itemsPerPage);
-  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
+          // Count how many of each item exist
+          const aCount = filteredData.filter(
+            (item) => `${item.categoryTitle}-${item.title}` === aKey,
+          ).length;
+          const bCount = filteredData.filter(
+            (item) => `${item.categoryTitle}-${item.title}` === bKey,
+          ).length;
+
+          // Prioritize duplicates (items with count > 1) over singles
+          if (aCount > 1 && bCount === 1) return -1; // a is duplicate, b is single
+          if (aCount === 1 && bCount > 1) return 1; // a is single, b is duplicate
+
+          // If both are duplicates or both are singles, sort by category then title
+          const categoryCompare = a.categoryTitle.localeCompare(b.categoryTitle);
+          if (categoryCompare !== 0) return categoryCompare;
+          return a.title.localeCompare(b.title);
+        case 'alpha-asc':
+          return a.title.localeCompare(b.title);
+        case 'alpha-desc':
+          return b.title.localeCompare(a.title);
+        case 'traded-desc':
+          return b.timesTraded - a.timesTraded;
+        case 'unique-desc':
+          return b.uniqueCirculation - a.uniqueCirculation;
+        case 'created-asc':
+          return a.logged_at - b.logged_at;
+        case 'created-desc':
+          return b.logged_at - a.logged_at;
+        default:
+          return 0;
+      }
+    });
+  }, [filteredData, sortOrder]);
+
+  const paginatedData = useMemo(() => {
+    const startIndex = (page - 1) * itemsPerPage;
+    return sortedData.slice(startIndex, startIndex + itemsPerPage);
+  }, [sortedData, page, itemsPerPage]);
+
+  const totalPages = useMemo(() => {
+    return Math.ceil(sortedData.length / itemsPerPage);
+  }, [sortedData.length, itemsPerPage]);
+
+  // Create a map to track duplicate items
+  const itemCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    paginatedData.forEach((item) => {
+      const key = `${item.categoryTitle}-${item.title}`;
+      counts.set(key, (counts.get(key) || 0) + 1);
+    });
+    return counts;
+  }, [paginatedData]);
+
+  // Create a map to track the order of duplicates based on creation date
+  const duplicateOrders = useMemo(() => {
+    const orders = new Map<string, number>();
+
+    // Group items by name
+    const itemGroups = new Map<string, DupeFinderItem[]>();
+    paginatedData.forEach((item) => {
+      const key = `${item.categoryTitle}-${item.title}`;
+      if (!itemGroups.has(key)) {
+        itemGroups.set(key, []);
+      }
+      itemGroups.get(key)!.push(item);
+    });
+
+    // Sort each group by creation date (oldest first) and assign numbers
+    itemGroups.forEach((items) => {
+      if (items.length > 1) {
+        // Sort by creation date (oldest first)
+        const sortedItems = items.sort((a, b) => {
+          const aCreated = a.info.find((info) => info.title === 'Created At')?.value;
+          const bCreated = b.info.find((info) => info.title === 'Created At')?.value;
+
+          if (!aCreated || !bCreated) return 0;
+
+          // Parse dates in format "Nov 6, 2022"
+          const aDate = new Date(aCreated);
+          const bDate = new Date(bCreated);
+
+          // Check if dates are valid
+          if (isNaN(aDate.getTime()) || isNaN(bDate.getTime())) return 0;
+
+          return aDate.getTime() - bDate.getTime();
+        });
+
+        // Assign numbers starting from 1
+        sortedItems.forEach((item, index) => {
+          orders.set(item.id, index + 1);
+        });
+      }
+    });
+
+    return orders;
+  }, [paginatedData]);
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
+
+  // Progressive loading for current page items
+  useEffect(() => {
+    if (!initialData || initialData.length === 0) return;
+
+    const userIdsToLoad: string[] = [];
+    const avatarIdsToLoad: string[] = [];
+
+    // Only load users for items on the current page
+    const currentPageStartIndex = (page - 1) * itemsPerPage;
+    const currentPageItems = sortedData.slice(
+      currentPageStartIndex,
+      currentPageStartIndex + itemsPerPage,
+    );
+
+    currentPageItems.forEach((item) => {
+      // Add current owner ID if missing
+      if (item.latest_owner && /^\d+$/.test(item.latest_owner)) {
+        const user = localRobloxUsers[item.latest_owner];
+        if (!user?.displayName && !user?.name) {
+          userIdsToLoad.push(item.latest_owner);
+        }
+
+        const avatar = localRobloxAvatars[item.latest_owner];
+        if (!avatar || typeof avatar !== 'string' || avatar.trim() === '') {
+          avatarIdsToLoad.push(item.latest_owner);
+        }
+      }
+    });
+
+    // Fetch missing user data if any (deduplicate arrays)
+    if (userIdsToLoad.length > 0) {
+      const uniqueUserIds = [...new Set(userIdsToLoad)];
+      fetchMissingUserData(uniqueUserIds);
+    }
+
+    if (avatarIdsToLoad.length > 0) {
+      const uniqueAvatarIds = [...new Set(avatarIdsToLoad)];
+      fetchOriginalOwnerAvatarsData(uniqueAvatarIds);
+    }
+  }, [
+    initialData,
+    page,
+    itemsPerPage,
+    sortedData,
+    fetchMissingUserData,
+    fetchOriginalOwnerAvatarsData,
+    localRobloxUsers,
+    localRobloxAvatars,
+  ]);
 
   // Get unique categories
   const categories = [...new Set(initialData.map((item) => item.categoryTitle))].sort();
@@ -374,10 +611,44 @@ export default function DupeFinderResults({
         </div>
 
         {/* Stats */}
-        <div className="text-center">
-          <div className="text-muted text-sm">Dupe Items Found</div>
-          <div className="text-2xl font-bold text-[#ef4444]">
-            {initialData.length?.toLocaleString()}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="rounded-lg border border-[#37424D] bg-[#2E3944] p-4 text-center">
+            <div className="text-muted mb-2 text-sm">Dupe Items Found</div>
+            <div className="text-2xl font-bold text-[#ef4444]">
+              {initialData.length?.toLocaleString()}
+            </div>
+          </div>
+          <div className="rounded-lg border border-[#37424D] bg-[#2E3944] p-4 text-center">
+            <div className="text-muted mb-2 text-sm">Total Duped Value</div>
+            {!isClient || isLoadingValues ? (
+              <div className="animate-pulse text-2xl font-bold text-gray-400">Loading...</div>
+            ) : (
+              <Tooltip
+                title={`$${totalDupedValue.toLocaleString()}`}
+                placement="top"
+                arrow
+                slotProps={{
+                  tooltip: {
+                    sx: {
+                      backgroundColor: '#0F1419',
+                      color: '#D3D9D4',
+                      fontSize: '0.75rem',
+                      padding: '8px 12px',
+                      borderRadius: '8px',
+                      border: '1px solid #2E3944',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                      '& .MuiTooltip-arrow': {
+                        color: '#0F1419',
+                      },
+                    },
+                  },
+                }}
+              >
+                <div className="cursor-help text-2xl font-bold text-white">
+                  {formatPreciseMoney(totalDupedValue)}
+                </div>
+              </Tooltip>
+            )}
           </div>
         </div>
       </div>
@@ -543,7 +814,8 @@ export default function DupeFinderResults({
                             | 'traded-desc'
                             | 'unique-desc'
                             | 'created-asc'
-                            | 'created-desc';
+                            | 'created-desc'
+                            | 'duplicates';
                         }
                       ).value,
                     );
@@ -581,6 +853,10 @@ export default function DupeFinderResults({
                           label: 'Monthly Unique (High to Low)',
                         },
                       ],
+                    },
+                    {
+                      value: 'duplicates',
+                      label: 'Group Duplicates',
                     },
                   ]}
                   classNamePrefix="react-select"
@@ -706,12 +982,24 @@ export default function DupeFinderResults({
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {paginatedData.map((item) => {
+            const itemKey = `${item.categoryTitle}-${item.title}`;
+            const duplicateCount = itemCounts.get(itemKey) || 1;
+            const duplicateOrder = duplicateOrders.get(item.id) || 1;
+            const isDuplicate = duplicateCount > 1;
+
             return (
               <div
                 key={item.id}
                 className="relative flex min-h-[400px] cursor-pointer flex-col rounded-lg border-2 border-gray-800 bg-gray-700 p-3 text-white transition-all duration-200 hover:scale-105 hover:shadow-lg"
                 onClick={() => handleItemClick(item)}
               >
+                {/* Duplicate Indicator */}
+                {isDuplicate && (
+                  <div className="absolute -top-2 -right-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white shadow-lg">
+                    #{duplicateOrder}
+                  </div>
+                )}
+
                 {/* Title */}
                 <div className="mb-4 text-left">
                   <p className={`${bangers.className} text-md mb-1 tracking-wide text-gray-300`}>
@@ -834,9 +1122,69 @@ export default function DupeFinderResults({
                       </div>
                     </div>
                   </div>
+                  {/* Duped Value */}
+                  {(() => {
+                    const itemData = getItemData(item.item_id);
+                    if (itemData) {
+                      let dupedValue = itemData.duped_value;
+
+                      // If main item doesn't have duped value, check children/variants based on created date
+                      if ((dupedValue === null || dupedValue === 'N/A') && itemData.children) {
+                        // Get the year from the created date (from item info)
+                        const createdAtInfo = item.info.find((info) => info.title === 'Created At');
+                        const createdYear = createdAtInfo
+                          ? new Date(createdAtInfo.value).getFullYear().toString()
+                          : null;
+
+                        // Find the child variant that matches the created year
+                        const matchingChild = createdYear
+                          ? itemData.children.find(
+                              (child) =>
+                                child.sub_name === createdYear &&
+                                child.data &&
+                                child.data.duped_value &&
+                                child.data.duped_value !== 'N/A' &&
+                                child.data.duped_value !== null,
+                            )
+                          : null;
+
+                        if (matchingChild) {
+                          dupedValue = matchingChild.data.duped_value;
+                        }
+                      }
+
+                      return (
+                        <div>
+                          <div className="text-sm opacity-90">DUPED VALUE</div>
+                          <div className="text-xl font-bold text-white">
+                            {dupedValue === null || dupedValue === 'N/A'
+                              ? 'N/A'
+                              : formatCurrencyValue(parseCurrencyValue(dupedValue))}
+                          </div>
+                        </div>
+                      );
+                    }
+                    return (
+                      <div>
+                        <div className="text-sm opacity-90">DUPED VALUE</div>
+                        <div className="text-xl font-bold text-white">N/A</div>
+                      </div>
+                    );
+                  })()}
                   <div>
                     <div className="text-sm opacity-90">LOGGED ON</div>
                     <div className="text-xl font-bold">{formatDateOnly(item.logged_at)}</div>
+                  </div>
+                  <div>
+                    <div className="text-sm opacity-90">CREATED AT</div>
+                    <div className="text-xl font-bold">
+                      {(() => {
+                        const createdAtInfo = item.info.find((info) => info.title === 'Created At');
+                        return createdAtInfo
+                          ? formatDateOnly(new Date(createdAtInfo.value).getTime() / 1000)
+                          : 'N/A';
+                      })()}
+                    </div>
                   </div>
                 </div>
 
@@ -884,221 +1232,15 @@ export default function DupeFinderResults({
         )}
 
         {/* Trade History Modal */}
-        {selectedItem && (
-          <Dialog open={showHistoryModal} onClose={closeHistoryModal} className="relative z-50">
-            <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
-
-            <div className="fixed inset-0 flex items-center justify-center p-4">
-              <div className="mx-auto max-h-[80vh] w-full max-w-2xl overflow-hidden rounded-lg border border-[#2E3944] bg-[#212A31]">
-                {/* Modal Header */}
-                <div className="flex items-start justify-between gap-4 border-b border-[#2E3944] p-4 sm:items-center sm:p-6">
-                  <div className="min-w-0 flex-1">
-                    <Dialog.Title className="text-muted text-lg font-semibold sm:text-xl">
-                      Trade History
-                    </Dialog.Title>
-                    <p className="text-muted truncate text-sm opacity-75">{selectedItem.title}</p>
-                  </div>
-                  <button
-                    onClick={closeHistoryModal}
-                    className="text-muted rounded-full p-1 hover:bg-[#2E3944] hover:text-white"
-                  >
-                    <XMarkIcon className="h-6 w-6" />
-                  </button>
-                </div>
-
-                {/* Modal Content */}
-                <div className="max-h-[60vh] overflow-y-auto p-6">
-                  {selectedItem.history && selectedItem.history.length > 0 ? (
-                    <div className="space-y-4">
-                      {(() => {
-                        // Process history to show actual trades between users
-                        const history =
-                          typeof selectedItem.history === 'string'
-                            ? JSON.parse(selectedItem.history)
-                            : selectedItem.history;
-
-                        if (!Array.isArray(history) || history.length === 0) {
-                          return (
-                            <div className="py-8 text-center">
-                              <p className="text-muted">This item has no trade history.</p>
-                            </div>
-                          );
-                        }
-
-                        // Reverse the history to match inventory modal
-                        const reversedHistory = history.slice().reverse();
-
-                        // If there's only one history entry, hide it (user obtained the item)
-                        if (reversedHistory.length === 1) {
-                          return (
-                            <div className="py-8 text-center">
-                              <p className="text-muted">This item has no trade history.</p>
-                            </div>
-                          );
-                        }
-
-                        // Group history into trades between users
-                        const trades = [];
-                        for (let i = 0; i < reversedHistory.length - 1; i++) {
-                          const toUser = reversedHistory[i];
-                          const fromUser = reversedHistory[i + 1];
-
-                          trades.push({
-                            fromUser,
-                            toUser,
-                            tradeNumber: reversedHistory.length - i - 1,
-                          });
-                        }
-
-                        return (
-                          <>
-                            <div className="text-muted mb-4 flex flex-col gap-2 text-sm sm:flex-row sm:items-center sm:justify-between">
-                              <span>Total Trades: {trades.length}</span>
-                            </div>
-
-                            <div className="space-y-3">
-                              {trades.map((trade, index) => {
-                                return (
-                                  <div
-                                    key={`${trade.fromUser.UserId}-${trade.toUser.UserId}-${trade.toUser.TradeTime}`}
-                                    className={`rounded-lg border p-3 ${
-                                      index === trades.length - 1
-                                        ? 'border-[#124E66] bg-[#1A5F7A] shadow-lg'
-                                        : 'border-[#37424D] bg-[#2E3944]'
-                                    }`}
-                                  >
-                                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                                      <div className="flex items-center gap-3">
-                                        <div className="min-w-0 flex-1">
-                                          <div className="flex flex-wrap items-center gap-2">
-                                            {/* From User */}
-                                            <div className="flex items-center gap-2">
-                                              <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-[#2E3944] bg-[#212A31]">
-                                                {getUserAvatar(trade.fromUser.UserId.toString()) ? (
-                                                  <Image
-                                                    src={
-                                                      getUserAvatar(
-                                                        trade.fromUser.UserId.toString(),
-                                                      )!
-                                                    }
-                                                    alt="User Avatar"
-                                                    width={24}
-                                                    height={24}
-                                                    className="rounded-full"
-                                                  />
-                                                ) : (
-                                                  <svg
-                                                    className="text-muted h-3 w-3"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    viewBox="0 0 24 24"
-                                                  >
-                                                    <path
-                                                      strokeLinecap="round"
-                                                      strokeLinejoin="round"
-                                                      strokeWidth={2}
-                                                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                                    />
-                                                  </svg>
-                                                )}
-                                              </div>
-                                              <a
-                                                href={`https://www.roblox.com/users/${trade.fromUser.UserId}/profile`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="truncate font-medium text-blue-300 transition-colors hover:text-blue-400 hover:underline"
-                                              >
-                                                {getUserDisplay(trade.fromUser.UserId.toString()) ||
-                                                  `User ${trade.fromUser.UserId}`}
-                                              </a>
-                                            </div>
-
-                                            {/* Arrow */}
-                                            <div className="text-muted flex items-center gap-1">
-                                              <svg
-                                                className="h-4 w-4"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                              >
-                                                <path
-                                                  strokeLinecap="round"
-                                                  strokeLinejoin="round"
-                                                  strokeWidth={2}
-                                                  d="M13 7l5 5m0 0l-5 5m5-5H6"
-                                                />
-                                              </svg>
-                                              <span className="text-xs">
-                                                Trade #{trade.tradeNumber}
-                                              </span>
-                                            </div>
-
-                                            {/* To User */}
-                                            <div className="flex items-center gap-2">
-                                              <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-[#2E3944] bg-[#212A31]">
-                                                {getUserAvatar(trade.toUser.UserId.toString()) ? (
-                                                  <Image
-                                                    src={
-                                                      getUserAvatar(trade.toUser.UserId.toString())!
-                                                    }
-                                                    alt="User Avatar"
-                                                    width={24}
-                                                    height={24}
-                                                    className="rounded-full"
-                                                  />
-                                                ) : (
-                                                  <svg
-                                                    className="text-muted h-3 w-3"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    viewBox="0 0 24 24"
-                                                  >
-                                                    <path
-                                                      strokeLinecap="round"
-                                                      strokeLinejoin="round"
-                                                      strokeWidth={2}
-                                                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                                    />
-                                                  </svg>
-                                                )}
-                                              </div>
-                                              <a
-                                                href={`https://www.roblox.com/users/${trade.toUser.UserId}/profile`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="truncate font-medium text-blue-300 transition-colors hover:text-blue-400 hover:underline"
-                                              >
-                                                {getUserDisplay(trade.toUser.UserId.toString()) ||
-                                                  `User ${trade.toUser.UserId}`}
-                                              </a>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-
-                                      {/* Trade Date */}
-                                      <div className="text-muted flex-shrink-0 text-sm">
-                                        {formatDate(trade.toUser.TradeTime)}
-                                      </div>
-                                    </div>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </>
-                        );
-                      })()}
-                    </div>
-                  ) : (
-                    <div className="py-8 text-center">
-                      <p className="text-muted">This item has no trade history.</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </Dialog>
-        )}
+        <TradeHistoryModal
+          isOpen={showHistoryModal}
+          onClose={closeHistoryModal}
+          item={selectedItem}
+          getUserAvatar={getUserAvatar}
+          getUserDisplay={getUserDisplay}
+          formatDate={formatDate}
+          loadingUserIds={loadingUserIds}
+        />
       </div>
     </div>
   );

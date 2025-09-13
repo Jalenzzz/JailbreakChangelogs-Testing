@@ -185,7 +185,7 @@ async function OGFinderDataFetcher({ robloxId }: { robloxId: string }) {
     );
   }
 
-  // Get the main user's data
+  // Get the main user's data (the one being searched)
   const mainUserData = await fetchRobloxUsersBatch([actualRobloxId]).catch((error) => {
     console.error('Failed to fetch main user data:', error);
     return {};

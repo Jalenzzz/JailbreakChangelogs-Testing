@@ -5,8 +5,8 @@ import {
   fetchRobloxUsersBatch,
   fetchRobloxAvatars,
 } from '@/utils/api';
-import DupeFinderClient from './DupeFinderClient';
 import type { RobloxUser } from '@/types';
+import DupeFinderClient from './DupeFinderClient';
 
 interface DupeFinderDataStreamerProps {
   robloxId: string;
@@ -143,18 +143,12 @@ async function DupeFinderDataFetcher({ robloxId }: { robloxId: string }) {
   }
 
   return (
-    <Suspense
-      fallback={
-        <DupeFinderClient robloxId={actualRobloxId} initialData={result} isLoading={true} />
-      }
-    >
-      <DupeFinderClient
-        robloxId={actualRobloxId}
-        initialData={result}
-        robloxUsers={robloxUsers}
-        robloxAvatars={robloxAvatars}
-      />
-    </Suspense>
+    <DupeFinderClient
+      robloxId={actualRobloxId}
+      initialData={result}
+      robloxUsers={robloxUsers}
+      robloxAvatars={robloxAvatars}
+    />
   );
 }
 

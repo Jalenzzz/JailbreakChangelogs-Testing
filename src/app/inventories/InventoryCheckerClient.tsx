@@ -2,20 +2,14 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import { Dialog } from '@headlessui/react';
-import {
-  XMarkIcon,
-  ExclamationTriangleIcon,
-  ArrowDownIcon,
-  ArrowUpIcon,
-} from '@heroicons/react/24/outline';
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { fetchMissingRobloxData, fetchOriginalOwnerAvatars } from './actions';
-import { fetchItems } from '@/utils/api';
+import { fetchItems, fetchDupeFinderData } from '@/utils/api';
 import { RobloxUser, Item } from '@/types';
 import SearchForm from '@/components/Inventory/SearchForm';
 import UserStats from '@/components/Inventory/UserStats';
 import InventoryItems from '@/components/Inventory/InventoryItems';
+import TradeHistoryModal from '@/components/Modals/TradeHistoryModal';
 
 interface TradeHistoryEntry {
   UserId: number;
@@ -88,7 +82,8 @@ export default function InventoryCheckerClient({
   const [robloxAvatars, setRobloxAvatars] = useState(initialRobloxAvatars || {});
   const [itemsData, setItemsData] = useState<Item[]>([]);
   const [loadingUserIds, setLoadingUserIds] = useState<Set<string>>(new Set());
-  const [tradeSortOrder, setTradeSortOrder] = useState<'newest' | 'oldest'>('newest');
+  const [dupedItems, setDupedItems] = useState<unknown[]>([]);
+  const [isLoadingDupes, setIsLoadingDupes] = useState(false);
 
   const router = useRouter();
 
@@ -228,6 +223,31 @@ export default function InventoryCheckerClient({
       loadItemsData();
     }
   }, [initialData]);
+
+  // Load duped items data
+  useEffect(() => {
+    const loadDupedItems = async () => {
+      if (!robloxId) return;
+
+      try {
+        setIsLoadingDupes(true);
+        const dupeData = await fetchDupeFinderData(robloxId);
+
+        if (dupeData && !dupeData.error && Array.isArray(dupeData)) {
+          setDupedItems(dupeData);
+        } else {
+          setDupedItems([]);
+        }
+      } catch (error) {
+        console.error('Failed to fetch duped items:', error);
+        setDupedItems([]);
+      } finally {
+        setIsLoadingDupes(false);
+      }
+    };
+
+    loadDupedItems();
+  }, [robloxId]);
 
   // Progressive loading for trade history users and missing original owners
   const loadPageData = useCallback(
@@ -444,19 +464,39 @@ export default function InventoryCheckerClient({
     setSelectedItem(null);
   };
 
-  const toggleTradeSortOrder = () => {
-    setTradeSortOrder((prev) => (prev === 'newest' ? 'oldest' : 'newest'));
-  };
-
   if (isLoading || externalIsLoading) {
     return (
-      <SearchForm
-        searchId={searchId}
-        setSearchId={setSearchId}
-        handleSearch={handleSearch}
-        isLoading={isLoading}
-        externalIsLoading={externalIsLoading || false}
-      />
+      <div className="space-y-6">
+        {/* Search Form */}
+        <SearchForm
+          searchId={searchId}
+          setSearchId={setSearchId}
+          handleSearch={handleSearch}
+          isLoading={isLoading}
+          externalIsLoading={externalIsLoading || false}
+        />
+
+        {/* Loading Skeleton for User Data */}
+        <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6 shadow-sm">
+          <div className="animate-pulse space-y-4">
+            <div className="flex items-center gap-4">
+              <div className="h-16 w-16 rounded-full bg-gray-600"></div>
+              <div className="flex-1">
+                <div className="mb-2 h-6 w-32 rounded bg-gray-600"></div>
+                <div className="h-4 w-24 rounded bg-gray-600"></div>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="text-center">
+                  <div className="mb-2 h-8 animate-pulse rounded bg-gray-600"></div>
+                  <div className="mx-auto h-4 w-16 animate-pulse rounded bg-gray-600"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
     );
   }
 
@@ -497,6 +537,8 @@ export default function InventoryCheckerClient({
             robloxUsers={robloxUsers}
             robloxAvatars={robloxAvatars}
             itemsData={itemsData}
+            dupedItems={dupedItems}
+            isLoadingDupes={isLoadingDupes}
           />
 
           {/* Inventory Items */}
@@ -510,264 +552,15 @@ export default function InventoryCheckerClient({
           />
 
           {/* Trade History Modal */}
-          {selectedItem && (
-            <Dialog open={showHistoryModal} onClose={closeHistoryModal} className="relative z-50">
-              <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
-
-              <div className="fixed inset-0 flex items-center justify-center p-4">
-                <div className="mx-auto max-h-[80vh] w-full max-w-2xl overflow-hidden rounded-lg border border-[#2E3944] bg-[#212A31]">
-                  {/* Modal Header */}
-                  <div className="border-b border-[#2E3944] p-4 sm:p-6">
-                    <div className="flex items-start justify-between gap-4 sm:items-center">
-                      <div className="min-w-0 flex-1">
-                        <Dialog.Title className="text-muted text-lg font-semibold sm:text-xl">
-                          Trade History
-                        </Dialog.Title>
-                        <p className="text-muted truncate text-sm opacity-75">
-                          {selectedItem.title} ({selectedItem.categoryTitle})
-                        </p>
-                        {selectedItem.history && selectedItem.history.length > 1 && (
-                          <p className="text-muted mt-1 text-xs opacity-75">
-                            Total Trades: {selectedItem.history.length - 1}
-                          </p>
-                        )}
-                      </div>
-                      <button
-                        onClick={closeHistoryModal}
-                        className="text-muted rounded-full p-1 hover:bg-[#2E3944] hover:text-white"
-                      >
-                        <XMarkIcon className="h-6 w-6" />
-                      </button>
-                    </div>
-                    {/* Sort button - below on mobile, inline on desktop */}
-                    {selectedItem.history && selectedItem.history.length > 1 && (
-                      <div className="mt-3 flex justify-start">
-                        <button
-                          onClick={toggleTradeSortOrder}
-                          className="flex items-center gap-1 rounded-lg border border-[#2E3944] bg-[#37424D] px-3 py-1.5 text-sm text-white transition-colors hover:bg-[#2E3944]"
-                        >
-                          {tradeSortOrder === 'newest' ? (
-                            <ArrowDownIcon className="h-4 w-4" />
-                          ) : (
-                            <ArrowUpIcon className="h-4 w-4" />
-                          )}
-                          {tradeSortOrder === 'newest' ? 'Newest First' : 'Oldest First'}
-                        </button>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Modal Content */}
-                  <div className="max-h-[60vh] overflow-y-auto p-6">
-                    {selectedItem.history && selectedItem.history.length > 0 ? (
-                      <div className="space-y-4">
-                        {(() => {
-                          // Process history to show actual trades between users
-                          const history = selectedItem.history.slice().reverse();
-
-                          // If there's only one history entry, hide it (user obtained the item)
-                          if (history.length === 1) {
-                            return (
-                              <div className="py-8 text-center">
-                                <p className="text-muted">This item has no trade history.</p>
-                              </div>
-                            );
-                          }
-
-                          // Group history into trades between users
-                          const trades = [];
-                          for (let i = 0; i < history.length - 1; i++) {
-                            const toUser = history[i];
-                            const fromUser = history[i + 1];
-                            trades.push({
-                              fromUser,
-                              toUser,
-                              tradeNumber: history.length - i - 1,
-                            });
-                          }
-
-                          // Sort trades based on sort order
-                          const sortedTrades = [...trades].sort((a, b) => {
-                            const dateA = a.toUser.TradeTime;
-                            const dateB = b.toUser.TradeTime;
-                            return tradeSortOrder === 'newest' ? dateB - dateA : dateA - dateB;
-                          });
-
-                          return (
-                            <>
-                              {loadingUserIds.size > 0 && (
-                                <div className="mb-4 flex items-center justify-center gap-2 text-blue-400">
-                                  <svg
-                                    className="h-4 w-4 animate-spin"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <circle
-                                      className="opacity-25"
-                                      cx="12"
-                                      cy="12"
-                                      r="10"
-                                      stroke="currentColor"
-                                      strokeWidth="4"
-                                    ></circle>
-                                    <path
-                                      className="opacity-75"
-                                      fill="currentColor"
-                                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                    ></path>
-                                  </svg>
-                                  <span className="text-sm">Loading user profiles...</span>
-                                </div>
-                              )}
-
-                              <div className="space-y-3">
-                                {sortedTrades.map((trade, index) => {
-                                  return (
-                                    <div
-                                      key={`${trade.fromUser.UserId}-${trade.toUser.UserId}-${trade.toUser.TradeTime}`}
-                                      className={`rounded-lg border p-3 ${
-                                        (tradeSortOrder === 'newest' && index === 0) ||
-                                        (tradeSortOrder === 'oldest' &&
-                                          index === sortedTrades.length - 1)
-                                          ? 'border-[#124E66] bg-[#1A5F7A] shadow-lg'
-                                          : 'border-[#37424D] bg-[#2E3944]'
-                                      }`}
-                                    >
-                                      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                                        <div className="flex items-center gap-3">
-                                          <div className="min-w-0 flex-1">
-                                            <div className="flex flex-wrap items-center gap-2">
-                                              {/* From User */}
-                                              <div className="flex items-center gap-2">
-                                                <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-[#2E3944] bg-[#212A31]">
-                                                  {getUserAvatar(
-                                                    trade.fromUser.UserId.toString(),
-                                                  ) ? (
-                                                    <Image
-                                                      src={
-                                                        getUserAvatar(
-                                                          trade.fromUser.UserId.toString(),
-                                                        )!
-                                                      }
-                                                      alt="User Avatar"
-                                                      width={24}
-                                                      height={24}
-                                                      className="rounded-full"
-                                                    />
-                                                  ) : (
-                                                    <svg
-                                                      className="text-muted h-3 w-3"
-                                                      fill="none"
-                                                      stroke="currentColor"
-                                                      viewBox="0 0 24 24"
-                                                    >
-                                                      <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth={2}
-                                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                                      />
-                                                    </svg>
-                                                  )}
-                                                </div>
-                                                <a
-                                                  href={`https://www.roblox.com/users/${trade.fromUser.UserId}/profile`}
-                                                  target="_blank"
-                                                  rel="noopener noreferrer"
-                                                  className="truncate font-medium text-blue-300 transition-colors hover:text-blue-400 hover:underline"
-                                                >
-                                                  {getUserDisplay(trade.fromUser.UserId.toString())}
-                                                </a>
-                                              </div>
-
-                                              {/* Arrow */}
-                                              <div className="text-muted flex items-center gap-1">
-                                                <svg
-                                                  className="h-4 w-4"
-                                                  fill="none"
-                                                  stroke="currentColor"
-                                                  viewBox="0 0 24 24"
-                                                >
-                                                  <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M13 7l5 5m0 0l-5 5m5-5H6"
-                                                  />
-                                                </svg>
-                                                <span className="text-xs">
-                                                  Trade #{trade.tradeNumber}
-                                                </span>
-                                              </div>
-
-                                              {/* To User */}
-                                              <div className="flex items-center gap-2">
-                                                <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-[#2E3944] bg-[#212A31]">
-                                                  {getUserAvatar(trade.toUser.UserId.toString()) ? (
-                                                    <Image
-                                                      src={
-                                                        getUserAvatar(
-                                                          trade.toUser.UserId.toString(),
-                                                        )!
-                                                      }
-                                                      alt="User Avatar"
-                                                      width={24}
-                                                      height={24}
-                                                      className="rounded-full"
-                                                    />
-                                                  ) : (
-                                                    <svg
-                                                      className="text-muted h-3 w-3"
-                                                      fill="none"
-                                                      stroke="currentColor"
-                                                      viewBox="0 0 24 24"
-                                                    >
-                                                      <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth={2}
-                                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                                      />
-                                                    </svg>
-                                                  )}
-                                                </div>
-                                                <a
-                                                  href={`https://www.roblox.com/users/${trade.toUser.UserId}/profile`}
-                                                  target="_blank"
-                                                  rel="noopener noreferrer"
-                                                  className="truncate font-medium text-blue-300 transition-colors hover:text-blue-400 hover:underline"
-                                                >
-                                                  {getUserDisplay(trade.toUser.UserId.toString())}
-                                                </a>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-
-                                        {/* Trade Date */}
-                                        <div className="text-muted flex-shrink-0 text-sm">
-                                          {formatDate(trade.toUser.TradeTime)}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </>
-                          );
-                        })()}
-                      </div>
-                    ) : (
-                      <div className="py-8 text-center">
-                        <p className="text-muted">This item has no trade history.</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </Dialog>
-          )}
+          <TradeHistoryModal
+            isOpen={showHistoryModal}
+            onClose={closeHistoryModal}
+            item={selectedItem}
+            getUserAvatar={getUserAvatar}
+            getUserDisplay={getUserDisplay}
+            formatDate={formatDate}
+            loadingUserIds={loadingUserIds}
+          />
         </>
       )}
     </div>

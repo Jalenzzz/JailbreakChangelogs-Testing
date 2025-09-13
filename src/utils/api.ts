@@ -485,6 +485,22 @@ export async function fetchDupeFinderData(userId: string) {
   }
 }
 
+export async function fetchDuplicatesCount() {
+  try {
+    const url = `${INVENTORY_API_URL}/items/duplicates/count`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('Failed to fetch duplicates count');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error('[SERVER] Error fetching duplicates count:', err);
+    return { total_duplicates: 0, total_duplicates_str: '0' };
+  }
+}
+
 export async function fetchLatestSeason() {
   try {
     const response = await fetch(`${BASE_API_URL}/seasons/latest`);

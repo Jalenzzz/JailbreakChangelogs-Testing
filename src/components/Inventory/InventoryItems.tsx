@@ -189,6 +189,41 @@ export default function InventoryItems({
     setPage(1);
   }, [searchTerm, showOnlyOriginal, selectedCategories, sortOrder]);
 
+  // Helper function to get duped value for an item using DupeFinder logic
+  const getDupedValueForItem = useCallback(
+    (itemData: Item, inventoryItem: InventoryItem): number => {
+      let dupedValue = parseDupedValueForTotal(itemData.duped_value);
+
+      // If main item doesn't have duped value, check children/variants based on created date
+      if ((isNaN(dupedValue) || dupedValue <= 0) && itemData.children) {
+        // Get the year from the created date (from item info)
+        const createdAtInfo = inventoryItem.info.find((info) => info.title === 'Created At');
+        const createdYear = createdAtInfo
+          ? new Date(createdAtInfo.value).getFullYear().toString()
+          : null;
+
+        // Find the child variant that matches the created year
+        const matchingChild = createdYear
+          ? itemData.children.find(
+              (child) =>
+                child.sub_name === createdYear &&
+                child.data &&
+                child.data.duped_value &&
+                child.data.duped_value !== 'N/A' &&
+                child.data.duped_value !== null,
+            )
+          : null;
+
+        if (matchingChild) {
+          dupedValue = parseDupedValueForTotal(matchingChild.data.duped_value);
+        }
+      }
+
+      return isNaN(dupedValue) ? 0 : dupedValue;
+    },
+    [],
+  );
+
   // Filter inventory items based on search term, original owner filter, and category filter
   const filteredItems = useMemo(() => {
     if (!initialData) {
@@ -237,6 +272,23 @@ export default function InventoryItems({
         case 'random':
           return Math.random() - 0.5;
         case 'duplicates':
+          // Group duplicates together and sort by creation date
+          const aKey = `${a.categoryTitle}-${a.title}`;
+          const bKey = `${b.categoryTitle}-${b.title}`;
+
+          // Count how many of each item exist
+          const aCount = items.filter(
+            (item) => `${item.categoryTitle}-${item.title}` === aKey,
+          ).length;
+          const bCount = items.filter(
+            (item) => `${item.categoryTitle}-${item.title}` === bKey,
+          ).length;
+
+          // Prioritize duplicates (items with count > 1) over singles
+          if (aCount > 1 && bCount === 1) return -1; // a is duplicate, b is single
+          if (aCount === 1 && bCount > 1) return 1; // a is single, b is duplicate
+
+          // If both are duplicates or both are singles, sort by category then title
           const categoryCompare = a.categoryTitle.localeCompare(b.categoryTitle);
           if (categoryCompare !== 0) return categoryCompare;
           return a.title.localeCompare(b.title);
@@ -274,21 +326,17 @@ export default function InventoryItems({
           const aItemDataDupedDesc = itemsData.find((item) => item.id === a.item_id);
           const bItemDataDupedDesc = itemsData.find((item) => item.id === b.item_id);
           const aDupedValueDesc = aItemDataDupedDesc
-            ? parseDupedValueForTotal(aItemDataDupedDesc.duped_value)
+            ? getDupedValueForItem(aItemDataDupedDesc, a)
             : 0;
           const bDupedValueDesc = bItemDataDupedDesc
-            ? parseDupedValueForTotal(bItemDataDupedDesc.duped_value)
+            ? getDupedValueForItem(bItemDataDupedDesc, b)
             : 0;
           return bDupedValueDesc - aDupedValueDesc;
         case 'duped-asc':
           const aItemDataDupedAsc = itemsData.find((item) => item.id === a.item_id);
           const bItemDataDupedAsc = itemsData.find((item) => item.id === b.item_id);
-          const aDupedValueAsc = aItemDataDupedAsc
-            ? parseDupedValueForTotal(aItemDataDupedAsc.duped_value)
-            : 0;
-          const bDupedValueAsc = bItemDataDupedAsc
-            ? parseDupedValueForTotal(bItemDataDupedAsc.duped_value)
-            : 0;
+          const aDupedValueAsc = aItemDataDupedAsc ? getDupedValueForItem(aItemDataDupedAsc, a) : 0;
+          const bDupedValueAsc = bItemDataDupedAsc ? getDupedValueForItem(bItemDataDupedAsc, b) : 0;
           return aDupedValueAsc - bDupedValueAsc;
 
         default:
@@ -297,7 +345,15 @@ export default function InventoryItems({
     });
 
     return items;
-  }, [initialData, searchTerm, showOnlyOriginal, selectedCategories, sortOrder, itemsData]);
+  }, [
+    initialData,
+    searchTerm,
+    showOnlyOriginal,
+    selectedCategories,
+    sortOrder,
+    itemsData,
+    getDupedValueForItem,
+  ]);
 
   // Get unique categories from the data
   const availableCategories = useMemo(() => {
@@ -310,6 +366,60 @@ export default function InventoryItems({
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const startIndex = (page - 1) * itemsPerPage;
   const paginatedItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
+
+  // Create a map to track duplicate items
+  const itemCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    paginatedItems.forEach((item) => {
+      const key = `${item.categoryTitle}-${item.title}`;
+      counts.set(key, (counts.get(key) || 0) + 1);
+    });
+    return counts;
+  }, [paginatedItems]);
+
+  // Create a map to track the order of duplicates based on creation date
+  const duplicateOrders = useMemo(() => {
+    const orders = new Map<string, number>();
+
+    // Group items by name
+    const itemGroups = new Map<string, InventoryItem[]>();
+    paginatedItems.forEach((item) => {
+      const key = `${item.categoryTitle}-${item.title}`;
+      if (!itemGroups.has(key)) {
+        itemGroups.set(key, []);
+      }
+      itemGroups.get(key)!.push(item);
+    });
+
+    // Sort each group by creation date (oldest first) and assign numbers
+    itemGroups.forEach((items) => {
+      if (items.length > 1) {
+        // Sort by creation date (oldest first)
+        const sortedItems = items.sort((a, b) => {
+          const aCreated = a.info.find((info) => info.title === 'Created At')?.value;
+          const bCreated = b.info.find((info) => info.title === 'Created At')?.value;
+
+          if (!aCreated || !bCreated) return 0;
+
+          // Parse dates in format "Nov 6, 2022"
+          const aDate = new Date(aCreated);
+          const bDate = new Date(bCreated);
+
+          // Check if dates are valid
+          if (isNaN(aDate.getTime()) || isNaN(bDate.getTime())) return 0;
+
+          return aDate.getTime() - bDate.getTime();
+        });
+
+        // Assign numbers starting from 1
+        sortedItems.forEach((item, index) => {
+          orders.set(item.id, index + 1);
+        });
+      }
+    });
+
+    return orders;
+  }, [paginatedItems]);
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -532,10 +642,7 @@ export default function InventoryItems({
                     label: 'Random',
                     options: [{ value: 'random', label: 'Random Order' }],
                   },
-                  {
-                    label: 'Duplicates',
-                    options: [{ value: 'duplicates', label: 'Group Duplicates' }],
-                  },
+                  { value: 'duplicates', label: 'Group Duplicates' },
                   {
                     label: 'Alphabetically',
                     options: [
@@ -754,6 +861,10 @@ export default function InventoryItems({
           {paginatedItems.map((item) => {
             const isOriginalOwner = item.isOriginalOwner;
             const originalOwnerInfo = item.info.find((info) => info.title === 'Original Owner');
+            const itemKey = `${item.categoryTitle}-${item.title}`;
+            const duplicateCount = itemCounts.get(itemKey) || 1;
+            const duplicateOrder = duplicateOrders.get(item.id) || 1;
+            const isDuplicate = duplicateCount > 1;
 
             return (
               <div
@@ -765,6 +876,13 @@ export default function InventoryItems({
                 }`}
                 onClick={() => onItemClick(item)}
               >
+                {/* Duplicate Indicator */}
+                {isDuplicate && (
+                  <div className="absolute -top-2 -right-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white shadow-lg">
+                    #{duplicateOrder}
+                  </div>
+                )}
+
                 {/* Title */}
                 <div className="mb-4 text-left">
                   <p className={`${bangers.className} text-md mb-1 tracking-wide text-gray-300`}>
@@ -914,9 +1032,56 @@ export default function InventoryItems({
                           <div>
                             <div className="text-sm opacity-90">DUPED VALUE</div>
                             <div className="text-xl font-bold text-white">
-                              {itemData.duped_value === null || itemData.duped_value === 'N/A'
-                                ? 'N/A'
-                                : formatCurrencyValue(parseCurrencyValue(itemData.duped_value))}
+                              {(() => {
+                                let dupedValue = itemData.duped_value;
+
+                                // If main item doesn't have duped value, check children/variants based on created date
+                                if (
+                                  (dupedValue === null || dupedValue === 'N/A') &&
+                                  itemData.children
+                                ) {
+                                  // Get the year from the created date (from item info)
+                                  const createdAtInfo = item.info.find(
+                                    (info) => info.title === 'Created At',
+                                  );
+                                  const createdYear = createdAtInfo
+                                    ? new Date(createdAtInfo.value).getFullYear().toString()
+                                    : null;
+
+                                  // Find the child variant that matches the created year
+                                  const matchingChild = createdYear
+                                    ? itemData.children.find(
+                                        (child) =>
+                                          child.sub_name === createdYear &&
+                                          child.data &&
+                                          child.data.duped_value &&
+                                          child.data.duped_value !== 'N/A' &&
+                                          child.data.duped_value !== null,
+                                      )
+                                    : null;
+
+                                  if (matchingChild) {
+                                    dupedValue = matchingChild.data.duped_value;
+                                  } else {
+                                    // If no matching year found, fall back to first child with valid duped value
+                                    const childWithDupedValue = itemData.children.find(
+                                      (child) =>
+                                        child.data &&
+                                        child.data.duped_value &&
+                                        child.data.duped_value !== 'N/A' &&
+                                        child.data.duped_value !== null,
+                                    );
+
+                                    if (childWithDupedValue) {
+                                      dupedValue = childWithDupedValue.data.duped_value;
+                                    }
+                                  }
+                                }
+
+                                return dupedValue === null || dupedValue === 'N/A'
+                                  ? 'N/A'
+                                  : formatCurrencyValue(parseCurrencyValue(dupedValue));
+                              })()}
                             </div>
                           </div>
                         </>

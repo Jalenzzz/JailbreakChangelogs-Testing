@@ -57,6 +57,8 @@ interface UserStatsProps {
   robloxUsers: Record<string, RobloxUser>;
   robloxAvatars: Record<string, string>;
   itemsData?: Item[];
+  dupedItems?: unknown[];
+  isLoadingDupes?: boolean;
 }
 
 // Gamepass mapping with links and image names
@@ -160,6 +162,8 @@ export default function UserStats({
   robloxUsers,
   robloxAvatars,
   itemsData: propItemsData,
+  dupedItems = [],
+  isLoadingDupes = false,
 }: UserStatsProps) {
   const [totalCashValue, setTotalCashValue] = useState<number>(0);
   const [totalDupedValue, setTotalDupedValue] = useState<number>(0);
@@ -197,7 +201,6 @@ export default function UserStats({
         setIsLoadingValues(true);
 
         let totalCash = 0;
-        let totalDuped = 0;
 
         // Create a map of item_id to item data for quick lookup
         const itemMap = new Map();
@@ -205,19 +208,16 @@ export default function UserStats({
           itemMap.set(item.id, item);
         });
 
-        // Calculate totals for each inventory item
+        // Calculate cash value from inventory items
         initialData.data.forEach((inventoryItem) => {
           const itemData = itemMap.get(inventoryItem.item_id);
           if (itemData) {
             const cashValue = parseCashValueForTotal(itemData.cash_value);
-            const dupedValue = parseCashValueForTotal(itemData.duped_value);
             totalCash += cashValue;
-            totalDuped += dupedValue;
           }
         });
 
         setTotalCashValue(totalCash);
-        setTotalDupedValue(totalDuped);
       } catch {
       } finally {
         setIsLoadingValues(false);
@@ -232,6 +232,73 @@ export default function UserStats({
     }
     calculateTotalValues();
   }, [initialData, propItemsData]);
+
+  // Calculate total duped value from actual duped items
+  useEffect(() => {
+    const calculateDupedValue = () => {
+      if (!propItemsData || propItemsData.length === 0 || !dupedItems || dupedItems.length === 0) {
+        setTotalDupedValue(0);
+        return;
+      }
+
+      try {
+        let totalDuped = 0;
+
+        // Create a map of item_id to item data for quick lookup
+        const itemMap = new Map();
+        propItemsData.forEach((item) => {
+          itemMap.set(item.id, item);
+        });
+
+        // Calculate duped value from actual duped items using DupeFinder logic
+        dupedItems.forEach((dupeItem) => {
+          const itemData = itemMap.get((dupeItem as { item_id: number }).item_id);
+          if (itemData) {
+            let dupedValue = parseCashValueForTotal(itemData.duped_value);
+
+            // If main item doesn't have duped value, check children/variants based on created date
+            if ((isNaN(dupedValue) || dupedValue <= 0) && itemData.children) {
+              // Get the year from the created date (from item info)
+              const createdAtInfo = (
+                dupeItem as { info: Array<{ title: string; value: string }> }
+              ).info.find((info) => info.title === 'Created At');
+              const createdYear = createdAtInfo
+                ? new Date(createdAtInfo.value).getFullYear().toString()
+                : null;
+
+              // Find the child variant that matches the created year
+              const matchingChild = createdYear
+                ? itemData.children.find(
+                    (child: { sub_name: string; data: { duped_value: string | null } }) =>
+                      child.sub_name === createdYear &&
+                      child.data &&
+                      child.data.duped_value &&
+                      child.data.duped_value !== 'N/A' &&
+                      child.data.duped_value !== null,
+                  )
+                : null;
+
+              if (matchingChild) {
+                dupedValue = parseCashValueForTotal(matchingChild.data.duped_value);
+              }
+            }
+
+            // Only use duped values, ignore cash values
+            if (!isNaN(dupedValue) && dupedValue > 0) {
+              totalDuped += dupedValue;
+            }
+          }
+        });
+
+        setTotalDupedValue(totalDuped);
+      } catch (error) {
+        console.error('Error calculating duped value:', error);
+        setTotalDupedValue(0);
+      }
+    };
+
+    calculateDupedValue();
+  }, [dupedItems, propItemsData]);
 
   return (
     <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
@@ -484,7 +551,7 @@ export default function UserStats({
         </div>
         <div className="rounded-lg border border-[#37424D] bg-[#2E3944] p-4 text-center">
           <div className="text-muted mb-2 text-sm">Total Duped Value</div>
-          {isLoadingValues ? (
+          {isLoadingValues || isLoadingDupes ? (
             <div className="animate-pulse text-2xl font-bold text-gray-400">Loading...</div>
           ) : (
             <Tooltip
