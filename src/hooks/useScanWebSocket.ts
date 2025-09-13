@@ -40,6 +40,7 @@ export function useScanWebSocket(userId: string): UseScanWebSocketReturn {
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const heartbeatIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const connectionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const scanningTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const reconnectAttemptsRef = useRef<number>(0);
   const slowmodeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const slowmodeIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -117,6 +118,18 @@ export function useScanWebSocket(userId: string): UseScanWebSocketReturn {
         ws.send(JSON.stringify({ action: 'request' }));
         setStatus('scanning');
 
+        // Start scanning timeout (1 minute)
+        scanningTimeoutRef.current = setTimeout(() => {
+          console.log('[SCAN WS] Scanning timeout - no updates received for 1 minute');
+          setError('Scanning timeout - please try again');
+          setStatus('error');
+          startSlowmode(40);
+
+          if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+            wsRef.current.close();
+          }
+        }, 60000); // 1 minute
+
         heartbeatIntervalRef.current = setInterval(() => {
           if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
             try {
@@ -139,7 +152,7 @@ export function useScanWebSocket(userId: string): UseScanWebSocketReturn {
               console.log('[SCAN WS] Max attempts reached, closing connection and resetting UI');
               setError(`${data.error} - All attempts failed`);
               setStatus('error');
-              startSlowmode(30);
+              startSlowmode(40);
 
               setTimeout(() => {
                 if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
@@ -162,7 +175,7 @@ export function useScanWebSocket(userId: string): UseScanWebSocketReturn {
           if (data.error) {
             setError(data.error);
             setStatus('error');
-            startSlowmode(30);
+            startSlowmode(40);
             return;
           }
 
@@ -172,12 +185,27 @@ export function useScanWebSocket(userId: string): UseScanWebSocketReturn {
             setStatus('scanning');
             setMessage(data.status || 'Scan requested successfully');
             setProgress(10);
+
+            // Reset scanning timeout on real progress
+            if (scanningTimeoutRef.current) {
+              clearTimeout(scanningTimeoutRef.current);
+              scanningTimeoutRef.current = setTimeout(() => {
+                console.log('[SCAN WS] Scanning timeout - no updates received for 1 minute');
+                setError('Scanning timeout - please try again');
+                setStatus('error');
+                startSlowmode(40);
+
+                if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+                  wsRef.current.close();
+                }
+              }, 60000); // 1 minute
+            }
           } else if (data.action === 'update') {
             setStatus('scanning');
             setMessage(data.message || 'Scanning in progress...');
 
             if (data.message && data.message.toLowerCase().includes('not found')) {
-              setMessage('You will be scanned when you join a trading server');
+              setMessage('You will be scanned when you join a trading server to be scanned.');
               setProgress(undefined);
 
               setTimeout(() => {
@@ -193,9 +221,39 @@ export function useScanWebSocket(userId: string): UseScanWebSocketReturn {
             } else if (data.message && data.message.toLowerCase().includes('user found')) {
               setMessage(data.message);
               setProgress(50);
+
+              // Reset scanning timeout on real progress
+              if (scanningTimeoutRef.current) {
+                clearTimeout(scanningTimeoutRef.current);
+                scanningTimeoutRef.current = setTimeout(() => {
+                  console.log('[SCAN WS] Scanning timeout - no updates received for 1 minute');
+                  setError('Scanning timeout - please try again');
+                  setStatus('error');
+                  startSlowmode(40);
+
+                  if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+                    wsRef.current.close();
+                  }
+                }, 60000); // 1 minute
+              }
             } else if (data.message && data.message.toLowerCase().includes('bot joined server')) {
               setMessage(data.message);
               setProgress(75);
+
+              // Reset scanning timeout on real progress
+              if (scanningTimeoutRef.current) {
+                clearTimeout(scanningTimeoutRef.current);
+                scanningTimeoutRef.current = setTimeout(() => {
+                  console.log('[SCAN WS] Scanning timeout - no updates received for 1 minute');
+                  setError('Scanning timeout - please try again');
+                  setStatus('error');
+                  startSlowmode(40);
+
+                  if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+                    wsRef.current.close();
+                  }
+                }, 60000); // 1 minute
+              }
             } else if (data.message && data.message.toLowerCase().includes('added to queue')) {
               const queueMessage = data.message;
               const positionMatch = queueMessage.match(/Position: (\d+)/);
@@ -223,7 +281,7 @@ export function useScanWebSocket(userId: string): UseScanWebSocketReturn {
               setMessage(formattedMessage);
               setProgress(100);
               setStatus('completed');
-              startSlowmode(30);
+              startSlowmode(40);
 
               setTimeout(() => {
                 if (wsRef.current) {
@@ -257,7 +315,13 @@ export function useScanWebSocket(userId: string): UseScanWebSocketReturn {
             setStatus('completed');
             setProgress(100);
             setMessage('Scan completed successfully!');
-            startSlowmode(30);
+            startSlowmode(40);
+
+            // Clear scanning timeout on completion
+            if (scanningTimeoutRef.current) {
+              clearTimeout(scanningTimeoutRef.current);
+              scanningTimeoutRef.current = null;
+            }
           }
         } catch (err) {
           console.error('[SCAN WS] Parse error:', err);
@@ -278,6 +342,11 @@ export function useScanWebSocket(userId: string): UseScanWebSocketReturn {
         if (heartbeatIntervalRef.current) {
           clearInterval(heartbeatIntervalRef.current);
           heartbeatIntervalRef.current = null;
+        }
+
+        if (scanningTimeoutRef.current) {
+          clearTimeout(scanningTimeoutRef.current);
+          scanningTimeoutRef.current = null;
         }
 
         if (status === 'scanning' && event.code !== 1000 && event.code !== 1001) {
@@ -354,6 +423,11 @@ export function useScanWebSocket(userId: string): UseScanWebSocketReturn {
     if (heartbeatIntervalRef.current) {
       clearInterval(heartbeatIntervalRef.current);
       heartbeatIntervalRef.current = null;
+    }
+
+    if (scanningTimeoutRef.current) {
+      clearTimeout(scanningTimeoutRef.current);
+      scanningTimeoutRef.current = null;
     }
 
     if (slowmodeTimeoutRef.current) {

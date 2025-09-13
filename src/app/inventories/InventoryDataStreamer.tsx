@@ -21,19 +21,22 @@ async function InventoryDataFetcher({ robloxId }: { robloxId: string }) {
       if (userData && userData.id) {
         actualRobloxId = userData.id.toString();
       } else {
+        const truncatedUsername =
+          robloxId.length > 50 ? `${robloxId.substring(0, 47)}...` : robloxId;
         return (
           <InventoryCheckerClient
             robloxId={robloxId}
-            error={`Username "${robloxId}" not found. Please check the spelling and try again.`}
+            error={`Username "${truncatedUsername}" not found. Please check the spelling and try again.`}
           />
         );
       }
     } catch (error) {
       console.error('Error fetching user by username:', error);
+      const truncatedUsername = robloxId.length > 50 ? `${robloxId.substring(0, 47)}...` : robloxId;
       return (
         <InventoryCheckerClient
           robloxId={robloxId}
-          error={`Failed to find user "${robloxId}". Please check the spelling and try again.`}
+          error={`Failed to find user "${truncatedUsername}". Please check the spelling and try again.`}
         />
       );
     }
