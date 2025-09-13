@@ -1,10 +1,14 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { RobloxUser, Item } from '@/types';
 import { Tooltip } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useRealTimeRelativeDate } from '@/hooks/useRealTimeRelativeDate';
+import { useAuthContext } from '@/contexts/AuthContext';
+import { useScanWebSocket } from '@/hooks/useScanWebSocket';
+import toast from 'react-hot-toast';
 
 // Helper function to parse cash value strings for totals (returns 0 for N/A)
 const parseCashValueForTotal = (value: string | null): number => {
@@ -170,9 +174,57 @@ export default function UserStats({
   const [totalDupedValue, setTotalDupedValue] = useState<number>(0);
   const [isLoadingValues, setIsLoadingValues] = useState<boolean>(true);
 
+  // Auth context and scan functionality
+  const { user, isAuthenticated, setShowLoginModal } = useAuthContext();
+  const scanWebSocket = useScanWebSocket(initialData.user_id);
+
+  // Check if current user is viewing their own inventory
+  const isOwnInventory = isAuthenticated && user?.roblox_id === initialData.user_id;
+
   // Real-time relative timestamps
   const createdRelativeTime = useRealTimeRelativeDate(initialData.created_at);
   const updatedRelativeTime = useRealTimeRelativeDate(initialData.updated_at);
+
+  // Show toast notifications for scan status
+  useEffect(() => {
+    if (
+      scanWebSocket.message &&
+      scanWebSocket.message.includes('You will be scanned when you join')
+    ) {
+      toast.success('You will be scanned when you join a trading server', {
+        duration: 4000,
+        position: 'bottom-right',
+      });
+    } else if (scanWebSocket.message && scanWebSocket.message.includes('User found in game')) {
+      toast.success('User found in game - scan in progress!', {
+        duration: 3000,
+        position: 'bottom-right',
+      });
+    } else if (scanWebSocket.message && scanWebSocket.message.includes('Bot joined server')) {
+      toast.success('Bot joined server, scanning...', {
+        duration: 3000,
+        position: 'bottom-right',
+      });
+    } else if (
+      scanWebSocket.status === 'completed' &&
+      scanWebSocket.message &&
+      scanWebSocket.message.includes('Added to queue')
+    ) {
+      toast.success(scanWebSocket.message, {
+        duration: 5000,
+        position: 'bottom-right',
+      });
+    } else if (
+      scanWebSocket.status === 'error' &&
+      scanWebSocket.error &&
+      scanWebSocket.error.includes('No bots available')
+    ) {
+      toast.error('No scan bots are currently online. Please try again later.', {
+        duration: 5000,
+        position: 'bottom-right',
+      });
+    }
+  }, [scanWebSocket.message, scanWebSocket.status, scanWebSocket.error]);
 
   // Helper function to get user display name
   const getUserDisplay = (userId: string) => {
@@ -361,6 +413,191 @@ export default function UserStats({
               </svg>
             </a>
           </div>
+
+          {/* Scan Button or Login Prompt */}
+          {isOwnInventory ? (
+            <div className="mt-4">
+              <button
+                onClick={scanWebSocket.startScan}
+                disabled={
+                  scanWebSocket.status === 'scanning' ||
+                  scanWebSocket.status === 'connecting' ||
+                  scanWebSocket.isSlowmode
+                }
+                className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                  scanWebSocket.status === 'scanning' ||
+                  scanWebSocket.status === 'connecting' ||
+                  scanWebSocket.isSlowmode
+                    ? 'cursor-progress bg-gray-600 text-gray-400'
+                    : 'bg-green-600 text-white hover:bg-green-700'
+                }`}
+              >
+                {scanWebSocket.status === 'connecting' ? (
+                  <>
+                    <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    Connecting...
+                  </>
+                ) : scanWebSocket.isSlowmode ? (
+                  <>
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    Cooldown ({scanWebSocket.slowmodeTimeLeft}s)
+                  </>
+                ) : scanWebSocket.status === 'scanning' ? (
+                  <>
+                    <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    {scanWebSocket.message && scanWebSocket.message.includes('Bot joined server')
+                      ? 'Scanning...'
+                      : scanWebSocket.message && scanWebSocket.message.includes('Retrying')
+                        ? 'Retrying...'
+                        : scanWebSocket.message &&
+                            scanWebSocket.message.includes('You will be scanned when you join')
+                          ? 'Processing...'
+                          : scanWebSocket.message || 'Processing...'}
+                  </>
+                ) : scanWebSocket.status === 'completed' ? (
+                  <>
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    Scan Complete
+                  </>
+                ) : (
+                  <>
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    Scan Inventory
+                  </>
+                )}
+              </button>
+
+              {/* Progress Bar - Only show when progress is defined */}
+              {scanWebSocket.progress !== undefined && scanWebSocket.status === 'scanning' && (
+                <div className="mt-2">
+                  <div className="mb-1 flex justify-between text-xs text-gray-400">
+                    <span>Progress</span>
+                    <span>{scanWebSocket.progress}%</span>
+                  </div>
+                  <div className="h-2 w-full rounded-full bg-gray-700">
+                    <div
+                      className="h-2 rounded-full bg-green-600 transition-all duration-300"
+                      style={{ width: `${scanWebSocket.progress}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Error Message */}
+              {scanWebSocket.error && (
+                <div className="mt-2 text-sm text-red-400">Error: {scanWebSocket.error}</div>
+              )}
+            </div>
+          ) : (
+            <div className="mt-4">
+              <div className="rounded-lg border border-[#37424D] bg-[#212A31] p-4">
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0">
+                    <svg
+                      className="mt-0.5 h-5 w-5 text-blue-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="mb-1 text-sm font-medium text-white">Want on-demand scans?</h4>
+                    <p className="mb-3 text-sm text-gray-400">
+                      {!isAuthenticated
+                        ? 'Login and connect your Roblox account to request instant inventory scans anytime.'
+                        : user?.roblox_id
+                          ? 'You can request instant inventory scans anytime from your own inventory page.'
+                          : 'Connect your Roblox account to request instant inventory scans anytime.'}
+                    </p>
+                    <div className="flex gap-2">
+                      {!isAuthenticated ? (
+                        <Link
+                          href="/faq"
+                          className="inline-flex items-center gap-1.5 rounded-md bg-[#5865F2] px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-[#4752C4]"
+                        >
+                          Learn More
+                        </Link>
+                      ) : user?.roblox_id ? (
+                        <Link
+                          href={`/inventories/${user.roblox_id}`}
+                          className="inline-flex items-center gap-1.5 rounded-md bg-[#5865F2] px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-[#4752C4]"
+                        >
+                          View My Inventory
+                        </Link>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            setShowLoginModal(true);
+                            const event = new CustomEvent('setLoginTab', { detail: 1 });
+                            window.dispatchEvent(event);
+                          }}
+                          className="inline-flex cursor-pointer items-center gap-1.5 rounded-md bg-[#FF5630] px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-[#E54B2C]"
+                        >
+                          Connect Roblox Account
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -654,12 +891,16 @@ export default function UserStats({
 
       {/* Metadata */}
       <div className="text-muted mt-4 space-y-1 text-sm">
-        <p>Scan Count: {initialData.scan_count}</p>
         <p>
-          First Scanned: {formatDate(initialData.created_at)} ({createdRelativeTime})
+          <span className="font-semibold text-white">Scan Count:</span> {initialData.scan_count}
         </p>
         <p>
-          Last Scanned: {formatDate(initialData.updated_at)} ({updatedRelativeTime})
+          <span className="font-semibold text-white">First Scanned:</span>{' '}
+          {formatDate(initialData.created_at)} ({createdRelativeTime})
+        </p>
+        <p>
+          <span className="font-semibold text-white">Last Scanned:</span>{' '}
+          {formatDate(initialData.updated_at)} ({updatedRelativeTime})
         </p>
       </div>
     </div>

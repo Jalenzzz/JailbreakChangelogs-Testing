@@ -767,7 +767,7 @@ export async function fetchInventoryData(robloxId: string) {
           (wsModule as unknown as typeof WebSocket);
         return await new Promise((resolve) => {
           console.log(`[WS] Connecting to ${INVENTORY_WS_URL} for user ${robloxId}`);
-          const socket = new WS(INVENTORY_WS_URL, {
+          const socket = new WS(`${INVENTORY_WS_URL}/socket`, {
             headers: {
               'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0',
             },
