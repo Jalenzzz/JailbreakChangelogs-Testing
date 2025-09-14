@@ -3,7 +3,6 @@
 import { useAuthContext } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import toast from 'react-hot-toast';
 
 interface OGAuthWrapperProps {
   children: React.ReactNode;
