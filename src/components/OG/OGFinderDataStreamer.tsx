@@ -186,6 +186,38 @@ async function OGFinderDataFetcher({ robloxId }: { robloxId: string }) {
     );
   }
 
+  // Filter out infinite tire stickers for specific user IDs
+  const tireStickerFilteredUsers: Record<string, string> = {
+    '371668828': 'NoobFreak', // NoobFreak (371668828) filters out NoobFreak's tire sticker
+    '159606072': 'HelloItsVG', // HelloItsVG (159606072) filters out HelloItsVG's tire sticker
+  };
+
+  if (
+    actualRobloxId in tireStickerFilteredUsers &&
+    result.results &&
+    Array.isArray(result.results)
+  ) {
+    const tireStickerName = tireStickerFilteredUsers[actualRobloxId];
+    let filteredCount = 0;
+    let categoryTitle = '';
+
+    result.results = result.results.filter((item: OGSearchData['results'][0]) => {
+      const shouldFilter = item.categoryTitle === 'Tire Sticker' && item.title === tireStickerName;
+      if (shouldFilter) {
+        filteredCount++;
+        if (!categoryTitle) categoryTitle = item.categoryTitle;
+      }
+      return !shouldFilter;
+    });
+    result.count = result.results.length;
+
+    if (filteredCount > 0) {
+      console.log(
+        `[OG FINDER] Filtered ${filteredCount} "${tireStickerName}" ${categoryTitle}'s for ${actualRobloxId}`,
+      );
+    }
+  }
+
   // Get the main user's data (the one being searched) and connection data
   const [mainUserData, mainUserAvatar, userConnectionData] = await Promise.all([
     fetchRobloxUsersBatch([actualRobloxId]).catch((error) => {

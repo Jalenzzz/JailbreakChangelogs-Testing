@@ -136,6 +136,13 @@ export default function OGFinderResults({
     router.push(`/og/${searchId.trim()}`);
   };
 
+  // Reset loading state when new data is received or when there's an error
+  useEffect(() => {
+    if (initialData || error) {
+      setIsLoading(false);
+    }
+  }, [initialData, error]);
+
   const handleItemClick = (item: OGItem) => {
     setSelectedItem(item);
     setShowHistoryModal(true);
@@ -512,7 +519,6 @@ export default function OGFinderResults({
         handleSearch={handleSearch}
         isLoading={isLoading}
         externalIsLoading={false}
-        error={error}
       />
 
       {/* Error Display */}
@@ -541,7 +547,10 @@ export default function OGFinderResults({
                 </div>
               </div>
               <h3 className="mb-2 text-lg font-semibold text-red-400">No OG Items Found</h3>
-              <p className="text-gray-300">No original items found for this user.</p>
+              <p className="text-gray-300">
+                No original items found for this user. Their items may not yet have been logged by
+                our bots.
+              </p>
             </div>
           </div>
           <OGFinderFAQ />
@@ -1331,6 +1340,9 @@ export default function OGFinderResults({
           />
         </>
       )}
+
+      {/* FAQ Section */}
+      <OGFinderFAQ />
     </div>
   );
 }
