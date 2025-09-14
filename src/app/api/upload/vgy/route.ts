@@ -9,11 +9,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'No file provided' }, { status: 400 });
     }
 
-    // Validate file type
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+    // Validate file type (vgy.me doesn't support WebP)
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json(
-        { message: 'Invalid file type. Only JPEG, PNG, WebP, and GIF files are allowed.' },
+        { message: 'Invalid file type. Only JPEG, PNG, and GIF files are allowed for upload.' },
         { status: 400 },
       );
     }

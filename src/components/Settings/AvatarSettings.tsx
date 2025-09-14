@@ -3,7 +3,7 @@ import { Box, TextField, Button, Typography, Chip } from '@mui/material';
 import dynamic from 'next/dynamic';
 
 const Tooltip = dynamic(() => import('@mui/material/Tooltip'), { ssr: false });
-import StarIcon from '@mui/icons-material/Star';
+import { TrophyIcon } from '@heroicons/react/24/solid';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { UserData } from '@/types/auth';
 import { updateAvatar } from '@/services/settingsService';
@@ -148,8 +148,9 @@ export const AvatarSettings = ({ userData, onAvatarUpdate }: AvatarSettingsProps
       );
     } catch (error) {
       console.error('Error uploading file:', error);
-      setAvatarError(error instanceof Error ? error.message : 'Failed to upload file');
-      toast.error('Failed to upload file');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to upload file';
+      setAvatarError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsUploading(false);
     }
@@ -192,7 +193,7 @@ export const AvatarSettings = ({ userData, onAvatarUpdate }: AvatarSettingsProps
             Custom Avatar URL
           </Typography>
           <Tooltip
-            title="Supporter 1 Feature"
+            title="Supporter II Feature"
             placement="top"
             arrow
             slotProps={{
@@ -213,13 +214,13 @@ export const AvatarSettings = ({ userData, onAvatarUpdate }: AvatarSettingsProps
             }}
           >
             <Chip
-              icon={<StarIcon sx={{ color: '#FFD700' }} />}
-              label="Supporter 1"
+              icon={<TrophyIcon className="h-4 w-4" style={{ color: '#C0C0C0' }} />}
+              label="Supporter II"
               size="small"
               sx={{
-                backgroundColor: 'rgba(255, 215, 0, 0.1)',
-                border: '1px solid rgba(255, 215, 0, 0.3)',
-                color: '#FFD700',
+                backgroundColor: 'rgba(192, 192, 192, 0.1)',
+                border: '1px solid rgba(192, 192, 192, 0.3)',
+                color: '#C0C0C0',
                 '& .MuiChip-label': {
                   fontWeight: 600,
                 },
@@ -231,13 +232,13 @@ export const AvatarSettings = ({ userData, onAvatarUpdate }: AvatarSettingsProps
           variant="body2"
           sx={{
             mb: 1,
-            color: userData?.premiumtype && userData.premiumtype >= 1 ? '#FFFFFF' : '#FF6B6B',
-            fontWeight: userData?.premiumtype && userData.premiumtype >= 1 ? 'normal' : 500,
+            color: userData?.premiumtype && userData.premiumtype >= 2 ? '#FFFFFF' : '#FF6B6B',
+            fontWeight: userData?.premiumtype && userData.premiumtype >= 2 ? 'normal' : 500,
           }}
         >
-          {userData?.premiumtype && userData.premiumtype >= 1
+          {userData?.premiumtype && userData.premiumtype >= 2
             ? 'Upload an image file or enter a direct link to your image'
-            : '🔒 Upgrade to Supporter 1 to unlock custom avatars'}
+            : '🔒 Upgrade to Supporter II to unlock custom avatars'}
         </Typography>
         <Box
           sx={{
@@ -252,14 +253,14 @@ export const AvatarSettings = ({ userData, onAvatarUpdate }: AvatarSettingsProps
               fullWidth
               size="small"
               placeholder={
-                userData?.premiumtype && userData.premiumtype >= 1
+                userData?.premiumtype && userData.premiumtype >= 2
                   ? 'https://example.com/your-avatar.jpg'
-                  : 'Supporter 1 feature - Upgrade to unlock'
+                  : 'Supporter II feature - Upgrade to unlock'
               }
               value={customAvatarUrl}
               onChange={handleCustomAvatarChange}
               variant="outlined"
-              disabled={!userData?.premiumtype || userData.premiumtype < 1}
+              disabled={!userData?.premiumtype || userData.premiumtype < 2}
               error={!!avatarError}
               helperText={avatarError}
               sx={{
@@ -280,8 +281,8 @@ export const AvatarSettings = ({ userData, onAvatarUpdate }: AvatarSettingsProps
                   color: '#D3D9D4',
                 },
                 '& .MuiFormHelperText-root': {
-                  position: 'absolute',
-                  bottom: '-20px',
+                  marginTop: '4px',
+                  color: '#ff6b6b !important',
                 },
               }}
             />
@@ -299,7 +300,7 @@ export const AvatarSettings = ({ userData, onAvatarUpdate }: AvatarSettingsProps
               size="small"
               component="label"
               startIcon={<CloudUploadIcon />}
-              disabled={!userData?.premiumtype || userData.premiumtype < 1 || isUploading}
+              disabled={!userData?.premiumtype || userData.premiumtype < 2 || isUploading}
               className={isUploading ? 'cursor-progress' : 'cursor-pointer'}
               sx={{
                 backgroundColor: '#124E66',
@@ -320,7 +321,7 @@ export const AvatarSettings = ({ userData, onAvatarUpdate }: AvatarSettingsProps
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                accept="image/jpeg,image/jpg,image/png,image/gif"
                 onChange={handleFileUpload}
                 style={{ display: 'none' }}
               />
@@ -329,7 +330,7 @@ export const AvatarSettings = ({ userData, onAvatarUpdate }: AvatarSettingsProps
               variant="contained"
               size="small"
               onClick={handleUpdateAvatar}
-              disabled={!isValidAvatar || !userData?.premiumtype || userData.premiumtype < 1}
+              disabled={!isValidAvatar || !userData?.premiumtype || userData.premiumtype < 2}
               sx={{
                 backgroundColor: '#124E66',
                 '&:hover': {
