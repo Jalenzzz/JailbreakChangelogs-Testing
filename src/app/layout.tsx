@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Script from 'next/script';
 import './globals.css';
 import Header from '@/components/Layout/Header';
+import NewsTicker from '@/components/Layout/NewsTicker';
 import MaintenanceBypass from '@/components/Layout/MaintenanceBypass';
 import OfflineDetector from '@/components/OfflineDetector';
 import {
@@ -157,6 +158,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   >
                     <Header />
                   </Suspense>
+                  <NewsTicker />
                   <main className="flex-1">{children}</main>
 
                   <footer className="bg-[#212A31] py-8">
@@ -490,6 +492,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <Suspense fallback={<div className="h-16 border-b border-[#2E3944] bg-[#212A31]" />}>
                 <Header />
               </Suspense>
+              <NewsTicker />
               <main className="flex-1">{children}</main>
 
               <footer className="bg-[#212A31] py-8">

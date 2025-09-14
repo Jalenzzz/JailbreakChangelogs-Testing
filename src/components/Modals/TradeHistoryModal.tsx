@@ -90,8 +90,37 @@ export default function TradeHistoryModal({
             )}
           </div>
 
+          {/* Loading indicator - sticky at top */}
+          {loadingUserIds.size > 0 && (
+            <div className="sticky top-0 z-10 border-b border-[#2E3944] bg-[#212A31] p-4">
+              <div className="flex items-center justify-center gap-2 text-blue-400">
+                <svg
+                  className="h-4 w-4 animate-spin"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                <span className="text-sm">Loading user profiles...</span>
+              </div>
+            </div>
+          )}
+
           {/* Modal Content */}
-          <div className="max-h-[60vh] overflow-y-auto p-6">
+          <div className="max-h-[60vh] overflow-y-auto bg-[#2E3944] p-6">
             {item.history && Array.isArray(item.history) && item.history.length > 0 ? (
               <div className="space-y-4">
                 {(() => {
@@ -130,153 +159,125 @@ export default function TradeHistoryModal({
                   const firstTradeNumber = Math.min(...trades.map((trade) => trade.tradeNumber));
 
                   return (
-                    <>
-                      {loadingUserIds.size > 0 && (
-                        <div className="mb-4 flex items-center justify-center gap-2 text-blue-400">
-                          <svg
-                            className="h-4 w-4 animate-spin"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
+                    <div className="space-y-3">
+                      {sortedTrades.map((trade) => {
+                        return (
+                          <div
+                            key={`${trade.fromUser.UserId}-${trade.toUser.UserId}-${trade.toUser.TradeTime}`}
+                            className={`rounded-lg border p-3 ${
+                              trade.tradeNumber === firstTradeNumber
+                                ? 'border-[#37424D] bg-[#1A2332] shadow-lg'
+                                : 'border-[#37424D] bg-[#212A31]'
+                            }`}
                           >
-                            <circle
-                              className="opacity-25"
-                              cx="12"
-                              cy="12"
-                              r="10"
-                              stroke="currentColor"
-                              strokeWidth="4"
-                            ></circle>
-                            <path
-                              className="opacity-75"
-                              fill="currentColor"
-                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                            ></path>
-                          </svg>
-                          <span className="text-sm">Loading user profiles...</span>
-                        </div>
-                      )}
-
-                      <div className="space-y-3">
-                        {sortedTrades.map((trade) => {
-                          return (
-                            <div
-                              key={`${trade.fromUser.UserId}-${trade.toUser.UserId}-${trade.toUser.TradeTime}`}
-                              className={`rounded-lg border p-3 ${
-                                trade.tradeNumber === firstTradeNumber
-                                  ? 'border-[#37424D] bg-[#1A2332] shadow-lg'
-                                  : 'border-[#37424D] bg-[#212A31]'
-                              }`}
-                            >
-                              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                                <div className="flex items-center gap-3">
-                                  <div className="min-w-0 flex-1">
-                                    <div className="flex flex-wrap items-center gap-2">
-                                      {/* From User */}
-                                      <div className="flex items-center gap-2">
-                                        <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-[#2E3944] bg-[#2E3944]">
-                                          {getUserAvatar(trade.fromUser.UserId.toString()) ? (
-                                            <Image
-                                              src={getUserAvatar(trade.fromUser.UserId.toString())!}
-                                              alt="User Avatar"
-                                              width={24}
-                                              height={24}
-                                              className="rounded-full"
-                                            />
-                                          ) : (
-                                            <svg
-                                              className="text-muted h-3 w-3"
-                                              fill="none"
-                                              stroke="currentColor"
-                                              viewBox="0 0 24 24"
-                                            >
-                                              <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                              />
-                                            </svg>
-                                          )}
-                                        </div>
-                                        <a
-                                          href={`https://www.roblox.com/users/${trade.fromUser.UserId}/profile`}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          className="truncate font-medium text-blue-300 transition-colors hover:text-blue-400 hover:underline"
-                                        >
-                                          {getUserDisplay(trade.fromUser.UserId.toString())}
-                                        </a>
-                                      </div>
-
-                                      {/* Arrow */}
-                                      <div className="text-muted flex items-center gap-1">
-                                        <svg
-                                          className="h-4 w-4"
-                                          fill="none"
-                                          stroke="currentColor"
-                                          viewBox="0 0 24 24"
-                                        >
-                                          <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M13 7l5 5m0 0l-5 5m5-5H6"
+                            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                              <div className="flex items-center gap-3">
+                                <div className="min-w-0 flex-1">
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    {/* From User */}
+                                    <div className="flex items-center gap-2">
+                                      <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-[#2E3944] bg-[#2E3944]">
+                                        {getUserAvatar(trade.fromUser.UserId.toString()) ? (
+                                          <Image
+                                            src={getUserAvatar(trade.fromUser.UserId.toString())!}
+                                            alt="User Avatar"
+                                            width={24}
+                                            height={24}
+                                            className="rounded-full"
                                           />
-                                        </svg>
-                                        <span className="text-xs">Trade #{trade.tradeNumber}</span>
-                                      </div>
-
-                                      {/* To User */}
-                                      <div className="flex items-center gap-2">
-                                        <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-[#2E3944] bg-[#2E3944]">
-                                          {getUserAvatar(trade.toUser.UserId.toString()) ? (
-                                            <Image
-                                              src={getUserAvatar(trade.toUser.UserId.toString())!}
-                                              alt="User Avatar"
-                                              width={24}
-                                              height={24}
-                                              className="rounded-full"
+                                        ) : (
+                                          <svg
+                                            className="text-muted h-3 w-3"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                          >
+                                            <path
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              strokeWidth={2}
+                                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                                             />
-                                          ) : (
-                                            <svg
-                                              className="text-muted h-3 w-3"
-                                              fill="none"
-                                              stroke="currentColor"
-                                              viewBox="0 0 24 24"
-                                            >
-                                              <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                              />
-                                            </svg>
-                                          )}
-                                        </div>
-                                        <a
-                                          href={`https://www.roblox.com/users/${trade.toUser.UserId}/profile`}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          className="truncate font-medium text-blue-300 transition-colors hover:text-blue-400 hover:underline"
-                                        >
-                                          {getUserDisplay(trade.toUser.UserId.toString())}
-                                        </a>
+                                          </svg>
+                                        )}
                                       </div>
+                                      <a
+                                        href={`https://www.roblox.com/users/${trade.fromUser.UserId}/profile`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="truncate font-medium text-blue-300 transition-colors hover:text-blue-400 hover:underline"
+                                      >
+                                        {getUserDisplay(trade.fromUser.UserId.toString())}
+                                      </a>
+                                    </div>
+
+                                    {/* Arrow */}
+                                    <div className="text-muted flex items-center gap-1">
+                                      <svg
+                                        className="h-4 w-4"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          strokeWidth={2}
+                                          d="M13 7l5 5m0 0l-5 5m5-5H6"
+                                        />
+                                      </svg>
+                                      <span className="text-xs">Trade #{trade.tradeNumber}</span>
+                                    </div>
+
+                                    {/* To User */}
+                                    <div className="flex items-center gap-2">
+                                      <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-[#2E3944] bg-[#2E3944]">
+                                        {getUserAvatar(trade.toUser.UserId.toString()) ? (
+                                          <Image
+                                            src={getUserAvatar(trade.toUser.UserId.toString())!}
+                                            alt="User Avatar"
+                                            width={24}
+                                            height={24}
+                                            className="rounded-full"
+                                          />
+                                        ) : (
+                                          <svg
+                                            className="text-muted h-3 w-3"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                          >
+                                            <path
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              strokeWidth={2}
+                                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                            />
+                                          </svg>
+                                        )}
+                                      </div>
+                                      <a
+                                        href={`https://www.roblox.com/users/${trade.toUser.UserId}/profile`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="truncate font-medium text-blue-300 transition-colors hover:text-blue-400 hover:underline"
+                                      >
+                                        {getUserDisplay(trade.toUser.UserId.toString())}
+                                      </a>
                                     </div>
                                   </div>
                                 </div>
+                              </div>
 
-                                {/* Trade Date */}
-                                <div className="text-muted flex-shrink-0 text-sm">
-                                  {formatDate(trade.toUser.TradeTime)}
-                                </div>
+                              {/* Trade Date */}
+                              <div className="text-muted flex-shrink-0 text-sm">
+                                {formatDate(trade.toUser.TradeTime)}
                               </div>
                             </div>
-                          );
-                        })}
-                      </div>
-                    </>
+                          </div>
+                        );
+                      })}
+                    </div>
                   );
                 })()}
               </div>

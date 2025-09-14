@@ -628,8 +628,9 @@ export default function DupeFinderResults({
             </p>
 
             {/* Connection Icons */}
-            {userConnectionData && (
-              <div className="mt-3 flex flex-wrap items-center gap-2">
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              {/* Discord Profile - Only show if userConnectionData exists */}
+              {userConnectionData && (
                 <Tooltip
                   title="Visit Discord Profile"
                   placement="top"
@@ -661,39 +662,43 @@ export default function DupeFinderResults({
                     <span className="text-sm font-medium">Discord</span>
                   </a>
                 </Tooltip>
+              )}
 
-                <Tooltip
-                  title="Visit Roblox Profile"
-                  placement="top"
-                  arrow
-                  slotProps={{
-                    tooltip: {
-                      sx: {
-                        backgroundColor: '#0F1419',
-                        color: '#D3D9D4',
-                        fontSize: '0.75rem',
-                        padding: '8px 12px',
-                        borderRadius: '8px',
-                        border: '1px solid #2E3944',
-                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-                        '& .MuiTooltip-arrow': {
-                          color: '#0F1419',
-                        },
+              {/* Roblox Profile - Always show since we have Roblox data */}
+              <Tooltip
+                title="Visit Roblox Profile"
+                placement="top"
+                arrow
+                slotProps={{
+                  tooltip: {
+                    sx: {
+                      backgroundColor: '#0F1419',
+                      color: '#D3D9D4',
+                      fontSize: '0.75rem',
+                      padding: '8px 12px',
+                      borderRadius: '8px',
+                      border: '1px solid #2E3944',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                      '& .MuiTooltip-arrow': {
+                        color: '#0F1419',
                       },
                     },
-                  }}
+                  },
+                }}
+              >
+                <a
+                  href={`https://www.roblox.com/users/${robloxId}/profile`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted flex items-center gap-2 rounded-full bg-gray-600 px-3 py-1.5 transition-colors hover:bg-gray-500"
                 >
-                  <a
-                    href={`https://www.roblox.com/users/${robloxId}/profile`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted flex items-center gap-2 rounded-full bg-gray-600 px-3 py-1.5 transition-colors hover:bg-gray-500"
-                  >
-                    <RobloxIcon className="h-4 w-4 flex-shrink-0" />
-                    <span className="text-sm font-medium">Roblox</span>
-                  </a>
-                </Tooltip>
+                  <RobloxIcon className="h-4 w-4 flex-shrink-0" />
+                  <span className="text-sm font-medium">Roblox</span>
+                </a>
+              </Tooltip>
 
+              {/* Website Profile - Only show if userConnectionData exists */}
+              {userConnectionData && (
                 <Tooltip
                   title="Visit Website Profile"
                   placement="top"
@@ -729,21 +734,8 @@ export default function DupeFinderResults({
                     <span className="text-sm font-medium">Website Profile</span>
                   </Link>
                 </Tooltip>
-              </div>
-            )}
-
-            {/* Show standalone Roblox button when no connection data */}
-            {!userConnectionData && (
-              <a
-                href={`https://www.roblox.com/users/${robloxId}/profile`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted mt-3 inline-flex items-center gap-2 rounded-full bg-gray-600 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-gray-500"
-              >
-                <RobloxIcon className="h-4 w-4 flex-shrink-0" />
-                Roblox
-              </a>
-            )}
+              )}
+            </div>
           </div>
         </div>
 

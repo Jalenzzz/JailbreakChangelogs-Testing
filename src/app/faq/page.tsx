@@ -148,6 +148,7 @@ export default function FAQPage() {
                 },
                 border: '1px solid #2E3944',
                 '& .MuiAccordionSummary-root': {
+                  backgroundColor: '#1A2025',
                   '&:hover': {
                     backgroundColor: '#1A2025',
                   },

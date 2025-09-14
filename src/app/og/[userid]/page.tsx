@@ -1,4 +1,5 @@
 import OGFinderDataStreamer from '@/components/OG/OGFinderDataStreamer';
+import OGFinderDescription from '@/components/OG/OGFinderDescription';
 import Breadcrumb from '@/components/Layout/Breadcrumb';
 import { Suspense } from 'react';
 import ExperimentalFeatureBanner from '@/components/UI/ExperimentalFeatureBanner';
@@ -33,9 +34,7 @@ export default async function OGFinderUserPage({ params }: OGFinderUserPageProps
 
       <ExperimentalFeatureBanner className="mb-6" />
 
-      <p className="mb-4 text-white">
-        Enter a Roblox ID or username to find items that were originally owned by them.
-      </p>
+      <OGFinderDescription />
 
       <Suspense
         fallback={

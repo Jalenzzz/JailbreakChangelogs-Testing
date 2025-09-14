@@ -46,7 +46,7 @@ export default function ItemActionModal({
       <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <div className="mx-auto max-h-[80vh] w-full max-w-sm overflow-hidden rounded-lg border border-[#2E3944] bg-[#2E3944] sm:max-w-md">
+        <div className="mx-auto max-h-[80vh] w-full max-w-sm overflow-hidden rounded-lg border border-[#5865F2] bg-[#2E3944] sm:max-w-md">
           {/* Modal Header */}
           <div className="border-b border-[#2E3944] bg-[#212A31] p-4 sm:p-6">
             <div className="flex items-start justify-between gap-4 sm:items-center">
@@ -70,7 +70,7 @@ export default function ItemActionModal({
               {/* View Item Page */}
               <button
                 onClick={handleViewItemPage}
-                className="flex w-full cursor-pointer items-center gap-3 rounded-lg border border-[#2E3944] bg-[#37424D] p-3 text-left text-white transition-colors sm:p-4"
+                className="flex w-full cursor-pointer items-center gap-3 rounded-lg border border-[#2E3944] bg-[#212A31] p-3 text-left text-white transition-colors sm:p-4"
               >
                 <div>
                   <div className="text-sm font-medium sm:text-base">View Item Page</div>
@@ -84,7 +84,7 @@ export default function ItemActionModal({
               {hasTradeHistory ? (
                 <button
                   onClick={handleViewTradeHistory}
-                  className="flex w-full cursor-pointer items-center gap-3 rounded-lg border border-[#2E3944] bg-[#37424D] p-3 text-left text-white transition-colors sm:p-4"
+                  className="flex w-full cursor-pointer items-center gap-3 rounded-lg border border-[#2E3944] bg-[#212A31] p-3 text-left text-white transition-colors sm:p-4"
                 >
                   <div>
                     <div className="font-medium">View Trade History</div>
@@ -92,7 +92,7 @@ export default function ItemActionModal({
                   </div>
                 </button>
               ) : (
-                <div className="flex w-full items-center gap-3 rounded-lg border border-[#2E3944] bg-[#37424D] p-3 text-left text-gray-500 sm:p-4">
+                <div className="flex w-full items-center gap-3 rounded-lg border border-[#2E3944] bg-[#212A31] p-3 text-left text-gray-500 sm:p-4">
                   <div>
                     <div className="font-medium">No Trade History</div>
                     <div className="text-sm text-gray-500">This item has no trade history</div>

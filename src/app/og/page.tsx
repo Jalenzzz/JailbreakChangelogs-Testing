@@ -1,4 +1,7 @@
 import OGFinderClient from '@/components/OG/OGFinderClient';
+import OGFinderDescription from '@/components/OG/OGFinderDescription';
+import OGFinderFAQ from '@/components/OG/OGFinderFAQ';
+import OGConfetti from '@/components/OG/OGConfetti';
 import Breadcrumb from '@/components/Layout/Breadcrumb';
 import ExperimentalFeatureBanner from '@/components/UI/ExperimentalFeatureBanner';
 import ComingSoon from '@/components/UI/ComingSoon';
@@ -14,21 +17,17 @@ export default function OGFinderPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <OGConfetti />
+
       <Breadcrumb />
-      <div className="mb-6 flex items-center gap-3">
-        <h1 className="text-3xl font-bold">OG Finder</h1>
-        <span className="rounded bg-[#5865F2] px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase">
-          New
-        </span>
-      </div>
 
       <ExperimentalFeatureBanner className="mb-6" />
 
-      <p className="mb-4 text-white">
-        Enter a Roblox ID or username to find items that were originally owned by them.
-      </p>
+      <OGFinderDescription />
 
       <OGFinderClient />
+
+      <OGFinderFAQ />
     </div>
   );
 }
