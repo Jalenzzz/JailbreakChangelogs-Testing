@@ -21,7 +21,7 @@ import NextTopLoader from 'nextjs-toploader';
 import AuthCheck from '@/components/Auth/AuthCheck';
 import dynamic from 'next/dynamic';
 
-const Tooltip = dynamic(() => import('@mui/material/Tooltip'), { ssr: false });
+const Tooltip = dynamic(() => import('@mui/material/Tooltip'));
 import SurveyProvider from '@/components/Survey/SurveyProvider';
 import ReportIssueButton from '@/components/ReportIssue/ReportIssueButton';
 import { AuthProvider } from '@/contexts/AuthContext';

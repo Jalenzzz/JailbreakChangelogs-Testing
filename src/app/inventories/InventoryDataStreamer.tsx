@@ -46,12 +46,9 @@ async function InventoryDataFetcher({ robloxId }: { robloxId: string }) {
 
   // Check if the result contains an error
   if ((result && typeof result === 'object' && 'error' in result) || typeof result === 'string') {
-    return (
-      <InventoryCheckerClient
-        robloxId={actualRobloxId}
-        error={typeof result === 'string' ? result : (result as { message?: string }).message}
-      />
-    );
+    const errorMessage =
+      typeof result === 'string' ? result : (result as { message?: string }).message;
+    return <InventoryCheckerClient robloxId={actualRobloxId} error={errorMessage} />;
   }
 
   // Check if no data was returned

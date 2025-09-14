@@ -51,65 +51,60 @@ function OGFinderLoadingFallback({ robloxId }: { robloxId: string }) {
   return (
     <div className="space-y-6">
       {/* Search Form */}
-      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
-        <form className="flex flex-col gap-3 sm:flex-row">
-          <div className="flex-1">
-            <label htmlFor="searchInput" className="text-muted mb-2 block text-sm font-medium">
-              Username or Roblox ID
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                id="searchInput"
-                value={robloxId}
-                readOnly
-                className="text-muted w-full rounded-lg border border-[#2E3944] bg-[#37424D] px-4 py-2 pr-10 pl-10"
-              />
-              <svg
-                className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </div>
-          </div>
-          <div className="flex items-end">
-            <button
-              disabled
-              className="flex h-10 min-w-[100px] cursor-progress items-center justify-center gap-2 rounded-lg bg-[#2E3944] px-6 text-sm font-medium text-white"
+      <form className="flex flex-col gap-3 sm:flex-row">
+        <div className="flex-1">
+          <div className="relative">
+            <input
+              type="text"
+              id="searchInput"
+              value={robloxId}
+              readOnly
+              className="text-muted w-full rounded-lg border border-[#2E3944] bg-[#37424D] px-4 py-2 pr-10 pl-10"
+            />
+            <svg
+              className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              <svg
-                className="h-4 w-4 animate-spin"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
-              <span className="whitespace-nowrap">Fetching...</span>
-            </button>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
           </div>
-        </form>
-      </div>
+        </div>
+        <div className="flex items-end">
+          <button
+            disabled
+            className="flex h-10 min-w-[100px] cursor-progress items-center justify-center gap-2 rounded-lg bg-[#212A31] px-6 text-sm font-medium text-white"
+          >
+            <svg
+              className="h-4 w-4 animate-spin"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            <span className="whitespace-nowrap">Fetching...</span>
+          </button>
+        </div>
+      </form>
 
       <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6 shadow-sm">
         <div className="animate-pulse space-y-4">

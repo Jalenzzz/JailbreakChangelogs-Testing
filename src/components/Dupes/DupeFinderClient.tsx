@@ -68,6 +68,15 @@ export default function DupeFinderClient({
     setIsLoading(externalIsLoading || false);
   }, [externalIsLoading]);
 
+  // Reset loading state when robloxId changes (navigation to same URL)
+  useEffect(() => {
+    // If we're loading and the robloxId matches our search, reset loading state
+    // This handles the case where user searches for the same user again
+    if (isLoading && robloxId === searchId.trim()) {
+      setIsLoading(false);
+    }
+  }, [robloxId, isLoading, searchId]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchId.trim()) return;
@@ -110,7 +119,7 @@ export default function DupeFinderClient({
             type="submit"
             disabled={isLoading || !searchId.trim()}
             className={`flex h-10 min-w-[100px] items-center justify-center gap-2 rounded-lg px-6 text-sm font-medium text-white transition-all duration-200 focus:ring-2 focus:ring-[#5865F2] focus:ring-offset-2 focus:ring-offset-[#212A31] focus:outline-none ${
-              isLoading ? 'cursor-progress bg-[#2E3944]' : 'bg-[#5865F2] hover:bg-[#4752C4]'
+              isLoading ? 'cursor-progress bg-[#212A31]' : 'bg-[#5865F2] hover:bg-[#4752C4]'
             }`}
           >
             {isLoading && (

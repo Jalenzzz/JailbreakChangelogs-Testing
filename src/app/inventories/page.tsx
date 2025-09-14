@@ -38,8 +38,8 @@ export default function InventoriesPage() {
       <Breadcrumb />
       <div className="mb-6 flex items-center gap-3">
         <h1 className="text-3xl font-bold text-white">Inventory Calculator</h1>
-        <span className="rounded border border-amber-400/30 bg-gradient-to-r from-amber-500/20 to-orange-500/20 px-1.5 py-0.5 text-[10px] font-semibold text-amber-200 uppercase">
-          Beta
+        <span className="rounded bg-[#5865F2] px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase">
+          New
         </span>
       </div>
 
