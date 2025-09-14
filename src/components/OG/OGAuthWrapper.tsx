@@ -17,10 +17,6 @@ export default function OGAuthWrapper({ children }: OGAuthWrapperProps) {
     // Only redirect if auth is done loading and user is not authenticated
     if (!isLoading && !isAuthenticated) {
       setTimeout(() => {
-        toast.error('You need to be logged in to use the OG Finder feature.', {
-          duration: 4000,
-          position: 'bottom-right',
-        });
         setShowLoginModal(true);
         router.push('/og');
       }, 100);
