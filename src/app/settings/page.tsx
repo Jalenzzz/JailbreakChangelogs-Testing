@@ -314,75 +314,103 @@ export default function SettingsPage() {
               (settings.banner_discord === 0 || settings.avatar_discord === 0) && (
                 <>
                   <Divider sx={{ my: 3, bgcolor: '#2E3944' }} />
-                  <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                  <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
                     <Button
-                      variant="outlined"
-                      size="small"
+                      variant="contained"
+                      size="medium"
                       startIcon={<OpenInNew />}
                       onClick={() =>
                         window.open('https://imgbb.com/', '_blank', 'noopener,noreferrer')
                       }
                       sx={{
-                        color: '#D3D9D4',
-                        borderColor: '#2E3944',
+                        backgroundColor: '#1d7da3',
+                        color: '#FFFFFF',
+                        fontWeight: 600,
+                        borderRadius: 2,
+                        px: 2,
+                        py: 1,
+                        boxShadow: '0 2px 8px rgba(29, 125, 163, 0.3)',
                         '&:hover': {
-                          borderColor: '#124E66',
-                          backgroundColor: 'rgba(18, 78, 102, 0.1)',
+                          backgroundColor: '#0D3A4D',
+                          boxShadow: '0 4px 12px rgba(29, 125, 163, 0.4)',
+                          transform: 'translateY(-1px)',
                         },
+                        transition: 'all 0.2s ease-in-out',
                       }}
                     >
                       ImgBB
                     </Button>
                     <Button
-                      variant="outlined"
-                      size="small"
+                      variant="contained"
+                      size="medium"
                       startIcon={<OpenInNew />}
                       onClick={() =>
                         window.open('https://postimages.org/', '_blank', 'noopener,noreferrer')
                       }
                       sx={{
-                        color: '#D3D9D4',
-                        borderColor: '#2E3944',
+                        backgroundColor: '#1d7da3',
+                        color: '#FFFFFF',
+                        fontWeight: 600,
+                        borderRadius: 2,
+                        px: 2,
+                        py: 1,
+                        boxShadow: '0 2px 8px rgba(29, 125, 163, 0.3)',
                         '&:hover': {
-                          borderColor: '#124E66',
-                          backgroundColor: 'rgba(18, 78, 102, 0.1)',
+                          backgroundColor: '#0D3A4D',
+                          boxShadow: '0 4px 12px rgba(29, 125, 163, 0.4)',
+                          transform: 'translateY(-1px)',
                         },
+                        transition: 'all 0.2s ease-in-out',
                       }}
                     >
                       PostImages
                     </Button>
                     <Button
-                      variant="outlined"
-                      size="small"
+                      variant="contained"
+                      size="medium"
                       startIcon={<OpenInNew />}
                       onClick={() =>
                         window.open('https://tenor.com/', '_blank', 'noopener,noreferrer')
                       }
                       sx={{
-                        color: '#D3D9D4',
-                        borderColor: '#2E3944',
+                        backgroundColor: '#1d7da3',
+                        color: '#FFFFFF',
+                        fontWeight: 600,
+                        borderRadius: 2,
+                        px: 2,
+                        py: 1,
+                        boxShadow: '0 2px 8px rgba(29, 125, 163, 0.3)',
                         '&:hover': {
-                          borderColor: '#124E66',
-                          backgroundColor: 'rgba(18, 78, 102, 0.1)',
+                          backgroundColor: '#0D3A4D',
+                          boxShadow: '0 4px 12px rgba(29, 125, 163, 0.4)',
+                          transform: 'translateY(-1px)',
                         },
+                        transition: 'all 0.2s ease-in-out',
                       }}
                     >
                       Tenor
                     </Button>
                     <Button
-                      variant="outlined"
-                      size="small"
+                      variant="contained"
+                      size="medium"
                       startIcon={<OpenInNew />}
                       onClick={() =>
                         window.open('https://imgur.com/', '_blank', 'noopener,noreferrer')
                       }
                       sx={{
-                        color: '#D3D9D4',
-                        borderColor: '#2E3944',
+                        backgroundColor: '#1d7da3',
+                        color: '#FFFFFF',
+                        fontWeight: 600,
+                        borderRadius: 2,
+                        px: 2,
+                        py: 1,
+                        boxShadow: '0 2px 8px rgba(29, 125, 163, 0.3)',
                         '&:hover': {
-                          borderColor: '#124E66',
-                          backgroundColor: 'rgba(18, 78, 102, 0.1)',
+                          backgroundColor: '#0D3A4D',
+                          boxShadow: '0 4px 12px rgba(29, 125, 163, 0.4)',
+                          transform: 'translateY(-1px)',
                         },
+                        transition: 'all 0.2s ease-in-out',
                       }}
                     >
                       Imgur

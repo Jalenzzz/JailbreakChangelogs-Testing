@@ -80,7 +80,6 @@ export const RobloxConnection = ({ userData }: RobloxConnectionProps) => {
     <Box
       sx={{
         p: 3,
-        bgcolor: '#2e3944',
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>

@@ -192,7 +192,7 @@ export const BannerSettings = ({ userData, onBannerUpdate }: BannerSettingsProps
             Custom Banner URL
           </Typography>
           <Tooltip
-            title="Premium Feature"
+            title="Supporter 2 Feature"
             placement="top"
             arrow
             slotProps={{
@@ -214,7 +214,7 @@ export const BannerSettings = ({ userData, onBannerUpdate }: BannerSettingsProps
           >
             <Chip
               icon={<StarIcon sx={{ color: '#FFD700' }} />}
-              label="Premium"
+              label="Supporter 2"
               size="small"
               sx={{
                 backgroundColor: 'rgba(255, 215, 0, 0.1)',
@@ -237,17 +237,24 @@ export const BannerSettings = ({ userData, onBannerUpdate }: BannerSettingsProps
         >
           {userData?.premiumtype && userData.premiumtype >= 2
             ? 'Upload an image file or enter a direct link to your image'
-            : '🔒 Upgrade to Premium Tier 2 to unlock custom banners'}
+            : '🔒 Upgrade to Supporter Tier 2 to unlock custom banners'}
         </Typography>
-        <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
-          <Box sx={{ flex: 1 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            gap: 1,
+            alignItems: { xs: 'stretch', sm: 'flex-start' },
+          }}
+        >
+          <Box sx={{ flex: 1, mb: { xs: 1, sm: 0 } }}>
             <TextField
               fullWidth
               size="small"
               placeholder={
                 userData?.premiumtype && userData.premiumtype >= 2
                   ? 'https://example.com/your-banner.jpg'
-                  : 'Premium feature - Upgrade to unlock'
+                  : 'Suppoter 2 feature - Upgrade to unlock'
               }
               value={customBannerUrl}
               onChange={handleCustomBannerChange}
@@ -279,56 +286,67 @@ export const BannerSettings = ({ userData, onBannerUpdate }: BannerSettingsProps
               }}
             />
           </Box>
-          <Button
-            variant="contained"
-            size="small"
-            component="label"
-            startIcon={<CloudUploadIcon />}
-            disabled={!userData?.premiumtype || userData.premiumtype < 2 || isUploading}
-            className={isUploading ? 'cursor-progress' : 'cursor-pointer'}
+          <Box
             sx={{
-              backgroundColor: '#124E66',
-              color: '#FFFFFF',
-              '&:hover': {
-                backgroundColor: '#0D3A4D',
-              },
-              '&.Mui-disabled': {
-                backgroundColor: '#2E3944',
-                color: '#FFFFFF',
-              },
-              height: '40px',
-              minWidth: '120px',
+              display: 'flex',
+              gap: 1,
+              flexDirection: { xs: 'column', sm: 'row' },
+              width: { xs: '100%', sm: 'auto' },
             }}
           >
-            {isUploading ? 'Uploading...' : 'Upload File'}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
-              onChange={handleFileUpload}
-              style={{ display: 'none' }}
-            />
-          </Button>
-          <Button
-            variant="contained"
-            size="small"
-            onClick={handleUpdateBanner}
-            disabled={!isValidBanner || !userData?.premiumtype || userData.premiumtype < 2}
-            sx={{
-              backgroundColor: '#124E66',
-              '&:hover': {
-                backgroundColor: '#0D3A4D',
-              },
-              '&.Mui-disabled': {
-                backgroundColor: '#2E3944',
+            <Button
+              variant="contained"
+              size="small"
+              component="label"
+              startIcon={<CloudUploadIcon />}
+              disabled={!userData?.premiumtype || userData.premiumtype < 2 || isUploading}
+              className={isUploading ? 'cursor-progress' : 'cursor-pointer'}
+              sx={{
+                backgroundColor: '#124E66',
                 color: '#FFFFFF',
-              },
-              height: '40px',
-              minWidth: '100px',
-            }}
-          >
-            Update
-          </Button>
+                '&:hover': {
+                  backgroundColor: '#0D3A4D',
+                },
+                '&.Mui-disabled': {
+                  backgroundColor: '#2E3944',
+                  color: '#FFFFFF',
+                },
+                height: '40px',
+                minWidth: { xs: '100%', sm: '120px' },
+                flex: { xs: 1, sm: 'none' },
+              }}
+            >
+              {isUploading ? 'Uploading...' : 'Upload File'}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                onChange={handleFileUpload}
+                style={{ display: 'none' }}
+              />
+            </Button>
+            <Button
+              variant="contained"
+              size="small"
+              onClick={handleUpdateBanner}
+              disabled={!isValidBanner || !userData?.premiumtype || userData.premiumtype < 2}
+              sx={{
+                backgroundColor: '#124E66',
+                '&:hover': {
+                  backgroundColor: '#0D3A4D',
+                },
+                '&.Mui-disabled': {
+                  backgroundColor: '#2E3944',
+                  color: '#FFFFFF',
+                },
+                height: '40px',
+                minWidth: { xs: '100%', sm: '100px' },
+                flex: { xs: 1, sm: 'none' },
+              }}
+            >
+              Update
+            </Button>
+          </Box>
         </Box>
         <Box sx={{ height: '40px' }} />
       </Box>
