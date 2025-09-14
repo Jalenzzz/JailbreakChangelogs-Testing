@@ -5,7 +5,10 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { RobloxUser } from '@/types';
 import Image from 'next/image';
-import { Pagination, Tooltip } from '@mui/material';
+import { Pagination } from '@mui/material';
+import dynamic from 'next/dynamic';
+
+const Tooltip = dynamic(() => import('@mui/material/Tooltip'), { ssr: false });
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { DiscordIcon } from '@/components/Icons/DiscordIcon';
 import { RobloxIcon } from '@/components/Icons/RobloxIcon';
@@ -23,7 +26,6 @@ import {
   handleImageError,
 } from '@/utils/images';
 import localFont from 'next/font/local';
-import dynamic from 'next/dynamic';
 import SearchForm from './SearchForm';
 import ItemActionModal from '@/components/Modals/ItemActionModal';
 import TradeHistoryModal from '@/components/Modals/TradeHistoryModal';

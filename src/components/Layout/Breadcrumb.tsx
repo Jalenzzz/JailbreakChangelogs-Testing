@@ -1,6 +1,7 @@
 'use client';
 
-import { Skeleton } from '@mui/material';
+import dynamic from 'next/dynamic';
+const Skeleton = dynamic(() => import('@mui/material/Skeleton'), { ssr: false });
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
