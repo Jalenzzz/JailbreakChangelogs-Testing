@@ -156,7 +156,7 @@ export default function MoneyLeaderboardClient({
                               : 'border-[#2E3944] bg-[#2E3944] hover:border-[#5865F2]'
                       }`}
                     >
-                      <div className="flex items-center justify-between">
+                      <div className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
                         <div className="flex items-center space-x-2 sm:space-x-3">
                           <div
                             className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold sm:h-8 sm:w-8 ${
@@ -201,7 +201,7 @@ export default function MoneyLeaderboardClient({
                             </a>
                           </div>
                         </div>
-                        <div className="ml-2 flex items-center space-x-2">
+                        <div className="flex items-center justify-center space-x-2 sm:ml-2 sm:justify-start">
                           <span className="text-sm font-bold text-green-400 sm:text-lg">
                             ${formatMoney(user.money)}
                           </span>
