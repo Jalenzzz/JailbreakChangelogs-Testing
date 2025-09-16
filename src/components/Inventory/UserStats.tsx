@@ -281,12 +281,9 @@ export default function UserStats({
 
   // Show toast notifications for scan status
   useEffect(() => {
-    if (
-      scanWebSocket.message &&
-      scanWebSocket.message.includes('You will be scanned when you join')
-    ) {
-      toast.success('You will be scanned when you join a trading server', {
-        duration: 4000,
+    if (scanWebSocket.message && scanWebSocket.message.includes('User not found in game')) {
+      toast.error('User not found in game. Please join a trade server and try again.', {
+        duration: 5000,
         position: 'bottom-right',
       });
     } else if (scanWebSocket.message && scanWebSocket.message.includes('User found in game')) {
@@ -520,7 +517,7 @@ export default function UserStats({
                     href={`https://discord.com/users/${userConnectionData.id}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-muted flex items-center gap-2 rounded-full bg-gray-600 px-3 py-1.5 transition-colors hover:bg-gray-500"
+                    className="text-muted flex items-center gap-2 rounded-full bg-gray-600 px-3 py-1.5"
                   >
                     <DiscordIcon className="h-4 w-4 flex-shrink-0 text-[#5865F2]" />
                     <span className="text-sm font-medium">Discord</span>
@@ -554,7 +551,7 @@ export default function UserStats({
                   href={`https://www.roblox.com/users/${currentData.user_id}/profile`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted flex items-center gap-2 rounded-full bg-gray-600 px-3 py-1.5 transition-colors hover:bg-gray-500"
+                  className="text-muted flex items-center gap-2 rounded-full bg-gray-600 px-3 py-1.5"
                 >
                   <RobloxIcon className="h-4 w-4 flex-shrink-0" />
                   <span className="text-sm font-medium">Roblox</span>
@@ -586,7 +583,7 @@ export default function UserStats({
                 >
                   <Link
                     href={`/users/${userConnectionData.id}`}
-                    className="text-muted flex items-center gap-2 rounded-full bg-gray-600 px-3 py-1.5 transition-colors hover:bg-gray-500"
+                    className="text-muted flex items-center gap-2 rounded-full bg-gray-600 px-3 py-1.5"
                   >
                     <Image
                       src="https://assets.jailbreakchangelogs.xyz/assets/logos/JBCL_Short_Transparent.webp"
@@ -806,8 +803,8 @@ export default function UserStats({
                 </div>
               )}
 
-              {/* Error Message */}
-              {scanWebSocket.error && (
+              {/* Error Message - but not for "user not found" since that gets a toast */}
+              {scanWebSocket.error && !scanWebSocket.error.includes('User not found in game') && (
                 <div className="mt-2 text-sm text-red-400">Error: {scanWebSocket.error}</div>
               )}
             </div>

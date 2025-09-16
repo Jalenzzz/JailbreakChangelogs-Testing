@@ -383,7 +383,6 @@ export async function fetchItemById(id: string): Promise<ItemDetails | null> {
     const response = await fetch(`${BASE_API_URL}/items/get?id=${id}`);
 
     if (!response.ok) {
-      console.log('[SERVER] Item not found:', { id });
       return null;
     }
 
@@ -1054,8 +1053,7 @@ export async function fetchRobloxUsersBatch(userIds: string[]) {
           // If the API returns the object directly (not wrapped in data array)
           allData.push(data);
         }
-      } catch (err) {
-        console.error('[SERVER] fetchRobloxUsersBatch: Error fetching chunk:', err);
+      } catch {
         continue;
       }
     }
@@ -1141,8 +1139,7 @@ export async function fetchRobloxUsersBatchLeaderboard(userIds: string[]) {
         );
         return {};
       }
-    } catch (err) {
-      console.error('[SERVER] fetchRobloxUsersBatchLeaderboard: Error fetching users:', err);
+    } catch {
       return {};
     }
   } catch (err) {
@@ -1204,8 +1201,7 @@ export async function fetchRobloxAvatars(userIds: string[]) {
         if (data && typeof data === 'object') {
           Object.assign(allData, data);
         }
-      } catch (err) {
-        console.error('[SERVER] fetchRobloxAvatars: Error fetching chunk:', err);
+      } catch {
         continue;
       }
     }
@@ -1337,6 +1333,81 @@ export async function fetchOfficialScanBots(): Promise<OfficialBotUser[]> {
   }
 }
 
+export interface ConnectedBot {
+  id: string;
+  connected: boolean;
+  last_heartbeat: number;
+  current_job: string;
+}
+
+export interface ConnectedBotsResponse {
+  bots: ConnectedBot[];
+  recent_heartbeats: ConnectedBot[];
+}
+
+export async function fetchConnectedBots(): Promise<ConnectedBotsResponse | null> {
+  try {
+    if (!INVENTORY_API_URL) {
+      throw new Error('Missing INVENTORY_API_URL');
+    }
+
+    const response = await fetch(`${INVENTORY_API_URL}/bots/connected`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-Inventory/1.0',
+      },
+    });
+
+    if (!response.ok) {
+      console.error(
+        `[SERVER] fetchConnectedBots: Failed with status ${response.status} ${response.statusText}`,
+      );
+      return null;
+    }
+
+    const data = await response.json();
+    return data as ConnectedBotsResponse;
+  } catch (err) {
+    console.error('[SERVER] fetchConnectedBots: Unexpected error:', err);
+    return null;
+  }
+}
+
+export interface QueueInfo {
+  queue_length: number;
+  current_delay: number;
+  last_dequeue: {
+    user_id: string;
+    data: unknown;
+  };
+}
+
+export async function fetchQueueInfo(): Promise<QueueInfo | null> {
+  try {
+    if (!INVENTORY_API_URL) {
+      throw new Error('Missing INVENTORY_API_URL');
+    }
+
+    const response = await fetch(`${INVENTORY_API_URL}/queue/info`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-Inventory/1.0',
+      },
+    });
+
+    if (!response.ok) {
+      console.error(
+        `[SERVER] fetchQueueInfo: Failed with status ${response.status} ${response.statusText}`,
+      );
+      return null;
+    }
+
+    const data = await response.json();
+    return data as QueueInfo;
+  } catch (err) {
+    console.error('[SERVER] fetchQueueInfo: Unexpected error:', err);
+    return null;
+  }
+}
+
 export interface CrewLeaderboardEntry {
   ClanId?: string; // Make ClanId optional since older seasons don't have it
   ClanName: string;
@@ -1462,7 +1533,6 @@ export async function fetchRobloxUserByUsername(username: string) {
     if (data && data.data && Array.isArray(data.data) && data.data.length > 0) {
       return data.data[0];
     } else {
-      console.warn('[SERVER] fetchRobloxUserByUsername: No user found for username:', username);
       return null;
     }
   } catch (err) {
@@ -1498,7 +1568,6 @@ export async function fetchUsersWithFlags(): Promise<UserWithFlags[]> {
 }
 
 export async function fetchOGSearchData(robloxId: string, timeoutMs: number = 30000) {
-  console.log('[SERVER] fetchOGSearchData called with robloxId:', robloxId);
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);

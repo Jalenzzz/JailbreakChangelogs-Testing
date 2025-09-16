@@ -74,12 +74,9 @@ export default function InventoryCheckerClient({
 
   // Show toast notifications for scan status
   useEffect(() => {
-    if (
-      scanWebSocket.message &&
-      scanWebSocket.message.includes('You will be scanned when you join')
-    ) {
-      toast.success('You will be scanned when you join a trading server', {
-        duration: 4000,
+    if (scanWebSocket.message && scanWebSocket.message.includes('User not found in game')) {
+      toast.error('User not found in game. Please join a trade server and try again.', {
+        duration: 5000,
         position: 'bottom-right',
       });
     } else if (scanWebSocket.message && scanWebSocket.message.includes('User found in game')) {
