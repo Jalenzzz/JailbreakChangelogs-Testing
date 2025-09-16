@@ -12,7 +12,7 @@ import { useAuthContext } from '@/contexts/AuthContext';
 import { useScanWebSocket } from '@/hooks/useScanWebSocket';
 import { DiscordIcon } from '@/components/Icons/DiscordIcon';
 import { RobloxIcon } from '@/components/Icons/RobloxIcon';
-import { UserConnectionData } from '@/app/inventories/UserDataStreamer';
+import { UserConnectionData } from '@/app/inventories/types';
 import toast from 'react-hot-toast';
 
 // Helper function to parse cash value strings for totals (returns 0 for N/A)
