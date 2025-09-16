@@ -7,6 +7,8 @@ import Image from 'next/image';
 import { RobloxIcon } from '@/components/Icons/RobloxIcon';
 import { TrophyIcon } from '@heroicons/react/24/solid';
 import confetti from 'canvas-confetti';
+import Breadcrumb from '@/components/Layout/Breadcrumb';
+import { Dialog } from '@headlessui/react';
 
 export default function RedeemPage() {
   const [code, setCode] = useState('');
@@ -188,13 +190,14 @@ export default function RedeemPage() {
   };
 
   return (
-    <div className="container mx-auto max-w-[1920px] px-8 py-16">
+    <div className="container mx-auto max-w-[1920px] px-4 py-16 sm:px-8">
+      <Breadcrumb />
       <div className="mx-auto max-w-5xl">
         <h1 className="mb-12 text-center text-4xl font-bold text-white">
           Redeem Jailbreak Changelogs Code
         </h1>
 
-        <div className="grid gap-16 md:grid-cols-2">
+        <div className="grid gap-8 sm:gap-16 lg:grid-cols-2">
           {/* Left Column - Redemption Form */}
           <div className="space-y-8">
             <form onSubmit={handleRedeem} className="space-y-8">
@@ -302,26 +305,27 @@ export default function RedeemPage() {
           </div>
 
           {/* Right Column - Instructions */}
-          <div className="rounded-lg border border-gray-700/50 bg-[#212a31] p-8">
+          <div className="rounded-lg border border-gray-700/50 bg-[#212a31] p-4 sm:p-8">
             <h2 className="mb-6 text-2xl font-semibold text-white">How to Get a Code</h2>
             <ol className="space-y-6 text-gray-300">
-              <li className="flex items-start">
-                <span className="mr-4 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#1d7da3] font-semibold text-white">
+              <li className="flex flex-col sm:flex-row sm:items-start">
+                <span className="mb-2 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#1d7da3] font-semibold text-white sm:mr-4 sm:mb-0">
                   1
                 </span>
                 <div className="text-lg">
                   <span>Purchase a Supporter Tier via:</span>
                   <ul className="mt-2 space-y-2 text-base">
-                    <li className="flex items-center">
-                      <span className="mr-2 h-2 w-2 rounded-full bg-blue-300"></span>
-                      <Image
-                        src="https://assets.jailbreakchangelogs.xyz/assets/images/kofi_assets/kofi_symbol.svg"
-                        alt="Ko-fi Symbol"
-                        width={16}
-                        height={16}
-                        className="mr-2"
-                      />
-                      <span>
+                    <li className="flex flex-col items-center sm:flex-row sm:items-center">
+                      <div className="mb-1 flex items-center sm:mb-0">
+                        <Image
+                          src="https://assets.jailbreakchangelogs.xyz/assets/images/kofi_assets/kofi_symbol.svg"
+                          alt="Ko-fi Symbol"
+                          width={16}
+                          height={16}
+                          className="mr-2"
+                        />
+                      </div>
+                      <span className="text-center sm:ml-0 sm:text-left">
                         <a
                           href="https://ko-fi.com/jbchangelogs"
                           target="_blank"
@@ -336,10 +340,11 @@ export default function RedeemPage() {
                     <li className="flex items-center justify-center text-sm font-medium text-gray-400">
                       OR
                     </li>
-                    <li className="flex items-center">
-                      <span className="mr-2 h-2 w-2 rounded-full bg-blue-300"></span>
-                      <RobloxIcon className="mr-2 h-4 w-4" />
-                      <span>
+                    <li className="flex flex-col items-center sm:flex-row sm:items-center">
+                      <div className="mb-1 flex items-center sm:mb-0">
+                        <RobloxIcon className="mr-2 h-4 w-4" />
+                      </div>
+                      <span className="text-center sm:ml-0 sm:text-left">
                         Our{' '}
                         <a
                           href="https://www.roblox.com/games/104188650191561/Support-Us"
@@ -355,8 +360,8 @@ export default function RedeemPage() {
                   </ul>
                 </div>
               </li>
-              <li className="flex items-start">
-                <span className="mr-4 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#1d7da3] font-semibold text-white">
+              <li className="flex flex-col sm:flex-row sm:items-start">
+                <span className="mb-2 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#1d7da3] font-semibold text-white sm:mr-4 sm:mb-0">
                   2
                 </span>
                 <div className="text-lg">
@@ -375,8 +380,8 @@ export default function RedeemPage() {
                   </p>
                 </div>
               </li>
-              <li className="flex items-start">
-                <span className="mr-4 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#1d7da3] font-semibold text-white">
+              <li className="flex flex-col sm:flex-row sm:items-start">
+                <span className="mb-2 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#1d7da3] font-semibold text-white sm:mr-4 sm:mb-0">
                   3
                 </span>
                 <span className="text-lg">
@@ -421,11 +426,19 @@ export default function RedeemPage() {
         </div>
       </div>
 
-      {showConfirmModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="mx-4 w-full max-w-md rounded-lg border border-[#2E3944] bg-[#212A31] p-6 shadow-xl">
+      <Dialog
+        open={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        className="relative z-50"
+      >
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
+
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <Dialog.Panel className="mx-auto w-full max-w-md rounded-lg bg-[#212A31] p-4 sm:p-6">
             <div className="mb-4">
-              <h3 className="text-xl font-semibold text-white">Confirm Code Redemption</h3>
+              <Dialog.Title className="text-xl font-semibold text-white">
+                Confirm Code Redemption
+              </Dialog.Title>
               <p className="mt-2 text-sm text-gray-400">
                 Are you sure you want to redeem this code?
               </p>
@@ -434,31 +447,37 @@ export default function RedeemPage() {
             <div className="mb-6 rounded-lg border border-[#37424D] bg-[#2E3944] p-3">
               <p className="text-sm text-gray-300">
                 <span className="font-medium">Code:</span>{' '}
-                <code className="text-blue-300">{code}</code>
+                <code className="block max-w-full truncate text-blue-300">{code}</code>
               </p>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row">
               <button
                 onClick={() => setShowConfirmModal(false)}
-                className="flex-1 rounded-lg border border-[#37424D] bg-[#2E3944] px-4 py-2 text-white transition-colors hover:bg-[#2E3944] hover:text-white"
+                className="w-full rounded-lg border border-[#37424D] bg-[#2E3944] px-4 py-2 text-white transition-colors hover:bg-[#2E3944] hover:text-white sm:flex-1"
               >
                 Cancel
               </button>
               <button
                 onClick={confirmRedeem}
-                className="flex-1 rounded-lg bg-[#1d7da3] px-4 py-2 text-white transition-colors hover:bg-[#124e66]"
+                className="w-full rounded-lg bg-[#1d7da3] px-4 py-2 text-white transition-colors hover:bg-[#124e66] sm:flex-1"
               >
                 Redeem Code
               </button>
             </div>
-          </div>
+          </Dialog.Panel>
         </div>
-      )}
+      </Dialog>
 
-      {showCelebrationModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-          <div className="mx-4 w-full max-w-lg rounded-lg border border-[#2E3944] bg-[#212A31] p-8 shadow-xl">
+      <Dialog
+        open={showCelebrationModal}
+        onClose={() => setShowCelebrationModal(false)}
+        className="relative z-50"
+      >
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm" aria-hidden="true" />
+
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <Dialog.Panel className="mx-auto w-full max-w-lg rounded-lg bg-[#212A31] p-4 sm:p-8">
             <div className="absolute inset-0 overflow-hidden rounded-lg">
               <div
                 className="absolute -top-4 left-1/4 h-2 w-2 animate-bounce rounded-full bg-yellow-400"
@@ -487,7 +506,9 @@ export default function RedeemPage() {
                 <TrophyIcon className="h-10 w-10 text-white" />
               </div>
 
-              <h2 className="mb-4 text-3xl font-bold text-white">Code Redeemed Successfully!</h2>
+              <Dialog.Title className="mb-4 text-3xl font-bold text-white">
+                Code Redeemed Successfully!
+              </Dialog.Title>
 
               <p className="mb-4 text-lg text-gray-300">
                 Your supporter code has been successfully redeemed! You now have access to your new
@@ -498,24 +519,24 @@ export default function RedeemPage() {
                 Thank you for your support!
               </p>
 
-              <div className="flex gap-3">
+              <div className="flex flex-col gap-3 sm:flex-row">
                 <Link
                   href="/supporting"
-                  className="flex-1 rounded-lg border border-[#37424D] bg-[#2E3944] px-4 py-2 text-white transition-colors hover:bg-[#2E3944] hover:text-white"
+                  className="w-full rounded-lg border border-[#37424D] bg-[#2E3944] px-4 py-2 text-white transition-colors hover:bg-[#2E3944] hover:text-white sm:flex-1"
                 >
                   View All Benefits
                 </Link>
                 <Link
                   href="/"
-                  className="flex-1 rounded-lg bg-gradient-to-r from-[#5865F2] to-[#4752C4] px-4 py-2 text-white transition-colors hover:from-[#4752C4] hover:to-[#3C45A5]"
+                  className="w-full rounded-lg bg-gradient-to-r from-[#5865F2] to-[#4752C4] px-4 py-2 text-white transition-colors hover:from-[#4752C4] hover:to-[#3C45A5] sm:flex-1"
                 >
                   Get Started
                 </Link>
               </div>
             </div>
-          </div>
+          </Dialog.Panel>
         </div>
-      )}
+      </Dialog>
     </div>
   );
 }
