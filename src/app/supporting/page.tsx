@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { TrophyIcon, CheckIcon } from '@heroicons/react/24/solid';
 import { RobloxIcon } from '@/components/Icons/RobloxIcon';
 import { getAllowedFileExtensions } from '@/config/settings';
+import { fetchSupporters } from '@/utils/api';
+import SupportersSection from '@/components/Support/SupportersSection';
 
 interface SupporterTier {
   name: string;
@@ -68,9 +70,10 @@ const supporterTiers: SupporterTier[] = [
   },
 ];
 
-export default function SupportingPage() {
+export default async function SupportingPage() {
+  const supporters = await fetchSupporters();
   return (
-    <>
+    <div className="min-h-screen pb-8">
       <div className="container mx-auto mb-8 max-w-[1920px] px-4 py-8">
         <div className="mb-12 text-center">
           <h1 className="mb-4 text-4xl font-bold text-white">Support Jailbreak Changelogs</h1>
@@ -269,6 +272,8 @@ export default function SupportingPage() {
           </div>
         </div>
       </div>
-    </>
+
+      <SupportersSection supporters={supporters} />
+    </div>
   );
 }
