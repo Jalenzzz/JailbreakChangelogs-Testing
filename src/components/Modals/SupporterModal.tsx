@@ -2,6 +2,7 @@ import React from 'react';
 import { Dialog } from '@headlessui/react';
 import { XMarkIcon, TrophyIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import { getAllowedFileExtensions } from '@/config/settings';
 
 interface SupporterModalProps {
   isOpen: boolean;
@@ -24,7 +25,7 @@ const SUPPORTER_TIERS = [
     name: 'Supporter I',
     price: '75R$',
     priceAlt: 'or $1 on Ko-fi',
-    features: ['Post Comments up to 400 characters', 'Custom Regular Avatar'],
+    features: ['Post Comments up to 400 characters'],
     color: 'border-[#CD7F32]',
     badgeColor: 'from-[#CD7F32] to-[#B87333]',
   },
@@ -34,7 +35,8 @@ const SUPPORTER_TIERS = [
     priceAlt: 'or $3 on Ko-fi',
     features: [
       'Post Comments up to 800 characters',
-      'Custom Regular Banner',
+      `Upload and Use Custom Avatars (${getAllowedFileExtensions()})`,
+      `Upload and Use Custom Banners (${getAllowedFileExtensions()})`,
       'On-Demand Inventory Refresh',
     ],
     color: 'border-[#C0C0C0]',
@@ -46,9 +48,8 @@ const SUPPORTER_TIERS = [
     price: '400R$',
     priceAlt: 'or $5 on Ko-fi',
     features: [
-      'Post Comments up to 2000 characters',
-      'Custom Animated Avatar',
-      'Custom Animated Banner',
+      'Post Comments up to 2,000 characters',
+      'Square Avatar Border',
       'On-Demand Inventory Refresh',
     ],
     color: 'border-[#FFD700]',
@@ -75,7 +76,7 @@ const getFeatureDescription = (
       return {
         title: 'Unlock Custom Avatars',
         description:
-          "You're trying to set a custom avatar, but this feature requires a higher supporter tier. Upgrade to unlock custom avatar functionality!",
+          "You're trying to upload and use a custom avatar, but this feature requires Supporter II or higher. Upgrade to unlock custom avatar functionality!",
         current: `Current tier: ${currentLimit}`,
         required: `Required: ${requiredLimit}`,
       };
@@ -83,23 +84,7 @@ const getFeatureDescription = (
       return {
         title: 'Unlock Custom Banners',
         description:
-          "You're trying to set a custom banner, but this feature requires a higher supporter tier. Upgrade to unlock custom banner functionality!",
-        current: `Current tier: ${currentLimit}`,
-        required: `Required: ${requiredLimit}`,
-      };
-    case 'animated_avatar':
-      return {
-        title: 'Unlock Animated Avatars',
-        description:
-          "You're trying to set an animated avatar (GIF), but this feature requires the highest supporter tier. Upgrade to unlock animated avatar functionality!",
-        current: `Current tier: ${currentLimit}`,
-        required: `Required: ${requiredLimit}`,
-      };
-    case 'animated_banner':
-      return {
-        title: 'Unlock Animated Banners',
-        description:
-          "You're trying to set an animated banner (GIF), but this feature requires the highest supporter tier. Upgrade to unlock animated banner functionality!",
+          "You're trying to upload and use a custom banner, but this feature requires Supporter II or higher. Upgrade to unlock custom banner functionality!",
         current: `Current tier: ${currentLimit}`,
         required: `Required: ${requiredLimit}`,
       };
@@ -254,19 +239,15 @@ export default function SupporterModal({
                             );
                           } else if (feature === 'custom_avatar') {
                             return (
-                              <span className="block text-gray-300">Custom Regular Avatar</span>
+                              <span className="block text-gray-300">
+                                Upload and Use Custom Avatars ({getAllowedFileExtensions()})
+                              </span>
                             );
                           } else if (feature === 'custom_banner') {
                             return (
-                              <span className="block text-gray-300">Custom Regular Banner</span>
-                            );
-                          } else if (feature === 'animated_avatar') {
-                            return (
-                              <span className="block text-gray-300">Custom Animated Avatar</span>
-                            );
-                          } else if (feature === 'animated_banner') {
-                            return (
-                              <span className="block text-gray-300">Custom Animated Banner</span>
+                              <span className="block text-gray-300">
+                                Upload and Use Custom Banners ({getAllowedFileExtensions()})
+                              </span>
                             );
                           } else if (feature === 'inventory_refresh') {
                             return (

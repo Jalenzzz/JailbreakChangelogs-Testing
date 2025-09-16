@@ -25,8 +25,7 @@ export const BannerSettings = ({ userData, onBannerUpdate }: BannerSettingsProps
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Supporter modal hook
-  const { modalState, closeModal, checkBannerAccess, checkAnimatedBannerAccess } =
-    useSupporterModal();
+  const { modalState, closeModal, checkBannerAccess } = useSupporterModal();
 
   const validateBannerUrl = useCallback((url: string) => {
     setBannerError(null);
@@ -106,13 +105,6 @@ export const BannerSettings = ({ userData, onBannerUpdate }: BannerSettingsProps
       return; // Modal will be shown by the hook
     }
 
-    // Check for animated banner access if it's a GIF
-    if (file.type === 'image/gif') {
-      if (!checkAnimatedBannerAccess(userData.premiumtype || 0)) {
-        return; // Modal will be shown by the hook
-      }
-    }
-
     // Client-side file validation before upload
     if (
       !UPLOAD_CONFIG.ALLOWED_FILE_TYPES.includes(
@@ -183,13 +175,6 @@ export const BannerSettings = ({ userData, onBannerUpdate }: BannerSettingsProps
       return; // Modal will be shown by the hook
     }
 
-    // Check for animated banner access if it's a GIF
-    if (customBannerUrl.toLowerCase().includes('.gif')) {
-      if (!checkAnimatedBannerAccess(userData.premiumtype || 0)) {
-        return; // Modal will be shown by the hook
-      }
-    }
-
     if (!isValidBanner) return;
 
     try {
@@ -234,7 +219,7 @@ export const BannerSettings = ({ userData, onBannerUpdate }: BannerSettingsProps
           >
             <Chip
               icon={<TrophyIcon className="h-4 w-4" style={{ color: '#C0C0C0' }} />}
-              label="Supporter II"
+              label="Supporter Tier 2"
               size="small"
               sx={{
                 backgroundColor: 'rgba(192, 192, 192, 0.1)',
@@ -298,6 +283,11 @@ export const BannerSettings = ({ userData, onBannerUpdate }: BannerSettingsProps
                 },
                 '& .MuiInputBase-input': {
                   color: '#D3D9D4',
+                },
+                '& .MuiInputBase-input.Mui-disabled': {
+                  color: '#D3D9D4 !important',
+                  WebkitTextFillColor: '#D3D9D4 !important',
+                  cursor: 'not-allowed',
                 },
                 '& .MuiFormHelperText-root': {
                   marginTop: '4px',

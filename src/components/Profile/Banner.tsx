@@ -8,6 +8,7 @@ interface BannerProps {
   banner?: string;
   customBanner?: string;
   settings?: UserSettings;
+  premiumType?: number;
 }
 
 // Move static data outside component
@@ -31,7 +32,14 @@ const getBannerUrl = (userId: string, bannerHash: string) => {
   return `https://cdn.discordapp.com/banners/${userId}/${bannerHash}?size=4096`;
 };
 
-export const Banner = ({ userId, username, banner, customBanner, settings }: BannerProps) => {
+export const Banner = ({
+  userId,
+  username,
+  banner,
+  customBanner,
+  settings,
+  premiumType,
+}: BannerProps) => {
   const [fallbackBanner, setFallbackBanner] = useState<string | null>(null);
   const [primaryBannerFailed, setPrimaryBannerFailed] = useState(false);
 
@@ -78,12 +86,31 @@ export const Banner = ({ userId, username, banner, customBanner, settings }: Ban
     }
 
     // If user has explicitly chosen to use custom banner (Discord toggle off)
-    if (settings?.banner_discord === 0 && customBanner && customBanner !== 'N/A') {
+    // BUT only if they have Tier 2+ (custom banners require Tier 2+)
+    if (
+      settings?.banner_discord === 0 &&
+      premiumType &&
+      premiumType >= 2 &&
+      customBanner &&
+      customBanner !== 'N/A'
+    ) {
       return {
         src: customBanner,
         alt: 'Profile banner',
         onError: handleBannerError,
       };
+    }
+
+    // If user is Tier 1 or below but has custom banner setting, fall back to Discord banner
+    if (settings?.banner_discord === 0 && (!premiumType || premiumType < 2)) {
+      // Only show Discord banner if it exists and is not "None"
+      if (banner && banner !== 'None') {
+        return {
+          src: getBannerUrl(userId, banner),
+          alt: 'Profile banner',
+          onError: handleBannerError,
+        };
+      }
     }
 
     // Default to the calculated fallback
