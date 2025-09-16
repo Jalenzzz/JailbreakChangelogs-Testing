@@ -186,7 +186,6 @@ export default function UserStats({
   const [isLoadingValues, setIsLoadingValues] = useState<boolean>(true);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [refreshedData, setRefreshedData] = useState<InventoryData | null>(null);
-  const [refreshCooldown, setRefreshCooldown] = useState<number>(0);
 
   // Check if data is relatively fresh (less than 10 minutes old)
   const isDataFresh = () => {
@@ -236,7 +235,7 @@ export default function UserStats({
 
   // Refresh function
   const handleRefresh = async () => {
-    if (isRefreshing || refreshCooldown > 0) return;
+    if (isRefreshing) return;
 
     // Check if user has access to refresh feature
     if (!checkRefreshAccess()) return;
@@ -277,20 +276,8 @@ export default function UserStats({
       });
     } finally {
       setIsRefreshing(false);
-      // Start 30-second cooldown
-      setRefreshCooldown(30);
     }
   };
-
-  // Cooldown timer effect
-  useEffect(() => {
-    if (refreshCooldown > 0) {
-      const timer = setTimeout(() => {
-        setRefreshCooldown(refreshCooldown - 1);
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [refreshCooldown]);
 
   // Show toast notifications for scan status
   useEffect(() => {
@@ -737,11 +724,11 @@ export default function UserStats({
                 {/* Refresh Button */}
                 <button
                   onClick={handleRefresh}
-                  disabled={isRefreshing || isDataFresh() || refreshCooldown > 0}
+                  disabled={isRefreshing || isDataFresh()}
                   className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                     isRefreshing
                       ? 'cursor-progress bg-[#37424D] text-gray-400'
-                      : isDataFresh() || refreshCooldown > 0
+                      : isDataFresh()
                         ? 'cursor-not-allowed bg-[#37424D] text-gray-400'
                         : 'bg-[#5865F2] text-white hover:bg-[#4752C4]'
                   }`}
@@ -764,23 +751,6 @@ export default function UserStats({
                         />
                       </svg>
                       Refreshing...
-                    </>
-                  ) : refreshCooldown > 0 ? (
-                    <>
-                      <svg
-                        className="h-4 w-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                      Cooldown ({refreshCooldown}s)
                     </>
                   ) : isDataFresh() ? (
                     <>
