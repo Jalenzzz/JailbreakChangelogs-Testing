@@ -28,11 +28,11 @@ export default function SupportersSection({ supporters }: SupportersSectionProps
         Made possible by <span className="text-blue-300 underline">supporters</span>
       </h2>
       <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
-        <div className="grid grid-cols-1 justify-center gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-1 justify-center gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
           {shuffledSupporters.map((supporter) => (
             <div key={supporter.id} className="group">
               <div className="rounded-lg p-4 transition-all duration-200 hover:bg-[#2E3944]">
-                <div className="flex items-center space-x-3">
+                <div className="flex flex-col items-center space-y-3 [@media(min-width:375px)]:flex-row [@media(min-width:375px)]:items-center [@media(min-width:375px)]:space-y-0 [@media(min-width:375px)]:space-x-3">
                   <UserAvatar
                     userId={supporter.id}
                     avatarHash={supporter.avatar || null}
@@ -43,7 +43,7 @@ export default function SupportersSection({ supporters }: SupportersSectionProps
                     premiumType={supporter.premiumtype}
                     settings={{ avatar_discord: 1 }}
                   />
-                  <div className="min-w-0 flex-1">
+                  <div className="min-w-0 flex-1 text-center [@media(min-width:375px)]:text-left">
                     <Link href={`/users/${supporter.id}`}>
                       <h3 className="truncate text-sm font-semibold text-blue-300 transition-colors hover:text-blue-200 md:text-base">
                         {supporter.global_name && supporter.global_name !== 'None'
