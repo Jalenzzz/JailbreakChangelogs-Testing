@@ -51,6 +51,7 @@ export default function InventoryCheckerClient({
   const [robloxAvatars, setRobloxAvatars] = useState(initialRobloxAvatars || {});
   const [itemsData, setItemsData] = useState<Item[]>([]);
   const [loadingUserIds, setLoadingUserIds] = useState<Set<string>>(new Set());
+  const [refreshedData, setRefreshedData] = useState<InventoryData | null>(null);
   const dupedItems = initialDupeData && Array.isArray(initialDupeData) ? initialDupeData : [];
   const isLoadingDupes = false;
 
@@ -62,6 +63,14 @@ export default function InventoryCheckerClient({
 
   // Check if current user is viewing their own inventory
   const isOwnInventory = isAuthenticated && user?.roblox_id === robloxId;
+
+  // Use refreshed data if available, otherwise use initial data
+  const currentData = refreshedData || initialData;
+
+  // Function to handle data refresh
+  const handleDataRefresh = (newData: InventoryData) => {
+    setRefreshedData(newData);
+  };
 
   // Show toast notifications for scan status
   useEffect(() => {
@@ -691,22 +700,23 @@ export default function InventoryCheckerClient({
       )}
 
       {/* User Stats and Inventory Items - Only show when no error and has data */}
-      {!error && initialData && (
+      {!error && initialData && currentData && (
         <>
           {/* User Stats */}
           <UserStats
-            initialData={initialData}
+            initialData={currentData}
             robloxUsers={robloxUsers}
             robloxAvatars={robloxAvatars}
             userConnectionData={userConnectionData}
             itemsData={itemsData}
             dupedItems={dupedItems}
             isLoadingDupes={isLoadingDupes}
+            onDataRefresh={handleDataRefresh}
           />
 
           {/* Inventory Items */}
           <InventoryItems
-            initialData={initialData}
+            initialData={currentData}
             robloxUsers={robloxUsers}
             robloxAvatars={robloxAvatars}
             onItemClick={handleItemClick}

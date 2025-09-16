@@ -32,7 +32,11 @@ const SUPPORTER_TIERS = [
     name: 'Supporter II',
     price: '200R$',
     priceAlt: 'or $3 on Ko-fi',
-    features: ['Post Comments up to 800 characters', 'Custom Regular Banner'],
+    features: [
+      'Post Comments up to 800 characters',
+      'Custom Regular Banner',
+      'On-Demand Inventory Refresh',
+    ],
     color: 'border-[#C0C0C0]',
     badgeColor: 'from-[#C0C0C0] to-[#A9A9A9]',
     recommended: true,
@@ -45,6 +49,7 @@ const SUPPORTER_TIERS = [
       'Post Comments up to 2000 characters',
       'Custom Animated Avatar',
       'Custom Animated Banner',
+      'On-Demand Inventory Refresh',
     ],
     color: 'border-[#FFD700]',
     badgeColor: 'from-[#FFD700] to-[#DAA520]',
@@ -106,6 +111,14 @@ const getFeatureDescription = (
         current: `Current tier: ${currentLimit}`,
         required: `Required: ${requiredLimit}`,
       };
+    case 'inventory_refresh':
+      return {
+        title: 'Unlock On-Demand Inventory Refresh',
+        description:
+          "You're trying to refresh inventory data on-demand, but this feature requires Supporter II or higher. Upgrade to unlock instant inventory refreshes anytime!",
+        current: `Current tier: ${currentLimit}`,
+        required: `Required: ${requiredLimit}`,
+      };
     default:
       return {
         title: 'Supporter Feature',
@@ -163,7 +176,7 @@ export default function SupporterModal({
 
               {featureInfo.current && (
                 <div className="rounded-lg border border-[#37424D] bg-[#2E3944] p-4">
-                  <span className="text-sm text-[#748D92]">{featureInfo.current}</span>
+                  <span className="text-sm font-medium text-white">{featureInfo.current}</span>
                 </div>
               )}
             </div>
@@ -255,6 +268,12 @@ export default function SupporterModal({
                             return (
                               <span className="block text-gray-300">Custom Animated Banner</span>
                             );
+                          } else if (feature === 'inventory_refresh') {
+                            return (
+                              <span className="block text-gray-300">
+                                On-Demand Inventory Refresh
+                              </span>
+                            );
                           } else {
                             // fallback: show the first feature
                             return recommendedTier && recommendedTier.features[0] ? (
@@ -281,7 +300,7 @@ export default function SupporterModal({
               </Link>
               <button
                 onClick={onClose}
-                className="rounded-lg border border-[#37424D] px-6 py-3 text-[#D3D9D4] transition-colors hover:bg-[#2E3944] hover:text-white"
+                className="cursor-pointer rounded-lg border border-[#37424D] bg-[#2E3944] px-6 py-3 text-[#D3D9D4] transition-colors hover:bg-[#37424D] hover:text-white"
               >
                 Maybe Later
               </button>
@@ -289,9 +308,9 @@ export default function SupporterModal({
 
             {/* Footer Note */}
             <div className="mt-4 rounded-lg border border-[#37424D] bg-[#2E3944] p-3">
-              <p className="text-center text-xs text-[#748D92]">
-                💡 <strong>Pro tip:</strong> All supporter purchases are one-time only and
-                non-refundable! Once you purchase, you keep the perks forever.
+              <p className="text-center text-xs text-[#B8C5CA]">
+                💡 <strong className="text-[#D3D9D4]">Pro tip:</strong> All supporter purchases are
+                one-time only and non-refundable! Once you purchase, you keep the perks forever.
               </p>
             </div>
           </div>

@@ -1543,6 +1543,49 @@ export async function fetchOGSearchData(robloxId: string, timeoutMs: number = 30
   }
 }
 
+export async function fetchInventoryDataRefresh(robloxId: string) {
+  console.log('[SERVER] fetchInventoryDataRefresh called with robloxId:', robloxId);
+  try {
+    const response = await fetch(`${INVENTORY_API_URL}/user?id=${robloxId}&nocache=true`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0',
+      },
+    });
+
+    if (!response.ok) {
+      console.error(
+        `[SERVER] Inventory refresh API returned ${response.status} for ID: ${robloxId}`,
+      );
+
+      if (response.status === 404) {
+        return {
+          error: 'not_found',
+          message: 'Inventory not found for this user.',
+        };
+      }
+
+      throw new Error(`Failed to fetch refreshed inventory data: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error('[SERVER] Error fetching refreshed inventory data:', err);
+
+    if (err instanceof Error) {
+      return {
+        error: 'fetch_error',
+        message: `Failed to refresh inventory data: ${err.message}`,
+      };
+    }
+
+    return {
+      error: 'fetch_error',
+      message: 'Failed to refresh inventory data. Please try again.',
+    };
+  }
+}
+
 export interface Supporter {
   id: string;
   username: string;
