@@ -1372,12 +1372,31 @@ export async function fetchConnectedBots(): Promise<ConnectedBotsResponse | null
   }
 }
 
+interface InventoryItem {
+  id: string;
+  title: string;
+  price: number;
+  categoryName: string;
+  itemType: string;
+}
+
 export interface QueueInfo {
   queue_length: number;
   current_delay: number;
   last_dequeue: {
     user_id: string;
-    data: unknown;
+    data: {
+      job_id: string;
+      money: number;
+      data: InventoryItem[];
+      user_id: string;
+      last_updated: number;
+      has_season_pass: boolean;
+      gamepasses: string[];
+      level: number;
+      xp: number;
+      bot_id: string;
+    };
   };
 }
 

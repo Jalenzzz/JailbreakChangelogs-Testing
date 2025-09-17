@@ -23,6 +23,12 @@ export default function ConnectedBotsPolling() {
   >({});
   const [loading, setLoading] = useState(true);
 
+  // Get relative time for last scanned user
+  const lastScannedRelativeTime = useOptimizedRealTimeRelativeDate(
+    queueInfo?.last_dequeue?.data?.last_updated || 0,
+    'last-scanned',
+  );
+
   // Filter active bots (last 30 seconds) and sort alphabetically by display name
   const activeBots =
     botsData?.recent_heartbeats
@@ -217,7 +223,7 @@ export default function ConnectedBotsPolling() {
       </div>
       <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4 shadow-sm">
         {isLoading ? (
-          <div className="flex items-center justify-center py-12">
+          <div className="flex items-center justify-center py-20">
             <div className="flex items-center gap-2">
               <div className="h-5 w-5 animate-spin rounded-full border-2 border-blue-400 border-t-transparent"></div>
               <span className="text-sm text-blue-400">Updating...</span>
@@ -241,7 +247,7 @@ export default function ConnectedBotsPolling() {
                   </span>
                 </div>
                 <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
-                  <span className="text-gray-400">Last Processed:</span>
+                  <span className="text-gray-400">Last Scanned:</span>
                   <div className="flex items-center gap-2">
                     {/* Avatar for last processed user */}
                     <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-gray-600">
@@ -284,11 +290,32 @@ export default function ConnectedBotsPolling() {
                         lastProcessedUserData?.[queueInfo.last_dequeue.user_id]?.name ||
                         queueInfo.last_dequeue.user_id}
                     </a>
-                    <span className="text-gray-400">
-                      @
-                      {lastProcessedUserData?.[queueInfo.last_dequeue.user_id]?.name ||
-                        queueInfo.last_dequeue.user_id}
-                    </span>
+                    {/* Show which bot scanned this user and timestamp */}
+                    {(() => {
+                      const botId = queueInfo.last_dequeue.data.bot_id;
+                      const botUserData = botUsersData?.[botId];
+                      if (botUserData) {
+                        const botDisplayName =
+                          botUserData.displayName || botUserData.name || `Bot ${botId}`;
+                        return (
+                          <span className="text-xs text-gray-400">
+                            (scanned by{' '}
+                            <a
+                              href={`https://www.roblox.com/users/${botId}/profile`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-300 transition-colors hover:text-blue-200"
+                            >
+                              {botDisplayName}
+                            </a>
+                            ) • {lastScannedRelativeTime}
+                          </span>
+                        );
+                      }
+                      return (
+                        <span className="text-xs text-gray-400">• {lastScannedRelativeTime}</span>
+                      );
+                    })()}
                   </div>
                 </div>
               </div>
