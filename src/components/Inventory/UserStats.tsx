@@ -549,6 +549,7 @@ export default function UserStats({
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-muted flex items-center gap-2 rounded-full bg-gray-600 px-3 py-1.5"
+                  onClick={(e) => e.stopPropagation()}
                 >
                   <RobloxIcon className="h-4 w-4 flex-shrink-0" />
                   <span className="text-sm font-medium">Roblox</span>
