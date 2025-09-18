@@ -74,8 +74,7 @@ export default function XpProgressBar({ currentLevel, currentXp, season }: XpPro
     Math.max(0, (currentXpInLevel / xpRequiredForNextLevel) * 100),
   );
 
-  // Don't show if already at max level or invalid data
-  if (currentLevel >= xpData.targetLevel || xpRequiredForNextLevel <= 0) {
+  if (xpRequiredForNextLevel <= 0) {
     return null;
   }
 

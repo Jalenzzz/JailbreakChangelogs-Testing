@@ -879,9 +879,6 @@ export async function fetchInventoryData(robloxId: string) {
             clearTimeout(timeout);
             try {
               const parsed = JSON.parse(data);
-              if (parsed && typeof parsed === 'object' && 'action' in parsed) {
-                const action = (parsed as Record<string, unknown>).action;
-              }
               resolve(parsed);
             } catch (e) {
               console.error(`[WS] Parse error for user ${robloxId}:`, e);
@@ -910,18 +907,11 @@ export async function fetchInventoryData(robloxId: string) {
             });
           });
 
-          socket.on('close', (code: number, reason: Buffer) => {
+          socket.on('close', () => {
             // If closed before message and not settled, treat as error
             if (!settled) {
               settled = true;
               clearTimeout(timeout);
-              const reasonText = (() => {
-                try {
-                  return reason?.toString?.('utf-8') || '';
-                } catch {
-                  return '';
-                }
-              })();
               resolve({
                 error: 'ws_closed',
                 message: 'WebSocket closed before receiving data.',

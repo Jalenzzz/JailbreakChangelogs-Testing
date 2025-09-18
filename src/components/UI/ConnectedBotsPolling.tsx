@@ -8,6 +8,7 @@ import { type RobloxUser, type RobloxAvatar } from '@/types';
 import { useOptimizedRealTimeRelativeDate } from '@/hooks/useSharedTimer';
 import { formatCustomDate } from '@/utils/timestamp';
 import Image from 'next/image';
+import { DefaultAvatar } from '@/utils/avatar';
 
 export default function ConnectedBotsPolling() {
   const { botsData, queueInfo, error, isLoading, retryCount, pollingStopped } =
@@ -22,8 +23,6 @@ export default function ConnectedBotsPolling() {
     Record<string, RobloxAvatar>
   >({});
   const [loading, setLoading] = useState(true);
-
-  // Get relative time for last scanned user
   const lastScannedRelativeTime = useOptimizedRealTimeRelativeDate(
     queueInfo?.last_dequeue?.data?.last_updated || 0,
     'last-scanned',
@@ -231,25 +230,23 @@ export default function ConnectedBotsPolling() {
           </div>
         ) : (
           <>
-            {/* Queue Stats */}
             {queueInfo && (
               <div className="mb-4 space-y-2 text-sm">
-                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
+                <div className="flex items-center gap-2">
                   <span className="text-gray-400">Queue Length:</span>
                   <span className="font-bold text-white">
                     {queueInfo.queue_length.toLocaleString()}
                   </span>
                 </div>
-                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
+                <div className="flex items-center gap-2">
                   <span className="text-gray-400">Current Delay:</span>
                   <span className="font-bold text-white">
                     {queueInfo.current_delay.toFixed(2)}s
                   </span>
                 </div>
                 <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
-                  <span className="text-gray-400">Last Scanned:</span>
                   <div className="flex items-center gap-2">
-                    {/* Avatar for last processed user */}
+                    <span className="text-gray-400">Last Updated:</span>
                     <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-gray-600">
                       {lastProcessedAvatarData &&
                       Object.values(lastProcessedAvatarData).find(
@@ -269,15 +266,7 @@ export default function ConnectedBotsPolling() {
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <span className="text-xs font-bold text-white">
-                          {(
-                            lastProcessedUserData?.[queueInfo.last_dequeue.user_id]?.displayName ||
-                            lastProcessedUserData?.[queueInfo.last_dequeue.user_id]?.name ||
-                            queueInfo.last_dequeue.user_id
-                          )
-                            .charAt(0)
-                            .toUpperCase()}
-                        </span>
+                        <DefaultAvatar />
                       )}
                     </div>
                     <a
@@ -290,38 +279,36 @@ export default function ConnectedBotsPolling() {
                         lastProcessedUserData?.[queueInfo.last_dequeue.user_id]?.name ||
                         queueInfo.last_dequeue.user_id}
                     </a>
-                    {/* Show which bot scanned this user and timestamp */}
-                    {(() => {
-                      const botId = queueInfo.last_dequeue.data.bot_id;
-                      const botUserData = botUsersData?.[botId];
-                      if (botUserData) {
-                        const botDisplayName =
-                          botUserData.displayName || botUserData.name || `Bot ${botId}`;
-                        return (
-                          <span className="text-xs text-gray-400">
-                            (scanned by{' '}
-                            <a
-                              href={`https://www.roblox.com/users/${botId}/profile`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-300 transition-colors hover:text-blue-200"
-                            >
-                              {botDisplayName}
-                            </a>
-                            ) • {lastScannedRelativeTime}
-                          </span>
-                        );
-                      }
-                      return (
-                        <span className="text-xs text-gray-400">• {lastScannedRelativeTime}</span>
-                      );
-                    })()}
                   </div>
+                  {(() => {
+                    const botId = queueInfo.last_dequeue.data.bot_id;
+                    const botUserData = botUsersData?.[botId];
+                    if (botUserData) {
+                      const botDisplayName =
+                        botUserData.displayName || botUserData.name || `Bot ${botId}`;
+                      return (
+                        <span className="text-xs text-gray-400">
+                          (scanned by{' '}
+                          <a
+                            href={`https://www.roblox.com/users/${botId}/profile`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-300 transition-colors hover:text-blue-200"
+                          >
+                            {botDisplayName}
+                          </a>
+                          ) • {lastScannedRelativeTime}
+                        </span>
+                      );
+                    }
+                    return (
+                      <span className="text-xs text-gray-400">• {lastScannedRelativeTime}</span>
+                    );
+                  })()}
                 </div>
               </div>
             )}
 
-            {/* Bot List */}
             <div className="max-h-60 space-y-2 overflow-y-auto">
               {activeBots.map((bot: ConnectedBot) => (
                 <BotStatusCard
@@ -376,7 +363,6 @@ function BotStatusCard({
     <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-3">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          {/* Avatar */}
           <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-gray-600">
             {avatarUrl ? (
               <Image
@@ -387,9 +373,7 @@ function BotStatusCard({
                 className="h-full w-full object-cover"
               />
             ) : (
-              <span className="text-xs font-bold text-white">
-                {displayName.charAt(0).toUpperCase()}
-              </span>
+              <DefaultAvatar />
             )}
           </div>
 
