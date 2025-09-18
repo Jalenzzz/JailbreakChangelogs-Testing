@@ -16,7 +16,7 @@ export default function XpLevelProgressBar({
   maxTotalXp,
   season,
 }: XpLevelProgressBarProps) {
-  // Calculate progress percentage relative to max total XP
+  // Calculate progress percentage relative to max total XP.
   const progressPercentage = (totalXpForLevel / maxTotalXp) * 100;
 
   // Calculate XP required for this level (from previous level to this level)
