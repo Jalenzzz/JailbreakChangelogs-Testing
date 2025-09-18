@@ -823,7 +823,6 @@ export async function fetchComments(type: string, id: string, itemType?: string)
 }
 
 export async function fetchInventoryData(robloxId: string) {
-  console.log('[SERVER] fetchInventoryData called with robloxId:', robloxId);
   try {
     const wsResult = await (async () => {
       try {
@@ -834,7 +833,6 @@ export async function fetchInventoryData(robloxId: string) {
           (wsModule as { WebSocket?: typeof WebSocket }).WebSocket ||
           (wsModule as unknown as typeof WebSocket);
         return await new Promise((resolve) => {
-          console.log(`[WS] Connecting to ${INVENTORY_WS_URL} for user ${robloxId}`);
           const socket = new WS(`${INVENTORY_WS_URL}/socket`, {
             headers: {
               'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0',
@@ -856,10 +854,8 @@ export async function fetchInventoryData(robloxId: string) {
           }, 10000);
 
           socket.on('open', () => {
-            console.log(`[WS] Connected for user ${robloxId}`);
             try {
               socket.send(JSON.stringify({ action: 'get_data', user_id: robloxId }));
-              console.log(`[WS] Sent get_data for user ${robloxId}`);
             } catch (e) {
               // If send fails, resolve with error and close
               if (!settled) {
@@ -877,19 +873,14 @@ export async function fetchInventoryData(robloxId: string) {
             }
           });
 
-          socket.on('message', (data: Buffer | string) => {
+          socket.on('message', (data: string) => {
             if (settled) return;
             settled = true;
             clearTimeout(timeout);
             try {
-              const text = typeof data === 'string' ? data : data.toString('utf-8');
-              console.log(`[WS] Received message for user ${robloxId} (${text.length} bytes)`);
-              const parsed = JSON.parse(text);
+              const parsed = JSON.parse(data);
               if (parsed && typeof parsed === 'object' && 'action' in parsed) {
                 const action = (parsed as Record<string, unknown>).action;
-                if (typeof action === 'string') {
-                  console.log(`[WS] Payload action: ${action}`);
-                }
               }
               resolve(parsed);
             } catch (e) {
@@ -931,9 +922,6 @@ export async function fetchInventoryData(robloxId: string) {
                   return '';
                 }
               })();
-              console.warn(
-                `[WS] Closed before data for user ${robloxId} (code=${code}${reasonText ? `, reason=${reasonText}` : ''})`,
-              );
               resolve({
                 error: 'ws_closed',
                 message: 'WebSocket closed before receiving data.',
