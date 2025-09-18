@@ -18,12 +18,16 @@ export default function XpTimeResults({ timeNoPass, timeWithPass }: XpTimeResult
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="rounded bg-[#2E3944] p-3 text-center">
           <div className="text-muted mb-1 text-sm">Without Season Pass</div>
-          <div className="text-lg font-medium text-[#FFFFFF]">{timeNoPass.days} days</div>
+          <div className="text-lg font-medium text-[#FFFFFF]">
+            {timeNoPass.days} {timeNoPass.days === 1 ? 'day' : 'days'}
+          </div>
           <div className="text-muted text-sm">{timeNoPass.completionDate}</div>
         </div>
         <div className="rounded bg-[#2E3944] p-3 text-center">
           <div className="text-muted mb-1 text-sm">With Season Pass</div>
-          <div className="text-lg font-medium text-[#FFFFFF]">{timeWithPass.days} days</div>
+          <div className="text-lg font-medium text-[#FFFFFF]">
+            {timeWithPass.days} {timeWithPass.days === 1 ? 'day' : 'days'}
+          </div>
           <div className="text-muted text-sm">{timeWithPass.completionDate}</div>
         </div>
       </div>

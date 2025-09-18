@@ -8,14 +8,20 @@ import {
 import InventoryCheckerClient from './InventoryCheckerClient';
 import { RobloxUser } from '@/types';
 import { InventoryData } from './types';
+import { Season } from '@/types/seasons';
 
 interface UserDataStreamerProps {
   robloxId: string;
   inventoryData: InventoryData;
+  currentSeason: Season | null;
 }
 
 // Loading component for user data - shows inventory immediately
-function UserDataLoadingFallback({ robloxId, inventoryData }: UserDataStreamerProps) {
+function UserDataLoadingFallback({
+  robloxId,
+  inventoryData,
+  currentSeason,
+}: UserDataStreamerProps) {
   return (
     <InventoryCheckerClient
       initialData={inventoryData}
@@ -23,12 +29,13 @@ function UserDataLoadingFallback({ robloxId, inventoryData }: UserDataStreamerPr
       robloxUsers={{}}
       robloxAvatars={{}}
       userConnectionData={null}
+      currentSeason={currentSeason}
     />
   );
 }
 
 // Component that fetches user data in parallel with optimized batching
-async function UserDataFetcher({ robloxId, inventoryData }: UserDataStreamerProps) {
+async function UserDataFetcher({ robloxId, inventoryData, currentSeason }: UserDataStreamerProps) {
   // Collect all unique user IDs that need to be fetched
   const userIdsToFetch = new Set<string>();
 
@@ -154,16 +161,31 @@ async function UserDataFetcher({ robloxId, inventoryData }: UserDataStreamerProp
       robloxAvatars={robloxAvatars}
       userConnectionData={userConnectionData}
       initialDupeData={dupeData}
+      currentSeason={currentSeason}
     />
   );
 }
 
-export default function UserDataStreamer({ robloxId, inventoryData }: UserDataStreamerProps) {
+export default function UserDataStreamer({
+  robloxId,
+  inventoryData,
+  currentSeason,
+}: UserDataStreamerProps) {
   return (
     <Suspense
-      fallback={<UserDataLoadingFallback robloxId={robloxId} inventoryData={inventoryData} />}
+      fallback={
+        <UserDataLoadingFallback
+          robloxId={robloxId}
+          inventoryData={inventoryData}
+          currentSeason={currentSeason}
+        />
+      }
     >
-      <UserDataFetcher robloxId={robloxId} inventoryData={inventoryData} />
+      <UserDataFetcher
+        robloxId={robloxId}
+        inventoryData={inventoryData}
+        currentSeason={currentSeason}
+      />
     </Suspense>
   );
 }

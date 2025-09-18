@@ -8,6 +8,7 @@ import { fetchItems } from '@/utils/api';
 import { RobloxUser, Item } from '@/types';
 import { InventoryData, InventoryItem, UserConnectionData } from './types';
 import { useAuthContext } from '@/contexts/AuthContext';
+import { Season } from '@/types/seasons';
 import { useScanWebSocket } from '@/hooks/useScanWebSocket';
 import toast from 'react-hot-toast';
 import SearchForm from '@/components/Inventory/SearchForm';
@@ -23,6 +24,7 @@ interface InventoryCheckerClientProps {
   robloxAvatars?: Record<string, string>;
   userConnectionData?: UserConnectionData | null;
   initialDupeData?: unknown;
+  currentSeason?: Season | null;
   error?: string;
   isLoading?: boolean;
 }
@@ -35,6 +37,7 @@ export default function InventoryCheckerClient({
   robloxAvatars: initialRobloxAvatars,
   userConnectionData,
   initialDupeData,
+  currentSeason = null,
   error,
   isLoading: externalIsLoading,
 }: InventoryCheckerClientProps) {
@@ -709,6 +712,7 @@ export default function InventoryCheckerClient({
             dupedItems={dupedItems}
             isLoadingDupes={isLoadingDupes}
             onDataRefresh={handleDataRefresh}
+            currentSeason={currentSeason}
           />
 
           {/* Inventory Items */}

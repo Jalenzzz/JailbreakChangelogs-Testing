@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { RobloxUser, Item } from '@/types';
+import { Season } from '@/types/seasons';
 import dynamic from 'next/dynamic';
 
 const Tooltip = dynamic(() => import('@mui/material/Tooltip'), { ssr: false });
@@ -16,6 +17,7 @@ import { UserConnectionData } from '@/app/inventories/types';
 import toast from 'react-hot-toast';
 import { useSupporterModal } from '@/hooks/useSupporterModal';
 import SupporterModal from '@/components/Modals/SupporterModal';
+import XpProgressBar from './XpProgressBar';
 
 // Helper function to parse cash value strings for totals (returns 0 for N/A)
 const parseCashValueForTotal = (value: string | null): number => {
@@ -73,6 +75,7 @@ interface UserStatsProps {
   dupedItems?: unknown[];
   isLoadingDupes?: boolean;
   onDataRefresh?: (data: InventoryData) => void;
+  currentSeason?: Season | null;
 }
 
 // Gamepass mapping with links and image names
@@ -160,13 +163,6 @@ const formatDate = (timestamp: number) => {
   });
 };
 
-const getLevelColor = (level: number) => {
-  if (level >= 50) return 'text-[#ff6b6b]';
-  if (level >= 25) return 'text-[#ffa726]';
-  if (level >= 10) return 'text-[#4ade80]';
-  return 'text-white';
-};
-
 const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
   e.currentTarget.src = '/assets/images/placeholder.png';
 };
@@ -180,6 +176,7 @@ export default function UserStats({
   dupedItems = [],
   isLoadingDupes = false,
   onDataRefresh,
+  currentSeason = null,
 }: UserStatsProps) {
   const [totalCashValue, setTotalCashValue] = useState<number>(0);
   const [totalDupedValue, setTotalDupedValue] = useState<number>(0);
@@ -873,7 +870,7 @@ export default function UserStats({
       )}
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+      <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
         <div className="text-center">
           <div className="text-muted text-sm">Total Items</div>
           <Tooltip
@@ -958,16 +955,6 @@ export default function UserStats({
             </div>
           </Tooltip>
         </div>
-        <div className="text-center">
-          <div className="text-muted text-sm">Level</div>
-          <div className={`text-2xl font-bold ${getLevelColor(currentData.level)}`}>
-            {currentData.level}
-          </div>
-        </div>
-        <div className="text-center">
-          <div className="text-muted text-sm">XP</div>
-          <div className="text-2xl font-bold text-white">{formatNumber(currentData.xp)}</div>
-        </div>
         <div className="hidden text-center xl:block">
           <div className="text-muted text-sm">Money</div>
           <Tooltip
@@ -997,6 +984,13 @@ export default function UserStats({
           </Tooltip>
         </div>
       </div>
+
+      {/* XP Progress Bar */}
+      <XpProgressBar
+        currentLevel={currentData.level}
+        currentXp={currentData.xp}
+        season={currentSeason}
+      />
 
       {/* Money gets its own row for mobile and tablet */}
       <div className="mt-4 text-center xl:hidden">
