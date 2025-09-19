@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { TrophyIcon } from '@heroicons/react/24/solid';
 import UserAvatar from '@/components/Users/UserAvatarClient';
 import { Supporter } from '@/utils/api';
@@ -8,17 +11,25 @@ interface SupportersSectionProps {
 }
 
 export default function SupportersSection({ supporters }: SupportersSectionProps) {
-  // Filter out excluded users
-  const excludedIds = ['1019539798383398946', '659865209741246514', '1327206739665489930'];
-  const filteredSupporters = supporters.filter((supporter) => !excludedIds.includes(supporter.id));
+  const [shuffledSupporters, setShuffledSupporters] = useState<Supporter[]>([]);
 
-  const shuffledSupporters = [...filteredSupporters];
-  for (let i = shuffledSupporters.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffledSupporters[i], shuffledSupporters[j]] = [shuffledSupporters[j], shuffledSupporters[i]];
-  }
+  useEffect(() => {
+    // Filter out excluded users
+    const excludedIds = ['1019539798383398946', '659865209741246514', '1327206739665489930'];
+    const filteredSupporters = supporters.filter(
+      (supporter) => !excludedIds.includes(supporter.id),
+    );
 
-  if (filteredSupporters.length === 0) {
+    // Shuffle only on client-side to avoid hydration mismatch
+    const shuffled = [...filteredSupporters];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    setShuffledSupporters(shuffled);
+  }, [supporters]);
+
+  if (shuffledSupporters.length === 0) {
     return null;
   }
 

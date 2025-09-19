@@ -56,7 +56,6 @@ export default function InventoryCheckerClient({
   const [loadingUserIds, setLoadingUserIds] = useState<Set<string>>(new Set());
   const [refreshedData, setRefreshedData] = useState<InventoryData | null>(null);
   const dupedItems = initialDupeData && Array.isArray(initialDupeData) ? initialDupeData : [];
-  const isLoadingDupes = false;
 
   const router = useRouter();
 
@@ -71,7 +70,7 @@ export default function InventoryCheckerClient({
   const currentData = refreshedData || initialData;
 
   // Function to handle data refresh
-  const handleDataRefresh = (newData: InventoryData) => {
+  const handleDataRefresh = async (newData: InventoryData) => {
     setRefreshedData(newData);
   };
 
@@ -707,11 +706,10 @@ export default function InventoryCheckerClient({
             initialData={currentData}
             robloxUsers={robloxUsers}
             robloxAvatars={robloxAvatars}
-            userConnectionData={userConnectionData}
+            userConnectionData={userConnectionData || null}
             itemsData={itemsData}
             dupedItems={dupedItems}
-            isLoadingDupes={isLoadingDupes}
-            onDataRefresh={handleDataRefresh}
+            onRefresh={handleDataRefresh}
             currentSeason={currentSeason}
           />
 

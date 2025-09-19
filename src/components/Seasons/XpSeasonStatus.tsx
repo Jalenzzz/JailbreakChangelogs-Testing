@@ -12,8 +12,11 @@ export default function XpSeasonStatus({
       <h3 className="text-muted mb-3 text-xl font-semibold">📅 Season Status</h3>
       <div className="space-y-3">
         <div className="flex items-center">
-          <span className={`mr-2 text-lg ${achievableNoPass ? 'text-green-400' : 'text-red-400'}`}>
-            {achievableNoPass ? '✅' : '❌'}
+          <span
+            className={`mr-2 text-lg ${achievableNoPass ? 'text-green-400' : 'text-red-400'}`}
+            aria-label={achievableNoPass ? 'Achievable' : 'Not achievable'}
+          >
+            {achievableNoPass ? '✓' : '✗'}
           </span>
           <span className="text-[#FFFFFF]">
             Without Season Pass:{' '}
@@ -23,8 +26,9 @@ export default function XpSeasonStatus({
         <div className="flex items-center">
           <span
             className={`mr-2 text-lg ${achievableWithPass ? 'text-green-400' : 'text-red-400'}`}
+            aria-label={achievableWithPass ? 'Achievable' : 'Not achievable'}
           >
-            {achievableWithPass ? '✅' : '❌'}
+            {achievableWithPass ? '✓' : '✗'}
           </span>
           <span className="text-[#FFFFFF]">
             With Season Pass:{' '}

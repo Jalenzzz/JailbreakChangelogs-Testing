@@ -560,7 +560,7 @@ const CalculatorValueComparison: React.FC<{
                           </span>
                         )}
                         <span
-                          className="ml-2 inline-block rounded-full px-2 py-0.5 text-xs text-white"
+                          className="ml-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs text-white"
                           style={{
                             backgroundColor: isDupedSelected ? '#991B1B' : '#065F46',
                             border: '1px solid',
@@ -666,7 +666,7 @@ const CalculatorValueComparison: React.FC<{
                           </span>
                         )}
                         <span
-                          className="ml-2 inline-block rounded-full px-2 py-0.5 text-xs text-white"
+                          className="ml-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs text-white"
                           style={{
                             backgroundColor: isDupedSelected ? '#991B1B' : '#065F46',
                             border: '1px solid',

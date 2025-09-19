@@ -648,7 +648,12 @@ export default function UserProfileClient({
                         {user.settings?.hide_presence === 1 && currentUserId !== user.id ? (
                           <p className="text-sm text-[#D3D9D4]">Last seen: Hidden</p>
                         ) : user.presence?.status === 'Online' ? (
-                          <p className="text-sm text-[#44b700]">Online</p>
+                          <p
+                            className="text-sm text-[#44b700]"
+                            aria-label="User is currently online"
+                          >
+                            Online
+                          </p>
                         ) : user.last_seen === null ? (
                           <div className="mt-2 mb-2 rounded-lg bg-[#2E3944] p-4">
                             <p className="text-muted mb-1 text-sm font-medium">
@@ -683,7 +688,10 @@ export default function UserProfileClient({
                                 },
                               }}
                             >
-                              <p className="cursor-help text-sm text-[#D3D9D4]">
+                              <p
+                                className="cursor-help text-sm text-[#D3D9D4]"
+                                aria-label={`User was last seen ${formatRelativeDate(user.last_seen)}`}
+                              >
                                 Last seen: {formatRelativeDate(user.last_seen)}
                               </p>
                             </Tooltip>

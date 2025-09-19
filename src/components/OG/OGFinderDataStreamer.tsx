@@ -150,6 +150,10 @@ async function OGFinderDataFetcher({ robloxId }: { robloxId: string }) {
           <OGFinderResults
             robloxId={robloxId}
             error={`Username "${robloxId}" not found. Please check the spelling and try again.`}
+            initialData={null}
+            robloxUsers={{}}
+            robloxAvatars={{}}
+            userConnectionData={null}
           />
         );
       }
@@ -159,6 +163,10 @@ async function OGFinderDataFetcher({ robloxId }: { robloxId: string }) {
         <OGFinderResults
           robloxId={robloxId}
           error={`Failed to find user "${robloxId}". Please check the spelling and try again.`}
+          initialData={null}
+          robloxUsers={{}}
+          robloxAvatars={{}}
+          userConnectionData={null}
         />
       );
     }
@@ -168,7 +176,16 @@ async function OGFinderDataFetcher({ robloxId }: { robloxId: string }) {
 
   // Check if the result contains an error
   if (result && 'error' in result) {
-    return <OGFinderResults robloxId={actualRobloxId} error={result.message} />;
+    return (
+      <OGFinderResults
+        robloxId={actualRobloxId}
+        error={result.message}
+        initialData={null}
+        robloxUsers={{}}
+        robloxAvatars={{}}
+        userConnectionData={null}
+      />
+    );
   }
 
   // Check if no data was returned
@@ -177,6 +194,10 @@ async function OGFinderDataFetcher({ robloxId }: { robloxId: string }) {
       <OGFinderResults
         robloxId={actualRobloxId}
         error="Failed to fetch OG search data. Please try again."
+        initialData={null}
+        robloxUsers={{}}
+        robloxAvatars={{}}
+        userConnectionData={null}
       />
     );
   }
