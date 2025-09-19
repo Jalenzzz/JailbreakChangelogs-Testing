@@ -11,7 +11,7 @@ interface SupportersSectionProps {
 }
 
 export default function SupportersSection({ supporters }: SupportersSectionProps) {
-  const [shuffledSupporters, setShuffledSupporters] = useState<Supporter[]>([]);
+  const [sortedSupporters, setSortedSupporters] = useState<Supporter[]>([]);
 
   useEffect(() => {
     // Filter out excluded users
@@ -20,16 +20,19 @@ export default function SupportersSection({ supporters }: SupportersSectionProps
       (supporter) => !excludedIds.includes(supporter.id),
     );
 
-    // Shuffle only on client-side to avoid hydration mismatch
-    const shuffled = [...filteredSupporters];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    setShuffledSupporters(shuffled);
+    // Sort by tier in descending order (3, 2, 1) then by username for consistency
+    const sorted = [...filteredSupporters].sort((a, b) => {
+      // First sort by premiumtype (tier) in descending order
+      if (b.premiumtype !== a.premiumtype) {
+        return b.premiumtype - a.premiumtype;
+      }
+      // Then sort by username alphabetically for consistency
+      return a.username.localeCompare(b.username);
+    });
+    setSortedSupporters(sorted);
   }, [supporters]);
 
-  if (shuffledSupporters.length === 0) {
+  if (sortedSupporters.length === 0) {
     return null;
   }
 
@@ -40,7 +43,7 @@ export default function SupportersSection({ supporters }: SupportersSectionProps
       </h2>
       <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
         <div className="grid grid-cols-1 justify-center gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
-          {shuffledSupporters.map((supporter) => (
+          {sortedSupporters.map((supporter) => (
             <div key={supporter.id} className="group">
               <div className="rounded-lg p-4 transition-all duration-200 hover:bg-[#2E3944]">
                 <div className="flex flex-col items-center space-y-3 [@media(min-width:375px)]:flex-row [@media(min-width:375px)]:items-center [@media(min-width:375px)]:space-y-0 [@media(min-width:375px)]:space-x-3">
