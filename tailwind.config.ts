@@ -11,21 +11,6 @@ const config: Config = {
       screens: {
         '3xl': '1920px',
       },
-      colors: {
-        primary: {
-          DEFAULT: '#2e3944',
-        },
-        secondary: {
-          DEFAULT: '#212a31',
-        },
-        accent: {
-          DEFAULT: '#124E66',
-        },
-        text: {
-          primary: '#000000',
-          secondary: '#FFFFFF',
-        },
-      },
       aspectRatio: {
         card: '1 / 1',
       },

@@ -71,14 +71,14 @@ export default function ReportIssueModal({ isOpen, onClose }: ReportIssueModalPr
       <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="mx-auto w-full max-w-sm rounded-lg bg-[#212A31] p-6">
+        <Dialog.Panel className="border-secondary-text bg-secondary-bg mx-auto w-full max-w-sm rounded-lg border p-6">
           <div className="flex items-center justify-between">
-            <Dialog.Title className="text-xl font-semibold text-white">
+            <Dialog.Title className="text-primary-text text-xl font-semibold">
               Report an Issue
             </Dialog.Title>
             <button
               onClick={onClose}
-              className="text-muted rounded-full p-1 hover:bg-[#2E3944] hover:text-white"
+              className="text-secondary-text hover:bg-primary-bg hover:text-primary-text rounded-full p-1"
             >
               <XMarkIcon className="h-6 w-6" />
             </button>
@@ -86,7 +86,7 @@ export default function ReportIssueModal({ isOpen, onClose }: ReportIssueModalPr
 
           <form onSubmit={handleSubmit} className="mt-4 space-y-4">
             <div>
-              <label htmlFor="title" className="text-muted block text-sm font-medium">
+              <label htmlFor="title" className="text-secondary-text block text-sm font-medium">
                 Title
               </label>
               <input
@@ -94,15 +94,20 @@ export default function ReportIssueModal({ isOpen, onClose }: ReportIssueModalPr
                 id="title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="placeholder-muted mt-1 block w-full rounded-md border border-[#37424D] bg-[#2E3944] px-3 py-2 text-white focus:border-[#5865F2] focus:ring-1 focus:ring-[#5865F2] focus:outline-none"
+                className="placeholder-secondary-text border-secondary-text bg-primary-bg text-primary-text focus:border-button-info focus:ring-button-info mt-1 block w-full rounded-md border px-3 py-2 focus:ring-1 focus:outline-none"
                 placeholder="Brief description of the issue"
                 required
               />
-              <p className="text-muted mt-1 text-xs">Maximum {MAX_TITLE_LENGTH} characters</p>
+              <p className="text-secondary-text mt-1 text-xs">
+                Maximum {MAX_TITLE_LENGTH} characters
+              </p>
             </div>
 
             <div>
-              <label htmlFor="description" className="text-muted block text-sm font-medium">
+              <label
+                htmlFor="description"
+                className="text-secondary-text block text-sm font-medium"
+              >
                 Description
               </label>
               <textarea
@@ -110,25 +115,27 @@ export default function ReportIssueModal({ isOpen, onClose }: ReportIssueModalPr
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={4}
-                className="placeholder-muted mt-1 block w-full rounded-md border border-[#37424D] bg-[#2E3944] px-3 py-2 text-white focus:border-[#5865F2] focus:ring-1 focus:ring-[#5865F2] focus:outline-none"
+                className="placeholder-secondary-text border-secondary-text bg-primary-bg text-primary-text focus:border-button-info focus:ring-button-info mt-1 block w-full rounded-md border px-3 py-2 focus:ring-1 focus:outline-none"
                 placeholder="Detailed description of the issue"
                 required
               />
-              <p className="text-muted mt-1 text-xs">Maximum {MAX_DESCRIPTION_LENGTH} characters</p>
+              <p className="text-secondary-text mt-1 text-xs">
+                Maximum {MAX_DESCRIPTION_LENGTH} characters
+              </p>
             </div>
 
             <div className="flex justify-end gap-3">
               <button
                 type="button"
                 onClick={onClose}
-                className="text-muted rounded-md border border-[#37424D] px-4 py-2 text-sm font-medium hover:bg-[#2E3944] hover:text-white"
+                className="text-secondary-text border-secondary-text hover:bg-primary-bg hover:text-primary-text rounded-md border px-4 py-2 text-sm font-medium"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="rounded-md bg-[#5865F2] px-4 py-2 text-sm font-medium text-white hover:bg-[#4752C4] focus:ring-2 focus:ring-[#5865F2] focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                className="bg-button-info text-primary-text hover:bg-button-info-hover focus:ring-button-info rounded-md px-4 py-2 text-sm font-medium focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isSubmitting ? 'Submitting...' : 'Submit Issue'}
               </button>
