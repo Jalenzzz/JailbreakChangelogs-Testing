@@ -22,31 +22,31 @@ export default async function WillIMakeItPage() {
 
   if (error || !season) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#2E3944]">
+      <div className="flex min-h-screen items-center justify-center">
         <div className="text-xl text-white">Error: {error || 'Season data not available'}</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#2E3944]">
+    <div className="min-h-screen">
       <div className="container mx-auto px-4 py-8">
         <Breadcrumb />
 
         <div className="mt-8">
           <div className="mb-4 flex items-center gap-3">
-            <h1 className="text-4xl font-bold text-white">Will I Make It to Level 10?</h1>
-            <span className="rounded bg-[#5865F2] px-2 py-1 text-[12px] font-semibold text-white uppercase">
+            <h1 className="text-primary-text text-4xl font-bold">Will I Make It to Level 10?</h1>
+            <span className="bg-button-info text-form-button-text rounded px-2 py-1 text-[12px] font-semibold uppercase">
               New
             </span>
           </div>
-          <p className="mb-8 text-lg text-gray-300">
+          <p className="text-secondary-text mb-8 text-lg">
             Calculate your chances of reaching level 10 in Season {season.season}: {season.title}
           </p>
         </div>
 
         {/* Season Info & Countdown Section */}
-        <div className="mb-8 rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
+        <div className="border-stroke bg-secondary-bg mb-8 rounded-lg border p-6">
           <XpImportantDates
             season={season.season}
             title={season.title}

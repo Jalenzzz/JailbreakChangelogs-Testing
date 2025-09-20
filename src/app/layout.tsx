@@ -20,7 +20,7 @@ import { GoogleAnalytics } from '@next/third-parties/google';
 
 const inter = Inter({ subsets: ['latin'] });
 export const viewport: Viewport = {
-  themeColor: 'var(--color-button-info)',
+  themeColor: '#2462CD',
 };
 
 export async function generateMetadata(): Promise<Metadata> {

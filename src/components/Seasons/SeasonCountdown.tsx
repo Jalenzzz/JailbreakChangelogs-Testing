@@ -41,12 +41,12 @@ const SeasonCountdown: React.FC<SeasonCountdownProps> = ({ currentSeason, nextSe
       // Handle current season
       if (!currentSeason) {
         setStatus('No Season Data');
-        setStatusColor('#A8B3BC');
+        setStatusColor('var(--color-secondary-text)');
         setTimeLeft('00:00:00:00');
       } else if (currentSeason.start_date && now < currentSeason.start_date) {
         const timeToStart = currentSeason.start_date - now;
         setStatus(`Season ${currentSeason.season} / ${currentSeason.title} starts in`);
-        setStatusColor('#4CAF50');
+        setStatusColor('var(--color-button-success)');
         setTimeLeft(formatTime(timeToStart));
       } else if (
         currentSeason.start_date &&
@@ -57,25 +57,19 @@ const SeasonCountdown: React.FC<SeasonCountdownProps> = ({ currentSeason, nextSe
         const daysLeft = Math.floor(timeToEnd / (24 * 60 * 60));
 
         if (daysLeft < 5) {
-          setStatusColor('#FFB636');
+          setStatusColor('var(--color-secondary-text)');
           setStatus(
             `Season ${currentSeason.season} / ${currentSeason.title} ends in (Double XP Active!)`,
           );
-        } else if (daysLeft <= 7) {
-          setStatusColor('#FF6B6B');
-          setStatus(`Season ${currentSeason.season} / ${currentSeason.title} ends in`);
-        } else if (daysLeft <= 14) {
-          setStatusColor('#FFD93D');
-          setStatus(`Season ${currentSeason.season} / ${currentSeason.title} ends in`);
         } else {
-          setStatusColor('#A8B3BC');
+          setStatusColor('var(--color-secondary-text)');
           setStatus(`Season ${currentSeason.season} / ${currentSeason.title} ends in`);
         }
 
         setTimeLeft(formatTime(timeToEnd));
       } else if (currentSeason.end_date && now >= currentSeason.end_date) {
         setStatus(`Season ${currentSeason.season} / ${currentSeason.title} has ended`);
-        setStatusColor('#A8B3BC');
+        setStatusColor('var(--color-secondary-text)');
         setTimeLeft('');
       }
 
@@ -87,17 +81,8 @@ const SeasonCountdown: React.FC<SeasonCountdownProps> = ({ currentSeason, nextSe
           now < nextSeason.end_date
         ) {
           const timeToEnd = nextSeason.end_date - now;
-          const daysLeft = Math.floor(timeToEnd / (24 * 60 * 60));
 
-          if (daysLeft > 14) {
-            setNextSeasonStatusColor('#4CAF50'); // Green for more than 2 weeks
-          } else if (daysLeft > 7) {
-            setNextSeasonStatusColor('#FFD93D'); // Yellow for 8-14 days
-          } else if (daysLeft > 3) {
-            setNextSeasonStatusColor('#FFB636'); // Orange for 4-7 days
-          } else {
-            setNextSeasonStatusColor('#FF6B6B'); // Red for last 3 days
-          }
+          setNextSeasonStatusColor('var(--color-secondary-text)');
 
           setNextSeasonStatus(
             `Submissions for Season ${nextSeason.season} / ${nextSeason.title} close in`,
@@ -110,8 +95,8 @@ const SeasonCountdown: React.FC<SeasonCountdownProps> = ({ currentSeason, nextSe
         ) {
           const timeToStart = nextSeason.start_date - now;
 
-          // Always use green for season start countdown
-          setNextSeasonStatusColor('#4CAF50');
+          // Use consistent color for season start countdown
+          setNextSeasonStatusColor('var(--color-secondary-text)');
 
           setNextSeasonStatus(`Season ${nextSeason.season} / ${nextSeason.title} starts in`);
           setNextSeasonTimeLeft(formatTime(timeToStart));
@@ -119,7 +104,7 @@ const SeasonCountdown: React.FC<SeasonCountdownProps> = ({ currentSeason, nextSe
           setNextSeasonStatus(
             `Submissions for Season ${nextSeason.season} / ${nextSeason.title} are closed`,
           );
-          setNextSeasonStatusColor('#A8B3BC');
+          setNextSeasonStatusColor('var(--color-secondary-text)');
           setNextSeasonTimeLeft('');
         }
       }
@@ -147,7 +132,7 @@ const SeasonCountdown: React.FC<SeasonCountdownProps> = ({ currentSeason, nextSe
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="rounded-lg border border-[#2E3944] bg-[#37424D] p-4">
+      <div className="border-stroke bg-secondary-bg rounded-lg border p-4">
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
             <span className="text-lg font-semibold" style={{ color: statusColor }}>
@@ -156,7 +141,7 @@ const SeasonCountdown: React.FC<SeasonCountdownProps> = ({ currentSeason, nextSe
           </div>
           {timeLeft && (
             <div className="flex items-center gap-2">
-              <span className="font-mono text-2xl font-bold" style={{ color: statusColor }}>
+              <span className="text-2xl font-bold" style={{ color: statusColor }}>
                 {timeLeft}
               </span>
             </div>
@@ -165,7 +150,7 @@ const SeasonCountdown: React.FC<SeasonCountdownProps> = ({ currentSeason, nextSe
       </div>
 
       {nextSeasonStatus && (
-        <div className="rounded-lg border border-[#2E3944] bg-[#37424D] p-4">
+        <div className="border-stroke bg-secondary-bg rounded-lg border p-4">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
               <span className="text-lg font-semibold" style={{ color: nextSeasonStatusColor }}>
@@ -174,10 +159,7 @@ const SeasonCountdown: React.FC<SeasonCountdownProps> = ({ currentSeason, nextSe
             </div>
             {nextSeasonTimeLeft && (
               <div className="flex items-center gap-2">
-                <span
-                  className="font-mono text-2xl font-bold"
-                  style={{ color: nextSeasonStatusColor }}
-                >
+                <span className="text-2xl font-bold" style={{ color: nextSeasonStatusColor }}>
                   {nextSeasonTimeLeft}
                 </span>
               </div>
@@ -188,7 +170,7 @@ const SeasonCountdown: React.FC<SeasonCountdownProps> = ({ currentSeason, nextSe
                   href="https://www.reddit.com/r/JailbreakCreations/comments/1mf3t32/season_28_entries_cyberpunk/?sort=new"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block rounded-lg bg-[#5865F2] px-4 py-2 text-white transition-colors hover:bg-[#4752C4]"
+                  className="bg-button-info text-form-button-text hover:bg-button-info-hover inline-block rounded-lg px-4 py-2 transition-colors"
                 >
                   {nextSeasonStatus.includes('close in') ? 'Submit a Creation' : 'View Submissions'}
                 </a>

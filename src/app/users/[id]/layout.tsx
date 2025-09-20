@@ -3,7 +3,7 @@ import { fetchUserByIdForMetadata } from '@/utils/api';
 import { getMaintenanceMetadata } from '@/utils/maintenance';
 
 function formatAccentColor(color: number | string | null | undefined): string {
-  if (!color || color === 'None' || color === '0') return '#124e66';
+  if (!color || color === 'None' || color === '0') return '#2462CD';
 
   if (typeof color === 'string') {
     return `#${color.substring(0, 6)}`;
@@ -13,7 +13,7 @@ function formatAccentColor(color: number | string | null | undefined): string {
     return `#${color.toString().substring(0, 6)}`;
   }
 
-  return '#124e66';
+  return '#2462CD';
 }
 
 export async function generateViewport({
@@ -39,13 +39,13 @@ export async function generateViewport({
     ) {
       // Return a default theme color for banned users
       return {
-        themeColor: '#124e66',
+        themeColor: '#2462CD',
       };
     }
 
     // For other errors, return default theme color
     return {
-      themeColor: '#124e66',
+      themeColor: '#2462CD',
     };
   }
 }

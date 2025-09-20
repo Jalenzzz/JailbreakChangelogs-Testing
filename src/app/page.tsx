@@ -29,7 +29,7 @@ export default function Home() {
       <section className="relative py-20">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
-          <div className="bg-secondary-bg absolute inset-0"></div>
+          <div className="bg-stroke absolute inset-0"></div>
           {backgroundImage && (
             <Image
               src={backgroundImage}
