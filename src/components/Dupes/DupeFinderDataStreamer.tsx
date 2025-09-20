@@ -59,6 +59,7 @@ async function DupeFinderDataFetcher({ robloxId }: { robloxId: string }) {
           <DupeFinderClient
             robloxId={robloxId}
             error={`Username "${robloxId}" not found. Please check the spelling and try again.`}
+            isUserFound={false}
           />
         );
       }
@@ -68,6 +69,7 @@ async function DupeFinderDataFetcher({ robloxId }: { robloxId: string }) {
         <DupeFinderClient
           robloxId={robloxId}
           error={`Failed to find user "${robloxId}". Please check the spelling and try again.`}
+          isUserFound={false}
         />
       );
     }
@@ -77,12 +79,27 @@ async function DupeFinderDataFetcher({ robloxId }: { robloxId: string }) {
 
   // Check if the result contains an error
   if (result && 'error' in result) {
-    return <DupeFinderClient robloxId={actualRobloxId} error={result.error} />;
+    // Distinguish between different error types
+    if (result.error === 'No recorded dupes found for this user.') {
+      // User exists but has no dupes - show success message with user info
+      return <DupeFinderClient robloxId={actualRobloxId} error={result.error} isUserFound={true} />;
+    } else {
+      // Other errors (user doesn't exist, API issues, etc.)
+      return (
+        <DupeFinderClient robloxId={actualRobloxId} error={result.error} isUserFound={false} />
+      );
+    }
   }
 
-  // Check if no data was returned
+  // Check if no data was returned (shouldn't happen with proper API)
   if (!result || !Array.isArray(result)) {
-    return <DupeFinderClient robloxId={actualRobloxId} error="No dupe data found for this user." />;
+    return (
+      <DupeFinderClient
+        robloxId={actualRobloxId}
+        error="No dupe data found for this user."
+        isUserFound={false}
+      />
+    );
   }
 
   // Get the main user's data (the one being searched) and connection data

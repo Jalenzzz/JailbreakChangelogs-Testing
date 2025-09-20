@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
 import { DupeFinderItem, RobloxUser, Item } from '@/types';
 import { UserConnectionData } from '@/app/inventories/types';
 import { fetchItems } from '@/utils/api';
@@ -15,7 +14,7 @@ import { logError } from '@/services/logger';
 import DupeUserInfo from './DupeUserInfo';
 import DupeFilters from './DupeFilters';
 import DupeItemsGrid from './DupeItemsGrid';
-import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import DupeSearchInput from './DupeSearchInput';
 
 interface DupeFinderResultsProps {
   initialData: DupeFinderItem[];
@@ -32,11 +31,7 @@ export default function DupeFinderResults({
   robloxAvatars,
   userConnectionData,
 }: DupeFinderResultsProps) {
-  const router = useRouter();
-
   // State management
-  const [searchId, setSearchId] = useState(robloxId || '');
-  const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sortOrder, setSortOrder] = useState<
@@ -320,21 +315,6 @@ export default function DupeFinderResults({
     return orders;
   }, [paginatedData]);
 
-  // Handle search
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchId.trim()) return;
-
-    setIsLoading(true);
-    try {
-      router.push(`/dupes/${searchId.trim()}`);
-    } catch (error) {
-      logError('Search error', error, { component: 'DupeFinderResults', action: 'handleSearch' });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   // Event handlers
   const handleCardClick = (item: DupeFinderItem) => {
     setSelectedItemForAction(item);
@@ -366,68 +346,7 @@ export default function DupeFinderResults({
   return (
     <div className="space-y-6">
       {/* Search Form */}
-      <form onSubmit={handleSearch} className="flex flex-col gap-3 sm:flex-row">
-        <div className="flex-1">
-          <div className="relative">
-            <input
-              type="text"
-              id="searchId"
-              value={searchId}
-              onChange={(e) => setSearchId(e.target.value)}
-              placeholder="Enter Roblox ID or username..."
-              className="text-muted w-full rounded-lg border border-[#2E3944] bg-[#37424D] px-4 py-2 pr-10 pl-10 placeholder-[#D3D9D4] focus:border-[#124E66] focus:outline-none"
-              disabled={isLoading}
-              required
-            />
-            <MagnifyingGlassIcon className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]" />
-            {searchId && (
-              <button
-                type="button"
-                onClick={() => setSearchId('')}
-                className="hover:text-muted absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]"
-                aria-label="Clear search"
-              >
-                <XMarkIcon />
-              </button>
-            )}
-          </div>
-        </div>
-        <div className="flex items-end">
-          <button
-            type="submit"
-            disabled={isLoading || !searchId.trim()}
-            className={`flex h-10 min-w-[100px] items-center justify-center gap-2 rounded-lg px-6 text-sm font-medium text-white transition-all duration-200 focus:ring-2 focus:ring-[#5865F2] focus:ring-offset-2 focus:ring-offset-[#212A31] focus:outline-none ${
-              isLoading
-                ? 'cursor-progress bg-[#212A31]'
-                : 'bg-[#5865F2] hover:cursor-pointer hover:bg-[#4752C4]'
-            }`}
-          >
-            {isLoading && (
-              <svg
-                className="h-4 w-4 animate-spin"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
-            )}
-            <span className="whitespace-nowrap">{isLoading ? 'Searching...' : 'Search'}</span>
-          </button>
-        </div>
-      </form>
+      <DupeSearchInput />
 
       {/* User Info */}
       <div
