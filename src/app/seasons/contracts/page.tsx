@@ -17,7 +17,7 @@ export default async function SeasonContractsPage() {
   if (!contractsData || !contractsData.data || contractsData.data.length === 0) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="text-xl text-white">No contracts available right now.</div>
+        <div className="text-primary-text text-xl">No contracts available right now.</div>
       </div>
     );
   }
@@ -46,9 +46,9 @@ export default async function SeasonContractsPage() {
           />
         )}
         {seasonEnded && (
-          <div className="rounded-lg border bg-[#212A31] p-6">
+          <div className="bg-secondary-bg rounded-lg border p-6">
             <div className="flex items-start gap-4">
-              <div className="mt-1 text-[#A8B3BC]">
+              <div className="text-secondary-text mt-1">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-8 w-8"
@@ -66,18 +66,18 @@ export default async function SeasonContractsPage() {
               </div>
               <div className="flex-1">
                 <div className="mb-2 inline-flex items-center gap-2">
-                  <span className="rounded px-2 py-1 text-[10px] font-semibold tracking-wider text-white/90 uppercase">
+                  <span className="text-primary-text/90 rounded px-2 py-1 text-[10px] font-semibold tracking-wider uppercase">
                     Season Ended
                   </span>
                 </div>
-                <h2 className="mb-1 text-xl font-bold text-white">Season has ended</h2>
-                <p className="mb-4 text-gray-300">
+                <h2 className="text-primary-text mb-1 text-xl font-bold">Season has ended</h2>
+                <p className="text-secondary-text mb-4">
                   Weekly contracts are unavailable. Check back next season.
                 </p>
                 <div className="flex flex-wrap gap-3">
                   <Link
                     href="/seasons"
-                    className="rounded bg-[#5865F2] px-4 py-2 text-white transition-colors hover:bg-[#4752C4]"
+                    className="bg-button-info text-form-button-text hover:bg-button-info-hover rounded px-4 py-2 transition-colors"
                   >
                     View Season Summary
                   </Link>

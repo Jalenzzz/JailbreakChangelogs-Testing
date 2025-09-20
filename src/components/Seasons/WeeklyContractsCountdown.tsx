@@ -146,20 +146,22 @@ const WeeklyContractsCountdown: React.FC<WeeklyContractsCountdownProps> = ({ sea
   }, [nextResetUnix, nextDailyResetUnix]);
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-[#37424D] bg-[#212A31] p-6 shadow-2xl">
+    <div className="border-stroke bg-secondary-bg relative overflow-hidden rounded-2xl border p-6 shadow-2xl">
       {/* Main Content */}
       <div className="relative z-10">
         {/* Header */}
         <div className="mb-6 text-center">
-          <h2 className="mb-2 text-3xl font-bold tracking-wide text-white">WEEKLY CONTRACTS</h2>
+          <h2 className="text-primary-text mb-2 text-3xl font-bold tracking-wide">
+            WEEKLY CONTRACTS
+          </h2>
           {season && (
             <div className="mb-2">
-              <span className="text-lg font-semibold text-white">
+              <span className="text-primary-text text-lg font-semibold">
                 Season {season.season} / {season.title}
               </span>
             </div>
           )}
-          <p className="mb-4 text-sm leading-relaxed text-[#D3D9D4]">
+          <p className="text-secondary-text mb-4 text-sm leading-relaxed">
             View the current weekly contracts available in Roblox Jailbreak. Check what contracts
             you need to complete to earn XP and progress through this season.
           </p>
@@ -168,7 +170,7 @@ const WeeklyContractsCountdown: React.FC<WeeklyContractsCountdownProps> = ({ sea
           <div className="flex justify-center">
             <Link
               href={`/seasons/${season?.season}`}
-              className="rounded-lg bg-[#5865F2] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#4752C4]"
+              className="bg-button-info text-form-button-text hover:bg-button-info-hover rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
             >
               View Season Rewards
             </Link>
@@ -178,36 +180,40 @@ const WeeklyContractsCountdown: React.FC<WeeklyContractsCountdownProps> = ({ sea
         {/* Timer Section */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {/* Weekly Contracts Timer */}
-          <div className="rounded-xl border border-[#37424D] p-4">
+          <div className="border-stroke rounded-xl border p-4">
             <div className="text-center">
               <div className="mb-3 flex items-center justify-center gap-2">
-                <span className="text-sm font-semibold tracking-wide text-white uppercase">
+                <span className="text-primary-text text-sm font-semibold tracking-wide uppercase">
                   New Contracts In
                 </span>
               </div>
               <div className="mb-3 rounded-lg p-3">
-                <span className="font-mono text-2xl font-bold text-white">
+                <span className="text-primary-text text-2xl font-bold">
                   {formatTime(secondsLeft)}
                 </span>
               </div>
-              <div className="text-xs text-[#D3D9D4]">Resets every Monday at {localResetTime}</div>
+              <div className="text-secondary-text text-xs">
+                Resets every Monday at {localResetTime}
+              </div>
             </div>
           </div>
 
           {/* Daily XP Timer */}
-          <div className="rounded-xl border border-[#37424D] p-4">
+          <div className="border-stroke rounded-xl border p-4">
             <div className="text-center">
               <div className="mb-3 flex items-center justify-center gap-2">
-                <span className="text-sm font-semibold tracking-wide text-white uppercase">
+                <span className="text-primary-text text-sm font-semibold tracking-wide uppercase">
                   Daily XP Resets In
                 </span>
               </div>
               <div className="mb-3 rounded-lg p-3">
-                <span className="font-mono text-2xl font-bold text-white">
+                <span className="text-primary-text text-2xl font-bold">
                   {formatTime(dailySecondsLeft)}
                 </span>
               </div>
-              <div className="text-xs text-[#D3D9D4]">Resets daily at {localDailyResetTime}</div>
+              <div className="text-secondary-text text-xs">
+                Resets daily at {localDailyResetTime}
+              </div>
             </div>
           </div>
         </div>
