@@ -1166,7 +1166,7 @@ export default function Header() {
                       onMouseLeave={handleMenuClose}
                     >
                       <Box
-                        className={`ml-2 flex cursor-pointer items-center gap-1 rounded-full px-3 py-1.5 transition-colors ${
+                        className={`ml-2 flex cursor-pointer items-center gap-1 rounded-lg px-3 py-1.5 transition-colors ${
                           Boolean(anchorEl)
                             ? 'bg-button-info'
                             : 'bg-secondary-bg hover:bg-button-info'

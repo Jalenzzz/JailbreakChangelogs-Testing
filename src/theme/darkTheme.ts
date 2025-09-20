@@ -4,7 +4,7 @@ export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#7f5af0', // --color-button-info
+      main: '#2462CD', // --color-button-info
     },
     secondary: {
       main: '#2cb67d', // --color-tertiary
@@ -30,10 +30,10 @@ export const darkTheme = createTheme({
             borderColor: '#010101', // --color-stroke
           },
           '&:hover fieldset': {
-            borderColor: '#7f5af0', // --color-button-info
+            borderColor: '#2462CD', // --color-button-info
           },
           '&.Mui-focused fieldset': {
-            borderColor: '#7f5af0', // --color-button-info
+            borderColor: '#2462CD', // --color-button-info
           },
         },
       },
@@ -43,7 +43,7 @@ export const darkTheme = createTheme({
         root: {
           color: '#fffffe', // --color-primary-text
           '&.Mui-focused': {
-            color: '#7f5af0', // --color-button-info
+            color: '#2462CD', // --color-button-info
           },
         },
       },

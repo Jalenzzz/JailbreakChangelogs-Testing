@@ -1,12 +1,14 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
 import {
   GlobeAltIcon,
   QuestionMarkCircleIcon,
   DocumentTextIcon,
   ShieldCheckIcon,
   EnvelopeIcon,
+  BugAntIcon,
 } from '@heroicons/react/24/outline';
 import VersionInfo from '@/components/Layout/VersionInfo';
 import ReportIssueButton from '@/components/ReportIssue/ReportIssueButton';
@@ -134,7 +136,16 @@ export default function Footer() {
                 </svg>
                 Discord Bot
               </Link>
-              <ReportIssueButton />
+              <Suspense
+                fallback={
+                  <div className="text-link hover:text-link-hover flex w-full items-center gap-2">
+                    <BugAntIcon className="h-5 w-5" />
+                    Report an Issue
+                  </div>
+                }
+              >
+                <ReportIssueButton />
+              </Suspense>
               <div className="pt-2">
                 <iframe
                   src="https://status.jailbreakchangelogs.xyz/badge?theme=dark"

@@ -6,7 +6,6 @@ import { darkTheme } from '@/theme/darkTheme';
 import { ArrowUpIcon } from '@heroicons/react/24/outline';
 import TimelineHeader from './TimelineHeader';
 import TimelineContent from './TimelineContent';
-import TimelineModal from './TimelineModal';
 import { Changelog } from '@/utils/api';
 
 interface TimelineClientProps {
@@ -14,7 +13,6 @@ interface TimelineClientProps {
 }
 
 export default function TimelineClient({ changelogs }: TimelineClientProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
 
   useEffect(() => {
@@ -35,9 +33,8 @@ export default function TimelineClient({ changelogs }: TimelineClientProps) {
 
   return (
     <ThemeProvider theme={darkTheme}>
-      <TimelineHeader onViewMore={() => setIsModalOpen(true)} />
+      <TimelineHeader />
       <TimelineContent changelogs={changelogs} />
-      <TimelineModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
       {showBackToTop && (
         <button

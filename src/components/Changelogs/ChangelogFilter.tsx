@@ -129,7 +129,7 @@ const ChangelogFilter: React.FC<ChangelogFilterProps> = ({
 
         {/* View Timeline Button */}
         <Link
-          href="/timeline"
+          href="/changelogs/timeline"
           className="text-secondary-text border-button-info bg-secondary-bg hover:bg-primary-bg flex items-center justify-between rounded-lg border p-3 focus:outline-none"
         >
           <span>View Timeline</span>
