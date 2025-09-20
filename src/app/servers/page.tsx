@@ -26,7 +26,7 @@ export default function ServersPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#2E3944]">
+    <main className="min-h-screen">
       <div className="container mx-auto mb-8">
         <Breadcrumb />
         <ServerHeader />

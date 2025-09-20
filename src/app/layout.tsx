@@ -196,13 +196,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               toastOptions={{
                 success: {
                   style: {
-                    background: 'var(--color-button-success)',
+                    background: 'var(--color-primary-bg)',
                     color: 'var(--color-primary-text)',
-                    border: '1px solid var(--color-button-success)',
+                    border: '1px solid var(--color-button-info)',
                   },
                   iconTheme: {
-                    primary: 'var(--color-primary-text)',
-                    secondary: 'var(--color-button-success)',
+                    primary: 'var(--color-button-info)',
+                    secondary: 'var(--color-primary-bg)',
                   },
                 },
                 error: {

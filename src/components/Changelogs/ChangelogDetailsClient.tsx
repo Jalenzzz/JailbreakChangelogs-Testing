@@ -3,8 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ThemeProvider } from '@mui/material';
-import { isWithinInterval } from 'date-fns';
-import { extractContentInfo, getContentPreview, parseDateFromTitle } from '@/utils/changelogs';
+import { extractContentInfo, getContentPreview } from '@/utils/changelogs';
 import { useDebounce } from '@/hooks/useDebounce';
 import { darkTheme } from '@/theme/darkTheme';
 import { Skeleton } from '@mui/material';
@@ -15,29 +14,29 @@ import { UserData } from '@/types/auth';
 
 // Dynamic imports for heavy components
 const ChangelogHeader = dynamic(() => import('@/components/Changelogs/ChangelogHeader'), {
-  loading: () => <div className="mb-4 h-16 animate-pulse rounded bg-[#212A31]" />,
+  loading: () => <div className="bg-secondary-bg mb-4 h-16 animate-pulse rounded" />,
   ssr: true,
 });
 
-const ChangelogNavigation = dynamic(() => import('@/components/Changelogs/ChangelogNavigation'), {
-  loading: () => <div className="mb-4 h-20 animate-pulse rounded bg-[#212A31]" />,
+const ChangelogFilter = dynamic(() => import('@/components/Changelogs/ChangelogFilter'), {
+  loading: () => <div className="bg-secondary-bg mb-4 h-20 animate-pulse rounded" />,
   ssr: true,
-});
-
-const ChangelogDatePicker = dynamic(() => import('@/components/Changelogs/ChangelogDatePicker'), {
-  loading: () => <div className="h-64 animate-pulse rounded bg-[#212A31]" />,
-  ssr: false,
 });
 
 const ChangelogContent = dynamic(() => import('@/components/Changelogs/ChangelogContent'), {
   loading: () => (
     <div className="grid grid-cols-1 gap-8 sm:grid-cols-12">
       <div className="sm:col-span-12 lg:col-span-8">
-        <Skeleton variant="text" height={80} sx={{ bgcolor: '#37424D', mb: 4 }} />
+        <Skeleton variant="text" height={80} sx={{ bgcolor: 'var(--color-secondary-bg)', mb: 4 }} />
         <div className="space-y-8">
           {[...Array(3)].map((_, i) => (
             <div key={i} className="space-y-4">
-              <Skeleton variant="text" width="60%" height={40} sx={{ bgcolor: '#37424D' }} />
+              <Skeleton
+                variant="text"
+                width="60%"
+                height={40}
+                sx={{ bgcolor: 'var(--color-secondary-bg)' }}
+              />
               <div className="space-y-2">
                 {[...Array(4)].map((_, j) => (
                   <div key={j} className="flex items-start gap-2">
@@ -45,13 +44,13 @@ const ChangelogContent = dynamic(() => import('@/components/Changelogs/Changelog
                       variant="circular"
                       width={24}
                       height={24}
-                      sx={{ bgcolor: '#37424D', mt: 0.5 }}
+                      sx={{ bgcolor: 'var(--color-secondary-bg)', mt: 0.5 }}
                     />
                     <Skeleton
                       variant="text"
                       width={`${j === 0 ? '90%' : j === 1 ? '85%' : j === 2 ? '75%' : '80%'}`}
                       height={24}
-                      sx={{ bgcolor: '#37424D' }}
+                      sx={{ bgcolor: 'var(--color-secondary-bg)' }}
                     />
                   </div>
                 ))}
@@ -64,19 +63,13 @@ const ChangelogContent = dynamic(() => import('@/components/Changelogs/Changelog
         <Skeleton
           variant="rectangular"
           height={200}
-          sx={{ bgcolor: '#37424D', borderRadius: '8px' }}
+          sx={{ bgcolor: 'var(--color-secondary-bg)', borderRadius: '8px' }}
         />
       </div>
     </div>
   ),
   ssr: true,
 });
-
-interface ChangelogListItem {
-  id: number;
-  title: string;
-  sections: string;
-}
 
 interface SearchResult {
   id: number;
@@ -112,15 +105,6 @@ export default function ChangelogDetailsClient({
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const [dateRange, setDateRange] = useState<{
-    startDate: Date | null;
-    endDate: Date | null;
-  }>({
-    startDate: null,
-    endDate: null,
-  });
-  const [filteredChangelogList, setFilteredChangelogList] = useState<ChangelogListItem[]>([]);
-  const [isDateModalOpen, setIsDateModalOpen] = useState(false);
 
   // Update selectedId when changelogId changes
   useEffect(() => {
@@ -216,37 +200,6 @@ export default function ChangelogDetailsClient({
     setSearchResults(results);
   }, [debouncedSearchQuery, changelogList]);
 
-  // Handle date range filtering
-  useEffect(() => {
-    if (dateRange.startDate || dateRange.endDate) {
-      const filtered = changelogList.filter((item) => {
-        const itemDate = parseDateFromTitle(item.title);
-        if (!itemDate) return false;
-
-        if (dateRange.startDate && dateRange.endDate) {
-          return isWithinInterval(itemDate, {
-            start: dateRange.startDate,
-            end: dateRange.endDate,
-          });
-        } else if (dateRange.startDate) {
-          return itemDate >= dateRange.startDate;
-        } else if (dateRange.endDate) {
-          return itemDate <= dateRange.endDate;
-        }
-        return true;
-      });
-      setFilteredChangelogList(filtered);
-      if (filtered.length === 0 || !filtered.some((item) => item.id.toString() === selectedId)) {
-        setSelectedId('');
-      }
-    } else {
-      setFilteredChangelogList(changelogList);
-      if (!changelogList.some((item) => item.id.toString() === selectedId)) {
-        setSelectedId('');
-      }
-    }
-  }, [dateRange, changelogList, selectedId]);
-
   const handleSearch = (query: string) => {
     setSearchQuery(query);
   };
@@ -273,64 +226,21 @@ export default function ChangelogDetailsClient({
     }
   };
 
-  const handleDateRangeChange = (range: { startDate: Date | null; endDate: Date | null }) => {
-    setDateRange(range);
-    if (range.startDate || range.endDate) {
-      const filtered = changelogList.filter((item) => {
-        const itemDate = parseDateFromTitle(item.title);
-        if (!itemDate) return false;
-
-        if (range.startDate && range.endDate) {
-          return isWithinInterval(itemDate, {
-            start: range.startDate,
-            end: range.endDate,
-          });
-        } else if (range.startDate) {
-          return itemDate >= range.startDate;
-        } else if (range.endDate) {
-          return itemDate <= range.endDate;
-        }
-        return true;
-      });
-      setFilteredChangelogList(filtered);
-      if (filtered.length === 0 || !filtered.some((item) => item.id.toString() === selectedId)) {
-        setSelectedId('');
-      }
-    } else {
-      setFilteredChangelogList(changelogList);
-      if (!changelogList.some((item) => item.id.toString() === selectedId)) {
-        setSelectedId('');
-      }
-    }
-  };
-
   return (
     <ThemeProvider theme={darkTheme}>
-      <main className="min-h-screen bg-[#2E3944]">
+      <main className="min-h-screen">
         <div className="container mx-auto mb-8 px-4 sm:px-6">
           <Breadcrumb />
           <ChangelogHeader />
-          <ChangelogNavigation
+          <ChangelogFilter
             changelogList={changelogList}
             selectedId={selectedId}
-            dateRange={dateRange}
-            filteredChangelogList={filteredChangelogList}
             onChangelogSelect={handleChangelogSelect}
-            onDateRangeChange={handleDateRangeChange}
-            isDateModalOpen={isDateModalOpen}
-            onDateModalToggle={setIsDateModalOpen}
             searchQuery={searchQuery}
             searchResults={searchResults}
             isSearchFocused={isSearchFocused}
             onSearchChange={handleSearch}
             onSearchFocus={setIsSearchFocused}
-          />
-
-          <ChangelogDatePicker
-            isOpen={isDateModalOpen}
-            onClose={() => setIsDateModalOpen(false)}
-            dateRange={dateRange}
-            onDateRangeChange={handleDateRangeChange}
           />
 
           <ChangelogContent

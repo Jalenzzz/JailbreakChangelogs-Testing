@@ -278,11 +278,11 @@ export default function SeasonDetailsClient({
             {premiumStatusLoaded && currentUserPremiumType === 0 && (
               <div className="my-8 flex flex-col items-center">
                 <div
-                  className="relative w-full max-w-[700px] overflow-hidden rounded-lg border border-[#2E3944] bg-[#1a2127] shadow transition-all duration-300"
+                  className="border-stroke bg-secondary-bg relative w-full max-w-[700px] overflow-hidden rounded-lg border shadow transition-all duration-300"
                   style={{ minHeight: '250px' }}
                 >
-                  <span className="text-muted absolute top-2 left-2 z-10 rounded bg-[#212A31] px-2 py-0.5 text-xs">
-                    Advertisement
+                  <span className="text-secondary-text border-stroke bg-primary-bg absolute top-2 left-2 z-10 rounded border px-2 py-0.5 text-xs">
+                    Ad
                   </span>
                   <DisplayAd
                     adSlot="2909908750"

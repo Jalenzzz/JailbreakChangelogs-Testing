@@ -6,5 +6,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function ChangelogsLayout({ children }: { children: React.ReactNode }) {
-  return <div className="min-h-screen bg-[#2E3944]">{children}</div>;
+  return <div className="min-h-screen">{children}</div>;
 }
