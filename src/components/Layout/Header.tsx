@@ -352,7 +352,7 @@ export default function Header() {
           primary={
             <Box className="flex flex-wrap items-center gap-1">
               <span>Will I Make It</span>
-              <span className="bg-button-info text-primary-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+              <span className="bg-button-info border-stroke text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                 New
               </span>
             </Box>
@@ -369,7 +369,7 @@ export default function Header() {
           primary={
             <Box className="flex flex-wrap items-center gap-1">
               <span>Weekly Contracts</span>
-              <span className="bg-button-info text-primary-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+              <span className="bg-button-info border-stroke text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                 New
               </span>
             </Box>
@@ -417,7 +417,7 @@ export default function Header() {
             <Box className="flex flex-wrap items-center gap-1">
               <span>Dupe Finder</span>
               {isFeatureEnabled('DUPE_FINDER') ? (
-                <span className="bg-button-info text-primary-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                <span className="bg-button-info border-stroke text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                   New
                 </span>
               ) : (
@@ -479,7 +479,7 @@ export default function Header() {
             <Box className="flex flex-wrap items-center gap-1">
               <span>OG Finder</span>
               {isFeatureEnabled('OG_FINDER') ? (
-                <span className="bg-button-info text-primary-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                <span className="bg-button-info border-stroke text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                   New
                 </span>
               ) : (
@@ -515,7 +515,7 @@ export default function Header() {
           primary={
             <Box className="flex flex-wrap items-center gap-1">
               <span>Crew Leaderboard</span>
-              <span className="bg-button-info text-primary-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+              <span className="bg-button-info border-stroke text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                 New
               </span>
             </Box>
@@ -530,7 +530,7 @@ export default function Header() {
       >
         <Box className="flex items-center gap-1">
           <span>Money Leaderboard</span>
-          <span className="bg-button-info rounded px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase">
+          <span className="bg-button-info border-stroke text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
             New
           </span>
         </Box>
@@ -695,7 +695,7 @@ export default function Header() {
                             >
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>Will I Make It</span>
-                                <span className="bg-button-info text-primary-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                <span className="bg-button-info border-stroke text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                   New
                                 </span>
                               </div>
@@ -715,7 +715,7 @@ export default function Header() {
                             >
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>Weekly Contracts</span>
-                                <span className="bg-button-info text-primary-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                <span className="bg-button-info border-stroke text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                   New
                                 </span>
                               </div>
@@ -846,7 +846,7 @@ export default function Header() {
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>Dupe Finder</span>
                                 {isFeatureEnabled('DUPE_FINDER') ? (
-                                  <span className="bg-button-info text-primary-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                  <span className="bg-button-info border-stroke text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                     New
                                   </span>
                                 ) : (
@@ -902,7 +902,7 @@ export default function Header() {
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>Inventory Calculator</span>
                                 {isFeatureEnabled('INVENTORY_CALCULATOR') ? (
-                                  <span className="border-secondary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold text-transparent uppercase">
+                                  <span className="border-secondary-text text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                     Beta
                                   </span>
                                 ) : (
@@ -928,7 +928,7 @@ export default function Header() {
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>OG Finder</span>
                                 {isFeatureEnabled('OG_FINDER') ? (
-                                  <span className="bg-button-info text-primary-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                  <span className="bg-button-info border-stroke text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                     New
                                   </span>
                                 ) : (
@@ -1033,7 +1033,7 @@ export default function Header() {
                             >
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>Crew Leaderboard</span>
-                                <span className="bg-button-info text-primary-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                <span className="bg-button-info border-stroke text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                   New
                                 </span>
                               </div>
@@ -1053,7 +1053,7 @@ export default function Header() {
                             >
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>Money Leaderboard</span>
-                                <span className="bg-button-info text-primary-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                <span className="bg-button-info border-stroke text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                   New
                                 </span>
                               </div>

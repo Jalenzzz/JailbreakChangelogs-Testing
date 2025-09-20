@@ -3,16 +3,43 @@
 @import 'tw-animate-css';
 
 @theme {
-  --color-primary-bg: #252f3a; /* Gunmetal - Main background */
-  --color-secondary-bg: #192025; /* Eerie black - Cards, modals */
-  --color-primary-text: #f4eded; /* Snow - Main text/headings */
-  --color-secondary-text: #848488; /* Gray - Secondary text/descriptions */
+  /* Background Colors */
+  --color-primary-bg: #16161a; /* Background - Main page background */
+  --color-secondary-bg: #242629; /* Card background - Cards, modals, secondary elements */
+  --color-newsletter-bg: #fffffe; /* Newsletter background - Light sections */
+
+  /* Text Colors */
+  --color-primary-text: #fffffe; /* Headline - Main headings and important text */
+  --color-secondary-text: #94a1b2; /* Paragraph - Body text and descriptions */
+  --color-card-headline: #fffffe; /* Card headline - Headings within cards */
+  --color-card-paragraph: #94a1b2; /* Card paragraph - Text within cards */
+
+  /* Card Elements */
+  --color-card-tag-bg: #7f5af0; /* Card tag background - Tag/chip backgrounds */
+  --color-card-tag-text: #fffffe; /* Card tag text - Text on tags/chips */
+  --color-card-highlight: #fffffe; /* Card highlight - Highlighted elements in cards */
+
+  /* Interactive Elements */
+  --color-link: #94a1b2; /* Link - Primary links */
+  --color-link-hover: #7f5af0; /* Tertiary - Link hover states */
+
+  /* Button Colors */
+  --color-button-info: #7f5af0; /* Highlight - Primary buttons */
+  --color-button-info-hover: #6b4cd6; /* Darker purple - Button hover states */
+  --color-button-success: #2cb67d; /* Tertiary - Success actions */
   --color-button-danger: #ed4f4f; /* Imperial red - Error/destructive actions */
-  --color-button-info: #3c59ff; /* RISD Blue - Primary buttons/CTAs */
-  --color-button-info-hover: #2d47e6; /* Darker RISD Blue - Button hover states */
-  --color-button-success: #45b352; /* Dark pastel green - Success actions */
-  --color-link: #5d72e9; /* Neon blue - Primary links */
-  --color-link-hover: #3355ff; /* RISD Blue - Link hover states */
+  --color-form-button: #7f5af0; /* Form button - Form submit buttons */
+  --color-form-button-text: #fffffe; /* Form button text - Text on form buttons */
+
+  /* Form Elements */
+  --color-form-input: #16161a; /* Form input - Input field backgrounds */
+  --color-form-label: #fffffe; /* Label & placeholder - Form labels and placeholders */
+
+  /* Additional Utility Colors */
+  --color-highlight: #7f5af0; /* Highlight - Accent color for highlights */
+  --color-secondary: #72757e; /* Secondary - Secondary accent color */
+  --color-tertiary: #2cb67d; /* Tertiary - Tertiary accent color */
+  --color-stroke: #010101; /* Stroke - Border and stroke colors */
 }
 
 @layer base {
