@@ -28,20 +28,13 @@ export default function ConnectedBotsPolling() {
     'last-scanned',
   );
 
-  // Filter active bots (last 30 seconds) and sort alphabetically by display name
-  const activeBots =
-    botsData?.recent_heartbeats
-      ?.filter((bot) => {
-        const now = Math.floor(Date.now() / 1000);
-        const thirtySecondsAgo = now - 30;
-        return bot.last_heartbeat >= thirtySecondsAgo;
-      })
-      .sort((a, b) => {
-        // Get display names for sorting, fallback to bot ID
-        const nameA = botUsersData?.[a.id]?.displayName || botUsersData?.[a.id]?.name || a.id;
-        const nameB = botUsersData?.[b.id]?.displayName || botUsersData?.[b.id]?.name || b.id;
-        return nameA.localeCompare(nameB);
-      }) || [];
+  // Show all bots and sort alphabetically by display name
+  const allBots =
+    botsData?.recent_heartbeats?.sort((a, b) => {
+      const nameA = botUsersData?.[a.id]?.displayName || botUsersData?.[a.id]?.name || a.id;
+      const nameB = botUsersData?.[b.id]?.displayName || botUsersData?.[b.id]?.name || b.id;
+      return nameA.localeCompare(nameB);
+    }) || [];
 
   // Fetch Roblox data for bots only once (they don't change)
   useEffect(() => {
@@ -134,7 +127,7 @@ export default function ConnectedBotsPolling() {
     return (
       <div className="mt-6">
         <div className="mb-4 flex items-center gap-3">
-          <h2 className="text-xl font-bold text-gray-300">Active Bots</h2>
+          <h2 className="text-xl font-bold text-gray-300">Connected Bots</h2>
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-gray-500"></div>
             <span className="text-xs font-medium tracking-wide text-gray-500 uppercase">
@@ -165,7 +158,7 @@ export default function ConnectedBotsPolling() {
     return (
       <div className="mt-6">
         <div className="mb-4 flex items-center gap-3">
-          <h2 className="text-xl font-bold text-gray-300">Active Bots</h2>
+          <h2 className="text-xl font-bold text-gray-300">Connected Bots</h2>
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 animate-pulse rounded-full bg-yellow-500"></div>
             <span className="text-xs font-medium tracking-wide text-yellow-400 uppercase">
@@ -183,11 +176,11 @@ export default function ConnectedBotsPolling() {
     );
   }
 
-  if (activeBots.length === 0) {
+  if (allBots.length === 0) {
     return (
       <div className="mt-6">
         <div className="mb-4 flex items-center gap-3">
-          <h2 className="text-xl font-bold text-gray-300">Active Bots</h2>
+          <h2 className="text-xl font-bold text-gray-300">Connected Bots</h2>
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-gray-500"></div>
             <span className="text-xs font-medium tracking-wide text-gray-500 uppercase">
@@ -214,7 +207,7 @@ export default function ConnectedBotsPolling() {
   return (
     <div className="mt-6">
       <div className="mb-4 flex items-center gap-3">
-        <h2 className="text-xl font-bold text-gray-300">Active Bots</h2>
+        <h2 className="text-xl font-bold text-gray-300">Connected Bots</h2>
         <div className="flex items-center gap-2">
           <div className="h-2 w-2 animate-pulse rounded-full bg-red-500"></div>
           <span className="text-xs font-medium tracking-wide text-red-400 uppercase">LIVE</span>
@@ -310,7 +303,7 @@ export default function ConnectedBotsPolling() {
             )}
 
             <div className="max-h-60 space-y-2 overflow-y-auto">
-              {activeBots.map((bot: ConnectedBot) => (
+              {allBots.map((bot: ConnectedBot) => (
                 <BotStatusCard
                   key={bot.id}
                   bot={bot}
