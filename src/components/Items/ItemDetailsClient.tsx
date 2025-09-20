@@ -254,7 +254,7 @@ export default function ItemDetailsClient({
 
   return (
     <ThemeProvider theme={darkTheme}>
-      <main className="min-h-screen bg-[#2E3944]">
+      <main className="min-h-screen">
         <div className="container mx-auto mb-8 px-4">
           <Breadcrumb />
 
@@ -365,7 +365,7 @@ export default function ItemDetailsClient({
               {premiumStatusLoaded && currentUserPremiumType === 0 && (
                 <div className="my-6 flex flex-col items-center">
                   <div
-                    className="relative w-full max-w-[700px] overflow-hidden rounded-lg border border-[#2E3944] bg-[#1a2127] shadow transition-all duration-300"
+                    className="relative w-full max-w-[700px] overflow-hidden rounded-lg border bg-[#1a2127] shadow transition-all duration-300"
                     style={{ minHeight: '250px' }}
                   >
                     <span className="text-muted absolute top-2 left-2 z-10 rounded bg-[#212A31] px-2 py-0.5 text-xs">
@@ -476,7 +476,7 @@ export default function ItemDetailsClient({
                             fontSize: '0.75rem',
                             padding: '8px 12px',
                             borderRadius: '8px',
-                            border: '1px solid #2E3944',
+
                             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                             '& .MuiTooltip-arrow': {
                               color: '#0F1419',

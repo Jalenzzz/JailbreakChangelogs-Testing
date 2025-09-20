@@ -362,7 +362,7 @@ export default function InventoryItems({
   };
 
   return (
-    <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
+    <div className="rounded-lg border bg-[#212A31] p-6">
       <h2 className="text-muted mb-4 text-xl font-semibold">Inventory Items</h2>
 
       {/* Filters */}

@@ -118,8 +118,8 @@ export default function XpResultsSummary({ results, season }: XpResultsSummaryPr
   return (
     <div className="space-y-6">
       {/* Main Summary Card */}
-      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
-        <h3 id="season-progress-summary" className="mb-4 text-2xl font-bold text-[#FFFFFF]">
+      <div className="border-stroke bg-secondary-bg rounded-lg border p-6">
+        <h3 id="season-progress-summary" className="text-primary-text mb-4 text-2xl font-bold">
           🎯 Your Season Progress Summary
         </h3>
 
@@ -127,41 +127,43 @@ export default function XpResultsSummary({ results, season }: XpResultsSummaryPr
         <div
           className={`mb-6 rounded-lg p-4 ${
             recommendation.type === 'success'
-              ? 'border border-green-500/30 bg-green-900/20'
+              ? 'border-button-success bg-secondary-bg border'
               : recommendation.type === 'warning'
-                ? 'border border-yellow-500/30 bg-yellow-900/20'
+                ? 'border-warning bg-secondary-bg border'
                 : recommendation.type === 'info'
-                  ? 'border border-blue-500/30 bg-blue-900/20'
-                  : 'border border-red-500/30 bg-red-900/20'
+                  ? 'border-button-info bg-secondary-bg border'
+                  : 'border-button-danger bg-secondary-bg border'
           }`}
         >
-          <div className="mb-2 text-lg font-semibold text-[#FFFFFF]">{recommendation.message}</div>
-          <div className="text-muted mb-3">{recommendation.details}</div>
+          <div className="text-primary-text mb-2 text-lg font-semibold">
+            {recommendation.message}
+          </div>
+          <div className="text-secondary-text mb-3">{recommendation.details}</div>
         </div>
 
         {/* Progress Overview */}
         <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           <div className="text-center">
-            <div className="text-2xl font-bold text-[#FFFFFF]">{results.currentLevel}</div>
-            <div className="text-muted text-sm">Current Level</div>
+            <div className="text-primary-text text-2xl font-bold">{results.currentLevel}</div>
+            <div className="text-secondary-text text-sm">Current Level</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-[#FFFFFF]">
+            <div className="text-primary-text text-2xl font-bold">
               {results.currentXp.toLocaleString()}
             </div>
-            <div className="text-muted text-sm">Total XP</div>
+            <div className="text-secondary-text text-sm">Total XP</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-[#FFFFFF]">
+            <div className="text-primary-text text-2xl font-bold">
               {results.xpNeeded.toLocaleString()}
             </div>
-            <div className="text-muted text-sm">XP Needed</div>
+            <div className="text-secondary-text text-sm">XP Needed</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-[#FFFFFF]">
+            <div className="text-primary-text text-2xl font-bold">
               {results.requiredXp.toLocaleString()}
             </div>
-            <div className="text-muted text-sm">Target XP</div>
+            <div className="text-secondary-text text-sm">Target XP</div>
           </div>
         </div>
 
@@ -176,21 +178,23 @@ export default function XpResultsSummary({ results, season }: XpResultsSummaryPr
 
         {/* Time Estimates */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="rounded-lg bg-[#2E3944] p-4">
+          <div className="border-stroke rounded-lg border p-4">
             <div className="mb-3 flex items-center justify-between">
-              <h4 className="flex items-center gap-2 font-semibold text-[#FFFFFF]">
+              <h4 className="text-primary-text flex items-center gap-2 font-semibold">
                 <IoTime className="text-blue-400" />
                 Without Season Pass
               </h4>
               <span className="text-lg">{getStatusIcon(results.achievableNoPass)}</span>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-[#FFFFFF]">{results.timeNoPass.days}</div>
-              <div className="text-muted text-sm">
+              <div className="text-primary-text text-2xl font-bold">{results.timeNoPass.days}</div>
+              <div className="text-secondary-text text-sm">
                 {results.timeNoPass.days === 1 ? 'day' : 'days'}
               </div>
               {results.achievableNoPass ? (
-                <div className="text-muted mt-1 text-xs">{results.timeNoPass.completionDate}</div>
+                <div className="text-secondary-text mt-1 text-xs">
+                  {results.timeNoPass.completionDate}
+                </div>
               ) : (
                 <div className="mt-1 text-xs text-red-400">
                   Past season end date
@@ -203,21 +207,25 @@ export default function XpResultsSummary({ results, season }: XpResultsSummaryPr
             </div>
           </div>
 
-          <div className="rounded-lg bg-[#2E3944] p-4">
+          <div className="border-stroke rounded-lg border p-4">
             <div className="mb-3 flex items-center justify-between">
-              <h4 className="flex items-center gap-2 font-semibold text-[#FFFFFF]">
+              <h4 className="text-primary-text flex items-center gap-2 font-semibold">
                 <IoTime className="text-green-400" />
                 With Season Pass
               </h4>
               <span className="text-lg">{getStatusIcon(results.achievableWithPass)}</span>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-[#FFFFFF]">{results.timeWithPass.days}</div>
-              <div className="text-muted text-sm">
+              <div className="text-primary-text text-2xl font-bold">
+                {results.timeWithPass.days}
+              </div>
+              <div className="text-secondary-text text-sm">
                 {results.timeWithPass.days === 1 ? 'day' : 'days'}
               </div>
               {results.achievableWithPass ? (
-                <div className="text-muted mt-1 text-xs">{results.timeWithPass.completionDate}</div>
+                <div className="text-secondary-text mt-1 text-xs">
+                  {results.timeWithPass.completionDate}
+                </div>
               ) : (
                 <div className="mt-1 text-xs text-red-400">
                   Past season end date
@@ -233,8 +241,8 @@ export default function XpResultsSummary({ results, season }: XpResultsSummaryPr
       </div>
 
       {/* XP Options Analysis */}
-      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
-        <h3 className="mb-4 text-xl font-semibold text-[#FFFFFF]">XP Options Analysis</h3>
+      <div className="border-stroke bg-secondary-bg rounded-lg border p-6">
+        <h3 className="text-primary-text mb-4 text-xl font-semibold">XP Options Analysis</h3>
         {new Date() < new Date(results.importantDates.doubleXpStart) && (
           <div className="mb-4 text-sm text-gray-400 italic">
             💡 Double XP analysis will be available starting {results.importantDates.doubleXpStart}
@@ -243,8 +251,8 @@ export default function XpResultsSummary({ results, season }: XpResultsSummaryPr
 
         <div className="space-y-4">
           {/* Without Season Pass Analysis */}
-          <div className="rounded-lg bg-[#2E3944] p-4">
-            <h4 className="mb-3 font-semibold text-[#FFFFFF]">Without Season Pass</h4>
+          <div className="border-stroke rounded-lg border p-4">
+            <h4 className="text-primary-text mb-3 font-semibold">Without Season Pass</h4>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <span className="text-lg">
@@ -254,8 +262,13 @@ export default function XpResultsSummary({ results, season }: XpResultsSummaryPr
                     <FaTimes className="text-red-400" />
                   )}
                 </span>
-                <span className="text-[#FFFFFF]">
-                  Normal XP: {results.achievableNoPass ? 'Achievable' : 'Not achievable'}
+                <span className="text-primary-text">
+                  Normal XP:{' '}
+                  {results.achievableNoPass ? (
+                    'Achievable'
+                  ) : (
+                    <span className="text-button-danger">Not achievable</span>
+                  )}
                 </span>
                 {results.achievableNoPass && (
                   <span className="text-sm text-green-400">
@@ -275,7 +288,7 @@ export default function XpResultsSummary({ results, season }: XpResultsSummaryPr
                         <FaTimes className="text-red-400" />
                       )}
                     </span>
-                    <span className="text-[#FFFFFF]">
+                    <span className="text-primary-text">
                       With Double XP:{' '}
                       {results.doubleXpResults.noPass.achievable
                         ? 'Achievable (faster completion)'
@@ -305,8 +318,8 @@ export default function XpResultsSummary({ results, season }: XpResultsSummaryPr
           </div>
 
           {/* With Season Pass Analysis */}
-          <div className="rounded-lg bg-[#2E3944] p-4">
-            <h4 className="mb-3 font-semibold text-[#FFFFFF]">With Season Pass</h4>
+          <div className="border-stroke rounded-lg border p-4">
+            <h4 className="text-primary-text mb-3 font-semibold">With Season Pass</h4>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <span className="text-lg">
@@ -316,8 +329,13 @@ export default function XpResultsSummary({ results, season }: XpResultsSummaryPr
                     <FaTimes className="text-red-400" />
                   )}
                 </span>
-                <span className="text-[#FFFFFF]">
-                  Normal XP: {results.achievableWithPass ? 'Achievable' : 'Not achievable'}
+                <span className="text-primary-text">
+                  Normal XP:{' '}
+                  {results.achievableWithPass ? (
+                    'Achievable'
+                  ) : (
+                    <span className="text-button-danger">Not achievable</span>
+                  )}
                 </span>
                 {results.achievableWithPass && (
                   <span className="text-sm text-green-400">
@@ -337,7 +355,7 @@ export default function XpResultsSummary({ results, season }: XpResultsSummaryPr
                         <FaTimes className="text-red-400" />
                       )}
                     </span>
-                    <span className="text-[#FFFFFF]">
+                    <span className="text-primary-text">
                       With Double XP:{' '}
                       {results.doubleXpResults.withPass.achievable
                         ? 'Achievable (faster completion)'
@@ -369,25 +387,29 @@ export default function XpResultsSummary({ results, season }: XpResultsSummaryPr
       </div>
 
       {/* Important Dates */}
-      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
-        <h3 className="mb-4 text-xl font-semibold text-[#FFFFFF]">Important Season Dates</h3>
+      <div className="border-stroke bg-secondary-bg rounded-lg border p-6">
+        <h3 className="text-primary-text mb-4 text-xl font-semibold">Important Season Dates</h3>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="rounded-lg bg-[#2E3944] p-4">
+          <div className="border-stroke rounded-lg border p-4">
             <div className="text-center">
-              <div className="text-lg font-semibold text-[#FFFFFF]">Double XP Starts</div>
-              <div className="text-2xl font-bold text-yellow-400">
+              <div className="text-primary-text text-lg font-semibold">Double XP Starts</div>
+              <div className="text-primary-text text-2xl font-bold">
                 {results.importantDates.doubleXpStart}
               </div>
-              <div className="text-muted mt-1 text-sm">Start maximizing your XP gains!</div>
+              <div className="text-secondary-text mt-1 text-sm">
+                Start maximizing your XP gains!
+              </div>
             </div>
           </div>
-          <div className="rounded-lg bg-[#2E3944] p-4">
+          <div className="border-stroke rounded-lg border p-4">
             <div className="text-center">
-              <div className="text-lg font-semibold text-[#FFFFFF]">Season Ends</div>
-              <div className="text-2xl font-bold text-red-400">
+              <div className="text-primary-text text-lg font-semibold">Season Ends</div>
+              <div className="text-primary-text text-2xl font-bold">
                 {results.importantDates.seasonEnds}
               </div>
-              <div className="text-muted mt-1 text-sm">Final deadline to reach your goal</div>
+              <div className="text-secondary-text mt-1 text-sm">
+                Final deadline to reach your goal
+              </div>
             </div>
           </div>
         </div>

@@ -151,7 +151,7 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
         <SearchParamsHandler setFilterSort={setFilterSort} setValueSort={setValueSort} />
       </Suspense>
 
-      <div className="mb-8 rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
+      <div className="mb-8 rounded-lg border bg-[#212A31] p-6">
         <div className="mb-4 flex items-center justify-between">
           <h1 className="text-muted text-3xl font-bold">Roblox Jailbreak Value List</h1>
         </div>
@@ -172,14 +172,14 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
         <div className="mb-4 flex flex-wrap gap-2">
           <button
             onClick={handleRandomItem}
-            className="text-muted flex items-center gap-1.5 rounded-lg border border-[#2E3944] bg-[#37424D] px-4 py-2 hover:bg-[#124E66] focus:outline-none sm:gap-2 sm:px-6 sm:py-3"
+            className="text-muted flex items-center gap-1.5 rounded-lg border bg-[#37424D] px-4 py-2 hover:bg-[#124E66] focus:outline-none sm:gap-2 sm:px-6 sm:py-3"
           >
             <SparklesIcon className="h-4 w-4 sm:h-6 sm:w-6" />
             <span className="text-sm sm:text-base">Random Item</span>
           </button>
           <button
             onClick={() => setShowHcModal(true)}
-            className="flex items-center gap-1.5 rounded-lg border border-[#2E3944] bg-[#5865F2] px-4 py-2 text-white hover:bg-[#4752C4] focus:outline-none sm:gap-2 sm:px-6 sm:py-3"
+            className="flex items-center gap-1.5 rounded-lg border bg-[#5865F2] px-4 py-2 text-white hover:bg-[#4752C4] focus:outline-none sm:gap-2 sm:px-6 sm:py-3"
           >
             <span className="text-sm sm:text-base">Hyperchrome Pity Calculator</span>
           </button>

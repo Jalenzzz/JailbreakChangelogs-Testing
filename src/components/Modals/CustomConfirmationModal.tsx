@@ -35,7 +35,7 @@ export const CustomConfirmationModal: React.FC<CustomConfirmationModalProps> = (
           <div className="flex justify-end gap-3">
             <button
               onClick={onCancel}
-              className="text-muted rounded-md border border-[#37424D] px-4 py-2 text-sm font-medium transition-colors hover:bg-[#2E3944] hover:text-white"
+              className="text-muted hover: rounded-md border border-[#37424D] px-4 py-2 text-sm font-medium transition-colors hover:text-white"
             >
               {cancelText}
             </button>

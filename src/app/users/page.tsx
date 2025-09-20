@@ -12,7 +12,7 @@ export default async function UsersPage() {
   const online: OnlineUser[] = await fetchOnlineUsers();
 
   return (
-    <div className="min-h-screen bg-[#2E3944] px-4 pb-8">
+    <div className="min-h-screen px-4 pb-8">
       <div className="mx-auto max-w-7xl">
         <Breadcrumb />
 

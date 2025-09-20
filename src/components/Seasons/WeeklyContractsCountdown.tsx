@@ -178,14 +178,14 @@ const WeeklyContractsCountdown: React.FC<WeeklyContractsCountdownProps> = ({ sea
         {/* Timer Section */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {/* Weekly Contracts Timer */}
-          <div className="rounded-xl border border-[#37424D] bg-[#2E3944] p-4">
+          <div className="rounded-xl border border-[#37424D] p-4">
             <div className="text-center">
               <div className="mb-3 flex items-center justify-center gap-2">
                 <span className="text-sm font-semibold tracking-wide text-white uppercase">
                   New Contracts In
                 </span>
               </div>
-              <div className="mb-3 rounded-lg bg-[#2E3944] p-3">
+              <div className="mb-3 rounded-lg p-3">
                 <span className="font-mono text-2xl font-bold text-white">
                   {formatTime(secondsLeft)}
                 </span>
@@ -195,14 +195,14 @@ const WeeklyContractsCountdown: React.FC<WeeklyContractsCountdownProps> = ({ sea
           </div>
 
           {/* Daily XP Timer */}
-          <div className="rounded-xl border border-[#37424D] bg-[#2E3944] p-4">
+          <div className="rounded-xl border border-[#37424D] p-4">
             <div className="text-center">
               <div className="mb-3 flex items-center justify-center gap-2">
                 <span className="text-sm font-semibold tracking-wide text-white uppercase">
                   Daily XP Resets In
                 </span>
               </div>
-              <div className="mb-3 rounded-lg bg-[#2E3944] p-3">
+              <div className="mb-3 rounded-lg p-3">
                 <span className="font-mono text-2xl font-bold text-white">
                   {formatTime(dailySecondsLeft)}
                 </span>

@@ -111,7 +111,7 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
               setSearchQuery(e.target.value);
               setPage(1);
             }}
-            className="text-muted w-full rounded-lg border border-[#2E3944] bg-[#37424D] px-4 py-2 pr-10 pl-10 placeholder-[#D3D9D4] focus:border-[#124E66] focus:outline-none"
+            className="text-muted w-full rounded-lg border bg-[#37424D] px-4 py-2 pr-10 pl-10 placeholder-[#D3D9D4] focus:border-[#124E66] focus:outline-none"
           />
           <MagnifyingGlassIcon className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]" />
           {searchQuery && (
@@ -183,7 +183,7 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
                 tooltip: {
                   sx: {
                     bgcolor: '#1A2228',
-                    border: '1px solid #2E3944',
+
                     maxWidth: '400px',
                     width: 'auto',
                     minWidth: '300px',
@@ -201,7 +201,7 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
                     : `/users/${user.id}`
                 }
                 prefetch={false}
-                className={`block rounded-lg border border-[#2E3944] bg-[#212A31] p-4 shadow-md ${
+                className={`block rounded-lg border bg-[#212A31] p-4 shadow-md ${
                   user.settings?.profile_public === 0 && currentUserId !== user.id
                     ? 'cursor-not-allowed opacity-75'
                     : 'group hover:border-blue-300'
@@ -239,9 +239,7 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
                     backgroundColor: '#4752C4',
                   },
                 },
-                '&:hover': {
-                  backgroundColor: '#2E3944',
-                },
+                '&:hover': {},
               },
             }}
           />

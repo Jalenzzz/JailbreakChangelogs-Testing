@@ -298,7 +298,7 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
           paper: {
             sx: {
               backgroundColor: '#212A31',
-              border: '1px solid #2E3944',
+
               borderRadius: '8px',
             },
           },
@@ -308,7 +308,6 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
           sx={{
             bgcolor: '#212A31',
             color: '#FFFFFF',
-            borderBottom: '1px solid #2E3944',
           }}
         >
           Voters
@@ -367,7 +366,7 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
               (votersTab === 'up' ? activeVoters?.up || [] : activeVoters?.down || []).map(
                 (voter: VoteRecord) => (
                   <div key={voter.id} className="flex items-center gap-2">
-                    <div className="relative h-6 w-6 flex-shrink-0 overflow-hidden rounded-full bg-[#2E3944]">
+                    <div className="relative h-6 w-6 flex-shrink-0 overflow-hidden rounded-full">
                       <DefaultAvatar />
                       {voter.avatar_hash && (
                         <Image
@@ -410,7 +409,7 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
             )}
           </div>
         </DialogContent>
-        <DialogActions sx={{ bgcolor: '#212A31', borderTop: '1px solid #2E3944' }}>
+        <DialogActions sx={{ bgcolor: '#212A31' }}>
           <Button onClick={() => setVotersOpen(false)} variant="contained">
             Close
           </Button>
@@ -484,7 +483,7 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
           </div>
           <button
             onClick={toggleSortOrder}
-            className="flex w-full items-center justify-center gap-1 rounded-lg border border-[#2E3944] bg-[#37424D] px-3 py-1.5 text-sm text-white transition-colors hover:bg-[#2E3944] sm:w-auto"
+            className="hover: flex w-full items-center justify-center gap-1 rounded-lg border bg-[#37424D] px-3 py-1.5 text-sm text-white transition-colors sm:w-auto"
           >
             {sortOrder === 'newest' ? (
               <ArrowDownIcon className="h-4 w-4" />
@@ -534,7 +533,7 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                 <div className="flex flex-col items-end gap-1"></div>
               </div>
 
-              {!change.suggestion_data && <div className="mb-4 border-b border-[#2E3944]"></div>}
+              {!change.suggestion_data && <div className="mb-4 border-b"></div>}
 
               {change.suggestion_data && (
                 <>
@@ -542,7 +541,7 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                     <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                       <div className="flex items-center gap-2">
                         {change.suggestion_data.metadata?.avatar_hash && (
-                          <div className="relative h-6 w-6 flex-shrink-0 overflow-hidden rounded-full bg-[#2E3944]">
+                          <div className="relative h-6 w-6 flex-shrink-0 overflow-hidden rounded-full">
                             <DefaultAvatar />
                             <Image
                               src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(`https://cdn.discordapp.com/avatars/${change.suggestion_data.user_id}/${change.suggestion_data.metadata.avatar_hash}?size=128`)}`}
@@ -651,7 +650,7 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                       Suggested on {formatCustomDate(change.suggestion_data.created_at * 1000)}
                     </div>
                   </div>
-                  <div className="mb-4 border-b border-[#2E3944]"></div>
+                  <div className="mb-4 border-b"></div>
                 </>
               )}
 
@@ -798,13 +797,13 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                           if (isNA(v) && isNA(nv)) return false;
                           return v !== nv;
                         }).length -
-                          1 && <div className="mt-4 border-t border-[#2E3944] pt-4"></div>}
+                          1 && <div className="mt-4 border-t pt-4"></div>}
                     </div>
                   );
                 })}
               </div>
-              <div className="mt-4 flex items-center gap-2 border-t border-[#2E3944] pt-4">
-                <div className="relative h-6 w-6 flex-shrink-0 overflow-hidden rounded-full bg-[#2E3944]">
+              <div className="mt-4 flex items-center gap-2 border-t pt-4">
+                <div className="relative h-6 w-6 flex-shrink-0 overflow-hidden rounded-full">
                   <DefaultAvatar />
                   {userMap[change.changed_by_id]?.avatar &&
                     userMap[change.changed_by_id]?.avatar !== 'None' && (

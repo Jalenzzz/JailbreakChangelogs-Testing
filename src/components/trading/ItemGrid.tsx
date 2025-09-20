@@ -84,7 +84,7 @@ export const ItemGrid: React.FC<ItemGridProps> = ({ items, title, onRemove }) =>
 
     return (
       <div
-        className={`cursor-pointer rounded-lg border-2 border-dashed bg-[#2E3944] p-6 text-center transition-colors hover:bg-[#37424D] ${borderColor}`}
+        className={`cursor-pointer rounded-lg border-2 border-dashed p-6 text-center transition-colors hover:bg-[#37424D] ${borderColor}`}
         onClick={() => {
           // Scroll to items grid after a short delay to ensure tab switch completes
           setTimeout(() => {
@@ -134,7 +134,7 @@ export const ItemGrid: React.FC<ItemGridProps> = ({ items, title, onRemove }) =>
   }
 
   return (
-    <div className="rounded-lg bg-[#2E3944] p-4">
+    <div className="rounded-lg p-4">
       <h4 className="text-muted mb-2 text-sm">{title}</h4>
       <div className="max-h-[480px] overflow-y-auto pr-1" aria-label="Selected items list">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
@@ -165,7 +165,7 @@ export const ItemGrid: React.FC<ItemGridProps> = ({ items, title, onRemove }) =>
                     tooltip: {
                       sx: {
                         bgcolor: '#1A2228',
-                        border: '1px solid #2E3944',
+
                         maxWidth: '400px',
                         width: 'auto',
                         minWidth: '300px',
@@ -177,7 +177,7 @@ export const ItemGrid: React.FC<ItemGridProps> = ({ items, title, onRemove }) =>
                   }}
                 >
                   <div className="relative aspect-square">
-                    <div className="relative h-full w-full overflow-hidden rounded-lg bg-[#2E3944]">
+                    <div className="relative h-full w-full overflow-hidden rounded-lg">
                       {isVideoItem(item.name) ? (
                         <video
                           src={getVideoPath(item.type, item.name)}

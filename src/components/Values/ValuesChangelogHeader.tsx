@@ -2,7 +2,7 @@ import React from 'react';
 
 const ValuesChangelogHeader: React.FC = () => {
   return (
-    <div className="mb-8 rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
+    <div className="mb-8 rounded-lg border bg-[#212A31] p-6">
       <div className="mb-4">
         <h2 className="text-muted text-2xl font-semibold">
           Roblox Jailbreak Values Changelogs & History

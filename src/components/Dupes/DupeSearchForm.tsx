@@ -211,7 +211,7 @@ const DupeSearchForm: React.FC<DupeSearchFormProps> = ({
               required
               autoComplete="off"
               autoCorrect="off"
-              className="text-muted placeholder-muted/50 w-full rounded-lg border border-[#2E3944] bg-[#37424D] py-2 pr-9 pl-9 focus:border-transparent focus:ring-2 focus:ring-[#5865F2] focus:outline-none"
+              className="text-muted placeholder-muted/50 w-full rounded-lg border bg-[#37424D] py-2 pr-9 pl-9 focus:border-transparent focus:ring-2 focus:ring-[#5865F2] focus:outline-none"
             />
             {ownerName && (
               <button
@@ -228,7 +228,7 @@ const DupeSearchForm: React.FC<DupeSearchFormProps> = ({
             )}
           </div>
           {showOwnerSuggestions && ownerSuggestions.length > 0 && (
-            <div className="absolute z-10 mt-1 max-h-48 w-full overflow-y-auto rounded-lg border border-[#2E3944] bg-[#1A1F24] shadow-lg">
+            <div className="absolute z-10 mt-1 max-h-48 w-full overflow-y-auto rounded-lg border bg-[#1A1F24] shadow-lg">
               {ownerSuggestions.map((suggestion, index) => (
                 <button
                   key={index}
@@ -274,7 +274,7 @@ const DupeSearchForm: React.FC<DupeSearchFormProps> = ({
               placeholder="Enter item name..."
               autoComplete="off"
               autoCorrect="off"
-              className="text-muted placeholder-muted/50 w-full rounded-lg border border-[#2E3944] bg-[#37424D] py-2 pr-9 pl-9 focus:border-transparent focus:ring-2 focus:ring-[#5865F2] focus:outline-none"
+              className="text-muted placeholder-muted/50 w-full rounded-lg border bg-[#37424D] py-2 pr-9 pl-9 focus:border-transparent focus:ring-2 focus:ring-[#5865F2] focus:outline-none"
             />
             {itemName && (
               <button
@@ -291,7 +291,7 @@ const DupeSearchForm: React.FC<DupeSearchFormProps> = ({
             )}
           </div>
           {showItemSuggestions && itemSuggestions.length > 0 && (
-            <div className="absolute z-10 mt-1 max-h-48 w-full overflow-y-auto rounded-lg border border-[#2E3944] bg-[#1A1F24] shadow-lg">
+            <div className="absolute z-10 mt-1 max-h-48 w-full overflow-y-auto rounded-lg border bg-[#1A1F24] shadow-lg">
               {itemSuggestions.map((suggestion, index) => (
                 <button
                   key={index}

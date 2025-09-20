@@ -187,7 +187,7 @@ export default function Comment({
     // Show loading placeholder while fetching item details
     if (isLoading) {
       return (
-        <div className="relative mr-3 h-16 w-16 flex-shrink-0 animate-pulse overflow-hidden rounded-md bg-[#2E3944] md:h-[4.5rem] md:w-32"></div>
+        <div className="relative mr-3 h-16 w-16 flex-shrink-0 animate-pulse overflow-hidden rounded-md md:h-[4.5rem] md:w-32"></div>
       );
     }
 
@@ -251,7 +251,7 @@ export default function Comment({
       }
       className="group block"
     >
-      <Box className="rounded-lg border border-[#2E3944] bg-[#212A31] p-3 shadow-sm transition-colors hover:border-[#5865F2]">
+      <Box className="rounded-lg border bg-[#212A31] p-3 shadow-sm transition-colors hover:border-[#5865F2]">
         <div className="mb-2 flex">
           {renderThumbnail()}
           <div className="min-w-0 flex-1">
@@ -272,7 +272,7 @@ export default function Comment({
                 {getItemName()}
               </Typography>
             ) : (
-              <Skeleton variant="text" width="80%" height={20} sx={{ bgcolor: '#2E3944', mb: 1 }} />
+              <Skeleton variant="text" width="80%" height={20} sx={{ mb: 1 }} />
             )}
 
             {/* Badge Second */}
@@ -325,7 +325,7 @@ export default function Comment({
                     fontSize: '0.75rem',
                     padding: '8px 12px',
                     borderRadius: '8px',
-                    border: '1px solid #2E3944',
+
                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                     '& .MuiTooltip-arrow': {
                       color: '#0F1419',

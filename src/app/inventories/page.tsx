@@ -78,15 +78,15 @@ export default function InventoriesPage() {
 function StatsSkeleton() {
   return (
     <div className="mb-6 grid grid-cols-1 gap-4 pt-6 md:grid-cols-3">
-      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4 shadow-sm">
+      <div className="rounded-lg border bg-[#212A31] p-4 shadow-sm">
         <div className="mb-2 h-8 animate-pulse rounded bg-[#37424D]"></div>
         <div className="h-4 w-24 animate-pulse rounded bg-[#37424D]"></div>
       </div>
-      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4 shadow-sm">
+      <div className="rounded-lg border bg-[#212A31] p-4 shadow-sm">
         <div className="mb-2 h-8 animate-pulse rounded bg-[#37424D]"></div>
         <div className="h-4 w-24 animate-pulse rounded bg-[#37424D]"></div>
       </div>
-      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4 shadow-sm">
+      <div className="rounded-lg border bg-[#212A31] p-4 shadow-sm">
         <div className="mb-2 h-8 animate-pulse rounded bg-[#37424D]"></div>
         <div className="h-4 w-24 animate-pulse rounded bg-[#37424D]"></div>
       </div>
@@ -99,13 +99,13 @@ function OfficialBotsSkeleton() {
   return (
     <div className="mt-8">
       <div className="mb-4 h-6 w-48 animate-pulse rounded bg-[#37424D]"></div>
-      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4 shadow-sm">
+      <div className="rounded-lg border bg-[#212A31] p-4 shadow-sm">
         <div className="mb-3 h-4 w-80 animate-pulse rounded bg-[#37424D]"></div>
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="flex flex-col gap-3 rounded-lg border border-[#37424D] bg-[#2E3944] p-3 sm:flex-row sm:items-center"
+              className="flex flex-col gap-3 rounded-lg border border-[#37424D] p-3 sm:flex-row sm:items-center"
             >
               <div className="h-8 w-8 animate-pulse rounded-full bg-[#37424D]"></div>
               <div className="h-10 w-10 animate-pulse rounded-full bg-[#37424D]"></div>
@@ -131,12 +131,12 @@ function LeaderboardSkeleton() {
   return (
     <div className="mt-8">
       <div className="mb-4 h-6 w-64 animate-pulse rounded bg-[#37424D]"></div>
-      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4 shadow-sm">
+      <div className="rounded-lg border bg-[#212A31] p-4 shadow-sm">
         <div className="max-h-[32rem] space-y-3 overflow-y-auto pr-2">
           {[1, 2, 3, 4, 5].map((i) => (
             <div
               key={i}
-              className="flex flex-col gap-3 rounded-lg border border-[#37424D] bg-[#2E3944] p-3 sm:flex-row sm:items-center"
+              className="flex flex-col gap-3 rounded-lg border border-[#37424D] p-3 sm:flex-row sm:items-center"
             >
               <div className="flex items-center gap-3">
                 <div className="h-8 w-8 animate-pulse rounded-full bg-[#37424D]"></div>
@@ -166,15 +166,15 @@ async function StatsSection() {
 
   return (
     <div className="mb-6 grid grid-cols-1 gap-4 pt-6 md:grid-cols-3">
-      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4 shadow-sm">
+      <div className="rounded-lg border bg-[#212A31] p-4 shadow-sm">
         <div className="text-2xl font-bold text-blue-400">{stats.item_count_str}</div>
         <div className="text-sm text-gray-400">Items Tracked</div>
       </div>
-      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4 shadow-sm">
+      <div className="rounded-lg border bg-[#212A31] p-4 shadow-sm">
         <div className="text-2xl font-bold text-green-400">{stats.user_count_str}</div>
         <div className="text-sm text-gray-400">Users Scanned</div>
       </div>
-      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4 shadow-sm">
+      <div className="rounded-lg border bg-[#212A31] p-4 shadow-sm">
         <div className="text-2xl font-bold text-[#ef4444]">
           {duplicatesStats.total_duplicates_str}
         </div>
@@ -200,7 +200,7 @@ async function OfficialBotsSection() {
   return (
     <div className="mt-8">
       <h2 className="mb-4 text-xl font-bold text-gray-300">Official Scan Bots</h2>
-      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4 shadow-sm">
+      <div className="rounded-lg border bg-[#212A31] p-4 shadow-sm">
         <div className="mb-3">
           <p className="text-sm text-gray-400">
             These are our official inventory scanning bots. Only these accounts are authorized to
@@ -230,7 +230,7 @@ async function OfficialBotsSection() {
             return (
               <div
                 key={botId}
-                className="flex flex-col gap-3 rounded-lg border border-[#37424D] bg-[#2E3944] p-3 sm:flex-row sm:items-center"
+                className="flex flex-col gap-3 rounded-lg border border-[#37424D] p-3 sm:flex-row sm:items-center"
               >
                 <div className="flex items-center gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-600 text-sm font-bold text-white">
@@ -323,7 +323,7 @@ async function LeaderboardSection() {
       <h2 className="mb-4 text-xl font-bold text-gray-300">
         Most Scanned Players ({leaderboard.length})
       </h2>
-      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4 shadow-sm">
+      <div className="rounded-lg border bg-[#212A31] p-4 shadow-sm">
         <div className="max-h-[32rem] space-y-3 overflow-y-auto pr-2">
           {leaderboard.map((user, index) => (
             <Suspense
@@ -385,7 +385,7 @@ async function LeaderboardUser({ user, index }: { user: UserScan; index: number 
   const username = robloxUser?.name || user.user_id;
 
   return (
-    <div className="flex flex-col gap-3 rounded-lg border border-[#37424D] bg-[#2E3944] p-3 sm:flex-row sm:items-center">
+    <div className="flex flex-col gap-3 rounded-lg border border-[#37424D] p-3 sm:flex-row sm:items-center">
       <div className="flex items-center gap-3">
         <div
           className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${
@@ -457,7 +457,7 @@ async function LeaderboardUser({ user, index }: { user: UserScan; index: number 
 // Component for basic user (fallback)
 function BasicLeaderboardUser({ user, index }: { user: UserScan; index: number }) {
   return (
-    <div className="flex flex-col gap-3 rounded-lg border border-[#37424D] bg-[#2E3944] p-3 sm:flex-row sm:items-center">
+    <div className="flex flex-col gap-3 rounded-lg border border-[#37424D] p-3 sm:flex-row sm:items-center">
       <div className="flex items-center gap-3">
         <div
           className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${

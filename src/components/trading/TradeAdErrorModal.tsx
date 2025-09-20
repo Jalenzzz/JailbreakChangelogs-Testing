@@ -35,12 +35,11 @@ export const TradeAdErrorModal: React.FC<TradeAdErrorModalProps> = ({
           style: {
             backgroundColor: '#212A31',
             color: '#D3D9D4',
-            border: '1px solid #2E3944',
           },
         },
       }}
     >
-      <DialogTitle className="flex items-center justify-between border-b border-[#2E3944] p-4">
+      <DialogTitle className="flex items-center justify-between border-b p-4">
         <span className="font-semibold text-[#FF6B6B]">Trade Ad Validation Errors</span>
         <Button
           onClick={onClose}

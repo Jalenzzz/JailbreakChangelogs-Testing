@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 export default function TermsOfServicePage() {
   return (
-    <div className="relative min-h-screen bg-[#2E3944] p-8">
+    <div className="relative min-h-screen p-8">
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40"
         style={{
@@ -15,7 +15,7 @@ export default function TermsOfServicePage() {
             "url('https://assets.jailbreakchangelogs.xyz/assets/backgrounds/background6.webp')",
         }}
       />
-      <div className="absolute inset-0 bg-[#2E3944] opacity-60" />
+      <div className="absolute inset-0 opacity-60" />
       <div className="relative mx-auto max-w-4xl">
         <Breadcrumb />
         <div className="mb-2 flex items-center gap-2">
@@ -24,7 +24,7 @@ export default function TermsOfServicePage() {
         </div>
         <p className="text-muted mb-6 text-sm">Last updated: September 12th, 2025</p>
 
-        <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6 transition-colors hover:border-[#5865F2]">
+        <div className="rounded-lg border bg-[#212A31] p-6 transition-colors hover:border-[#5865F2]">
           <Typography className="text-muted">
             Please read these Terms of Service carefully before using Jailbreak Changelogs.
           </Typography>

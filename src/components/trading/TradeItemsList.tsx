@@ -46,7 +46,7 @@ export default function TradeItemsList({ offering, requesting }: TradeItemsListP
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       {/* Offering Items List */}
-      <div className="rounded-lg bg-[#2E3944] p-6">
+      <div className="rounded-lg p-6">
         <div className="mb-4 flex items-center gap-2">
           <h3 className="text-muted text-lg font-semibold">Offering Items</h3>
           <span className="rounded-full border border-[#5865F2]/20 bg-[#5865F2] px-2 py-0.5 text-xs text-white">
@@ -100,7 +100,7 @@ export default function TradeItemsList({ offering, requesting }: TradeItemsListP
       </div>
 
       {/* Requesting Items List */}
-      <div className="rounded-lg bg-[#2E3944] p-6">
+      <div className="rounded-lg p-6">
         <div className="mb-4 flex items-center gap-2">
           <h3 className="text-muted text-lg font-semibold">Requesting Items</h3>
           <span className="rounded-full border border-[#5865F2]/20 bg-[#5865F2] px-2 py-0.5 text-xs text-white">

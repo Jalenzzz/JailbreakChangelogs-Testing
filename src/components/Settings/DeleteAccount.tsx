@@ -117,7 +117,7 @@ export const DeleteAccount = () => {
             sx: {
               bgcolor: '#212A31',
               color: '#D3D9D4',
-              border: '1px solid #2E3944',
+
               maxWidth: '500px',
               width: '100%',
             },
@@ -127,7 +127,7 @@ export const DeleteAccount = () => {
         <DialogTitle
           sx={{
             color: '#FF6B6B',
-            borderBottom: '1px solid #2E3944',
+
             pb: 2,
             display: 'flex',
             alignItems: 'center',
@@ -236,7 +236,6 @@ export const DeleteAccount = () => {
                 bgcolor: '#FF5252',
               },
               '&.Mui-disabled': {
-                bgcolor: '#2E3944',
                 color: '#FFFFFF',
               },
             }}

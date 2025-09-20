@@ -151,7 +151,7 @@ function LoginModalInner({ open, onClose }: LoginModalProps) {
                   backgroundColor: '#212A31',
                   padding: '24px',
                   borderRadius: '8px',
-                  border: '1px solid #2E3944',
+
                   '&:first-of-type': {
                     paddingTop: '24px',
                   },

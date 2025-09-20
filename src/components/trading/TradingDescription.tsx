@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 const TradingDescription: React.FC = () => {
   return (
-    <div className="mb-8 rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
+    <div className="mb-8 rounded-lg border bg-[#212A31] p-6">
       <div className="mb-4">
         <h1 className="text-muted text-2xl font-semibold">Roblox Jailbreak Trading Hub</h1>
       </div>

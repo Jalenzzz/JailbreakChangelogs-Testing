@@ -158,7 +158,7 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
               ? 'border-gray-300/50 bg-gradient-to-r from-gray-400/20 to-gray-500/20'
               : rank === 3
                 ? 'border-amber-500/50 bg-gradient-to-r from-amber-600/20 to-amber-700/20'
-                : 'border-[#2E3944] bg-[#212A31]'
+                : 'bg-[#212A31]'
         }`}
       >
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6">
@@ -222,7 +222,7 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
       </div>
 
       {/* Modern Crew Stats */}
-      <div className="rounded-xl border border-[#2E3944] bg-gradient-to-br from-[#212A31] to-[#1A2328] p-6 shadow-lg">
+      <div className="rounded-xl border bg-gradient-to-br from-[#212A31] to-[#1A2328] p-6 shadow-lg">
         <h3 className="mb-6 flex items-center gap-2 text-lg font-semibold text-gray-300">
           <div className="h-2 w-2 rounded-full bg-blue-400"></div>
           Crew Performance
@@ -349,7 +349,7 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
         {/* Additional Stats Row */}
         <div className="mt-6 border-t border-[#37424D] pt-6">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <div className="flex items-center justify-between rounded-lg border border-[#37424D] bg-[#2E3944] p-3">
+            <div className="flex items-center justify-between rounded-lg border border-[#37424D] p-3">
               <span className="text-sm text-gray-200">Win/Loss Ratio</span>
               <span className="font-semibold text-white">
                 {crew.BattlesPlayed > 0
@@ -357,13 +357,13 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
                   : '0-0'}
               </span>
             </div>
-            <div className="flex items-center justify-between rounded-lg border border-[#37424D] bg-[#2E3944] p-3">
+            <div className="flex items-center justify-between rounded-lg border border-[#37424D] p-3">
               <span className="text-sm text-gray-200">Avg Rating</span>
               <span className="font-semibold text-white">{formatRating(crew.Rating)}</span>
             </div>
             {/* Only show Activity for current season */}
             {currentSeason === 19 && (
-              <div className="flex items-center justify-between rounded-lg border border-[#37424D] bg-[#2E3944] p-3">
+              <div className="flex items-center justify-between rounded-lg border border-[#37424D] p-3">
                 <span className="text-sm text-gray-200">Activity</span>
                 <span
                   className={`font-semibold ${timeSinceLastBattle.includes('d') && parseInt(timeSinceLastBattle.split('d')[0]) > 14 ? 'text-red-400' : 'text-green-400'}`}
@@ -380,7 +380,7 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
       </div>
 
       {/* Crew Members */}
-      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4 sm:p-6">
+      <div className="rounded-lg border bg-[#212A31] p-4 sm:p-6">
         <h2 className="mb-4 text-xl font-bold text-gray-100">
           Crew Members ({crew.MemberUserIds.length})
         </h2>
@@ -430,7 +430,7 @@ function CrewMember({
   const avatarUrl = getUserAvatar(memberIdStr);
 
   return (
-    <div className="flex items-center gap-2 rounded-lg border border-[#37424D] bg-[#2E3944] p-3 transition-colors hover:bg-[#37424D] sm:gap-3">
+    <div className="flex items-center gap-2 rounded-lg border border-[#37424D] p-3 transition-colors hover:bg-[#37424D] sm:gap-3">
       {/* Member Number */}
       <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-[#37424D] text-xs font-bold text-white sm:h-8 sm:w-8 sm:text-sm">
         {index + 1}

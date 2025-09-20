@@ -92,7 +92,7 @@ const SurveyModal: React.FC<SurveyModalProps> = ({ open, onClose, survey }) => {
         onClick={(e: React.MouseEvent) => e.stopPropagation()}
         style={{
           backgroundColor: '#212A31',
-          border: '1px solid #2E3944',
+
           borderRadius: '8px',
           minWidth: '400px',
           maxWidth: '600px',
@@ -104,7 +104,7 @@ const SurveyModal: React.FC<SurveyModalProps> = ({ open, onClose, survey }) => {
           className="modal-header"
           style={{
             color: '#D3D9D4',
-            borderBottom: '1px solid #2E3944',
+
             padding: '16px 24px',
             fontSize: '1.25rem',
             fontWeight: 600,
@@ -124,7 +124,7 @@ const SurveyModal: React.FC<SurveyModalProps> = ({ open, onClose, survey }) => {
             <textarea
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
-              className="w-full rounded border border-[#37424D] bg-[#2E3944] p-2 text-white"
+              className="w-full rounded border border-[#37424D] p-2 text-white"
               rows={4}
               placeholder="Type your answer here..."
             />
@@ -132,7 +132,7 @@ const SurveyModal: React.FC<SurveyModalProps> = ({ open, onClose, survey }) => {
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded bg-[#37424D] px-4 py-2 text-white transition-colors hover:bg-[#2E3944]"
+                className="hover: rounded bg-[#37424D] px-4 py-2 text-white transition-colors"
               >
                 Skip
               </button>

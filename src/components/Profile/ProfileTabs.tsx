@@ -129,7 +129,6 @@ const StyledTabs = dynamic(
     import('@mui/material/Tabs').then(async (TabsModule) => {
       const { styled } = await import('@mui/material/styles');
       return styled(TabsModule.default)(() => ({
-        borderBottom: '1px solid #2E3944',
         '& .MuiTabs-indicator': {
           backgroundColor: '#5865F2',
         },

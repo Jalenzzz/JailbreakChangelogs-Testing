@@ -115,7 +115,7 @@ const faqs = [
 
 export default function FAQPage() {
   return (
-    <div className="relative min-h-screen bg-[#2E3944] p-8">
+    <div className="relative min-h-screen p-8">
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40"
         style={{
@@ -123,7 +123,7 @@ export default function FAQPage() {
             'url(https://assets.jailbreakchangelogs.xyz/assets/backgrounds/background5.webp)',
         }}
       />
-      <div className="absolute inset-0 bg-[#2E3944] opacity-60" />
+      <div className="absolute inset-0 opacity-60" />
       <div className="relative mx-auto max-w-4xl">
         <Breadcrumb />
         <div className="mb-2 flex items-center gap-2">
@@ -146,7 +146,7 @@ export default function FAQPage() {
                 '&:before': {
                   display: 'none',
                 },
-                border: '1px solid #2E3944',
+
                 '& .MuiAccordionSummary-root': {
                   backgroundColor: '#1A2025',
                   '&:hover': {

@@ -90,7 +90,7 @@ export default function CrewSeasonSelector({ currentSeason }: CrewSeasonSelector
               control: (base) => ({
                 ...base,
                 backgroundColor: '#37424D',
-                borderColor: '#2E3944',
+
                 color: '#D3D9D4',
               }),
               singleValue: (base) => ({ ...base, color: '#D3D9D4' }),
@@ -116,7 +116,7 @@ export default function CrewSeasonSelector({ currentSeason }: CrewSeasonSelector
             }}
           />
         ) : (
-          <div className="h-12 w-full animate-pulse rounded-lg border border-[#2E3944] bg-[#37424D]"></div>
+          <div className="h-12 w-full animate-pulse rounded-lg border bg-[#37424D]"></div>
         )}
       </div>
 

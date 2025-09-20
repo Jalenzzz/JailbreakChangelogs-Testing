@@ -68,7 +68,7 @@ export default function SubItemsDropdown({
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="text-muted flex items-center gap-1 rounded-lg border border-[#2E3944] bg-[#37424D] px-2 py-0.5 text-xs hover:bg-[#124E66] focus:outline-none sm:px-3 sm:py-1.5 sm:text-sm"
+        className="text-muted flex items-center gap-1 rounded-lg border bg-[#37424D] px-2 py-0.5 text-xs hover:bg-[#124E66] focus:outline-none sm:px-3 sm:py-1.5 sm:text-sm"
       >
         {getDisplayText()}
         <ChevronDownIcon
@@ -84,7 +84,7 @@ export default function SubItemsDropdown({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.18, ease: 'easeOut' }}
-            className="absolute right-0 z-10 mt-1 w-24 rounded-lg border border-[#2E3944] bg-[#37424D] shadow-lg sm:w-32"
+            className="absolute right-0 z-10 mt-1 w-24 rounded-lg border bg-[#37424D] shadow-lg sm:w-32"
           >
             <button
               onClick={() => {

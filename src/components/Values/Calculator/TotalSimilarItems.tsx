@@ -101,7 +101,7 @@ export const TotalSimilarItems: React.FC<TotalSimilarItemsProps> = ({
   const baselineDemandIndex = baselineDemand ? getDemandIndex(baselineDemand) : -1;
 
   return (
-    <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
+    <div className="rounded-lg border bg-[#212A31] p-6">
       <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
           <h3 className="text-muted font-semibold">{heading}</h3>
@@ -115,13 +115,13 @@ export const TotalSimilarItems: React.FC<TotalSimilarItemsProps> = ({
           )}
         </div>
         <div className="flex flex-wrap items-center gap-2 sm:justify-end">
-          <span className="text-muted/80 inline-flex items-center gap-1 rounded-md border border-[#36424E] bg-[#2E3944] px-2 py-1 text-xs">
+          <span className="text-muted/80 inline-flex items-center gap-1 rounded-md border border-[#36424E] px-2 py-1 text-xs">
             <ArrowsRightLeftIcon className="h-4 w-4" />
             <span className="hidden sm:inline">Range</span>
             <span className="text-muted">{range.toLocaleString()}</span>
           </span>
           {enableDemandSort && (
-            <div className="inline-flex overflow-hidden rounded-md border border-[#36424E] bg-[#2E3944]">
+            <div className="inline-flex overflow-hidden rounded-md border border-[#36424E]">
               <button
                 onClick={() => setSortMode('diff')}
                 className={`px-2 py-1 text-xs ${sortMode === 'diff' ? 'bg-[#5865F2] text-white' : 'text-muted hover:bg-[#37424D] hover:text-[#FFFFFF]'}`}
@@ -146,7 +146,7 @@ export const TotalSimilarItems: React.FC<TotalSimilarItemsProps> = ({
       </div>
 
       {candidates.length === 0 ? (
-        <div className="text-muted rounded-lg bg-[#2E3944] p-6 text-center text-sm">
+        <div className="text-muted rounded-lg p-6 text-center text-sm">
           No items found within ±{range.toLocaleString()} of your total.
         </div>
       ) : (
@@ -171,7 +171,7 @@ export const TotalSimilarItems: React.FC<TotalSimilarItemsProps> = ({
                 href={`/item/${item.type.toLowerCase()}/${item.name}${item.sub_name ? `?variant=${item.sub_name}` : ''}`}
                 className="group"
               >
-                <div className="overflow-hidden rounded-lg border border-gray-700/50 bg-[#2e3944] transition-all duration-200 hover:border-purple-500/30 hover:shadow-lg">
+                <div className="overflow-hidden rounded-lg border border-gray-700/50 transition-all duration-200 hover:border-purple-500/30 hover:shadow-lg">
                   <div className="relative aspect-video">
                     <Image
                       src={getItemImagePath(item.type, item.name, true)}

@@ -39,6 +39,8 @@ const config: Config = {
         secondary: 'var(--color-secondary)',
         tertiary: 'var(--color-tertiary)',
         stroke: 'var(--color-stroke)',
+        warning: 'var(--color-warning)',
+        'warning-light': 'var(--color-warning-light)',
       },
     },
   },

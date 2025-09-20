@@ -40,7 +40,7 @@ export default function ItemValues({
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Cash Value */}
-        <div className="rounded-lg border border-gray-700/50 bg-[#2e3944] p-4">
+        <div className="rounded-lg border border-gray-700/50 p-4">
           <div className="mb-2 flex items-center gap-2">
             <h4 className="text-sm font-medium text-gray-300">Cash Value</h4>
           </div>
@@ -48,7 +48,7 @@ export default function ItemValues({
         </div>
 
         {/* Duped Value */}
-        <div className="rounded-lg border border-gray-700/50 bg-[#2e3944] p-4">
+        <div className="rounded-lg border border-gray-700/50 p-4">
           <div className="mb-2 flex items-center gap-2">
             <h4 className="text-sm font-medium text-gray-300">Duped Value</h4>
           </div>
@@ -56,7 +56,7 @@ export default function ItemValues({
         </div>
 
         {/* Original Price */}
-        <div className="rounded-lg border border-gray-700/50 bg-[#2e3944] p-4">
+        <div className="rounded-lg border border-gray-700/50 p-4">
           <div className="mb-2 flex items-center gap-2">
             <h4 className="text-sm font-medium text-gray-300">Original Price</h4>
           </div>
@@ -80,7 +80,7 @@ export default function ItemValues({
 
         {/* Vehicle Health - Only show for vehicles */}
         {type.toLowerCase() === 'vehicle' && (
-          <div className="rounded-lg border border-gray-700/50 bg-[#2e3944] p-4">
+          <div className="rounded-lg border border-gray-700/50 p-4">
             <div className="mb-2 flex items-center gap-2">
               <h4 className="text-sm font-medium text-gray-300">Vehicle Health</h4>
             </div>
@@ -89,7 +89,7 @@ export default function ItemValues({
         )}
 
         {/* Item Demand */}
-        <div className="rounded-lg border border-gray-700/50 bg-[#2e3944] p-4">
+        <div className="rounded-lg border border-gray-700/50 p-4">
           <div className="mb-2 flex items-center gap-2">
             <h4 className="text-sm font-medium text-gray-300">Item Demand</h4>
           </div>
@@ -99,7 +99,7 @@ export default function ItemValues({
         </div>
 
         {/* Item Trend */}
-        <div className="rounded-lg border border-gray-700/50 bg-[#2e3944] p-4">
+        <div className="rounded-lg border border-gray-700/50 p-4">
           <div className="mb-2 flex items-center gap-2">
             <h4 className="text-sm font-medium text-gray-300">Trend</h4>
           </div>
@@ -115,7 +115,7 @@ export default function ItemValues({
 
       {/* Item Notes - Full width */}
       {notes && notes.trim() !== '' && (
-        <div className="rounded-lg border border-gray-700/50 bg-[#2e3944] p-4">
+        <div className="rounded-lg border border-gray-700/50 p-4">
           <div className="mb-2 flex items-center gap-2">
             <h4 className="text-sm font-medium text-gray-300">Item Notes</h4>
           </div>

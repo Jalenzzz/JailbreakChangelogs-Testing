@@ -193,13 +193,13 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
       {/* Modal */}
       <div className="relative w-full max-w-md rounded-lg bg-[#212A31] shadow-xl">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-[#2E3944] p-4">
+        <div className="flex items-center justify-between border-b p-4">
           <h2 className="text-muted text-xl font-semibold">
             {editingServer ? 'Edit Server' : 'Add New Server'}
           </h2>
           <button
             onClick={onClose}
-            className="hover:text-muted rounded-md p-1 text-[#FFFFFF] hover:bg-[#2E3944]"
+            className="hover:text-muted hover: rounded-md p-1 text-[#FFFFFF]"
           >
             <XMarkIcon className="h-5 w-5" />
           </button>
@@ -217,7 +217,7 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
                 type="text"
                 value={link}
                 onChange={(e) => setLink(e.target.value)}
-                className="text-muted w-full rounded-md border border-[#2E3944] bg-[#2E3944] px-3 py-2 placeholder-[#FFFFFF] focus:border-[#5865F2] focus:outline-none"
+                className="text-muted w-full rounded-md border px-3 py-2 placeholder-[#FFFFFF] focus:border-[#5865F2] focus:outline-none"
                 placeholder="Enter the server link"
               />
               <p className="mt-1 text-sm text-[#FFFFFF]">
@@ -235,7 +235,7 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
                 onChange={(e) => handleRulesChange(e.target.value)}
                 rows={4}
                 maxLength={MAX_RULES_LENGTH}
-                className="text-muted w-full rounded-md border border-[#2E3944] bg-[#2E3944] px-3 py-2 placeholder-[#FFFFFF] focus:border-[#5865F2] focus:outline-none"
+                className="text-muted w-full rounded-md border px-3 py-2 placeholder-[#FFFFFF] focus:border-[#5865F2] focus:outline-none"
                 placeholder="Enter the server rules"
               />
               <p className="mt-1 text-sm text-[#FFFFFF]">
@@ -256,7 +256,7 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
                       setExpires(originalExpires);
                     }
                   }}
-                  className="h-4 w-4 rounded border-[#2E3944] bg-[#2E3944] text-[#5865F2] focus:ring-[#5865F2]"
+                  className="h-4 w-4 rounded text-[#5865F2] focus:ring-[#5865F2]"
                 />
                 <span className="text-muted text-sm">Never Expires</span>
               </label>
@@ -282,8 +282,6 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
                       placeholder: 'Select expiration date',
                       sx: {
                         '& .MuiOutlinedInput-root': {
-                          backgroundColor: '#2E3944',
-                          borderColor: '#2E3944',
                           color: '#D3D9D4',
                           '&:hover': {
                             borderColor: '#5865F2',
@@ -306,10 +304,10 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
             </div>
 
             {/* Actions */}
-            <div className="mt-8 flex justify-end space-x-4 border-t border-[#2E3944] pt-6">
+            <div className="mt-8 flex justify-end space-x-4 border-t pt-6">
               <button
                 onClick={onClose}
-                className="text-muted rounded-md px-4 py-2 text-sm font-medium hover:bg-[#2E3944]"
+                className="text-muted hover: rounded-md px-4 py-2 text-sm font-medium"
               >
                 Cancel
               </button>

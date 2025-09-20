@@ -26,7 +26,7 @@ export default function DiscordUserCard({ user, currentUserId }: DiscordUserCard
   if (isPrivate) {
     return (
       <div className="flex items-center space-x-3">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full border border-[#2E3944] bg-[#1E2328]">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full border bg-[#1E2328]">
           <svg
             className="h-6 w-6 text-[#FFFFFF]"
             fill="none"
@@ -84,7 +84,7 @@ export default function DiscordUserCard({ user, currentUserId }: DiscordUserCard
                     fontSize: '0.75rem',
                     padding: '8px 12px',
                     borderRadius: '8px',
-                    border: '1px solid #2E3944',
+
                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                     '& .MuiTooltip-arrow': {
                       color: '#0F1419',

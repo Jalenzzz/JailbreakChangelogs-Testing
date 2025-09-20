@@ -3,7 +3,7 @@ import ItemCardSkeleton from '@/components/Items/ItemCardSkeleton';
 
 export default function Loading() {
   return (
-    <main className="mb-8 min-h-screen bg-[#2E3944]">
+    <main className="mb-8 min-h-screen">
       <div className="container mx-auto px-4">
         {/* Breadcrumb skeleton */}
         <div className="py-4">
@@ -23,7 +23,7 @@ export default function Loading() {
         </div>
 
         {/* Header skeleton */}
-        <div className="mb-8 rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
+        <div className="mb-8 rounded-lg border bg-[#212A31] p-6">
           <div className="mb-4 flex items-center justify-between">
             <Skeleton variant="text" width={300} height={36} sx={{ bgcolor: '#37424D' }} />
           </div>

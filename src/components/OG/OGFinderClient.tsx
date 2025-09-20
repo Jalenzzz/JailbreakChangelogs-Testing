@@ -120,7 +120,7 @@ export default function OGFinderClient({
               value={searchId}
               onChange={(e) => setSearchId(e.target.value)}
               placeholder="Enter Roblox ID or username..."
-              className="text-muted w-full rounded-lg border border-[#2E3944] bg-[#37424D] px-4 py-2 pr-10 pl-10 placeholder-[#D3D9D4] focus:border-[#124E66] focus:outline-none"
+              className="text-muted w-full rounded-lg border bg-[#37424D] px-4 py-2 pr-10 pl-10 placeholder-[#D3D9D4] focus:border-[#124E66] focus:outline-none"
               disabled={isLoading}
               required
             />
@@ -187,7 +187,7 @@ export default function OGFinderClient({
 
       {/* Error Display */}
       {error && !initialData && (
-        <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6 shadow-sm">
+        <div className="rounded-lg border bg-[#212A31] p-6 shadow-sm">
           <div className="text-center">
             <div className="mb-4 flex justify-center">
               <div className="rounded-full bg-red-500/10 p-3">

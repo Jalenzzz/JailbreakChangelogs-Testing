@@ -53,7 +53,7 @@ export default function RobloxTradeUser({ user, showBadge = false }: RobloxTrade
       <div className="min-w-0">
         {showBadge && (
           <div className="mb-1 flex items-center gap-2">
-            <div className="flex items-center gap-1.5 rounded border border-[#37424D] bg-[#2E3944] px-1.5 py-0.5">
+            <div className="flex items-center gap-1.5 rounded border border-[#37424D] px-1.5 py-0.5">
               <RobloxIcon className="h-3 w-3 text-[#FF5630]" />
               <span className="text-xs text-[#FFFFFF]">Roblox</span>
             </div>
@@ -68,7 +68,7 @@ export default function RobloxTradeUser({ user, showBadge = false }: RobloxTrade
               tooltip: {
                 sx: {
                   bgcolor: '#1A2228',
-                  border: '1px solid #2E3944',
+
                   maxWidth: '400px',
                   width: 'auto',
                   minWidth: '300px',

@@ -239,7 +239,7 @@ const ServerList: React.FC = () => {
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4 sm:p-6">
+            <div key={i} className="rounded-lg border bg-[#212A31] p-4 sm:p-6">
               <div className="mb-4 flex flex-col gap-3">
                 <div className="flex items-center space-x-2">
                   <ShieldCheckIcon className="h-5 w-5 text-[#5865F2]" />
@@ -263,7 +263,7 @@ const ServerList: React.FC = () => {
                   <Skeleton variant="text" width={120} height={20} sx={{ bgcolor: '#37424D' }} />
                 </div>
 
-                <div className="rounded-lg border border-[#2E3944] bg-[#37424D] p-3 sm:p-4">
+                <div className="rounded-lg border bg-[#37424D] p-3 sm:p-4">
                   <Skeleton variant="text" width={100} height={24} sx={{ bgcolor: '#1E2328' }} />
                   <div className="mt-2 space-y-2">
                     <Skeleton variant="text" width="100%" height={16} sx={{ bgcolor: '#1E2328' }} />
@@ -289,7 +289,7 @@ const ServerList: React.FC = () => {
 
   if (servers.length === 0) {
     return (
-      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-8 text-center">
+      <div className="rounded-lg border bg-[#212A31] p-8 text-center">
         <ShieldCheckIcon className="mx-auto mb-4 h-12 w-12 text-[#5865F2]" />
         <h3 className="text-muted mb-2 text-xl font-semibold">No servers available</h3>
         <p className="text-[#FFFFFF]">You can add a server or check back later</p>
@@ -319,10 +319,7 @@ const ServerList: React.FC = () => {
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {currentServers.map((server, index) => (
-          <div
-            key={server.id}
-            className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4 sm:p-6"
-          >
+          <div key={server.id} className="rounded-lg border bg-[#212A31] p-4 sm:p-6">
             <div className="mb-4 flex flex-col gap-3">
               <div className="flex items-center space-x-2">
                 <ShieldCheckIcon className="h-5 w-5 text-[#5865F2]" />
@@ -410,7 +407,7 @@ const ServerList: React.FC = () => {
                         tooltip: {
                           sx: {
                             bgcolor: '#1A2228',
-                            border: '1px solid #2E3944',
+
                             maxWidth: '400px',
                             width: 'auto',
                             minWidth: '300px',
@@ -442,7 +439,7 @@ const ServerList: React.FC = () => {
                 </span>
               </div>
 
-              <div className="rounded-lg border border-[#2E3944] bg-[#37424D] p-3 sm:p-4">
+              <div className="rounded-lg border bg-[#37424D] p-3 sm:p-4">
                 <h3 className="text-muted mb-2 text-sm font-semibold">Server Rules</h3>
                 <p className="text-xs break-words whitespace-pre-wrap text-[#FFFFFF] sm:text-sm">
                   {server.rules === 'N/A' ? 'No Rules set by owner' : server.rules}
@@ -468,9 +465,7 @@ const ServerList: React.FC = () => {
                     backgroundColor: '#4752C4',
                   },
                 },
-                '&:hover': {
-                  backgroundColor: '#2E3944',
-                },
+                '&:hover': {},
               },
             }}
           />

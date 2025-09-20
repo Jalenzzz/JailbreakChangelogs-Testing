@@ -15,7 +15,7 @@ const Select = dynamic(() => import('react-select'), { ssr: false });
 const Slider = dynamic(() => import('@mui/material/Slider'), {
   ssr: false,
   loading: () => (
-    <div className="mt-1 h-8 w-full animate-pulse rounded-md border border-[#2E3944] bg-[#37424D]"></div>
+    <div className="mt-1 h-8 w-full animate-pulse rounded-md border bg-[#37424D]"></div>
   ),
 });
 
@@ -149,7 +149,7 @@ export default function ValuesSearchControls({
                     ? 'border-[#124E66] bg-[#1A5F7A] shadow-lg shadow-[#124E66]/20'
                     : isItemIdSearch
                       ? 'border-[#5865F2] bg-[#5865F2]/10 shadow-lg shadow-[#5865F2]/20'
-                      : 'border-[#2E3944] bg-[#37424D] focus:border-[#124E66]'
+                      : 'bg-[#37424D] focus:border-[#124E66]'
                 }`}
               />
               <MagnifyingGlassIcon className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]" />
@@ -263,7 +263,7 @@ export default function ValuesSearchControls({
                       control: (base) => ({
                         ...base,
                         backgroundColor: '#37424D',
-                        borderColor: '#2E3944',
+
                         color: '#D3D9D4',
                       }),
                       singleValue: (base) => ({ ...base, color: '#D3D9D4' }),
@@ -297,7 +297,7 @@ export default function ValuesSearchControls({
                     isSearchable={false}
                   />
                 ) : (
-                  <div className="h-10 w-full animate-pulse rounded-md border border-[#2E3944] bg-[#37424D]"></div>
+                  <div className="h-10 w-full animate-pulse rounded-md border bg-[#37424D]"></div>
                 )}
               </div>
 
@@ -533,7 +533,7 @@ export default function ValuesSearchControls({
                       control: (base) => ({
                         ...base,
                         backgroundColor: '#37424D',
-                        borderColor: '#2E3944',
+
                         color: '#D3D9D4',
                       }),
                       singleValue: (base) => ({ ...base, color: '#D3D9D4' }),
@@ -567,7 +567,7 @@ export default function ValuesSearchControls({
                     isSearchable={false}
                   />
                 ) : (
-                  <div className="h-10 w-full animate-pulse rounded-md border border-[#2E3944] bg-[#37424D]"></div>
+                  <div className="h-10 w-full animate-pulse rounded-md border bg-[#37424D]"></div>
                 )}
               </div>
             </div>
@@ -575,7 +575,7 @@ export default function ValuesSearchControls({
 
           {/* Value range slider (always its own row) */}
           <div className="w-full">
-            <div className="rounded-lg border border-[#2E3944] bg-[#37424D] px-3 py-2">
+            <div className="rounded-lg border bg-[#37424D] px-3 py-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="text-muted text-xs">Value Range</span>
@@ -636,7 +636,7 @@ export default function ValuesSearchControls({
         {premiumStatusLoaded && currentUserPremiumType === 0 && (
           <div className="flex w-full max-w-[480px] flex-col lg:w-[480px] lg:flex-shrink-0">
             <div
-              className="relative overflow-hidden rounded-lg border border-[#2E3944] bg-[#1a2127] shadow transition-all duration-300"
+              className="relative overflow-hidden rounded-lg border bg-[#1a2127] shadow transition-all duration-300"
               style={{ minHeight: '250px' }}
             >
               <span className="absolute top-2 left-2 z-10 rounded bg-[#212A31] px-2 py-0.5 text-xs font-semibold text-white">

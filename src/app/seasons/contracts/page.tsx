@@ -16,7 +16,7 @@ export default async function SeasonContractsPage() {
 
   if (!contractsData || !contractsData.data || contractsData.data.length === 0) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#2E3944]">
+      <div className="flex min-h-screen items-center justify-center">
         <div className="text-xl text-white">No contracts available right now.</div>
       </div>
     );
@@ -27,7 +27,7 @@ export default async function SeasonContractsPage() {
   const seasonEnded = latestSeason?.end_date ? now >= latestSeason.end_date : false;
 
   return (
-    <div className="min-h-screen bg-[#2E3944]">
+    <div className="min-h-screen">
       <div className="container mx-auto px-4 py-8">
         <Breadcrumb />
 
@@ -46,7 +46,7 @@ export default async function SeasonContractsPage() {
           />
         )}
         {seasonEnded && (
-          <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
+          <div className="rounded-lg border bg-[#212A31] p-6">
             <div className="flex items-start gap-4">
               <div className="mt-1 text-[#A8B3BC]">
                 <svg
@@ -66,7 +66,7 @@ export default async function SeasonContractsPage() {
               </div>
               <div className="flex-1">
                 <div className="mb-2 inline-flex items-center gap-2">
-                  <span className="rounded bg-[#2E3944] px-2 py-1 text-[10px] font-semibold tracking-wider text-white/90 uppercase">
+                  <span className="rounded px-2 py-1 text-[10px] font-semibold tracking-wider text-white/90 uppercase">
                     Season Ended
                   </span>
                 </div>

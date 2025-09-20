@@ -100,7 +100,7 @@ export default function CrewLeaderboard({ leaderboard, currentSeason }: CrewLead
     return (
       <div className="mt-8">
         <h2 className="mb-4 text-xl font-bold text-gray-300">Crew Leaderboard</h2>
-        <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4 shadow-sm">
+        <div className="rounded-lg border bg-[#212A31] p-4 shadow-sm">
           <p className="py-8 text-center text-gray-400">No crew data available.</p>
         </div>
       </div>
@@ -124,7 +124,7 @@ export default function CrewLeaderboard({ leaderboard, currentSeason }: CrewLead
             placeholder="Search crews..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full rounded-lg border border-[#2E3944] bg-[#37424D] px-4 py-2 pr-10 pl-10 text-white placeholder-[#D3D9D4] focus:border-[#124E66] focus:outline-none"
+            className="w-full rounded-lg border bg-[#37424D] px-4 py-2 pr-10 pl-10 text-white placeholder-[#D3D9D4] focus:border-[#124E66] focus:outline-none"
           />
           <MagnifyingGlassIcon className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]" />
           {searchTerm && (
@@ -166,7 +166,7 @@ export default function CrewLeaderboard({ leaderboard, currentSeason }: CrewLead
         </div>
       )}
 
-      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4 shadow-sm">
+      <div className="rounded-lg border bg-[#212A31] p-4 shadow-sm">
         <div className="max-h-[48rem] space-y-3 overflow-y-auto pr-2">
           {filteredLeaderboard.map((crew, crewIndex) => {
             // The API data is already sorted by rating, so the position in the array is the rank
@@ -245,7 +245,7 @@ function CrewLeaderboardEntry({
             ? 'border-gray-300/50 bg-gradient-to-r from-gray-400/20 to-gray-500/20 hover:bg-gradient-to-r hover:from-gray-400/30 hover:to-gray-500/30'
             : index === 2
               ? 'border-amber-500/50 bg-gradient-to-r from-amber-600/20 to-amber-700/20 hover:bg-gradient-to-r hover:from-amber-600/30 hover:to-amber-700/30'
-              : 'border-[#37424D] bg-[#2E3944] hover:bg-[#37424D]'
+              : 'border-[#37424D] hover:bg-[#37424D]'
       }`}
     >
       {/* Rank Badge */}

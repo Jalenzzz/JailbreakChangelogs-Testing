@@ -208,7 +208,7 @@ export const BannerSettings = ({ userData, onBannerUpdate }: BannerSettingsProps
                   fontSize: '0.75rem',
                   padding: '8px 12px',
                   borderRadius: '8px',
-                  border: '1px solid #2E3944',
+
                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                   '& .MuiTooltip-arrow': {
                     color: '#0F1419',
@@ -269,9 +269,7 @@ export const BannerSettings = ({ userData, onBannerUpdate }: BannerSettingsProps
               helperText={bannerError}
               sx={{
                 '& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    borderColor: '#2E3944',
-                  },
+                  '& fieldset': {},
                   '&:hover fieldset': {
                     borderColor: '#124E66',
                   },
@@ -318,7 +316,6 @@ export const BannerSettings = ({ userData, onBannerUpdate }: BannerSettingsProps
                   backgroundColor: '#0D3A4D',
                 },
                 '&.Mui-disabled': {
-                  backgroundColor: '#2E3944',
                   color: '#FFFFFF',
                 },
                 height: '40px',
@@ -346,7 +343,6 @@ export const BannerSettings = ({ userData, onBannerUpdate }: BannerSettingsProps
                   backgroundColor: '#0D3A4D',
                 },
                 '&.Mui-disabled': {
-                  backgroundColor: '#2E3944',
                   color: '#FFFFFF',
                 },
                 height: '40px',

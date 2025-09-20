@@ -16,7 +16,7 @@ export const UserDetailsTooltip: React.FC<UserDetailsTooltipProps> = ({ user }) 
     return (
       <div className="p-2">
         <div className="flex gap-3">
-          <div className="relative flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[#2E3944]">
+          <div className="relative flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg">
             <svg
               className="h-8 w-8 text-[#FFFFFF]"
               fill="none"

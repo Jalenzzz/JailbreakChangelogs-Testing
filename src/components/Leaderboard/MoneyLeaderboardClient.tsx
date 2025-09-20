@@ -121,7 +121,7 @@ export default function MoneyLeaderboardClient({
 
           <MoneyLeaderboardSearch onSearch={handleSearch} />
 
-          <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4 shadow-sm">
+          <div className="rounded-lg border bg-[#212A31] p-4 shadow-sm">
             <div className="max-h-[48rem] space-y-3 overflow-y-auto pr-2">
               {filteredLeaderboard.length === 0 && searchTerm ? (
                 <div className="py-8 text-center">
@@ -153,7 +153,7 @@ export default function MoneyLeaderboardClient({
                             ? 'border-gray-300/50 bg-gradient-to-r from-gray-400/20 to-gray-500/20 hover:bg-gradient-to-r hover:from-gray-400/30 hover:to-gray-500/30'
                             : originalRank === 3
                               ? 'border-amber-500/50 bg-gradient-to-r from-amber-600/20 to-amber-700/20 hover:bg-gradient-to-r hover:from-amber-600/30 hover:to-amber-700/30'
-                              : 'border-[#2E3944] bg-[#2E3944] hover:border-[#5865F2]'
+                              : 'hover:border-[#5865F2]'
                       }`}
                     >
                       <div className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
@@ -166,7 +166,7 @@ export default function MoneyLeaderboardClient({
                                   ? 'bg-gradient-to-r from-gray-300 to-gray-400 text-gray-800'
                                   : originalRank === 3
                                     ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-gray-800'
-                                    : 'bg-[#2E3944] text-gray-300'
+                                    : 'text-gray-300'
                             }`}
                           >
                             #{originalRank}
@@ -180,7 +180,7 @@ export default function MoneyLeaderboardClient({
                               className="h-7 w-7 rounded-full sm:h-8 sm:w-8"
                             />
                           ) : (
-                            <div className="h-7 w-7 rounded-full bg-[#2E3944] sm:h-8 sm:w-8" />
+                            <div className="h-7 w-7 rounded-full sm:h-8 sm:w-8" />
                           )}
                           <div className="flex min-w-0 flex-1 flex-col">
                             <a
@@ -215,7 +215,7 @@ export default function MoneyLeaderboardClient({
           </div>
         </div>
       ) : (
-        <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-8 text-center">
+        <div className="rounded-lg border bg-[#212A31] p-8 text-center">
           <p className="text-gray-400">No money leaderboard data available at this time.</p>
         </div>
       )}

@@ -85,7 +85,7 @@ export default function TradeAdsTab({
     return (
       <div
         key={itemData.id}
-        className="rounded-lg border border-[#2E3944] bg-[#212A31] p-3 shadow-sm transition-colors hover:border-[#5865F2]"
+        className="rounded-lg border bg-[#212A31] p-3 shadow-sm transition-colors hover:border-[#5865F2]"
       >
         <div className="mb-2 flex items-center">
           <div className="relative mr-3 h-16 w-16 flex-shrink-0 overflow-hidden rounded-md md:h-[4.5rem] md:w-32">
@@ -111,7 +111,7 @@ export default function TradeAdsTab({
           <div className="flex-1">
             <div className="flex items-start justify-between">
               {isLoadingAdditionalData ? (
-                <Skeleton variant="text" width="80%" height={20} sx={{ bgcolor: '#2E3944' }} />
+                <Skeleton variant="text" width="80%" height={20} />
               ) : (
                 <Link
                   href={itemUrl}
@@ -124,7 +124,7 @@ export default function TradeAdsTab({
             <div className="text-xs text-[#FFFFFF]">
               <div className="mb-1">
                 {isLoadingAdditionalData ? (
-                  <Skeleton variant="rounded" width={80} height={20} sx={{ bgcolor: '#2E3944' }} />
+                  <Skeleton variant="rounded" width={80} height={20} />
                 ) : (
                   <Chip
                     label={itemData.type}
@@ -167,7 +167,7 @@ export default function TradeAdsTab({
 
   // Render a trade ad
   const renderTradeAd = (ad: TradeAd) => (
-    <div key={ad.id} className="mb-4 rounded-lg border border-[#5865F2] bg-[#2E3944] p-4">
+    <div key={ad.id} className="mb-4 rounded-lg border border-[#5865F2] p-4">
       <div className="mb-3 flex items-center gap-2">
         <SwapHorizIcon className="text-[#5865F2]" />
         <Link
@@ -218,7 +218,7 @@ export default function TradeAdsTab({
   if (error) {
     return (
       <div className="space-y-6">
-        <div className="rounded-lg border border-[#5865F2] bg-[#2E3944] p-4">
+        <div className="rounded-lg border border-[#5865F2] p-4">
           <div className="mb-3 flex items-center gap-2">
             <SwapHorizIcon className="text-[#5865F2]" />
             <h2 className="text-muted text-lg font-semibold">Trade Ads</h2>
@@ -231,7 +231,7 @@ export default function TradeAdsTab({
 
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border border-[#5865F2] bg-[#2E3944] p-4">
+      <div className="rounded-lg border border-[#5865F2] p-4">
         <div className="mb-3 flex items-center gap-2">
           <SwapHorizIcon className="text-[#5865F2]" />
           <h2 className="text-muted text-lg font-semibold">Trade Ads [{tradeAds.length}]</h2>

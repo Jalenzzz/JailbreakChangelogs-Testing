@@ -58,7 +58,7 @@ export default function DupeStats({
   })();
 
   return (
-    <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6 shadow-sm">
+    <div className="rounded-lg border bg-[#212A31] p-6 shadow-sm">
       <h2 className="text-muted mb-4 text-xl font-semibold">Duplicate Statistics</h2>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -94,7 +94,7 @@ export default function DupeStats({
             <p className="text-muted text-sm">Total Dupe Value</p>
             <p className="text-2xl font-bold text-red-400">
               {isLoadingValues ? (
-                <div className="h-8 w-24 animate-pulse rounded bg-[#2E3944]"></div>
+                <div className="h-8 w-24 animate-pulse rounded"></div>
               ) : (
                 formatPreciseMoney(totalDupedValue)
               )}

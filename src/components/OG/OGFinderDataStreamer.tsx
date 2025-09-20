@@ -59,7 +59,7 @@ function OGFinderLoadingFallback({ robloxId }: { robloxId: string }) {
               id="searchInput"
               value={robloxId}
               readOnly
-              className="text-muted w-full rounded-lg border border-[#2E3944] bg-[#37424D] px-4 py-2 pr-10 pl-10"
+              className="text-muted w-full rounded-lg border bg-[#37424D] px-4 py-2 pr-10 pl-10"
             />
             <svg
               className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]"
@@ -106,7 +106,7 @@ function OGFinderLoadingFallback({ robloxId }: { robloxId: string }) {
         </div>
       </form>
 
-      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6 shadow-sm">
+      <div className="rounded-lg border bg-[#212A31] p-6 shadow-sm">
         <div className="animate-pulse space-y-4">
           <div className="flex items-center gap-4">
             <div className="h-16 w-16 rounded-full bg-gray-600"></div>
@@ -117,7 +117,7 @@ function OGFinderLoadingFallback({ robloxId }: { robloxId: string }) {
           </div>
           <div className="space-y-3">
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="flex items-center gap-4 rounded-lg bg-[#2E3944] p-4">
+              <div key={i} className="flex items-center gap-4 rounded-lg p-4">
                 <div className="h-12 w-12 rounded bg-gray-600"></div>
                 <div className="flex-1 space-y-2">
                   <div className="h-4 w-48 rounded bg-gray-600"></div>

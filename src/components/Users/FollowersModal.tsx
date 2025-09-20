@@ -255,7 +255,7 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
         },
       }}
     >
-      <DialogTitle className="flex items-center justify-between border-b border-[#2E3944] p-2 sm:p-4">
+      <DialogTitle className="flex items-center justify-between border-b p-2 sm:p-4">
         <span className="text-muted w-full text-center text-sm font-semibold sm:text-base">
           Followers
         </span>
@@ -308,9 +308,7 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
                   '& .MuiOutlinedInput-root': {
                     color: '#D3D9D4',
                     backgroundColor: '#1A2228',
-                    '& fieldset': {
-                      borderColor: '#2E3944',
-                    },
+                    '& fieldset': {},
                     '&:hover fieldset': {
                       borderColor: '#FFFFFF',
                     },
@@ -351,7 +349,7 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
                         href={isPrivateProfile ? '#' : `/users/${user.id}`}
                         prefetch={false}
                         className={`block flex-1 rounded-lg p-1.5 transition-colors sm:p-3 ${
-                          isPrivateProfile ? 'cursor-not-allowed opacity-75' : 'hover:bg-[#2E3944]'
+                          isPrivateProfile ? 'cursor-not-allowed opacity-75' : 'hover:'
                         }`}
                         onClick={(e) => {
                           if (isPrivateProfile) {
@@ -362,7 +360,7 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
                       >
                         <div className="flex items-center space-x-1.5 sm:space-x-3">
                           {isPrivateProfile ? (
-                            <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#2E3944] bg-[#1E2328]">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full border bg-[#1E2328]">
                               <svg
                                 className="h-5 w-5 text-[#FFFFFF]"
                                 fill="none"

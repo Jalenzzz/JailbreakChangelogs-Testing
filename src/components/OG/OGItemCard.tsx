@@ -169,7 +169,7 @@ export default function OGItemCard({
                   fontSize: '0.75rem',
                   padding: '8px 12px',
                   borderRadius: '8px',
-                  border: '1px solid #2E3944',
+
                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                   '& .MuiTooltip-arrow': {
                     color: '#0F1419',
@@ -195,7 +195,7 @@ export default function OGItemCard({
                   fontSize: '0.75rem',
                   padding: '8px 12px',
                   borderRadius: '8px',
-                  border: '1px solid #2E3944',
+
                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                   '& .MuiTooltip-arrow': {
                     color: '#0F1419',
@@ -214,7 +214,7 @@ export default function OGItemCard({
           <div className="text-xl font-bold italic">
             <div className="flex flex-col items-center justify-center gap-2 sm:flex-row">
               {/* Always show avatar container - use placeholder when no avatar available */}
-              <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-[#2E3944] bg-[#212A31]">
+              <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border bg-[#212A31]">
                 {getUserAvatar(item.user_id) ? (
                   <Image
                     src={getUserAvatar(item.user_id)!}

@@ -124,8 +124,8 @@ export default function UserStatsSection({
     return (
       <div className="space-y-4">
         <div className="animate-pulse">
-          <div className="mb-2 h-4 w-1/3 rounded bg-[#2E3944]"></div>
-          <div className="h-3 w-1/4 rounded bg-[#2E3944]"></div>
+          <div className="mb-2 h-4 w-1/3 rounded"></div>
+          <div className="h-3 w-1/4 rounded"></div>
         </div>
       </div>
     );
@@ -149,7 +149,7 @@ export default function UserStatsSection({
                   fontSize: '0.75rem',
                   padding: '8px 12px',
                   borderRadius: '8px',
-                  border: '1px solid #2E3944',
+
                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                   '& .MuiTooltip-arrow': {
                     color: '#0F1419',
@@ -177,7 +177,7 @@ export default function UserStatsSection({
                   fontSize: '0.75rem',
                   padding: '8px 12px',
                   borderRadius: '8px',
-                  border: '1px solid #2E3944',
+
                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                   '& .MuiTooltip-arrow': {
                     color: '#0F1419',
@@ -205,7 +205,7 @@ export default function UserStatsSection({
                   fontSize: '0.75rem',
                   padding: '8px 12px',
                   borderRadius: '8px',
-                  border: '1px solid #2E3944',
+
                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                   '& .MuiTooltip-arrow': {
                     color: '#0F1419',
@@ -233,7 +233,7 @@ export default function UserStatsSection({
                   fontSize: '0.75rem',
                   padding: '8px 12px',
                   borderRadius: '8px',
-                  border: '1px solid #2E3944',
+
                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                   '& .MuiTooltip-arrow': {
                     color: '#0F1419',
@@ -258,7 +258,7 @@ export default function UserStatsSection({
 
       {/* Total Values */}
       <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div className="rounded-lg border border-[#37424D] bg-[#2E3944] p-4 text-center">
+        <div className="rounded-lg border border-[#37424D] p-4 text-center">
           <div className="text-muted mb-2 text-sm">Total Cash Value</div>
           {isLoadingValues ? (
             <div className="animate-pulse text-2xl font-bold text-[#1d7da3]">Loading...</div>
@@ -275,7 +275,7 @@ export default function UserStatsSection({
                     fontSize: '0.75rem',
                     padding: '8px 12px',
                     borderRadius: '8px',
-                    border: '1px solid #2E3944',
+
                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                     '& .MuiTooltip-arrow': {
                       color: '#0F1419',
@@ -290,7 +290,7 @@ export default function UserStatsSection({
             </Tooltip>
           )}
         </div>
-        <div className="rounded-lg border border-[#37424D] bg-[#2E3944] p-4 text-center">
+        <div className="rounded-lg border border-[#37424D] p-4 text-center">
           <div className="text-muted mb-2 text-sm">Total Duped Value</div>
           {isLoadingValues ? (
             <div className="animate-pulse text-2xl font-bold text-gray-400">Loading...</div>
@@ -307,7 +307,7 @@ export default function UserStatsSection({
                     fontSize: '0.75rem',
                     padding: '8px 12px',
                     borderRadius: '8px',
-                    border: '1px solid #2E3944',
+
                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                     '& .MuiTooltip-arrow': {
                       color: '#0F1419',

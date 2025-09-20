@@ -41,11 +41,11 @@ export default function SupportersSection({ supporters }: SupportersSectionProps
       <h2 className="mb-8 text-center text-3xl font-bold text-white">
         Made possible by <span className="text-blue-300 underline">supporters</span>
       </h2>
-      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
+      <div className="rounded-lg border bg-[#212A31] p-6">
         <div className="grid grid-cols-1 justify-center gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
           {sortedSupporters.map((supporter) => (
             <div key={supporter.id} className="group">
-              <div className="rounded-lg p-4 transition-all duration-200 hover:bg-[#2E3944]">
+              <div className="hover: rounded-lg p-4 transition-all duration-200">
                 <div className="flex flex-col items-center space-y-3 [@media(min-width:375px)]:flex-row [@media(min-width:375px)]:items-center [@media(min-width:375px)]:space-y-0 [@media(min-width:375px)]:space-x-3">
                   <UserAvatar
                     userId={supporter.id}

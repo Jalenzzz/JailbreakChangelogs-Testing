@@ -400,7 +400,7 @@ export default function ChangelogDetailsClient({
             placeholder="Search changes..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="text-muted w-full rounded-lg border border-[#2E3944] bg-[#37424D] px-4 py-2 pr-10 pl-10 placeholder-[#D3D9D4] focus:border-[#124E66] focus:outline-none"
+            className="text-muted w-full rounded-lg border bg-[#37424D] px-4 py-2 pr-10 pl-10 placeholder-[#D3D9D4] focus:border-[#124E66] focus:outline-none"
           />
           <MagnifyingGlassIcon className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]" />
           {searchQuery && (
@@ -497,7 +497,7 @@ export default function ChangelogDetailsClient({
             paper: {
               sx: {
                 backgroundColor: '#212A31',
-                border: '1px solid #2E3944',
+
                 borderRadius: '8px',
               },
             },
@@ -507,7 +507,6 @@ export default function ChangelogDetailsClient({
             sx={{
               bgcolor: '#212A31',
               color: '#FFFFFF',
-              borderBottom: '1px solid #2E3944',
             }}
           >
             Voters
@@ -568,7 +567,7 @@ export default function ChangelogDetailsClient({
                 (votersTab === 'up' ? activeVoters?.up || [] : activeVoters?.down || []).map(
                   (voter: VoteRecord) => (
                     <div key={voter.id} className="flex items-center gap-2">
-                      <div className="relative h-6 w-6 flex-shrink-0 overflow-hidden rounded-full bg-[#2E3944]">
+                      <div className="relative h-6 w-6 flex-shrink-0 overflow-hidden rounded-full">
                         <DefaultAvatar />
                         {voter.avatar_hash && (
                           <Image
@@ -611,7 +610,7 @@ export default function ChangelogDetailsClient({
               )}
             </div>
           </DialogContent>
-          <DialogActions sx={{ bgcolor: '#212A31', borderTop: '1px solid #2E3944' }}>
+          <DialogActions sx={{ bgcolor: '#212A31' }}>
             <Button onClick={() => setVotersOpen(false)} variant="contained">
               Close
             </Button>
@@ -697,7 +696,7 @@ export default function ChangelogDetailsClient({
                     <div className="mb-2 flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
                       <div className="flex min-w-0 items-center gap-2">
                         {change.suggestion.metadata?.avatar_hash && (
-                          <div className="relative h-6 w-6 flex-shrink-0 overflow-hidden rounded-full bg-[#2E3944]">
+                          <div className="relative h-6 w-6 flex-shrink-0 overflow-hidden rounded-full">
                             <DefaultAvatar />
                             <Image
                               src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(`https://cdn.discordapp.com/avatars/${change.suggestion.user_id}/${change.suggestion.metadata.avatar_hash}?size=128`)}`}
@@ -919,7 +918,7 @@ export default function ChangelogDetailsClient({
                             if (isNA(v) && isNA(nv)) return false;
                             return v !== nv;
                           }).length -
-                            1 && <div className="mt-4 border-t border-[#2E3944] pt-4"></div>}
+                            1 && <div className="mt-4 border-t pt-4"></div>}
                       </div>
                     );
                   })}

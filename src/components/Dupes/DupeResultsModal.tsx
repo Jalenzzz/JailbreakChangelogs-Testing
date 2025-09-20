@@ -136,7 +136,7 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
       <div className="fixed inset-0 z-50 flex items-center justify-center">
         <div className="absolute inset-0 bg-black/50" onClick={onClose} />
         <div className="relative mx-4 w-full max-w-md rounded-lg bg-[#212A31] shadow-xl">
-          <div className="flex items-center justify-between border-b border-[#2E3944] p-4">
+          <div className="flex items-center justify-between border-b p-4">
             <h2 className="text-xl font-semibold text-[#FFFFFF]">Dupe Check Results</h2>
             <button onClick={onClose} className="text-muted transition-colors hover:text-[#FFFFFF]">
               <XMarkIcon className="h-6 w-6" />
@@ -212,7 +212,7 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
                           <Link
                             key={`${item.id}-${index}`}
                             href={`/item/${encodeURIComponent(item.type)}/${encodeURIComponent(item.name)}`}
-                            className="block rounded-lg border border-[#2E3944] p-3 transition-colors hover:border-[#5865F2]"
+                            className="block rounded-lg border p-3 transition-colors hover:border-[#5865F2]"
                           >
                             <div className="flex flex-col items-center text-center">
                               <div className="flex-shrink-0">

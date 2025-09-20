@@ -40,6 +40,10 @@
   --color-secondary: #72757e; /* Secondary - Secondary accent color */
   --color-tertiary: #2cb67d; /* Tertiary - Tertiary accent color */
   --color-stroke: #010101; /* Stroke - Border and stroke colors */
+
+  /* Warning Colors */
+  --color-warning: #ffb636; /* Warning - Orange for Double XP alerts */
+  --color-warning-light: #ffd93d; /* Warning Light - Yellow for 2 weeks left */
 }
 
 @layer base {

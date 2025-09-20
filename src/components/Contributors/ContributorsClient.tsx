@@ -13,7 +13,6 @@ interface ContributorsClientProps {
 }
 
 const StyledTabs = styled(Tabs)(() => ({
-  borderBottom: '1px solid #2E3944',
   marginBottom: '2rem',
   '& .MuiTabs-flexContainer': {
     justifyContent: 'center',
@@ -179,7 +178,7 @@ export default function ContributorsClient({ usersWithFlags }: ContributorsClien
     <div key={contrib.key} className="mb-8 flex flex-col items-center text-center">
       <a href={contrib.link} target="_blank" rel="noopener noreferrer">
         <div
-          className="relative flex-shrink-0 overflow-hidden rounded-full border-4 border-[#124e66] bg-[#2E3944]"
+          className="relative flex-shrink-0 overflow-hidden rounded-full border-4 border-[#124e66]"
           style={{
             width: 128,
             height: 128,

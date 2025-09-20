@@ -62,7 +62,7 @@ const EmptyState: React.FC<{ message: string; onBrowse: () => void }> = ({ messa
 
   return (
     <div
-      className="cursor-pointer rounded-lg border-2 border-dashed border-[#5865F2]/30 bg-[#2E3944] p-12 transition-colors hover:border-[#5865F2]/60 hover:bg-[#37424D]"
+      className="cursor-pointer rounded-lg border-2 border-dashed border-[#5865F2]/30 p-12 transition-colors hover:border-[#5865F2]/60 hover:bg-[#37424D]"
       onClick={handleClick}
       role="button"
       tabIndex={0}
@@ -174,7 +174,7 @@ const CalculatorItemGrid: React.FC<{
 
     return (
       <div
-        className={`cursor-pointer rounded-lg border-2 border-dashed bg-[#2E3944] p-6 text-center transition-colors hover:bg-[#37424D] ${borderColor}`}
+        className={`cursor-pointer rounded-lg border-2 border-dashed p-6 text-center transition-colors hover:bg-[#37424D] ${borderColor}`}
         onClick={handleClick}
         role="button"
         tabIndex={0}
@@ -207,7 +207,7 @@ const CalculatorItemGrid: React.FC<{
   }
 
   return (
-    <div className="rounded-lg bg-[#2E3944] p-4">
+    <div className="rounded-lg p-4">
       <div className="max-h-[480px] overflow-y-auto pr-1" aria-label="Selected items list">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
           {groupItems(items).map((item) => {
@@ -234,7 +234,7 @@ const CalculatorItemGrid: React.FC<{
                     tooltip: {
                       sx: {
                         bgcolor: '#1A2228',
-                        border: '1px solid #2E3944',
+
                         maxWidth: '400px',
                         width: 'auto',
                         minWidth: '300px',
@@ -247,7 +247,7 @@ const CalculatorItemGrid: React.FC<{
                 >
                   <div className="relative aspect-square">
                     <div
-                      className="relative h-full w-full cursor-pointer overflow-hidden rounded-lg bg-[#2E3944]"
+                      className="relative h-full w-full cursor-pointer overflow-hidden rounded-lg"
                       onClick={() => openActionModal(item)}
                     >
                       <Image
@@ -333,7 +333,7 @@ const CalculatorItemGrid: React.FC<{
                       </span>
                     )}
                   </div>
-                  <div className="inline-flex rounded-md border border-[#36424E] bg-[#2E3944] px-2 py-1">
+                  <div className="inline-flex rounded-md border border-[#36424E] px-2 py-1">
                     <FormGroup row>
                       <FormControlLabel
                         control={
@@ -406,7 +406,7 @@ const CalculatorItemGrid: React.FC<{
                   <div className="flex justify-end gap-3">
                     <button
                       onClick={closeActionModal}
-                      className="text-muted rounded-md border border-[#37424D] px-4 py-2 text-sm font-medium transition-colors hover:bg-[#2E3944] hover:text-white"
+                      className="text-muted hover: rounded-md border border-[#37424D] px-4 py-2 text-sm font-medium transition-colors hover:text-white"
                     >
                       Close
                     </button>
@@ -500,7 +500,7 @@ const CalculatorValueComparison: React.FC<{
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg bg-[#2E3944] p-6">
+    <div className="overflow-x-auto rounded-lg p-6">
       <h3 className="text-muted mb-4 text-lg font-semibold">Value Comparison</h3>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -1113,7 +1113,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
               <div className="flex justify-end">
                 <button
                   onClick={() => setShowClearConfirmModal(false)}
-                  className="text-muted rounded-md border border-[#37424D] px-4 py-2 text-sm font-medium transition-colors hover:bg-[#2E3944] hover:text-white"
+                  className="text-muted hover: rounded-md border border-[#37424D] px-4 py-2 text-sm font-medium transition-colors hover:text-white"
                 >
                   Cancel
                 </button>
@@ -1173,7 +1173,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
         <div className="space-y-6 md:flex md:space-y-0 md:space-x-6">
           {/* Offering Items */}
           <div
-            className="flex-1 rounded-lg border border-[#2E3944] bg-[#212A31] p-4"
+            className="flex-1 rounded-lg border bg-[#212A31] p-4"
             style={{ borderColor: '#047857' }}
           >
             <div className="mb-4 flex items-center justify-between">
@@ -1233,7 +1233,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
 
           {/* Requesting Items */}
           <div
-            className="flex-1 rounded-lg border border-[#2E3944] bg-[#212A31] p-4"
+            className="flex-1 rounded-lg border bg-[#212A31] p-4"
             style={{ borderColor: '#B91C1C' }}
           >
             <div className="mb-4 flex items-center justify-between">
@@ -1294,9 +1294,9 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
       </div>
 
       {/* Tabs */}
-      <div className="mb-6 rounded-lg border border-[#2E3944] bg-[#212A31]">
+      <div className="mb-6 rounded-lg border bg-[#212A31]">
         <nav className="px-6 py-4">
-          <div className="flex flex-col space-y-1 rounded-lg bg-[#2E3944] p-1 sm:flex-row sm:space-y-0 sm:space-x-1">
+          <div className="flex flex-col space-y-1 rounded-lg p-1 sm:flex-row sm:space-y-0 sm:space-x-1">
             <button
               onClick={() => handleTabChange('items')}
               className={`${
@@ -1343,7 +1343,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
         </div>
       ) : activeTab === 'values' ? (
         <div className="mb-8">
-          <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4">
+          <div className="rounded-lg border bg-[#212A31] p-4">
             <CalculatorValueComparison
               offering={offeringItems}
               requesting={requestingItems}
@@ -1358,7 +1358,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
         <div className="mb-8">
           {/* Similar Items Near Total - Selector and Results */}
           {offeringItems.length === 0 && requestingItems.length === 0 ? (
-            <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4">
+            <div className="rounded-lg border bg-[#212A31] p-4">
               <EmptyState
                 message={
                   'Go to the "Browse Items" tab to select items and see similar items near your total.'
@@ -1371,7 +1371,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
               {(offeringItems.length === 0 || requestingItems.length === 0) &&
                 !(offeringItems.length === 0 && requestingItems.length === 0) && (
                   <div
-                    className="mb-4 rounded-lg border bg-[#2E3944] p-3"
+                    className="mb-4 rounded-lg border p-3"
                     style={{
                       borderColor: offeringItems.length === 0 ? '#047857' : '#B91C1C',
                     }}
@@ -1383,7 +1383,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
                     </p>
                   </div>
                 )}
-              <div className="mb-4 inline-flex gap-1 rounded-lg border border-[#2E3944] bg-[#212A31] p-2">
+              <div className="mb-4 inline-flex gap-1 rounded-lg border bg-[#212A31] p-2">
                 <button
                   onClick={() => setTotalBasis('offering')}
                   className={`${totalBasis === 'offering' ? 'text-white' : 'text-muted hover:bg-[#37424D] hover:text-[#FFFFFF]'} rounded-md px-3 py-1 text-sm font-medium`}
@@ -1469,7 +1469,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
                     </div>
 
                     {/* Range controls */}
-                    <div className="mb-4 rounded-lg border border-[#2E3944] bg-[#212A31] p-4">
+                    <div className="mb-4 rounded-lg border bg-[#212A31] p-4">
                       <div className="flex flex-col gap-3">
                         <div className="flex items-center justify-between gap-3">
                           <div className="flex items-center gap-2">

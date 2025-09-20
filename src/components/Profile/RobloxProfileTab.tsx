@@ -66,7 +66,7 @@ export default function RobloxProfileTab({
   return (
     <div className="space-y-6">
       {/* Roblox Profile Card */}
-      <div className="rounded-lg border border-[#5865F2] bg-[#2E3944] p-4">
+      <div className="rounded-lg border border-[#5865F2] p-4">
         <div className="mb-4 flex items-center gap-2">
           <RobloxIcon className="h-6 w-6 text-white" />
           <h2 className="text-muted text-lg font-semibold">Roblox Profile</h2>
@@ -107,13 +107,8 @@ export default function RobloxProfileTab({
               <div>
                 {isLoadingAdditionalData ? (
                   <>
-                    <Skeleton
-                      variant="text"
-                      width="60%"
-                      height={28}
-                      sx={{ bgcolor: '#2E3944', mb: 1 }}
-                    />
-                    <Skeleton variant="text" width="40%" height={20} sx={{ bgcolor: '#2E3944' }} />
+                    <Skeleton variant="text" width="60%" height={28} sx={{ mb: 1 }} />
+                    <Skeleton variant="text" width="40%" height={20} />
                   </>
                 ) : (
                   <>
@@ -127,7 +122,7 @@ export default function RobloxProfileTab({
 
               <div className="text-sm text-[#FFFFFF]">
                 {isLoadingAdditionalData ? (
-                  <Skeleton variant="text" width="50%" height={16} sx={{ bgcolor: '#2E3944' }} />
+                  <Skeleton variant="text" width="50%" height={16} />
                 ) : (
                   user.roblox_join_date && (
                     <Tooltip
@@ -144,7 +139,7 @@ export default function RobloxProfileTab({
                             fontSize: '0.75rem',
                             padding: '8px 12px',
                             borderRadius: '8px',
-                            border: '1px solid #2E3944',
+
                             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                             '& .MuiTooltip-arrow': {
                               color: '#0F1419',

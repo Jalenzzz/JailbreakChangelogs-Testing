@@ -166,7 +166,7 @@ export default function FavoritesTab({
         href={itemUrl}
         className="group block"
       >
-        <Box className="rounded-lg border border-[#2E3944] bg-[#212A31] p-3 shadow-sm transition-colors hover:border-[#5865F2]">
+        <Box className="rounded-lg border bg-[#212A31] p-3 shadow-sm transition-colors hover:border-[#5865F2]">
           <div className="mb-2 flex items-center">
             <div className="relative mr-3 h-16 w-16 flex-shrink-0 overflow-hidden rounded-md md:h-[4.5rem] md:w-32">
               {isVideo ? (
@@ -191,7 +191,7 @@ export default function FavoritesTab({
             <div className="flex-1">
               <div className="flex items-start justify-between">
                 {isLoadingItem ? (
-                  <Skeleton variant="text" width="80%" height={20} sx={{ bgcolor: '#2E3944' }} />
+                  <Skeleton variant="text" width="80%" height={20} />
                 ) : (
                   <span className="text-muted font-medium transition-colors group-hover:text-blue-300">
                     {itemName}
@@ -202,12 +202,7 @@ export default function FavoritesTab({
                 {itemType && (
                   <div className="mb-1">
                     {isLoadingItem ? (
-                      <Skeleton
-                        variant="rounded"
-                        width={80}
-                        height={20}
-                        sx={{ bgcolor: '#2E3944' }}
-                      />
+                      <Skeleton variant="rounded" width={80} height={20} />
                     ) : (
                       <Chip
                         label={itemType}
@@ -241,7 +236,7 @@ export default function FavoritesTab({
                     fontSize: '0.75rem',
                     padding: '8px 12px',
                     borderRadius: '8px',
-                    border: '1px solid #2E3944',
+
                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                     '& .MuiTooltip-arrow': {
                       color: '#0F1419',
@@ -263,7 +258,7 @@ export default function FavoritesTab({
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="rounded-lg border border-[#5865F2] bg-[#2E3944] p-4">
+        <div className="rounded-lg border border-[#5865F2] p-4">
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <StarIcon className="text-[#5865F2]" />
@@ -272,43 +267,20 @@ export default function FavoritesTab({
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {[...Array(6)].map((_, index) => (
-              <Box
-                key={index}
-                className="rounded-lg border border-[#2E3944] bg-[#212A31] p-3 shadow-sm"
-              >
+              <Box key={index} className="rounded-lg border bg-[#212A31] p-3 shadow-sm">
                 <div className="mb-2 flex items-center">
                   <div className="relative mr-3 h-16 w-16 flex-shrink-0 overflow-hidden rounded-md md:h-[4.5rem] md:w-32">
-                    <Skeleton
-                      variant="rectangular"
-                      width="100%"
-                      height="100%"
-                      sx={{ bgcolor: '#2E3944' }}
-                    />
+                    <Skeleton variant="rectangular" width="100%" height="100%" />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-start justify-between">
-                      <Skeleton
-                        variant="text"
-                        width={120}
-                        height={24}
-                        sx={{ bgcolor: '#2E3944' }}
-                      />
+                      <Skeleton variant="text" width={120} height={24} />
                     </div>
                     <div className="text-xs text-[#FFFFFF]">
                       <div className="mb-1">
-                        <Skeleton
-                          variant="rounded"
-                          width={80}
-                          height={20}
-                          sx={{ bgcolor: '#2E3944' }}
-                        />
+                        <Skeleton variant="rounded" width={80} height={20} />
                       </div>
-                      <Skeleton
-                        variant="text"
-                        width={140}
-                        height={16}
-                        sx={{ bgcolor: '#2E3944' }}
-                      />
+                      <Skeleton variant="text" width={140} height={16} />
                     </div>
                   </div>
                 </div>
@@ -323,7 +295,7 @@ export default function FavoritesTab({
   if (error) {
     return (
       <div className="space-y-6">
-        <div className="rounded-lg border border-[#5865F2] bg-[#2E3944] p-4">
+        <div className="rounded-lg border border-[#5865F2] p-4">
           <div className="mb-3 flex items-center gap-2">
             <StarIcon className="text-[#5865F2]" />
             <h2 className="text-muted text-lg font-semibold">
@@ -339,7 +311,7 @@ export default function FavoritesTab({
   if (shouldHideFavorites) {
     return (
       <div className="space-y-6">
-        <div className="rounded-lg border border-[#5865F2] bg-[#2E3944] p-4">
+        <div className="rounded-lg border border-[#5865F2] p-4">
           <div className="mb-3 flex items-center gap-2">
             <StarIcon className="text-[#5865F2]" />
             <h2 className="text-muted text-lg font-semibold">Favorited Items</h2>
@@ -362,7 +334,7 @@ export default function FavoritesTab({
 
   return (
     <div className="space-y-6" id="favorites-section">
-      <div className="rounded-lg border border-[#5865F2] bg-[#2E3944] p-4">
+      <div className="rounded-lg border border-[#5865F2] p-4">
         <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <StarIcon className="text-[#5865F2]" />
@@ -372,7 +344,7 @@ export default function FavoritesTab({
           </div>
           <button
             onClick={() => setSortOrder((prev) => (prev === 'newest' ? 'oldest' : 'newest'))}
-            className="flex items-center gap-1 rounded-lg border border-[#2E3944] bg-[#37424D] px-3 py-1.5 text-sm text-white transition-colors hover:bg-[#475569]"
+            className="flex items-center gap-1 rounded-lg border bg-[#37424D] px-3 py-1.5 text-sm text-white transition-colors hover:bg-[#475569]"
           >
             {sortOrder === 'newest' ? (
               <ArrowDownIcon className="h-4 w-4" />

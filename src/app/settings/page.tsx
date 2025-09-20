@@ -106,8 +106,8 @@ export default function SettingsPage() {
   if (loading || settingsLoading) {
     return (
       <Container maxWidth="md" sx={{ minHeight: '100vh', py: 4 }}>
-        <Skeleton variant="text" width={200} height={40} sx={{ bgcolor: '#2E3944', mb: 2 }} />
-        <Skeleton variant="text" width={300} height={24} sx={{ bgcolor: '#2E3944', mb: 4 }} />
+        <Skeleton variant="text" width={200} height={40} sx={{ mb: 2 }} />
+        <Skeleton variant="text" width={300} height={24} sx={{ mb: 4 }} />
 
         {/* Privacy Settings Skeleton */}
         <Paper
@@ -117,28 +117,17 @@ export default function SettingsPage() {
             p: 3,
             bgcolor: '#212A31',
             color: '#D3D9D4',
-            border: '1px solid #2E3944',
           }}
         >
-          <Skeleton variant="text" width={150} height={32} sx={{ bgcolor: '#2E3944', mb: 2 }} />
-          <Divider sx={{ mb: 2, bgcolor: '#2E3944' }} />
+          <Skeleton variant="text" width={150} height={32} sx={{ mb: 2 }} />
+          <Divider sx={{ mb: 2 }} />
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {[1, 2, 3].map((i) => (
               <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Skeleton
-                  variant="rectangular"
-                  width={40}
-                  height={24}
-                  sx={{ bgcolor: '#2E3944' }}
-                />
+                <Skeleton variant="rectangular" width={40} height={24} />
                 <Box sx={{ flex: 1 }}>
-                  <Skeleton
-                    variant="text"
-                    width="60%"
-                    height={24}
-                    sx={{ bgcolor: '#2E3944', mb: 1 }}
-                  />
-                  <Skeleton variant="text" width="80%" height={20} sx={{ bgcolor: '#2E3944' }} />
+                  <Skeleton variant="text" width="60%" height={24} sx={{ mb: 1 }} />
+                  <Skeleton variant="text" width="80%" height={20} />
                 </Box>
               </Box>
             ))}
@@ -153,28 +142,17 @@ export default function SettingsPage() {
             p: 3,
             bgcolor: '#212A31',
             color: '#D3D9D4',
-            border: '1px solid #2E3944',
           }}
         >
-          <Skeleton variant="text" width={150} height={32} sx={{ bgcolor: '#2E3944', mb: 2 }} />
-          <Divider sx={{ mb: 2, bgcolor: '#2E3944' }} />
+          <Skeleton variant="text" width={150} height={32} sx={{ mb: 2 }} />
+          <Divider sx={{ mb: 2 }} />
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {[1, 2].map((i) => (
               <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Skeleton
-                  variant="rectangular"
-                  width={40}
-                  height={24}
-                  sx={{ bgcolor: '#2E3944' }}
-                />
+                <Skeleton variant="rectangular" width={40} height={24} />
                 <Box sx={{ flex: 1 }}>
-                  <Skeleton
-                    variant="text"
-                    width="60%"
-                    height={24}
-                    sx={{ bgcolor: '#2E3944', mb: 1 }}
-                  />
-                  <Skeleton variant="text" width="80%" height={20} sx={{ bgcolor: '#2E3944' }} />
+                  <Skeleton variant="text" width="60%" height={24} sx={{ mb: 1 }} />
+                  <Skeleton variant="text" width="80%" height={20} />
                 </Box>
               </Box>
             ))}
@@ -189,14 +167,13 @@ export default function SettingsPage() {
             p: 3,
             bgcolor: '#212A31',
             color: '#D3D9D4',
-            border: '1px solid #2E3944',
           }}
         >
-          <Skeleton variant="text" width={150} height={32} sx={{ bgcolor: '#2E3944', mb: 2 }} />
-          <Divider sx={{ mb: 2, bgcolor: '#2E3944' }} />
+          <Skeleton variant="text" width={150} height={32} sx={{ mb: 2 }} />
+          <Divider sx={{ mb: 2 }} />
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Skeleton variant="text" width="80%" height={24} sx={{ bgcolor: '#2E3944' }} />
-            <Skeleton variant="text" width="60%" height={20} sx={{ bgcolor: '#2E3944' }} />
+            <Skeleton variant="text" width="80%" height={24} />
+            <Skeleton variant="text" width="60%" height={20} />
           </Box>
         </Paper>
       </Container>
@@ -240,7 +217,6 @@ export default function SettingsPage() {
               p: 3,
               bgcolor: '#212A31',
               color: '#D3D9D4',
-              border: '1px solid #2E3944',
             }}
           >
             <Typography
@@ -251,7 +227,7 @@ export default function SettingsPage() {
             >
               {category}
             </Typography>
-            <Divider sx={{ mb: 2, bgcolor: '#2E3944' }} />
+            <Divider sx={{ mb: 2 }} />
             <FormGroup>
               {settingKeys.map((key) => {
                 const typedKey = key as keyof typeof settings;
@@ -316,7 +292,7 @@ export default function SettingsPage() {
             {category === 'Appearance Settings' &&
               (settings.banner_discord === 0 || settings.avatar_discord === 0) && (
                 <>
-                  <Divider sx={{ my: 3, bgcolor: '#2E3944' }} />
+                  <Divider sx={{ my: 3 }} />
                   <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
                     <Button
                       variant="contained"

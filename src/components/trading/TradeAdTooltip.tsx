@@ -18,7 +18,7 @@ export const TradeAdTooltip: React.FC<TradeAdTooltipProps> = ({ item }) => {
     <div className="p-2">
       <div className="flex gap-3">
         {/* Item Icon */}
-        <div className="relative flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[#2E3944]">
+        <div className="relative flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg">
           {categoryIcon && (
             <div className="rounded-full bg-black/50 p-3">
               <categoryIcon.Icon className="h-8 w-8" style={{ color: categoryIcon.color }} />

@@ -32,9 +32,7 @@ export const SettingToggle = ({ name, value, config, onChange, disabled }: Setti
               },
               '&.Mui-disabled': {
                 color: '#FFFFFF',
-                '& + .MuiSwitch-track': {
-                  backgroundColor: '#2E3944',
-                },
+                '& + .MuiSwitch-track': {},
               },
             }}
           />

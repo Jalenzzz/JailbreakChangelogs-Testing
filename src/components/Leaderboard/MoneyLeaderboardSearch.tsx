@@ -53,7 +53,7 @@ export default function MoneyLeaderboardSearch({ onSearch }: MoneyLeaderboardSea
           className={`text-muted w-full rounded-lg border px-4 py-2 pr-10 pl-10 placeholder-[#D3D9D4] transition-all duration-300 focus:outline-none ${
             isSearchHighlighted
               ? 'border-[#124E66] bg-[#1A5F7A] shadow-lg shadow-[#124E66]/20'
-              : 'border-[#2E3944] bg-[#37424D] focus:border-[#124E66]'
+              : 'bg-[#37424D] focus:border-[#124E66]'
           }`}
         />
         <MagnifyingGlassIcon className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]" />

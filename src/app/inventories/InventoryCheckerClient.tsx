@@ -457,7 +457,7 @@ export default function InventoryCheckerClient({
         />
 
         {/* Loading Skeleton for User Data */}
-        <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6 shadow-sm">
+        <div className="rounded-lg border bg-[#212A31] p-6 shadow-sm">
           <div className="animate-pulse space-y-4">
             <div className="flex items-center gap-4">
               <div className="h-16 w-16 rounded-full bg-gray-600"></div>
@@ -493,7 +493,7 @@ export default function InventoryCheckerClient({
 
       {/* Error Display */}
       {error && !initialData && (
-        <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6 shadow-sm">
+        <div className="rounded-lg border bg-[#212A31] p-6 shadow-sm">
           <div className="text-center">
             <div className="mb-4 flex justify-center">
               <div className="rounded-full bg-red-500/10 p-3">
@@ -655,7 +655,7 @@ export default function InventoryCheckerClient({
               </div>
             ) : (
               /* Show login prompt for potential profile owner */
-              <div className="mt-4 rounded-lg bg-[#2E3944] p-4">
+              <div className="mt-4 rounded-lg p-4">
                 <p className="text-muted mb-1 text-sm font-medium">
                   Are you the owner of this profile?
                 </p>

@@ -3,7 +3,7 @@ import { HomeIcon } from '@heroicons/react/24/outline';
 
 export default function ComingSoon() {
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-[#2e3944] bg-[url('https://assets.jailbreakchangelogs.xyz/assets/backgrounds/background11.webp')] bg-cover bg-center bg-no-repeat text-[#D3D9D4]">
+    <div className="relative flex min-h-screen items-center justify-center bg-[url('https://assets.jailbreakchangelogs.xyz/assets/backgrounds/background11.webp')] bg-cover bg-center bg-no-repeat text-[#D3D9D4]">
       {/* Dark overlay for better text readability */}
       <div className="absolute inset-0 z-[1] bg-black/50" />
       {/* Vignette overlay */}

@@ -167,7 +167,7 @@ export const RobloxConnection = ({ userData }: RobloxConnectionProps) => {
             style: {
               backgroundColor: '#212A31',
               color: '#D3D9D4',
-              border: '1px solid #2E3944',
+
               maxWidth: '500px',
               width: '100%',
             },
@@ -177,7 +177,7 @@ export const RobloxConnection = ({ userData }: RobloxConnectionProps) => {
         <DialogTitle
           sx={{
             color: '#FF6B6B',
-            borderBottom: '1px solid #2E3944',
+
             pb: 2,
           }}
         >

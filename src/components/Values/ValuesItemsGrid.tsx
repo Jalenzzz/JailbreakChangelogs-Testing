@@ -173,9 +173,7 @@ export default function ValuesItemsGrid({
                       backgroundColor: '#4752C4',
                     },
                   },
-                  '&:hover': {
-                    backgroundColor: '#2E3944',
-                  },
+                  '&:hover': {},
                 },
               }}
             />
@@ -194,14 +192,14 @@ export default function ValuesItemsGrid({
             {rangeFilteredItems.length === 0 && items.length > 0 && (
               <button
                 onClick={onResetValueRange}
-                className="text-muted mt-4 mr-3 rounded-lg border border-[#2E3944] bg-[#124E66] px-6 py-2 hover:bg-[#1A5F7A] focus:outline-none"
+                className="text-muted mt-4 mr-3 rounded-lg border bg-[#124E66] px-6 py-2 hover:bg-[#1A5F7A] focus:outline-none"
               >
                 Reset Value Range
               </button>
             )}
             <button
               onClick={onClearAllFilters}
-              className="text-muted mt-4 rounded-lg border border-[#2E3944] bg-[#124E66] px-6 py-2 hover:bg-[#1A5F7A] focus:outline-none"
+              className="text-muted mt-4 rounded-lg border bg-[#124E66] px-6 py-2 hover:bg-[#1A5F7A] focus:outline-none"
             >
               Clear All Filters
             </button>
@@ -223,7 +221,7 @@ export default function ValuesItemsGrid({
                 index + 1 < displayedItems.length && (
                   <div className="col-span-full my-4">
                     <div
-                      className="relative overflow-hidden rounded-lg border border-[#2E3944] bg-[#1a2127] shadow transition-all duration-300"
+                      className="relative overflow-hidden rounded-lg border bg-[#1a2127] shadow transition-all duration-300"
                       style={{ minHeight: '450px', maxHeight: '500px' }}
                     >
                       <span className="absolute top-2 left-2 z-10 rounded bg-[#212A31] px-2 py-0.5 text-xs font-semibold text-white">
@@ -263,9 +261,7 @@ export default function ValuesItemsGrid({
                     backgroundColor: '#4752C4',
                   },
                 },
-                '&:hover': {
-                  backgroundColor: '#2E3944',
-                },
+                '&:hover': {},
               },
             }}
           />

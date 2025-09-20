@@ -36,7 +36,7 @@ export default function DupeCalculatorPage() {
         </div>
       </div>
 
-      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
+      <div className="rounded-lg border bg-[#212A31] p-6">
         <div className="mb-6">
           <h2 className="text-muted text-xl font-semibold">Check for Duped Items</h2>
         </div>

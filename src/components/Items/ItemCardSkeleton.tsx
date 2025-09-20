@@ -3,8 +3,8 @@ import { Skeleton } from '@mui/material';
 export default function ItemCardSkeleton() {
   return (
     <div className="w-full">
-      <div className="group relative flex flex-col overflow-hidden rounded-lg border border-[#2E3944] bg-[#212A31]">
-        <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-t-lg bg-[#2E3944]">
+      <div className="group relative flex flex-col overflow-hidden rounded-lg border bg-[#212A31]">
+        <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-t-lg">
           <Skeleton variant="rectangular" height="100%" sx={{ bgcolor: '#37424D' }} />
         </div>
         <div className="flex flex-1 flex-col space-y-4 p-4">

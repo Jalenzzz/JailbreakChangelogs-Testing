@@ -297,7 +297,7 @@ const SimilarItems = ({ currentItem, similarItemsPromise }: SimilarItemsProps) =
               control: (base) => ({
                 ...base,
                 backgroundColor: '#37424D',
-                borderColor: '#2E3944',
+
                 color: '#D3D9D4',
                 minHeight: '40px',
                 fontSize: '14px',
@@ -341,7 +341,7 @@ const SimilarItems = ({ currentItem, similarItemsPromise }: SimilarItemsProps) =
             isSearchable={false}
           />
         ) : (
-          <div className="h-10 w-full animate-pulse rounded-lg border border-[#2E3944] bg-[#37424D]"></div>
+          <div className="h-10 w-full animate-pulse rounded-lg border bg-[#37424D]"></div>
         )}
       </div>
 
@@ -453,7 +453,7 @@ const SimilarItems = ({ currentItem, similarItemsPromise }: SimilarItemsProps) =
                   {/* Values Section */}
                   <div className="space-y-1">
                     {/* Cash Value */}
-                    <div className="flex items-center justify-between rounded-lg bg-gradient-to-r from-[#2E3944] to-[#1a202c] p-1.5">
+                    <div className="flex items-center justify-between rounded-lg bg-gradient-to-r p-1.5">
                       <span className="text-muted text-[10px] font-medium">Cash</span>
                       <span className="rounded-lg bg-[#1d7da3] px-1.5 py-0.5 text-[9px] font-bold text-white shadow-sm">
                         {formatFullValue(item.cash_value)}
@@ -461,7 +461,7 @@ const SimilarItems = ({ currentItem, similarItemsPromise }: SimilarItemsProps) =
                     </div>
 
                     {/* Duped Value */}
-                    <div className="flex items-center justify-between rounded-lg bg-gradient-to-r from-[#2E3944] to-[#1a202c] p-1.5">
+                    <div className="flex items-center justify-between rounded-lg bg-gradient-to-r p-1.5">
                       <span className="text-muted text-[10px] font-medium">Duped</span>
                       <span className="rounded-lg bg-gray-600 px-1.5 py-0.5 text-[9px] font-bold text-white shadow-sm">
                         {formatFullValue(item.duped_value)}
@@ -469,7 +469,7 @@ const SimilarItems = ({ currentItem, similarItemsPromise }: SimilarItemsProps) =
                     </div>
 
                     {/* Demand */}
-                    <div className="flex items-center justify-between rounded-lg bg-gradient-to-r from-[#2E3944] to-[#1a202c] p-1.5">
+                    <div className="flex items-center justify-between rounded-lg bg-gradient-to-r p-1.5">
                       <span className="text-muted text-[10px] font-medium">Demand</span>
                       <span
                         className={`rounded-lg px-1.5 py-0.5 text-[9px] font-bold whitespace-nowrap shadow-sm ${getDemandColor(item.demand)}`}
@@ -480,7 +480,7 @@ const SimilarItems = ({ currentItem, similarItemsPromise }: SimilarItemsProps) =
 
                     {/* Trend */}
                     {item.trend && item.trend !== 'N/A' && (
-                      <div className="flex items-center justify-between rounded-lg bg-gradient-to-r from-[#2E3944] to-[#1a202c] p-1.5">
+                      <div className="flex items-center justify-between rounded-lg bg-gradient-to-r p-1.5">
                         <span className="text-muted text-[10px] font-medium">Trend</span>
                         <span
                           className={`rounded-lg px-1.5 py-0.5 text-[9px] font-bold whitespace-nowrap shadow-sm ${getTrendColor(item.trend)}`}

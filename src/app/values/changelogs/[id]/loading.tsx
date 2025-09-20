@@ -2,7 +2,7 @@ import { Skeleton } from '@mui/material';
 
 export default function Loading() {
   return (
-    <main className="mb-8 min-h-screen bg-[#2E3944]">
+    <main className="mb-8 min-h-screen">
       <div className="container mx-auto px-4">
         <div className="space-y-6">
           {/* Header Skeleton with Side-by-Side Layout */}
@@ -29,10 +29,7 @@ export default function Loading() {
 
             {/* Ad Skeleton - Takes up 1/3 of the space */}
             <div className="lg:col-span-1">
-              <div
-                className="h-full rounded-lg border border-[#2E3944] bg-[#1a2127]"
-                style={{ minHeight: '250px' }}
-              >
+              <div className="h-full rounded-lg border bg-[#1a2127]" style={{ minHeight: '250px' }}>
                 <div className="p-4">
                   <Skeleton
                     variant="rectangular"

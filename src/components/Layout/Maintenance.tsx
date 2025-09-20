@@ -30,7 +30,7 @@ export default function Maintenance() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#2E3944]">
+      <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
           <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-white"></div>
           <p className="text-white">Checking access...</p>
@@ -44,7 +44,7 @@ export default function Maintenance() {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-[#2e3944] bg-[url('https://assets.jailbreakchangelogs.xyz/assets/backgrounds/background16.webp')] bg-cover bg-center bg-no-repeat text-[#D3D9D4]">
+    <div className="relative flex min-h-screen items-center justify-center bg-[url('https://assets.jailbreakchangelogs.xyz/assets/backgrounds/background16.webp')] bg-cover bg-center bg-no-repeat text-[#D3D9D4]">
       <div className="absolute inset-0 z-[1] bg-black/70" />
 
       <div className="relative z-[2] container mx-auto max-w-2xl px-4">

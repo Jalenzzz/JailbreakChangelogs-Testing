@@ -127,11 +127,11 @@ export default function TradingGuides({
   };
 
   return (
-    <div className="mt-8 border-t border-[#2E3944] pt-8">
+    <div className="mt-8 border-t pt-8">
       {/* Collapsible Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="mb-4 flex w-full items-center justify-between rounded-lg border border-[#2E3944] bg-[#37424D] p-4 transition-colors hover:bg-[#2E3944]"
+        className="hover: mb-4 flex w-full items-center justify-between rounded-lg border bg-[#37424D] p-4 transition-colors"
       >
         <div className="flex items-center gap-3">
           <h3 className="text-muted text-xl font-semibold">Trading Guides & Information</h3>
@@ -168,7 +168,7 @@ export default function TradingGuides({
                 <button
                   key={demand}
                   onClick={() => handleDemandClick(demand)}
-                  className={`flex items-center gap-2 rounded-lg border border-[#2E3944] bg-[#37424D] px-3 py-1.5 transition-all hover:scale-105 focus:outline-none ${
+                  className={`flex items-center gap-2 rounded-lg border bg-[#37424D] px-3 py-1.5 transition-all hover:scale-105 focus:outline-none ${
                     valueSort === getDemandValue(demand) ? 'ring-2 ring-[#5865F2]' : ''
                   }`}
                 >
@@ -203,7 +203,7 @@ export default function TradingGuides({
                         fontSize: '0.75rem',
                         padding: '8px 12px',
                         borderRadius: '8px',
-                        border: '1px solid #2E3944',
+
                         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                         '& .MuiTooltip-arrow': {
                           color: '#0F1419',
@@ -214,7 +214,7 @@ export default function TradingGuides({
                 >
                   <button
                     onClick={() => handleTrendClick(trend)}
-                    className={`flex items-center gap-2 rounded-lg border border-[#2E3944] bg-[#37424D] px-3 py-1.5 transition-all hover:scale-105 focus:outline-none ${
+                    className={`flex items-center gap-2 rounded-lg border bg-[#37424D] px-3 py-1.5 transition-all hover:scale-105 focus:outline-none ${
                       valueSort === getTrendValue(trend) ? 'ring-2 ring-[#5865F2]' : ''
                     }`}
                   >
@@ -269,7 +269,7 @@ export default function TradingGuides({
             width: '100%',
             backgroundColor: '#0F1419',
             color: '#D3D9D4',
-            border: '1px solid #2E3944',
+
             borderRadius: '30px',
             '& .MuiAlert-message': {
               width: '100%',

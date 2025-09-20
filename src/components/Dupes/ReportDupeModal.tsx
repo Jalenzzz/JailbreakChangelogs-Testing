@@ -131,7 +131,7 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
     <div className="fixed inset-0 z-[60] flex items-center justify-center">
       <div className="absolute inset-0 bg-black/75" onClick={onClose} />
       <div className="relative mx-4 w-full max-w-md rounded-lg bg-[#212A31] shadow-xl">
-        <div className="flex items-center justify-between border-b border-[#2E3944] p-4">
+        <div className="flex items-center justify-between border-b p-4">
           <h2 className="text-xl font-semibold text-[#FFFFFF]">Report Dupe</h2>
           <button onClick={onClose} className="text-muted transition-colors hover:text-[#FFFFFF]">
             <XMarkIcon className="h-6 w-6" />
@@ -175,7 +175,7 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
                 onChange={(e) => setOwnerName(e.target.value)}
                 placeholder="Enter duper's username"
                 readOnly={isOwnerNameReadOnly}
-                className={`text-muted w-full rounded-lg border border-[#2E3944] bg-[#37424D] px-3 py-2 ${isOwnerNameReadOnly ? 'cursor-not-allowed' : ''}`}
+                className={`text-muted w-full rounded-lg border bg-[#37424D] px-3 py-2 ${isOwnerNameReadOnly ? 'cursor-not-allowed' : ''}`}
               />
             </div>
 
@@ -209,7 +209,7 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
                     value={url}
                     onChange={(e) => handleProofUrlChange(index, e.target.value)}
                     placeholder="Imgur URL or Postimg URL"
-                    className="text-muted w-full rounded-lg border border-[#2E3944] bg-[#37424D] py-2 pr-10 pl-3"
+                    className="text-muted w-full rounded-lg border bg-[#37424D] py-2 pr-10 pl-3"
                   />
                   {index > 0 && (
                     <button

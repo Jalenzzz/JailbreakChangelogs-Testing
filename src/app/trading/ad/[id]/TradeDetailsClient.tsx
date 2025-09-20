@@ -158,9 +158,9 @@ export default function TradeDetailsClient({
         </div>
 
         {/* Trade Card */}
-        <div className="rounded-lg border border-[#2E3944] bg-[#212A31]">
+        <div className="rounded-lg border bg-[#212A31]">
           {/* Header */}
-          <div className="border-b border-[#2E3944] p-6">
+          <div className="border-b p-6">
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex-1">
@@ -174,7 +174,7 @@ export default function TradeDetailsClient({
                             disabled={offerStatus.loading}
                             className={`flex items-center gap-1 rounded-lg px-3 py-1 text-sm transition-colors ${
                               offerStatus.loading
-                                ? 'text-muted cursor-not-allowed bg-[#2E3944]'
+                                ? 'text-muted cursor-not-allowed'
                                 : offerStatus.success
                                   ? 'bg-[#43B581] text-white hover:bg-[#3CA374]'
                                   : 'bg-[#5865F2] text-white hover:bg-[#4752C4]'
@@ -236,9 +236,9 @@ export default function TradeDetailsClient({
             <TradeItemsImages offering={trade.offering} requesting={trade.requesting} />
 
             {/* Tabs - calculator style */}
-            <div className="mb-6 rounded-lg border border-[#2E3944] bg-[#212A31]">
+            <div className="mb-6 rounded-lg border bg-[#212A31]">
               <nav className="px-6 py-4">
-                <div className="flex flex-col space-y-1 rounded-lg bg-[#2E3944] p-1 sm:flex-row sm:space-y-0 sm:space-x-1">
+                <div className="flex flex-col space-y-1 rounded-lg p-1 sm:flex-row sm:space-y-0 sm:space-x-1">
                   <button
                     onClick={() => setActiveTab('items')}
                     className={`${

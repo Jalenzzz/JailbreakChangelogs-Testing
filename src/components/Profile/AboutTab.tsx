@@ -124,7 +124,7 @@ export default function AboutTab({
   return (
     <div className="space-y-6">
       {/* About Me Section */}
-      <div className="rounded-lg border border-[#5865F2] bg-[#2E3944] p-4">
+      <div className="rounded-lg border border-[#5865F2] p-4">
         <div className="mb-3 flex items-center gap-2">
           <h2 className="text-muted text-lg font-semibold">About Me</h2>
           {currentUserId === user.id && !isEditingBio && (
@@ -140,7 +140,7 @@ export default function AboutTab({
                     fontSize: '0.75rem',
                     padding: '8px 12px',
                     borderRadius: '8px',
-                    border: '1px solid #2E3944',
+
                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                     '& .MuiTooltip-arrow': {
                       color: '#0F1419',
@@ -261,7 +261,7 @@ export default function AboutTab({
                         fontSize: '0.75rem',
                         padding: '8px 12px',
                         borderRadius: '8px',
-                        border: '1px solid #2E3944',
+
                         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                         '& .MuiTooltip-arrow': {
                           color: '#0F1419',

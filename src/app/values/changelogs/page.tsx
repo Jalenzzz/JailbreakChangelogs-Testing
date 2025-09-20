@@ -102,7 +102,7 @@ export default function ValuesChangelogPage() {
 
   return (
     <ThemeProvider theme={darkTheme}>
-      <main className="min-h-screen bg-[#2E3944]">
+      <main className="min-h-screen">
         <div className="container mx-auto mb-8 px-4 sm:px-6">
           <Breadcrumb />
           <ValuesChangelogHeader />
@@ -213,9 +213,7 @@ export default function ValuesChangelogPage() {
                             backgroundColor: '#4752C4',
                           },
                         },
-                        '&:hover': {
-                          backgroundColor: '#2E3944',
-                        },
+                        '&:hover': {},
                       },
                     }}
                   />

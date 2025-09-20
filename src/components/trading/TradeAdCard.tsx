@@ -64,7 +64,7 @@ export const TradeAdCard: React.FC<TradeAdCardProps> = ({
   const discordGuildId = '1286064050135896064';
   return (
     <div
-      className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4 transition-colors hover:border-[#5865F2]"
+      className="rounded-lg border bg-[#212A31] p-4 transition-colors hover:border-[#5865F2]"
       tabIndex={0}
       role="region"
     >
@@ -95,7 +95,7 @@ export const TradeAdCard: React.FC<TradeAdCardProps> = ({
                 disabled={offerStatus?.loading}
                 className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2 transition-colors ${
                   offerStatus?.loading
-                    ? 'text-muted cursor-not-allowed bg-[#2E3944]'
+                    ? 'text-muted cursor-not-allowed'
                     : offerStatus?.success
                       ? 'bg-[#43B581] text-white hover:bg-[#3CA374]'
                       : 'bg-[#5865F2] text-white hover:bg-[#4752C4]'
@@ -111,7 +111,7 @@ export const TradeAdCard: React.FC<TradeAdCardProps> = ({
             )}
             <Link
               href={`/trading/ad/${trade.id}`}
-              className="text-muted flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#2E3944] px-4 py-2 text-sm font-medium transition-colors hover:bg-[#37424D]"
+              className="text-muted flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:bg-[#37424D]"
               role="button"
               tabIndex={0}
             >

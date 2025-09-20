@@ -152,7 +152,7 @@ export default function CommentsTab({
   if (error) {
     return (
       <div className="space-y-6">
-        <div className="rounded-lg border border-[#5865F2] bg-[#2E3944] p-4">
+        <div className="rounded-lg border border-[#5865F2] p-4">
           <div className="mb-3 flex items-center gap-2">
             <CommentIcon className="text-[#5865F2]" />
             <h2 className="text-muted text-lg font-semibold">
@@ -168,7 +168,7 @@ export default function CommentsTab({
   if (shouldHideComments) {
     return (
       <div className="space-y-6">
-        <div className="rounded-lg border border-[#5865F2] bg-[#2E3944] p-4">
+        <div className="rounded-lg border border-[#5865F2] p-4">
           <div className="mb-3 flex items-center gap-2">
             <CommentIcon className="text-[#5865F2]" />
             <h2 className="text-muted text-lg font-semibold">Recent Comments</h2>
@@ -191,7 +191,7 @@ export default function CommentsTab({
 
   return (
     <div className="space-y-6" id="comments-section">
-      <div className="rounded-lg border border-[#5865F2] bg-[#2E3944] p-4">
+      <div className="rounded-lg border border-[#5865F2] p-4">
         <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <CommentIcon className="text-[#5865F2]" />
@@ -205,7 +205,7 @@ export default function CommentsTab({
           </div>
           <button
             onClick={() => setSortOrder((prev) => (prev === 'newest' ? 'oldest' : 'newest'))}
-            className="flex items-center gap-1 rounded-lg border border-[#2E3944] bg-[#37424D] px-3 py-1.5 text-sm text-white transition-colors hover:bg-[#475569]"
+            className="flex items-center gap-1 rounded-lg border bg-[#37424D] px-3 py-1.5 text-sm text-white transition-colors hover:bg-[#475569]"
           >
             {sortOrder === 'newest' ? (
               <ArrowDownIcon className="h-4 w-4" />

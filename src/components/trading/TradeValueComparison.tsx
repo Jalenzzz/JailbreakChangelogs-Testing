@@ -81,7 +81,7 @@ const groupItems = (items: TradeItem[]) => {
 
 export default function TradeValueComparison({ offering, requesting }: TradeValueComparisonProps) {
   return (
-    <div className="rounded-lg bg-[#2E3944] p-6">
+    <div className="rounded-lg p-6">
       <h3 className="text-muted mb-4 text-lg font-semibold">Value Comparison</h3>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

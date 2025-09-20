@@ -74,7 +74,7 @@ export default function TradeItemsImages({ offering, requesting }: TradeItemsIma
                 tooltip: {
                   sx: {
                     bgcolor: '#1A2228',
-                    border: '1px solid #2E3944',
+
                     maxWidth: '400px',
                     width: 'auto',
                     minWidth: '300px',
@@ -141,7 +141,7 @@ export default function TradeItemsImages({ offering, requesting }: TradeItemsIma
                 tooltip: {
                   sx: {
                     bgcolor: '#1A2228',
-                    border: '1px solid #2E3944',
+
                     maxWidth: '400px',
                     width: 'auto',
                     minWidth: '300px',

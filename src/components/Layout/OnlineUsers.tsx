@@ -73,7 +73,6 @@ export default function OnlineUsers({
               width={32}
               height={32}
               sx={{
-                bgcolor: '#2E3944',
                 border: '2px solid #212A31',
               }}
             />
@@ -111,7 +110,7 @@ export default function OnlineUsers({
                 draggable={false}
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-[#2E3944]">
+              <div className="flex h-full w-full items-center justify-center">
                 <svg
                   className="h-4 w-4 text-[#B9BBBE]"
                   viewBox="0 0 24 24"

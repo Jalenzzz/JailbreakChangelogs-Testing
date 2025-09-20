@@ -33,7 +33,7 @@ export default async function CrewPage({ params, searchParams }: CrewPageProps) 
   if (rankNumber > leaderboard.length) {
     // Instead of notFound(), let's show a more helpful error
     return (
-      <div className="min-h-screen bg-[#2E3944] text-white">
+      <div className="min-h-screen text-white">
         <div className="container mx-auto px-4 py-8">
           <div className="mx-auto max-w-6xl">
             <Breadcrumb />
@@ -44,7 +44,7 @@ export default async function CrewPage({ params, searchParams }: CrewPageProps) 
               </div>
             </div>
 
-            <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-8 text-center">
+            <div className="rounded-lg border bg-[#212A31] p-8 text-center">
               <h2 className="mb-4 text-2xl font-bold text-gray-100">
                 Rank #{rankNumber} Not Available
               </h2>
@@ -72,7 +72,7 @@ export default async function CrewPage({ params, searchParams }: CrewPageProps) 
   }
 
   return (
-    <div className="min-h-screen bg-[#2E3944] text-white">
+    <div className="min-h-screen text-white">
       <div className="container mx-auto px-4 py-8">
         <div className="mx-auto max-w-6xl">
           <Breadcrumb />

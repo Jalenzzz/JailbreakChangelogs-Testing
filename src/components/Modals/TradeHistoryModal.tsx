@@ -49,9 +49,9 @@ export default function TradeHistoryModal({
       <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <div className="mx-auto max-h-[80vh] w-full max-w-4xl overflow-hidden rounded-lg border border-[#2E3944] bg-[#212A31]">
+        <div className="mx-auto max-h-[80vh] w-full max-w-4xl overflow-hidden rounded-lg border bg-[#212A31]">
           {/* Modal Header */}
-          <div className="border-b border-[#2E3944] bg-[#212A31] p-4 sm:p-6">
+          <div className="border-b bg-[#212A31] p-4 sm:p-6">
             <div className="flex items-start justify-between gap-4 sm:items-center">
               <div className="min-w-0 flex-1">
                 <Dialog.Title className="text-muted text-lg font-semibold sm:text-xl">
@@ -94,7 +94,7 @@ export default function TradeHistoryModal({
               </div>
               <button
                 onClick={onClose}
-                className="text-muted rounded-full p-1 hover:bg-[#2E3944] hover:text-white"
+                className="text-muted hover: rounded-full p-1 hover:text-white"
               >
                 <XMarkIcon className="h-6 w-6" />
               </button>
@@ -104,7 +104,7 @@ export default function TradeHistoryModal({
               <div className="mt-3 flex justify-start">
                 <button
                   onClick={toggleTradeSortOrder}
-                  className="flex items-center gap-1 rounded-lg border border-[#2E3944] bg-[#37424D] px-3 py-1.5 text-sm text-white transition-colors hover:bg-[#2E3944]"
+                  className="hover: flex items-center gap-1 rounded-lg border bg-[#37424D] px-3 py-1.5 text-sm text-white transition-colors"
                 >
                   {tradeSortOrder === 'newest' ? (
                     <ArrowDownIcon className="h-4 w-4" />
@@ -118,7 +118,7 @@ export default function TradeHistoryModal({
           </div>
 
           {/* Modal Content */}
-          <div className="max-h-[60vh] overflow-y-auto bg-[#2E3944] p-6">
+          <div className="max-h-[60vh] overflow-y-auto p-6">
             {item.history && Array.isArray(item.history) && item.history.length > 0 ? (
               <div className="space-y-4">
                 {(() => {
@@ -174,7 +174,7 @@ export default function TradeHistoryModal({
                                   <div className="flex flex-wrap items-center gap-2">
                                     {/* From User */}
                                     <div className="flex items-center gap-2">
-                                      <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-[#2E3944] bg-[#2E3944]">
+                                      <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border">
                                         {getUserAvatar(trade.fromUser.UserId.toString()) ? (
                                           <Image
                                             src={getUserAvatar(trade.fromUser.UserId.toString())!}
@@ -217,7 +217,7 @@ export default function TradeHistoryModal({
 
                                     {/* To User */}
                                     <div className="flex items-center gap-2">
-                                      <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-[#2E3944] bg-[#2E3944]">
+                                      <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border">
                                         {getUserAvatar(trade.toUser.UserId.toString()) ? (
                                           <Image
                                             src={getUserAvatar(trade.toUser.UserId.toString())!}

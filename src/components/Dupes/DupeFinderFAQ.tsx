@@ -49,7 +49,7 @@ const faqs = [
 
 const DupeFinderFAQ: React.FC = () => {
   return (
-    <div className="mt-8 rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
+    <div className="mt-8 rounded-lg border bg-[#212A31] p-6">
       <h3 className="text-muted mb-4 text-xl font-semibold">Frequently Asked Questions</h3>
 
       <div className="space-y-4">
@@ -63,7 +63,7 @@ const DupeFinderFAQ: React.FC = () => {
               '&:before': {
                 display: 'none',
               },
-              border: '1px solid #2E3944',
+
               '& .MuiAccordionSummary-root': {
                 backgroundColor: '#1A2025',
                 '&:hover': {

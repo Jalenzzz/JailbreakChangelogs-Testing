@@ -28,11 +28,11 @@ export default function OGUserInfo({
   originalItemsCount,
 }: OGUserInfoProps) {
   return (
-    <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6 shadow-sm">
+    <div className="rounded-lg border bg-[#212A31] p-6 shadow-sm">
       <h2 className="text-muted mb-4 text-xl font-semibold">User Information</h2>
 
       {/* Roblox User Profile */}
-      <div className="mb-6 flex flex-col gap-4 rounded-lg border border-[#37424D] bg-[#2E3944] p-4 sm:flex-row sm:items-center">
+      <div className="mb-6 flex flex-col gap-4 rounded-lg border border-[#37424D] p-4 sm:flex-row sm:items-center">
         {getUserAvatar(robloxId) ? (
           <Image
             src={getUserAvatar(robloxId)!}
@@ -66,7 +66,7 @@ export default function OGUserInfo({
                       fontSize: '0.75rem',
                       padding: '8px 12px',
                       borderRadius: '8px',
-                      border: '1px solid #2E3944',
+
                       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                       '& .MuiTooltip-arrow': {
                         color: '#0F1419',
@@ -100,7 +100,7 @@ export default function OGUserInfo({
                     fontSize: '0.75rem',
                     padding: '8px 12px',
                     borderRadius: '8px',
-                    border: '1px solid #2E3944',
+
                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                     '& .MuiTooltip-arrow': {
                       color: '#0F1419',
@@ -134,7 +134,7 @@ export default function OGUserInfo({
                       fontSize: '0.75rem',
                       padding: '8px 12px',
                       borderRadius: '8px',
-                      border: '1px solid #2E3944',
+
                       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                       '& .MuiTooltip-arrow': {
                         color: '#0F1419',

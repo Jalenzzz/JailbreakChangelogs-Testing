@@ -28,12 +28,9 @@ export default function EscapeLoginModal() {
       <div className="fixed inset-0 bg-black/50" onClick={() => setShowModal(false)} />
       <div className="relative w-full max-w-md rounded-lg bg-[#212A31] p-6 shadow-xl">
         {/* Header */}
-        <div className="mb-6 flex items-center justify-between border-b border-[#2E3944] pb-4">
+        <div className="mb-6 flex items-center justify-between border-b pb-4">
           <h2 className="text-muted text-xl font-semibold">Login with Token</h2>
-          <button
-            onClick={() => setShowModal(false)}
-            className="text-muted rounded-md p-1 hover:bg-[#2E3944]"
-          >
+          <button onClick={() => setShowModal(false)} className="text-muted hover: rounded-md p-1">
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
@@ -55,18 +52,18 @@ export default function EscapeLoginModal() {
               id="token"
               value={token}
               onChange={(e) => setToken(e.target.value)}
-              className="text-muted w-full rounded-md border border-[#2E3944] bg-[#2E3944] px-3 py-2 placeholder-[#FFFFFF] focus:border-[#5865F2] focus:outline-none"
+              className="text-muted w-full rounded-md border px-3 py-2 placeholder-[#FFFFFF] focus:border-[#5865F2] focus:outline-none"
               placeholder="Enter your token"
             />
             {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
           </div>
 
           {/* Actions */}
-          <div className="mt-6 flex justify-end gap-2 border-t border-[#2E3944] pt-4">
+          <div className="mt-6 flex justify-end gap-2 border-t pt-4">
             <button
               type="button"
               onClick={() => setShowModal(false)}
-              className="text-muted rounded-md px-4 py-2 text-sm font-medium hover:bg-[#2E3944]"
+              className="text-muted hover: rounded-md px-4 py-2 text-sm font-medium"
             >
               Cancel
             </button>

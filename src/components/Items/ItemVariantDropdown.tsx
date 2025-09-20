@@ -54,7 +54,7 @@ export default function ItemVariantDropdown({ item, onVariantSelect }: ItemVaria
     <div className="relative">
       <button
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        className="text-muted flex items-center gap-1 rounded-lg border border-[#2E3944] bg-[#37424D] px-3 py-1.5 text-sm hover:bg-[#124E66] focus:outline-none"
+        className="text-muted flex items-center gap-1 rounded-lg border bg-[#37424D] px-3 py-1.5 text-sm hover:bg-[#124E66] focus:outline-none"
       >
         {selectedYear}
         <ChevronDownIcon
@@ -70,7 +70,7 @@ export default function ItemVariantDropdown({ item, onVariantSelect }: ItemVaria
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.18, ease: 'easeOut' }}
-            className="absolute right-0 z-10 mt-1 w-32 rounded-lg border border-[#2E3944] bg-[#37424D] shadow-lg"
+            className="absolute right-0 z-10 mt-1 w-32 rounded-lg border bg-[#37424D] shadow-lg"
           >
             <button
               onClick={() => {

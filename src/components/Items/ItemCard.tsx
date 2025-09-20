@@ -396,7 +396,7 @@ export default function ItemCard({ item, isFavorited, onFavoriteChange }: ItemCa
             </div>
 
             <div className="space-y-1 pb-2 sm:space-y-2">
-              <div className="flex items-center justify-between rounded-lg bg-gradient-to-r from-[#2E3944] to-[#1a202c] p-1 sm:p-2.5">
+              <div className="flex items-center justify-between rounded-lg bg-gradient-to-r p-1 sm:p-2.5">
                 <div className="flex items-center gap-1 sm:gap-2">
                   <span className="text-muted text-xs font-medium whitespace-nowrap sm:text-xs">
                     <span className="sm:hidden">Cash</span>
@@ -408,7 +408,7 @@ export default function ItemCard({ item, isFavorited, onFavoriteChange }: ItemCa
                 </span>
               </div>
 
-              <div className="flex items-center justify-between rounded-lg bg-gradient-to-r from-[#2E3944] to-[#1a202c] p-1 sm:p-2.5">
+              <div className="flex items-center justify-between rounded-lg bg-gradient-to-r p-1 sm:p-2.5">
                 <div className="flex items-center gap-1 sm:gap-2">
                   <span className="text-muted text-xs font-medium whitespace-nowrap sm:text-xs">
                     <span className="sm:hidden">Duped</span>
@@ -420,7 +420,7 @@ export default function ItemCard({ item, isFavorited, onFavoriteChange }: ItemCa
                 </span>
               </div>
 
-              <div className="flex items-center justify-between rounded-lg bg-gradient-to-r from-[#2E3944] to-[#1a202c] p-1 sm:p-2.5">
+              <div className="flex items-center justify-between rounded-lg bg-gradient-to-r p-1 sm:p-2.5">
                 <div className="flex items-center gap-1 sm:gap-2">
                   <span className="text-muted text-xs font-medium whitespace-nowrap sm:text-xs">
                     Demand
@@ -434,7 +434,7 @@ export default function ItemCard({ item, isFavorited, onFavoriteChange }: ItemCa
               </div>
 
               {isValuesPage && (
-                <div className="flex items-center justify-between rounded-lg bg-gradient-to-r from-[#2E3944] to-[#1a202c] p-1 sm:p-2.5">
+                <div className="flex items-center justify-between rounded-lg bg-gradient-to-r p-1 sm:p-2.5">
                   <div className="flex items-center gap-1 sm:gap-2">
                     <span className="text-muted text-xs font-medium whitespace-nowrap sm:text-xs">
                       Trend
@@ -449,7 +449,7 @@ export default function ItemCard({ item, isFavorited, onFavoriteChange }: ItemCa
               )}
             </div>
 
-            <div className="text-muted mt-auto border-t border-[#2E3944] pt-1 text-[10px] sm:pt-2 sm:text-xs">
+            <div className="text-muted mt-auto border-t pt-1 text-[10px] sm:pt-2 sm:text-xs">
               {currentItemData.last_updated ? (
                 <Tooltip
                   title={formatCustomDate(currentItemData.last_updated)}
@@ -463,7 +463,7 @@ export default function ItemCard({ item, isFavorited, onFavoriteChange }: ItemCa
                         fontSize: '0.75rem',
                         padding: '8px 12px',
                         borderRadius: '8px',
-                        border: '1px solid #2E3944',
+
                         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                         '& .MuiTooltip-arrow': {
                           color: '#0F1419',

@@ -253,12 +253,12 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
 
   return (
     <div className="space-y-4" data-component="available-items-grid">
-      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-1 pt-4 sm:p-2">
+      <div className="rounded-lg border bg-[#212A31] p-1 pt-4 sm:p-2">
         {/* Ad Placement: Above the grid, only for non-premium users */}
         {premiumStatusLoaded && currentUserPremiumType === 0 && (
           <div className="mb-6 flex w-full flex-col items-center">
             <div
-              className="relative w-full max-w-[700px] overflow-hidden rounded-lg border border-[#2E3944] bg-[#1a2127] shadow transition-all duration-300"
+              className="relative w-full max-w-[700px] overflow-hidden rounded-lg border bg-[#1a2127] shadow transition-all duration-300"
               style={{ minHeight: '250px' }}
             >
               <span className="text-muted absolute top-2 left-2 z-10 rounded bg-[#212A31] px-2 py-0.5 text-xs">
@@ -282,7 +282,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
               placeholder="Search items by name or type..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="text-muted w-full rounded-lg border border-[#2E3944] bg-[#37424D] px-4 py-2 pr-10 pl-10 placeholder-[#D3D9D4] transition-all duration-300 focus:border-[#124E66] focus:outline-none"
+              className="text-muted w-full rounded-lg border bg-[#37424D] px-4 py-2 pr-10 pl-10 placeholder-[#D3D9D4] transition-all duration-300 focus:border-[#124E66] focus:outline-none"
             />
             {searchQuery && (
               <button
@@ -380,7 +380,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
                 control: (base) => ({
                   ...base,
                   backgroundColor: '#37424D',
-                  borderColor: '#2E3944',
+
                   color: '#D3D9D4',
                 }),
                 singleValue: (base) => ({ ...base, color: '#D3D9D4' }),
@@ -414,7 +414,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
               isSearchable={false}
             />
           ) : (
-            <div className="h-10 w-full animate-pulse rounded-md border border-[#2E3944] bg-[#37424D]"></div>
+            <div className="h-10 w-full animate-pulse rounded-md border bg-[#37424D]"></div>
           )}
 
           {selectLoaded ? (
@@ -517,7 +517,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
                 control: (base) => ({
                   ...base,
                   backgroundColor: '#37424D',
-                  borderColor: '#2E3944',
+
                   color: '#D3D9D4',
                 }),
                 singleValue: (base) => ({ ...base, color: '#D3D9D4' }),
@@ -551,7 +551,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
               isSearchable={false}
             />
           ) : (
-            <div className="h-10 w-full animate-pulse rounded-md border border-[#2E3944] bg-[#37424D]"></div>
+            <div className="h-10 w-full animate-pulse rounded-md border bg-[#37424D]"></div>
           )}
         </div>
 
@@ -594,7 +594,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
                   setFilterSort('name-all-items');
                   setValueSort('cash-desc');
                 }}
-                className="text-muted mt-4 rounded-lg border border-[#2E3944] bg-[#124E66] px-6 py-2 hover:bg-[#1A5F7A] focus:outline-none"
+                className="text-muted mt-4 rounded-lg border bg-[#124E66] px-6 py-2 hover:bg-[#1A5F7A] focus:outline-none"
               >
                 Clear All Filters
               </button>
@@ -686,7 +686,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
                     {item.tradable === 1 && (
                       <>
                         <div className="text-muted space-y-1 text-xs">
-                          <div className="flex items-center justify-between rounded-lg bg-gradient-to-r from-[#2E3944] to-[#1a202c] p-1.5">
+                          <div className="flex items-center justify-between rounded-lg bg-gradient-to-r p-1.5">
                             <span className="text-muted text-xs font-medium whitespace-nowrap">
                               Cash
                             </span>
@@ -716,7 +716,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
                                   })()}
                             </span>
                           </div>
-                          <div className="flex items-center justify-between rounded-lg bg-gradient-to-r from-[#2E3944] to-[#1a202c] p-1.5">
+                          <div className="flex items-center justify-between rounded-lg bg-gradient-to-r p-1.5">
                             <span className="text-muted text-xs font-medium whitespace-nowrap">
                               Duped
                             </span>
@@ -746,7 +746,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
                                   })()}
                             </span>
                           </div>
-                          <div className="flex items-center justify-between rounded-lg bg-gradient-to-r from-[#2E3944] to-[#1a202c] p-1.5">
+                          <div className="flex items-center justify-between rounded-lg bg-gradient-to-r p-1.5">
                             <span className="text-muted text-xs font-medium whitespace-nowrap">
                               Demand
                             </span>
@@ -766,7 +766,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
                               );
                             })()}
                           </div>
-                          <div className="flex items-center justify-between rounded-lg bg-gradient-to-r from-[#2E3944] to-[#1a202c] p-1.5">
+                          <div className="flex items-center justify-between rounded-lg bg-gradient-to-r p-1.5">
                             <span className="text-muted text-xs font-medium whitespace-nowrap">
                               Trend
                             </span>
@@ -785,7 +785,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
                                 e.preventDefault();
                                 setOpenDropdownId(openDropdownId === item.id ? null : item.id);
                               }}
-                              className="text-muted flex w-full items-center justify-between gap-1 rounded-lg border border-[#2E3944] bg-[#37424D] px-3 py-1.5 text-sm hover:bg-[#124E66] focus:outline-none"
+                              className="text-muted flex w-full items-center justify-between gap-1 rounded-lg border bg-[#37424D] px-3 py-1.5 text-sm hover:bg-[#124E66] focus:outline-none"
                             >
                               {selectedVariants[item.id] || '2025'}
                               <ChevronDownIcon
@@ -803,7 +803,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
                                     duration: 0.18,
                                     ease: 'easeOut',
                                   }}
-                                  className="absolute z-10 mt-1 w-full rounded-lg border border-[#2E3944] bg-[#37424D] shadow-lg"
+                                  className="absolute z-10 mt-1 w-full rounded-lg border bg-[#37424D] shadow-lg"
                                 >
                                   <button
                                     onClick={(e) => {

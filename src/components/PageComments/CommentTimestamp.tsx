@@ -40,7 +40,7 @@ const CommentTimestamp: React.FC<CommentTimestampProps> = ({ date, editedAt, com
             fontSize: '0.75rem',
             padding: '8px 12px',
             borderRadius: '8px',
-            border: '1px solid #2E3944',
+
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
             '& .MuiTooltip-arrow': {
               color: '#0F1419',

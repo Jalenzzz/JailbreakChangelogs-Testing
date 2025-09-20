@@ -40,13 +40,13 @@ export default function InventoryItemsGrid({
       <div className="space-y-4">
         {Array.from({ length: 6 }).map((_, index) => (
           <div key={index} className="animate-pulse">
-            <div className="rounded-lg border border-[#2E3944] bg-[#37424D] p-4">
+            <div className="rounded-lg border bg-[#37424D] p-4">
               <div className="flex items-start gap-4">
-                <div className="h-16 w-16 rounded-lg bg-[#2E3944]"></div>
+                <div className="h-16 w-16 rounded-lg"></div>
                 <div className="flex-1 space-y-2">
-                  <div className="h-4 w-3/4 rounded bg-[#2E3944]"></div>
-                  <div className="h-3 w-1/2 rounded bg-[#2E3944]"></div>
-                  <div className="h-3 w-1/3 rounded bg-[#2E3944]"></div>
+                  <div className="h-4 w-3/4 rounded"></div>
+                  <div className="h-3 w-1/2 rounded"></div>
+                  <div className="h-3 w-1/3 rounded"></div>
                 </div>
               </div>
             </div>
@@ -105,9 +105,7 @@ export default function InventoryItemsGrid({
                   backgroundColor: '#5865F2',
                   color: '#FFFFFF',
                 },
-                '&:hover': {
-                  backgroundColor: '#2E3944',
-                },
+                '&:hover': {},
               },
               '& .MuiPaginationItem-ellipsis': {
                 color: '#D3D9D4',

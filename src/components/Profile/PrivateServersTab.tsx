@@ -30,7 +30,7 @@ const PrivateServersTab: React.FC<PrivateServersTabProps> = ({ servers, isOwnPro
 
   if (!servers || servers.length === 0) {
     return (
-      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-8 text-center">
+      <div className="rounded-lg border bg-[#212A31] p-8 text-center">
         <ShieldCheckIcon className="mx-auto mb-4 h-12 w-12 text-[#5865F2]" />
         <h3 className="text-muted mb-2 text-xl font-semibold">
           {isOwnProfile
@@ -51,17 +51,14 @@ const PrivateServersTab: React.FC<PrivateServersTabProps> = ({ servers, isOwnPro
 
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border border-[#5865F2] bg-[#2E3944] p-4">
+      <div className="rounded-lg border border-[#5865F2] p-4">
         <div className="mb-3 flex items-center gap-2">
           <ShieldCheckIcon className="h-5 w-5 text-[#5865F2]" />
           <h2 className="text-muted text-lg font-semibold">Private Servers [{servers.length}]</h2>
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {servers.map((server, index) => (
-            <div
-              key={server.id}
-              className="rounded-lg border border-[#2E3944] bg-[#212A31] p-4 sm:p-6"
-            >
+            <div key={server.id} className="rounded-lg border bg-[#212A31] p-4 sm:p-6">
               <div className="mb-4 flex flex-col gap-3">
                 <div className="flex items-center space-x-2">
                   <ShieldCheckIcon className="h-5 w-5 text-[#5865F2]" />
@@ -93,7 +90,7 @@ const PrivateServersTab: React.FC<PrivateServersTabProps> = ({ servers, isOwnPro
                     {server.expires === 'Never' ? 'Never' : formatProfileDate(server.expires)}
                   </span>
                 </div>
-                <div className="rounded-lg border border-[#2E3944] bg-[#37424D] p-3 sm:p-4">
+                <div className="rounded-lg border bg-[#37424D] p-3 sm:p-4">
                   <h3 className="text-muted mb-2 text-sm font-semibold">Server Rules</h3>
                   <p className="text-xs break-words whitespace-pre-wrap text-[#FFFFFF] sm:text-sm">
                     {server.rules === 'N/A' ? 'No Rules set by owner' : server.rules}

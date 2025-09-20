@@ -318,7 +318,7 @@ const ItemValueChart = ({ itemId, variantId }: ItemValueChartProps) => {
         enabled: true,
         mode: 'index' as const,
         intersect: false,
-        backgroundColor: '#2e3944',
+
         titleColor: '#FFFFFF',
         bodyColor: '#D3D9D4',
         borderColor: '#37424D',

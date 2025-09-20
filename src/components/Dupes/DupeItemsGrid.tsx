@@ -82,9 +82,7 @@ export default function DupeItemsGrid({
                   backgroundColor: '#5865F2',
                   color: '#FFFFFF',
                 },
-                '&:hover': {
-                  backgroundColor: '#2E3944',
-                },
+                '&:hover': {},
               },
               '& .MuiPaginationItem-ellipsis': {
                 color: '#D3D9D4',

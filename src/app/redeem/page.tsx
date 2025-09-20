@@ -444,7 +444,7 @@ export default function RedeemPage() {
               </p>
             </div>
 
-            <div className="mb-6 rounded-lg border border-[#37424D] bg-[#2E3944] p-3">
+            <div className="mb-6 rounded-lg border border-[#37424D] p-3">
               <p className="text-sm text-gray-300">
                 <span className="font-medium">Code:</span>{' '}
                 <code className="block max-w-full truncate text-blue-300">{code}</code>
@@ -454,7 +454,7 @@ export default function RedeemPage() {
             <div className="flex flex-col gap-3 sm:flex-row">
               <button
                 onClick={() => setShowConfirmModal(false)}
-                className="w-full rounded-lg border border-[#37424D] bg-[#2E3944] px-4 py-2 text-white transition-colors hover:bg-[#2E3944] hover:text-white sm:flex-1"
+                className="hover: w-full rounded-lg border border-[#37424D] px-4 py-2 text-white transition-colors hover:text-white sm:flex-1"
               >
                 Cancel
               </button>
@@ -522,7 +522,7 @@ export default function RedeemPage() {
               <div className="flex flex-col gap-3 sm:flex-row">
                 <Link
                   href="/supporting"
-                  className="w-full rounded-lg border border-[#37424D] bg-[#2E3944] px-4 py-2 text-white transition-colors hover:bg-[#2E3944] hover:text-white sm:flex-1"
+                  className="hover: w-full rounded-lg border border-[#37424D] px-4 py-2 text-white transition-colors hover:text-white sm:flex-1"
                 >
                   View All Benefits
                 </Link>

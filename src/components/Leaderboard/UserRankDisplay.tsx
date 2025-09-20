@@ -49,13 +49,13 @@ export default function UserRankDisplay() {
 
   if (isLoading) {
     return (
-      <div className="mb-6 rounded-lg border border-[#2E3944] bg-[#212A31] p-4">
+      <div className="mb-6 rounded-lg border bg-[#212A31] p-4">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold text-gray-200">Your Rank</h3>
             <p className="text-sm text-gray-400">Loading your rank...</p>
           </div>
-          <div className="h-8 w-8 animate-pulse rounded-full bg-[#2E3944]" />
+          <div className="h-8 w-8 animate-pulse rounded-full" />
         </div>
       </div>
     );
@@ -79,11 +79,11 @@ export default function UserRankDisplay() {
           {formatRelativeDate(userRank.updated_at)})
         </span>
       </div>
-      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-3 shadow-sm sm:p-4">
-        <div className="rounded-lg border border-[#2E3944] bg-[#2E3944] p-3 transition-colors hover:border-[#5865F2]">
+      <div className="rounded-lg border bg-[#212A31] p-3 shadow-sm sm:p-4">
+        <div className="rounded-lg border p-3 transition-colors hover:border-[#5865F2]">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2 sm:space-x-3">
-              <div className="flex h-7 min-w-[2.5rem] items-center justify-center rounded-full bg-[#2E3944] px-1 text-xs font-bold text-gray-300 sm:h-8 sm:min-w-[3rem] sm:px-2">
+              <div className="flex h-7 min-w-[2.5rem] items-center justify-center rounded-full px-1 text-xs font-bold text-gray-300 sm:h-8 sm:min-w-[3rem] sm:px-2">
                 #{userRank.rank.toLocaleString()}
               </div>
               {user.roblox_avatar ? (
@@ -95,7 +95,7 @@ export default function UserRankDisplay() {
                   className="h-7 w-7 rounded-full sm:h-8 sm:w-8"
                 />
               ) : (
-                <div className="h-7 w-7 rounded-full bg-[#2E3944] sm:h-8 sm:w-8" />
+                <div className="h-7 w-7 rounded-full sm:h-8 sm:w-8" />
               )}
               <div className="flex min-w-0 flex-1 flex-col">
                 <a

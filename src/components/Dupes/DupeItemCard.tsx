@@ -144,7 +144,7 @@ export default function DupeItemCard({
           <div className="text-sm opacity-90">CURRENT OWNER</div>
           <div className="text-xl font-bold italic">
             <div className="flex flex-col items-center justify-center gap-2 sm:flex-row">
-              <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-[#2E3944] bg-[#212A31]">
+              <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border bg-[#212A31]">
                 {getUserAvatar(item.latest_owner) ? (
                   <Image
                     src={getUserAvatar(item.latest_owner)!}
@@ -183,7 +183,7 @@ export default function DupeItemCard({
                   fontSize: '0.75rem',
                   padding: '8px 12px',
                   borderRadius: '8px',
-                  border: '1px solid #2E3944',
+
                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                   '& .MuiTooltip-arrow': {
                     color: '#0F1419',

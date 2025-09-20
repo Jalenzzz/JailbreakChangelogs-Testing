@@ -70,7 +70,7 @@ const ItemSelectionModal: React.FC<ItemSelectionModalProps> = ({
     <div className="fixed inset-0 z-[60] flex items-center justify-center">
       <div className="absolute inset-0 bg-black/75" onClick={onClose} />
       <div className="relative mx-4 w-full max-w-md rounded-lg bg-[#212A31] shadow-xl">
-        <div className="flex items-center justify-between border-b border-[#2E3944] p-4">
+        <div className="flex items-center justify-between border-b p-4">
           <h2 className="text-xl font-semibold text-[#FFFFFF]">Select Item</h2>
           <button onClick={onClose} className="text-muted transition-colors hover:text-[#FFFFFF]">
             <XMarkIcon className="h-6 w-6" />
@@ -85,7 +85,7 @@ const ItemSelectionModal: React.FC<ItemSelectionModalProps> = ({
               placeholder="Search items..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="text-muted placeholder-muted/50 w-full rounded-lg border border-[#2E3944] bg-[#37424D] py-2 pr-4 pl-10 focus:border-[#5865F2] focus:outline-none"
+              className="text-muted placeholder-muted/50 w-full rounded-lg border bg-[#37424D] py-2 pr-4 pl-10 focus:border-[#5865F2] focus:outline-none"
             />
           </div>
 
@@ -103,7 +103,7 @@ const ItemSelectionModal: React.FC<ItemSelectionModalProps> = ({
                       onItemSelect(item);
                       onClose();
                     }}
-                    className="group flex w-full items-center justify-between rounded-lg border border-[#2E3944] bg-[#37424D] p-2 text-left transition-colors hover:bg-[#2E3944]"
+                    className="group hover: flex w-full items-center justify-between rounded-lg border bg-[#37424D] p-2 text-left transition-colors"
                   >
                     <span className="text-muted truncate transition-colors group-hover:text-[#FFFFFF]">
                       {item.name}

@@ -107,7 +107,7 @@ export default function HyperchromeCalculatorModal({
                     control: (base) => ({
                       ...base,
                       backgroundColor: '#37424D',
-                      borderColor: '#2E3944',
+
                       color: '#D3D9D4',
                     }),
                     singleValue: (base) => ({ ...base, color: '#D3D9D4' }),
@@ -129,7 +129,7 @@ export default function HyperchromeCalculatorModal({
                   }}
                 />
               ) : (
-                <div className="h-10 w-full animate-pulse rounded-md border border-[#2E3944] bg-[#37424D]"></div>
+                <div className="h-10 w-full animate-pulse rounded-md border bg-[#37424D]"></div>
               )}
             </div>
           )}
@@ -146,7 +146,7 @@ export default function HyperchromeCalculatorModal({
                 className="w-full rounded border p-2"
                 style={{
                   backgroundColor: '#37424D',
-                  borderColor: '#2E3944',
+
                   color: '#D3D9D4',
                 }}
                 value={pity}
@@ -166,7 +166,7 @@ export default function HyperchromeCalculatorModal({
           >
             {step > 1 && (
               <button
-                className="rounded-md border border-[#2E3944] bg-[#37424D] px-4 py-2 text-sm font-medium text-white hover:bg-[#2E394D]"
+                className="rounded-md border bg-[#37424D] px-4 py-2 text-sm font-medium text-white hover:bg-[#2E394D]"
                 onClick={() => {
                   setHasCalculated(false);
                   setStep((s) => Math.max(1, s - 1));

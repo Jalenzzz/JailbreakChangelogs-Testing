@@ -2,7 +2,7 @@ import { Skeleton } from '@mui/material';
 
 export default function Loading() {
   return (
-    <main className="min-h-screen bg-[#2E3944] py-8">
+    <main className="min-h-screen py-8">
       <div className="container mx-auto max-w-6xl px-4">
         {/* Breadcrumb skeleton */}
         <div className="mb-4 flex items-center gap-2">

@@ -345,93 +345,48 @@ export default function UserProfileClient({
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[#2E3944]">
+      <main className="min-h-screen">
         <div className="container mx-auto mb-8 max-w-7xl">
           <Breadcrumb loading={true} />
-          <div className="overflow-hidden rounded-lg border border-[#2E3944] bg-[#212A31] shadow-md">
+          <div className="overflow-hidden rounded-lg border bg-[#212A31] shadow-md">
             {/* Banner skeleton */}
-            <Skeleton variant="rectangular" height={256} sx={{ bgcolor: '#2E3944' }} />
+            <Skeleton variant="rectangular" height={256} />
 
             {/* Profile Content skeleton */}
             <div className="p-3 sm:p-4 md:p-6">
               <div className="flex flex-col items-center gap-3 md:flex-row md:items-start md:gap-6">
                 {/* Avatar skeleton */}
                 <div className="relative -mt-16 md:-mt-24">
-                  <Skeleton variant="circular" width={96} height={96} sx={{ bgcolor: '#2E3944' }} />
+                  <Skeleton variant="circular" width={96} height={96} />
                 </div>
 
                 <div className="w-full flex-1 text-center md:text-left">
                   <div className="flex flex-col items-center justify-between md:flex-row md:items-start">
                     <div>
                       {/* Username skeleton */}
-                      <Skeleton
-                        variant="text"
-                        width={160}
-                        height={28}
-                        sx={{ bgcolor: '#2E3944' }}
-                      />
+                      <Skeleton variant="text" width={160} height={28} />
                       {/* Handle skeleton */}
-                      <Skeleton
-                        variant="text"
-                        width={128}
-                        height={16}
-                        sx={{ bgcolor: '#2E3944' }}
-                      />
+                      <Skeleton variant="text" width={128} height={16} />
                       {/* Last seen skeleton */}
-                      <Skeleton
-                        variant="text"
-                        width={192}
-                        height={12}
-                        sx={{ bgcolor: '#2E3944' }}
-                      />
+                      <Skeleton variant="text" width={192} height={12} />
                       {/* Member since skeleton */}
-                      <Skeleton
-                        variant="text"
-                        width={224}
-                        height={12}
-                        sx={{ bgcolor: '#2E3944' }}
-                      />
+                      <Skeleton variant="text" width={224} height={12} />
 
                       {/* Follower/Following skeleton */}
                       <div className="mt-2 flex items-center justify-center space-x-4 md:justify-start">
-                        <Skeleton
-                          variant="text"
-                          width={80}
-                          height={16}
-                          sx={{ bgcolor: '#2E3944' }}
-                        />
-                        <Skeleton
-                          variant="text"
-                          width={80}
-                          height={16}
-                          sx={{ bgcolor: '#2E3944' }}
-                        />
+                        <Skeleton variant="text" width={80} height={16} />
+                        <Skeleton variant="text" width={80} height={16} />
                       </div>
 
                       {/* Connection icons skeleton */}
                       <div className="mt-2 flex items-center justify-center space-x-3 md:justify-start">
-                        <Skeleton
-                          variant="circular"
-                          width={20}
-                          height={20}
-                          sx={{ bgcolor: '#2E3944' }}
-                        />
-                        <Skeleton
-                          variant="circular"
-                          width={20}
-                          height={20}
-                          sx={{ bgcolor: '#2E3944' }}
-                        />
+                        <Skeleton variant="circular" width={20} height={20} />
+                        <Skeleton variant="circular" width={20} height={20} />
                       </div>
                     </div>
 
                     {/* Button skeleton */}
-                    <Skeleton
-                      variant="rounded"
-                      width={112}
-                      height={40}
-                      sx={{ bgcolor: '#2E3944' }}
-                    />
+                    <Skeleton variant="rounded" width={112} height={40} />
                   </div>
                 </div>
               </div>
@@ -439,20 +394,20 @@ export default function UserProfileClient({
 
             {/* Tabs skeleton */}
             <div className="mt-2 md:mt-6">
-              <div className="border-b border-[#2E3944]">
+              <div className="border-b">
                 <div className="flex gap-4 overflow-x-auto p-2">
-                  <Skeleton variant="rounded" width={80} height={32} sx={{ bgcolor: '#2E3944' }} />
-                  <Skeleton variant="rounded" width={80} height={32} sx={{ bgcolor: '#2E3944' }} />
-                  <Skeleton variant="rounded" width={80} height={32} sx={{ bgcolor: '#2E3944' }} />
-                  <Skeleton variant="rounded" width={80} height={32} sx={{ bgcolor: '#2E3944' }} />
+                  <Skeleton variant="rounded" width={80} height={32} />
+                  <Skeleton variant="rounded" width={80} height={32} />
+                  <Skeleton variant="rounded" width={80} height={32} />
+                  <Skeleton variant="rounded" width={80} height={32} />
                 </div>
               </div>
               <div className="p-3 sm:p-4">
                 {/* Tab content skeleton */}
                 <div className="space-y-4">
-                  <Skeleton variant="rounded" height={80} sx={{ bgcolor: '#2E3944' }} />
-                  <Skeleton variant="rounded" height={80} sx={{ bgcolor: '#2E3944' }} />
-                  <Skeleton variant="rounded" height={80} sx={{ bgcolor: '#2E3944' }} />
+                  <Skeleton variant="rounded" height={80} />
+                  <Skeleton variant="rounded" height={80} />
+                  <Skeleton variant="rounded" height={80} />
                 </div>
               </div>
             </div>
@@ -466,10 +421,10 @@ export default function UserProfileClient({
     // Special handling for banned users
     if (errorCode === 403) {
       return (
-        <main className="min-h-screen bg-[#2E3944] pb-8">
+        <main className="min-h-screen pb-8">
           <div className="container mx-auto">
             <Breadcrumb />
-            <div className="overflow-hidden rounded-lg border border-[#2E3944] bg-[#212A31] shadow-md">
+            <div className="overflow-hidden rounded-lg border bg-[#212A31] shadow-md">
               <div className="p-8">
                 <div className="flex flex-col items-center justify-center space-y-6">
                   <div className="w-full max-w-md rounded-lg border border-red-500/20 bg-red-500/10 p-6 text-center">
@@ -508,10 +463,10 @@ export default function UserProfileClient({
 
   if (user.settings?.profile_public === 0 && currentUserId !== user.id) {
     return (
-      <main className="min-h-screen bg-[#2E3944] pb-8">
+      <main className="min-h-screen pb-8">
         <div className="container mx-auto">
           <Breadcrumb userData={user} />
-          <div className="overflow-hidden rounded-lg border border-[#2E3944] bg-[#212A31] shadow-md">
+          <div className="overflow-hidden rounded-lg border bg-[#212A31] shadow-md">
             <div className="p-8">
               <div className="flex flex-col items-center justify-center space-y-6">
                 <div className="relative -mt-6">
@@ -546,7 +501,7 @@ export default function UserProfileClient({
                   </div>
                   <p className="text-[#FFFFFF]">@{user.username}</p>
                 </div>
-                <div className="w-full max-w-md rounded-lg bg-[#2E3944] p-6 text-center">
+                <div className="w-full max-w-md rounded-lg p-6 text-center">
                   <div className="mb-4 flex items-center justify-center space-x-3">
                     <svg
                       className="h-6 w-6 text-[#FFFFFF]"
@@ -576,11 +531,11 @@ export default function UserProfileClient({
   }
 
   return (
-    <main className="min-h-screen bg-[#2E3944] pb-8">
+    <main className="min-h-screen pb-8">
       <LinSuperIdol userId={userId} />
       <div className="container mx-auto max-w-7xl">
         <Breadcrumb userData={user} />
-        <div className="overflow-hidden rounded-lg border border-[#2E3944] bg-[#212A31] shadow-md">
+        <div className="overflow-hidden rounded-lg border bg-[#212A31] shadow-md">
           {/* Banner Section */}
           <Banner
             userId={user.id}
@@ -637,12 +592,7 @@ export default function UserProfileClient({
                     </p>
 
                     {isLoadingAdditionalData ? (
-                      <Skeleton
-                        variant="text"
-                        width="60%"
-                        height={16}
-                        sx={{ bgcolor: '#2E3944' }}
-                      />
+                      <Skeleton variant="text" width="60%" height={16} />
                     ) : (
                       <>
                         {user.settings?.hide_presence === 1 && currentUserId !== user.id ? (
@@ -655,7 +605,7 @@ export default function UserProfileClient({
                             Online
                           </p>
                         ) : user.last_seen === null ? (
-                          <div className="mt-2 mb-2 rounded-lg bg-[#2E3944] p-4">
+                          <div className="mt-2 mb-2 rounded-lg p-4">
                             <p className="text-muted mb-1 text-sm font-medium">
                               Are you the owner of this profile?
                             </p>
@@ -679,7 +629,7 @@ export default function UserProfileClient({
                                     fontSize: '0.75rem',
                                     padding: '8px 12px',
                                     borderRadius: '8px',
-                                    border: '1px solid #2E3944',
+
                                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                                     '& .MuiTooltip-arrow': {
                                       color: '#0F1419',
@@ -701,12 +651,7 @@ export default function UserProfileClient({
                     )}
 
                     {isLoadingAdditionalData ? (
-                      <Skeleton
-                        variant="text"
-                        width="80%"
-                        height={20}
-                        sx={{ bgcolor: '#2E3944', mb: 1 }}
-                      />
+                      <Skeleton variant="text" width="80%" height={20} sx={{ mb: 1 }} />
                     ) : (
                       user.created_at && (
                         <p className="mb-1 text-base text-[#D3D9D4]">
@@ -723,7 +668,7 @@ export default function UserProfileClient({
                                   fontSize: '0.75rem',
                                   padding: '8px 12px',
                                   borderRadius: '8px',
-                                  border: '1px solid #2E3944',
+
                                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                                   '& .MuiTooltip-arrow': {
                                     color: '#0F1419',
@@ -742,18 +687,8 @@ export default function UserProfileClient({
                     <div className="mt-2 flex items-center justify-center space-x-4 md:justify-start">
                       {isLoadingAdditionalData ? (
                         <>
-                          <Skeleton
-                            variant="text"
-                            width={80}
-                            height={20}
-                            sx={{ bgcolor: '#2E3944' }}
-                          />
-                          <Skeleton
-                            variant="text"
-                            width={80}
-                            height={20}
-                            sx={{ bgcolor: '#2E3944' }}
-                          />
+                          <Skeleton variant="text" width={80} height={20} />
+                          <Skeleton variant="text" width={80} height={20} />
                         </>
                       ) : (
                         <>
@@ -778,18 +713,8 @@ export default function UserProfileClient({
                     <div className="mt-2 mb-5 flex flex-wrap items-center justify-center gap-2 md:mb-0 md:justify-start">
                       {isLoadingAdditionalData ? (
                         <>
-                          <Skeleton
-                            variant="rounded"
-                            width={100}
-                            height={32}
-                            sx={{ bgcolor: '#2E3944' }}
-                          />
-                          <Skeleton
-                            variant="rounded"
-                            width={100}
-                            height={32}
-                            sx={{ bgcolor: '#2E3944' }}
-                          />
+                          <Skeleton variant="rounded" width={100} height={32} />
+                          <Skeleton variant="rounded" width={100} height={32} />
                         </>
                       ) : (
                         <>
@@ -805,7 +730,7 @@ export default function UserProfileClient({
                                   fontSize: '0.75rem',
                                   padding: '8px 12px',
                                   borderRadius: '8px',
-                                  border: '1px solid #2E3944',
+
                                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                                   '& .MuiTooltip-arrow': {
                                     color: '#0F1419',
@@ -838,7 +763,7 @@ export default function UserProfileClient({
                                     fontSize: '0.75rem',
                                     padding: '8px 12px',
                                     borderRadius: '8px',
-                                    border: '1px solid #2E3944',
+
                                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                                     '& .MuiTooltip-arrow': {
                                       color: '#0F1419',
@@ -895,7 +820,7 @@ export default function UserProfileClient({
                               fontSize: '0.75rem',
                               padding: '8px 12px',
                               borderRadius: '8px',
-                              border: '1px solid #2E3944',
+
                               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                               '& .MuiTooltip-arrow': {
                                 color: '#0F1419',
@@ -913,7 +838,6 @@ export default function UserProfileClient({
                             sx={
                               isFollowing
                                 ? {
-                                    backgroundColor: '#2E3944',
                                     color: '#FF5C5C',
                                     borderColor: '#FF5C5C',
                                     '&:hover': {
@@ -923,7 +847,6 @@ export default function UserProfileClient({
                                     '&.Mui-disabled': {
                                       backgroundColor: 'rgba(255, 92, 92, 0.1)',
                                       color: '#FFFFFF',
-                                      borderColor: '#2E3944',
                                     },
                                     '& .MuiButton-startIcon': {
                                       color: '#FF5C5C',
@@ -940,7 +863,6 @@ export default function UserProfileClient({
                                     '&.Mui-disabled': {
                                       backgroundColor: 'rgba(88, 101, 242, 0.1)',
                                       color: '#FFFFFF',
-                                      borderColor: '#2E3944',
                                     },
                                     '& .MuiButton-startIcon': {
                                       color: '#FFFFFF',
@@ -965,7 +887,7 @@ export default function UserProfileClient({
                               fontSize: '0.75rem',
                               padding: '8px 12px',
                               borderRadius: '8px',
-                              border: '1px solid #2E3944',
+
                               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                               '& .MuiTooltip-arrow': {
                                 color: '#0F1419',

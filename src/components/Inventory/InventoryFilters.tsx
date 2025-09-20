@@ -106,7 +106,7 @@ export default function InventoryFilters({
             type="checkbox"
             checked={showOnlyOriginal}
             onChange={(e) => onFilterToggle(e.target.checked)}
-            className="h-4 w-4 rounded border-[#2E3944] bg-[#37424D] text-[#5865F2] checked:border-[#5865F2] checked:bg-[#5865F2] focus:ring-2 focus:ring-[#5865F2]"
+            className="h-4 w-4 rounded bg-[#37424D] text-[#5865F2] checked:border-[#5865F2] checked:bg-[#5865F2] focus:ring-2 focus:ring-[#5865F2]"
           />
           <span className="text-muted text-sm whitespace-nowrap">Original Items Only</span>
         </label>
@@ -116,7 +116,7 @@ export default function InventoryFilters({
             type="checkbox"
             checked={showOnlyNonOriginal}
             onChange={(e) => onNonOriginalFilterToggle(e.target.checked)}
-            className="h-4 w-4 rounded border-[#2E3944] bg-[#37424D] text-[#5865F2] checked:border-[#5865F2] checked:bg-[#5865F2] focus:ring-2 focus:ring-[#5865F2]"
+            className="h-4 w-4 rounded bg-[#37424D] text-[#5865F2] checked:border-[#5865F2] checked:bg-[#5865F2] focus:ring-2 focus:ring-[#5865F2]"
           />
           <span className="text-muted text-sm whitespace-nowrap">Non-Original Items Only</span>
         </label>
@@ -132,7 +132,7 @@ export default function InventoryFilters({
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             maxLength={MAX_SEARCH_LENGTH}
-            className="text-muted w-full rounded-lg border border-[#2E3944] bg-[#37424D] px-3 py-2 pr-10 pl-10 placeholder-[#D3D9D4] shadow-sm focus:border-[#5865F2] focus:outline-none"
+            className="text-muted w-full rounded-lg border bg-[#37424D] px-3 py-2 pr-10 pl-10 placeholder-[#D3D9D4] shadow-sm focus:border-[#5865F2] focus:outline-none"
           />
           <MagnifyingGlassIcon className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]" />
           {searchTerm && (
@@ -178,7 +178,7 @@ export default function InventoryFilters({
                 control: (base) => ({
                   ...base,
                   backgroundColor: '#37424D',
-                  borderColor: '#2E3944',
+
                   color: '#D3D9D4',
                 }),
                 singleValue: (base) => ({ ...base, color: '#D3D9D4' }),
@@ -220,7 +220,7 @@ export default function InventoryFilters({
               }}
             />
           ) : (
-            <div className="h-10 w-full rounded-lg border border-[#2E3944] bg-[#37424D]"></div>
+            <div className="h-10 w-full rounded-lg border bg-[#37424D]"></div>
           )}
         </div>
 
@@ -296,7 +296,7 @@ export default function InventoryFilters({
                 control: (base) => ({
                   ...base,
                   backgroundColor: '#37424D',
-                  borderColor: '#2E3944',
+
                   color: '#D3D9D4',
                 }),
                 singleValue: (base) => ({ ...base, color: '#D3D9D4' }),
@@ -339,7 +339,7 @@ export default function InventoryFilters({
               isSearchable={false}
             />
           ) : (
-            <div className="h-10 w-full rounded-lg border border-[#2E3944] bg-[#37424D]"></div>
+            <div className="h-10 w-full rounded-lg border bg-[#37424D]"></div>
           )}
         </div>
       </div>

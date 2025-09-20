@@ -130,9 +130,9 @@ export default function SupporterModal({
       <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="mx-auto w-full max-w-2xl overflow-hidden rounded-lg border border-[#2E3944] bg-[#212A31] shadow-xl">
+        <Dialog.Panel className="mx-auto w-full max-w-2xl overflow-hidden rounded-lg border bg-[#212A31] shadow-xl">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-[#2E3944] p-6">
+          <div className="flex items-center justify-between border-b p-6">
             <div className="flex items-center gap-3">
               <div className="rounded-lg bg-gradient-to-r from-[#5865F2] to-[#4752C4] p-2">
                 <SparklesIcon className="h-6 w-6 text-white" />
@@ -148,7 +148,7 @@ export default function SupporterModal({
             </div>
             <button
               onClick={onClose}
-              className="rounded-lg p-2 text-[#748D92] transition-colors hover:bg-[#2E3944] hover:text-white"
+              className="hover: rounded-lg p-2 text-[#748D92] transition-colors hover:text-white"
             >
               <XMarkIcon className="h-5 w-5" />
             </button>
@@ -160,7 +160,7 @@ export default function SupporterModal({
               <p className="mb-4 text-[#D3D9D4]">{featureInfo.description}</p>
 
               {featureInfo.current && (
-                <div className="rounded-lg border border-[#37424D] bg-[#2E3944] p-4">
+                <div className="rounded-lg border border-[#37424D] p-4">
                   <span className="text-sm font-medium text-white">{featureInfo.current}</span>
                 </div>
               )}
@@ -182,7 +182,7 @@ export default function SupporterModal({
                   return (
                     <div
                       key={recommendedTier.name}
-                      className={`relative rounded-lg border-2 ${recommendedTier.color} bg-[#2E3944] p-4 ${
+                      className={`relative rounded-lg border-2 ${recommendedTier.color} p-4 ${
                         recommendedTier.recommended ? 'ring-opacity-50 ring-2 ring-[#5865F2]' : ''
                       }`}
                     >
@@ -281,14 +281,14 @@ export default function SupporterModal({
               </Link>
               <button
                 onClick={onClose}
-                className="cursor-pointer rounded-lg border border-[#37424D] bg-[#2E3944] px-6 py-3 text-[#D3D9D4] transition-colors hover:bg-[#37424D] hover:text-white"
+                className="cursor-pointer rounded-lg border border-[#37424D] px-6 py-3 text-[#D3D9D4] transition-colors hover:bg-[#37424D] hover:text-white"
               >
                 Maybe Later
               </button>
             </div>
 
             {/* Footer Note */}
-            <div className="mt-4 rounded-lg border border-[#37424D] bg-[#2E3944] p-3">
+            <div className="mt-4 rounded-lg border border-[#37424D] p-3">
               <p className="text-center text-xs text-[#B8C5CA]">
                 💡 <strong className="text-[#D3D9D4]">Pro tip:</strong> All supporter purchases are
                 one-time only and non-refundable! Once you purchase, you keep the perks forever.

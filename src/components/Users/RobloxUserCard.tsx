@@ -28,7 +28,7 @@ export default function RobloxUserCard({ user, currentUserId }: RobloxUserCardPr
   if (isPrivate) {
     return (
       <div className="flex items-center space-x-3">
-        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border border-[#2E3944] bg-[#1E2328]">
+        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border bg-[#1E2328]">
           <svg
             className="h-6 w-6 text-[#FFFFFF]"
             fill="none"
@@ -61,7 +61,7 @@ export default function RobloxUserCard({ user, currentUserId }: RobloxUserCardPr
       {!avatarError && user.roblox_avatar ? (
         <div className="relative h-12 w-12 flex-shrink-0">
           {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center rounded-full bg-[#2E3944]">
+            <div className="absolute inset-0 flex items-center justify-center rounded-full">
               <CircularProgress size={24} sx={{ color: '#5865F2' }} />
             </div>
           )}
@@ -71,14 +71,14 @@ export default function RobloxUserCard({ user, currentUserId }: RobloxUserCardPr
               alt={`${user.roblox_display_name || user.roblox_username || 'Roblox'} user's profile picture`}
               fill
               draggable={false}
-              className="rounded-full border border-[#2E3944] object-cover"
+              className="rounded-full border object-cover"
               onError={() => setAvatarError(true)}
               onLoad={() => setIsLoading(false)}
             />
           </div>
         </div>
       ) : (
-        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border border-[#2E3944] bg-[#1E2328]">
+        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border bg-[#1E2328]">
           <RobloxIcon className="h-6 w-6 text-[#FFFFFF]" />
         </div>
       )}

@@ -144,10 +144,10 @@ export default function UserProfileSection({
           alt="Roblox Avatar"
           width={64}
           height={64}
-          className="flex-shrink-0 rounded-full bg-[#2E3944]"
+          className="flex-shrink-0 rounded-full"
         />
       ) : (
-        <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-[#2E3944]">
+        <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full">
           <svg className="text-muted h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
@@ -180,7 +180,7 @@ export default function UserProfileSection({
                     fontSize: '0.75rem',
                     padding: '8px 12px',
                     borderRadius: '8px',
-                    border: '1px solid #2E3944',
+
                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                     '& .MuiTooltip-arrow': {
                       color: '#0F1419',
@@ -214,7 +214,7 @@ export default function UserProfileSection({
                   fontSize: '0.75rem',
                   padding: '8px 12px',
                   borderRadius: '8px',
-                  border: '1px solid #2E3944',
+
                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                   '& .MuiTooltip-arrow': {
                     color: '#0F1419',
@@ -248,7 +248,7 @@ export default function UserProfileSection({
                     fontSize: '0.75rem',
                     padding: '8px 12px',
                     borderRadius: '8px',
-                    border: '1px solid #2E3944',
+
                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                     '& .MuiTooltip-arrow': {
                       color: '#0F1419',
@@ -457,7 +457,7 @@ export default function UserProfileSection({
       ) : (
         /* Show login prompt for potential profile owner */
         <div className="mt-4">
-          <div className="rounded-lg border border-[#37424D] bg-[#2E3944] p-4">
+          <div className="rounded-lg border border-[#37424D] p-4">
             <div className="flex items-start gap-3">
               <div className="flex-shrink-0">
                 <svg
