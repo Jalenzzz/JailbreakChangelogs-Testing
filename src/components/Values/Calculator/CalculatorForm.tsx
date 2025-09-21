@@ -12,7 +12,6 @@ import { CustomConfirmationModal } from '../../Modals/CustomConfirmationModal';
 import Image from 'next/image';
 import { getItemImagePath, handleImageError } from '@/utils/images';
 import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
-import { getItemTypeColor, getDemandColor, getTrendColor } from '@/utils/badgeColors';
 import { CiBoxList } from 'react-icons/ci';
 import { TradeAdTooltip } from '../../trading/TradeAdTooltip';
 import TotalSimilarItems from './TotalSimilarItems';
@@ -250,10 +249,10 @@ const CalculatorItemGrid: React.FC<{
                       />
                       {/* Status badge for Clean/Duped selection */}
                       <div
-                        className={`absolute top-1 left-1 rounded-full px-1.5 py-0.5 text-xs text-white ${
+                        className={`text-form-button-text absolute top-1 left-1 rounded-full px-1.5 py-0.5 text-xs ${
                           isDupedSelected
-                            ? 'border-red-700 bg-red-600'
-                            : 'border-green-700 bg-green-600'
+                            ? 'border-status-error bg-status-error'
+                            : 'border-status-success bg-status-success'
                         } border`}
                         aria-label={
                           isDupedSelected ? 'Duped value selected' : 'Clean value selected'
@@ -268,7 +267,7 @@ const CalculatorItemGrid: React.FC<{
                           e.stopPropagation();
                           openActionModal(item);
                         }}
-                        className="absolute right-1 bottom-1 rounded-full border border-white/10 bg-black/50 p-1 text-white hover:bg-black/60"
+                        className="text-form-button-text absolute right-1 bottom-1 rounded-full border border-white/10 bg-black/50 p-1 hover:bg-black/60"
                       >
                         <EllipsisVerticalIcon className="h-4 w-4" />
                       </button>
@@ -506,106 +505,128 @@ const CalculatorValueComparison: React.FC<{
   }
 
   return (
-    <div className="border-stroke bg-secondary-bg overflow-x-auto rounded-lg border p-6">
-      <h3 className="text-secondary-text mb-4 text-lg font-semibold">Value Comparison</h3>
+    <div className="bg-secondary-bg border-border-primary hover:border-border-focus hover:shadow-card-shadow overflow-x-auto rounded-lg border p-8 transition-colors duration-200 hover:shadow-lg">
+      {/* Header */}
+      <div className="mb-8">
+        <h3 className="text-primary-text mb-2 text-2xl font-bold">Value Comparison</h3>
+        <p className="text-secondary-text text-sm">
+          Compare the total values of your offering and requesting items
+        </p>
+      </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         {/* Offering Side */}
-        <div>
-          <div className="mb-3 flex items-center gap-2">
-            <h4 className="text-secondary-text font-medium">Offering Side</h4>
-            <span className="rounded-full bg-green-500 px-2 py-0.5 text-xs font-medium text-white">
-              Offering
-            </span>
-            <span className="border-primary/20 bg-primary text-primary-foreground rounded-full border px-2 py-0.5 text-xs">
-              {groupItems(offering).reduce((sum, item) => sum + item.count, 0)} item
-              {groupItems(offering).reduce((sum, item) => sum + item.count, 0) !== 1 ? 's' : ''}
-            </span>
+        <div className="relative">
+          {/* Side Header */}
+          <div className="mb-6">
+            <div className="mb-3 flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <div className="bg-status-success h-3 w-3 rounded-full"></div>
+                <h4 className="text-primary-text text-lg font-semibold">Offering Side</h4>
+              </div>
+              <span className="bg-status-success/20 border-status-success/30 text-primary-text rounded-full border px-3 py-1 text-xs font-medium">
+                Offering
+              </span>
+              <span className="bg-primary/10 border-primary/20 text-primary-text rounded-full border px-3 py-1 text-xs font-medium">
+                {groupItems(offering).reduce((sum, item) => sum + item.count, 0)} item
+                {groupItems(offering).reduce((sum, item) => sum + item.count, 0) !== 1 ? 's' : ''}
+              </span>
+            </div>
           </div>
-          <div className="border-status-success bg-secondary-bg rounded-lg border p-4">
-            <div className="space-y-2">
-              {groupItems(offering).map((item, index, array) => {
-                const selectedType = getSelectedValueType(item, 'offering');
-                const isDupedSelected = selectedType === 'duped';
-                const demand = item.demand ?? item.data?.demand ?? 'N/A';
 
-                return (
-                  <div
-                    key={`${item.id}-${item.sub_name || 'base'}`}
-                    className={`flex items-center justify-between ${index !== array.length - 1 ? 'border-stroke border-b pb-3' : ''}`}
-                  >
-                    <div>
-                      <div className="text-primary-foreground font-medium">
-                        {item.sub_name ? `${item.name} (${item.sub_name})` : item.name}
+          {/* Items Container */}
+          <div className="bg-status-success/5 space-y-4 rounded-xl p-6">
+            {groupItems(offering).map((item, index, array) => {
+              const selectedType = getSelectedValueType(item, 'offering');
+              const isDupedSelected = selectedType === 'duped';
+              const demand = item.demand ?? item.data?.demand ?? 'N/A';
+
+              return (
+                <div
+                  key={`${item.id}-${item.sub_name || 'base'}`}
+                  className={`bg-status-success/5 hover:bg-status-success/10 rounded-lg p-4 transition-all duration-200 hover:shadow-sm ${
+                    index !== array.length - 1 ? 'mb-4' : ''
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      {/* Item Name */}
+                      <div className="mb-3 flex items-center gap-2">
+                        <h5 className="text-primary-text text-base font-semibold">
+                          {item.sub_name ? `${item.name} (${item.sub_name})` : item.name}
+                        </h5>
                         {item.count > 1 && (
-                          <span className="border-primary/20 bg-primary text-primary-foreground ml-2 rounded-full border px-2.5 py-1 text-sm text-white">
+                          <span className="bg-status-success/20 border-status-success/30 text-status-success rounded-full border px-2 py-1 text-xs font-medium">
                             ×{item.count}
                           </span>
                         )}
                       </div>
-                      <div className="mt-1">
-                        <span
-                          className="bg-opacity-80 rounded-full px-2 py-0.5 text-xs text-white"
-                          style={{
-                            backgroundColor: getItemTypeColor(item.type),
-                          }}
-                        >
-                          {item.type}
-                        </span>
-                        {(item.is_limited === 1 || item.data?.is_limited === 1) && (
-                          <span className="ml-2 inline-block rounded-full border border-yellow-500/20 bg-yellow-500/10 px-2 py-0.5 text-xs text-yellow-500">
-                            Limited
+
+                      {/* Item Details */}
+                      <div className="space-y-2">
+                        {/* Type and Status */}
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="bg-primary/10 border-primary/30 text-primary-text rounded-lg border px-2 py-1 text-xs font-medium">
+                            {item.type}
                           </span>
-                        )}
-                        {(item.is_seasonal === 1 || item.data?.is_seasonal === 1) && (
-                          <span className="ml-2 inline-block rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2 py-0.5 text-xs text-cyan-400">
-                            Seasonal
+                          {(item.is_limited === 1 || item.data?.is_limited === 1) && (
+                            <span className="bg-primary/10 border-primary/30 text-primary-text rounded-lg border px-2 py-1 text-xs font-medium">
+                              Limited
+                            </span>
+                          )}
+                          {(item.is_seasonal === 1 || item.data?.is_seasonal === 1) && (
+                            <span className="bg-primary/10 border-primary/30 text-primary-text rounded-lg border px-2 py-1 text-xs font-medium">
+                              Seasonal
+                            </span>
+                          )}
+                          <span
+                            className={`rounded-lg px-2 py-1 text-xs font-medium ${
+                              isDupedSelected
+                                ? 'bg-status-error/10 text-primary-text'
+                                : 'bg-status-success/10 text-primary-text'
+                            }`}
+                          >
+                            {isDupedSelected ? 'Duped' : 'Clean'}
                           </span>
-                        )}
-                        <span
-                          className={`ml-2 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs text-white ${
-                            isDupedSelected
-                              ? 'border-red-700 bg-red-600'
-                              : 'border-green-700 bg-green-600'
-                          }`}
-                          aria-label={
-                            isDupedSelected ? 'Duped value selected' : 'Clean value selected'
-                          }
-                        >
-                          {isDupedSelected ? 'Duped' : 'Clean'}
-                        </span>
-                      </div>
-                      <div className="mt-1 flex items-center gap-2">
-                        <span className="text-secondary-text text-xs">Demand:</span>
-                        <span
-                          className={`inline-block rounded-full px-2 py-0.5 text-xs font-semibold text-white ${getDemandColor(demand)}`}
-                        >
-                          {demand === 'N/A' ? 'Unknown' : demand}
-                        </span>
-                      </div>
-                      <div className="mt-1 flex items-center gap-2">
-                        <span className="text-secondary-text text-xs">Trend:</span>
-                        <span
-                          className={`inline-block rounded-full px-2 py-0.5 text-xs font-semibold text-white ${getTrendColor(item.trend || 'Unknown')}`}
-                        >
-                          {!('trend' in item) || item.trend === null || item.trend === 'N/A'
-                            ? 'Unknown'
-                            : (item.trend as string)}
-                        </span>
+                        </div>
+
+                        {/* Demand and Trend */}
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="bg-secondary-bg/30 border-border-primary rounded-lg border p-2">
+                            <div className="text-secondary-text mb-1 text-xs">Demand</div>
+                            <div className="text-primary-text text-sm font-medium">
+                              {demand === 'N/A' ? 'Unknown' : demand}
+                            </div>
+                          </div>
+                          <div className="bg-secondary-bg/30 border-border-primary rounded-lg border p-2">
+                            <div className="text-secondary-text mb-1 text-xs">Trend</div>
+                            <div className="text-primary-text text-sm font-medium">
+                              {!('trend' in item) || item.trend === null || item.trend === 'N/A'
+                                ? 'Unknown'
+                                : (item.trend as string)}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-primary-foreground font-medium">
+
+                    {/* Value */}
+                    <div className="ml-4 text-right">
+                      <div className="text-primary-text text-lg font-bold">
                         {formatCurrencyValue(getSelectedValue(item, 'offering'))}
                       </div>
                     </div>
                   </div>
-                );
-              })}
-              <div className="border-stroke mt-2 flex items-center justify-between border-t pt-2 font-medium">
-                <span className="text-secondary-text">Total</span>
+                </div>
+              );
+            })}
+
+            {/* Total */}
+            <div className="bg-status-success/5 mt-4 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <span className="text-status-success text-base font-semibold">Total</span>
                 <div className="text-right">
-                  <div className="text-primary-foreground">
+                  <div className="text-status-success text-xl font-bold">
                     {formatCurrencyValue(offeringTotal)}
                   </div>
                 </div>
@@ -615,101 +636,117 @@ const CalculatorValueComparison: React.FC<{
         </div>
 
         {/* Requesting Side */}
-        <div>
-          <div className="mb-3 flex items-center gap-2">
-            <h4 className="text-secondary-text font-medium">Requesting Side</h4>
-            <span className="rounded-full bg-red-500 px-2 py-0.5 text-xs font-medium text-white">
-              Requesting
-            </span>
-            <span className="border-primary/20 bg-primary text-primary-foreground rounded-full border px-2 py-0.5 text-xs">
-              {groupItems(requesting).reduce((sum, item) => sum + item.count, 0)} item
-              {groupItems(requesting).reduce((sum, item) => sum + item.count, 0) !== 1 ? 's' : ''}
-            </span>
+        <div className="relative">
+          {/* Side Header */}
+          <div className="mb-6">
+            <div className="mb-3 flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <div className="bg-status-error h-3 w-3 rounded-full"></div>
+                <h4 className="text-primary-text text-lg font-semibold">Requesting Side</h4>
+              </div>
+              <span className="bg-status-error/20 border-status-error/30 text-primary-text rounded-full border px-3 py-1 text-xs font-medium">
+                Requesting
+              </span>
+              <span className="bg-primary/10 border-primary/20 text-primary-text rounded-full border px-3 py-1 text-xs font-medium">
+                {groupItems(requesting).reduce((sum, item) => sum + item.count, 0)} item
+                {groupItems(requesting).reduce((sum, item) => sum + item.count, 0) !== 1 ? 's' : ''}
+              </span>
+            </div>
           </div>
-          <div className="bg-secondary-bg rounded-lg border border-red-500 p-4">
-            <div className="space-y-2">
-              {groupItems(requesting).map((item, index, array) => {
-                const selectedType = getSelectedValueType(item, 'requesting');
-                const isDupedSelected = selectedType === 'duped';
-                const demand = item.demand ?? item.data?.demand ?? 'N/A';
 
-                return (
-                  <div
-                    key={`${item.id}-${item.sub_name || 'base'}`}
-                    className={`flex items-center justify-between ${index !== array.length - 1 ? 'border-stroke border-b pb-3' : ''}`}
-                  >
-                    <div>
-                      <div className="text-primary-foreground font-medium">
-                        {item.sub_name ? `${item.name} (${item.sub_name})` : item.name}
+          {/* Items Container */}
+          <div className="bg-status-error/5 space-y-4 rounded-xl p-6">
+            {groupItems(requesting).map((item, index, array) => {
+              const selectedType = getSelectedValueType(item, 'requesting');
+              const isDupedSelected = selectedType === 'duped';
+              const demand = item.demand ?? item.data?.demand ?? 'N/A';
+
+              return (
+                <div
+                  key={`${item.id}-${item.sub_name || 'base'}`}
+                  className={`bg-status-error/5 hover:bg-status-error/10 rounded-lg p-4 transition-all duration-200 hover:shadow-sm ${
+                    index !== array.length - 1 ? 'mb-4' : ''
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      {/* Item Name */}
+                      <div className="mb-3 flex items-center gap-2">
+                        <h5 className="text-primary-text text-base font-semibold">
+                          {item.sub_name ? `${item.name} (${item.sub_name})` : item.name}
+                        </h5>
                         {item.count > 1 && (
-                          <span className="border-primary/20 bg-primary text-primary-foreground ml-2 rounded-full border px-2.5 py-1 text-sm text-white">
+                          <span className="bg-status-error/20 border-status-error/30 text-status-error rounded-full border px-2 py-1 text-xs font-medium">
                             ×{item.count}
                           </span>
                         )}
                       </div>
-                      <div className="mt-1">
-                        <span
-                          className="bg-opacity-80 rounded-full px-2 py-0.5 text-xs text-white"
-                          style={{
-                            backgroundColor: getItemTypeColor(item.type),
-                          }}
-                        >
-                          {item.type}
-                        </span>
-                        {(item.is_limited === 1 || item.data?.is_limited === 1) && (
-                          <span className="ml-2 inline-block rounded-full border border-yellow-500/20 bg-yellow-500/10 px-2 py-0.5 text-xs text-yellow-500">
-                            Limited
+
+                      {/* Item Details */}
+                      <div className="space-y-2">
+                        {/* Type and Status */}
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="bg-primary/10 border-primary/30 text-primary-text rounded-lg border px-2 py-1 text-xs font-medium">
+                            {item.type}
                           </span>
-                        )}
-                        {(item.is_seasonal === 1 || item.data?.is_seasonal === 1) && (
-                          <span className="ml-2 inline-block rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2 py-0.5 text-xs text-cyan-400">
-                            Seasonal
+                          {(item.is_limited === 1 || item.data?.is_limited === 1) && (
+                            <span className="bg-primary/10 border-primary/30 text-primary-text rounded-lg border px-2 py-1 text-xs font-medium">
+                              Limited
+                            </span>
+                          )}
+                          {(item.is_seasonal === 1 || item.data?.is_seasonal === 1) && (
+                            <span className="bg-primary/10 border-primary/30 text-primary-text rounded-lg border px-2 py-1 text-xs font-medium">
+                              Seasonal
+                            </span>
+                          )}
+                          <span
+                            className={`rounded-lg px-2 py-1 text-xs font-medium ${
+                              isDupedSelected
+                                ? 'bg-status-error/10 text-primary-text'
+                                : 'bg-status-success/10 text-primary-text'
+                            }`}
+                          >
+                            {isDupedSelected ? 'Duped' : 'Clean'}
                           </span>
-                        )}
-                        <span
-                          className={`ml-2 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs text-white ${
-                            isDupedSelected
-                              ? 'border-red-700 bg-red-600'
-                              : 'border-green-700 bg-green-600'
-                          }`}
-                          aria-label={
-                            isDupedSelected ? 'Duped value selected' : 'Clean value selected'
-                          }
-                        >
-                          {isDupedSelected ? 'Duped' : 'Clean'}
-                        </span>
-                      </div>
-                      <div className="mt-1 flex items-center gap-2">
-                        <span className="text-secondary-text text-xs">Demand:</span>
-                        <span
-                          className={`inline-block rounded-full px-2 py-0.5 text-xs font-semibold text-white ${getDemandColor(demand)}`}
-                        >
-                          {demand === 'N/A' ? 'Unknown' : demand}
-                        </span>
-                      </div>
-                      <div className="mt-1 flex items-center gap-2">
-                        <span className="text-secondary-text text-xs">Trend:</span>
-                        <span
-                          className={`inline-block rounded-full px-2 py-0.5 text-xs font-semibold text-white ${getTrendColor(item.trend || 'Unknown')}`}
-                        >
-                          {!('trend' in item) || item.trend === null || item.trend === 'N/A'
-                            ? 'Unknown'
-                            : (item.trend as string)}
-                        </span>
+                        </div>
+
+                        {/* Demand and Trend */}
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="bg-secondary-bg/30 border-border-primary rounded-lg border p-2">
+                            <div className="text-secondary-text mb-1 text-xs">Demand</div>
+                            <div className="text-primary-text text-sm font-medium">
+                              {demand === 'N/A' ? 'Unknown' : demand}
+                            </div>
+                          </div>
+                          <div className="bg-secondary-bg/30 border-border-primary rounded-lg border p-2">
+                            <div className="text-secondary-text mb-1 text-xs">Trend</div>
+                            <div className="text-primary-text text-sm font-medium">
+                              {!('trend' in item) || item.trend === null || item.trend === 'N/A'
+                                ? 'Unknown'
+                                : (item.trend as string)}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-primary-foreground font-medium">
+
+                    {/* Value */}
+                    <div className="ml-4 text-right">
+                      <div className="text-primary-text text-lg font-bold">
                         {formatCurrencyValue(getSelectedValue(item, 'requesting'))}
                       </div>
                     </div>
                   </div>
-                );
-              })}
-              <div className="border-stroke mt-2 flex items-center justify-between border-t pt-2 font-medium">
-                <span className="text-secondary-text">Total</span>
+                </div>
+              );
+            })}
+
+            {/* Total */}
+            <div className="bg-status-error/5 mt-4 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <span className="text-status-error text-base font-semibold">Total</span>
                 <div className="text-right">
-                  <div className="text-primary-foreground">
+                  <div className="text-status-error text-xl font-bold">
                     {formatCurrencyValue(requestingTotal)}
                   </div>
                 </div>
@@ -720,23 +757,31 @@ const CalculatorValueComparison: React.FC<{
       </div>
 
       {/* Overall Difference */}
-      <div className="border-stroke bg-secondary-bg mt-6 rounded-lg border p-4">
-        <h4 className="text-secondary-text mb-3 font-medium">Overall Difference</h4>
-        <div className="flex items-center justify-between">
-          <span className="text-secondary-text">Value Difference</span>
-          <span
-            className={`inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-sm font-medium text-white ${
-              difference < 0 ? 'bg-green-500' : difference > 0 ? 'bg-red-500' : 'bg-secondary-bg'
-            }`}
-          >
-            {difference !== 0 &&
-              (difference < 0 ? (
-                <FaArrowUp className="text-white" />
-              ) : (
-                <FaArrowDown className="text-white" />
-              ))}
-            {formatCurrencyValue(Math.abs(difference))}
-          </span>
+      <div className="mt-8">
+        <div className="from-primary/3 to-primary/5 rounded-xl bg-gradient-to-r p-6">
+          <h4 className="text-primary-text mb-4 text-lg font-semibold">Overall Difference</h4>
+          <div className="flex items-center justify-between">
+            <span className="text-secondary-text text-base">Value Difference</span>
+            <div className="flex items-center gap-3">
+              <span
+                className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-base font-semibold ${
+                  difference < 0
+                    ? 'bg-status-success/10 text-status-success'
+                    : difference > 0
+                      ? 'bg-status-error/10 text-status-error'
+                      : 'bg-secondary-bg/50 text-primary-text'
+                }`}
+              >
+                {difference !== 0 &&
+                  (difference < 0 ? (
+                    <FaArrowUp className="text-status-success" />
+                  ) : (
+                    <FaArrowDown className="text-status-error" />
+                  ))}
+                {formatCurrencyValue(Math.abs(difference))}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1176,7 +1221,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
             <Button
               variant="contained"
               onClick={handleClearSides}
-              className="bg-red-500 text-white hover:bg-red-600"
+              className="bg-status-error text-form-button-text hover:bg-status-error-hover"
             >
               <TrashIcon className="mr-1 h-5 w-5" />
               Clear
@@ -1246,10 +1291,10 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
                   <span>
                     Total: <span className="text-secondary-text font-bold">{t.cashValue}</span>
                   </span>
-                  <span className="border-status-success/20 bg-status-success/80 inline-flex items-center rounded-full border px-2 py-0.5 text-white">
+                  <span className="border-status-success/20 bg-status-success/80 text-form-button-text inline-flex items-center rounded-full border px-2 py-0.5">
                     {t.breakdown.clean.count} clean • {t.breakdown.clean.formatted}
                   </span>
-                  <span className="border-status-error/20 bg-status-error/80 inline-flex items-center rounded-full border px-2 py-0.5 text-white">
+                  <span className="border-status-error/20 bg-status-error/80 text-form-button-text inline-flex items-center rounded-full border px-2 py-0.5">
                     {t.breakdown.duped.count} duped • {t.breakdown.duped.formatted}
                   </span>
                 </div>
@@ -1258,7 +1303,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
           </div>
 
           {/* Requesting Items */}
-          <div className="bg-secondary-bg flex-1 rounded-lg border border-red-500 p-4">
+          <div className="bg-secondary-bg border-status-error flex-1 rounded-lg border p-4">
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <h3 className="text-secondary-text font-medium">Requesting</h3>
@@ -1286,7 +1331,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
                   variant="outlined"
                   onClick={() => handleMirrorItems('requesting')}
                   size="small"
-                  className="text-primary-text border-red-500 bg-red-500/15 hover:border-red-600 hover:bg-red-500/25"
+                  className="text-primary-text border-status-error bg-status-error/15 hover:border-status-error-hover hover:bg-status-error/25"
                 >
                   <ArrowsRightLeftIcon className="mr-1 h-4 w-4" />
                   Mirror
@@ -1311,10 +1356,10 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
                   <span>
                     Total: <span className="text-secondary-text font-bold">{t.cashValue}</span>
                   </span>
-                  <span className="border-status-success/20 bg-status-success/80 inline-flex items-center rounded-full border px-2 py-0.5 text-white">
+                  <span className="border-status-success/20 bg-status-success/80 text-form-button-text inline-flex items-center rounded-full border px-2 py-0.5">
                     {t.breakdown.clean.count} clean • {t.breakdown.clean.formatted}
                   </span>
-                  <span className="border-status-error/20 bg-status-error/80 inline-flex items-center rounded-full border px-2 py-0.5 text-white">
+                  <span className="border-status-error/20 bg-status-error/80 text-form-button-text inline-flex items-center rounded-full border px-2 py-0.5">
                     {t.breakdown.duped.count} duped • {t.breakdown.duped.formatted}
                   </span>
                 </div>
@@ -1374,16 +1419,14 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
         </div>
       ) : activeTab === 'values' ? (
         <div className="mb-8">
-          <div className="border-stroke bg-secondary-bg rounded-lg border p-4">
-            <CalculatorValueComparison
-              offering={offeringItems}
-              requesting={requestingItems}
-              getSelectedValueString={(item, side) => getSelectedValueString(item, side)}
-              getSelectedValue={(item, side) => getSelectedValue(item, side)}
-              getSelectedValueType={(item, side) => getSelectedValueType(item, side)}
-              onBrowseItems={() => handleTabChange('items')}
-            />
-          </div>
+          <CalculatorValueComparison
+            offering={offeringItems}
+            requesting={requestingItems}
+            getSelectedValueString={(item, side) => getSelectedValueString(item, side)}
+            getSelectedValue={(item, side) => getSelectedValue(item, side)}
+            getSelectedValueType={(item, side) => getSelectedValueType(item, side)}
+            onBrowseItems={() => handleTabChange('items')}
+          />
         </div>
       ) : (
         <div className="mb-8">
@@ -1413,27 +1456,29 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
                     </p>
                   </div>
                 )}
-              <div className="border-stroke bg-secondary-bg mb-4 inline-flex gap-1 rounded-lg border p-2">
-                <button
-                  onClick={() => setTotalBasis('offering')}
-                  className={`cursor-pointer rounded-md px-3 py-1 text-sm font-medium ${
-                    totalBasis === 'offering'
-                      ? 'bg-green-500 text-white'
-                      : 'text-secondary-text hover:bg-secondary-bg/80 hover:text-primary-foreground'
-                  }`}
-                >
-                  Offering Total
-                </button>
-                <button
-                  onClick={() => setTotalBasis('requesting')}
-                  className={`cursor-pointer rounded-md px-3 py-1 text-sm font-medium ${
-                    totalBasis === 'requesting'
-                      ? 'bg-red-500 text-white'
-                      : 'text-secondary-text hover:bg-secondary-bg/80 hover:text-primary-foreground'
-                  }`}
-                >
-                  Requesting Total
-                </button>
+              <div className="mb-4 flex justify-center sm:justify-start">
+                <div className="border-stroke bg-secondary-bg inline-flex gap-1 rounded-lg border p-2">
+                  <button
+                    onClick={() => setTotalBasis('offering')}
+                    className={`cursor-pointer rounded-md px-3 py-1 text-sm font-medium ${
+                      totalBasis === 'offering'
+                        ? 'bg-status-success text-form-button-text'
+                        : 'text-secondary-text hover:bg-secondary-bg/80 hover:text-primary-foreground'
+                    }`}
+                  >
+                    Offering Total
+                  </button>
+                  <button
+                    onClick={() => setTotalBasis('requesting')}
+                    className={`cursor-pointer rounded-md px-3 py-1 text-sm font-medium ${
+                      totalBasis === 'requesting'
+                        ? 'bg-status-error text-form-button-text'
+                        : 'text-secondary-text hover:bg-secondary-bg/80 hover:text-primary-foreground'
+                    }`}
+                  >
+                    Requesting Total
+                  </button>
+                </div>
               </div>
 
               {(() => {
@@ -1450,10 +1495,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
                   totalBasis === 'offering'
                     ? 'Similar Items Near Offering Total'
                     : 'Similar Items Near Requesting Total';
-                const accentColor = totalBasis === 'offering' ? 'green-500' : 'red-500';
                 const contextLabel = totalBasis === 'offering' ? 'Offering' : 'Requesting';
-
-                // Compute a baseline demand from the selected side (average of valid demand indices)
                 const demandScale = [
                   'Close to none',
                   'Very Low',
@@ -1490,18 +1532,20 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
 
                 return (
                   <>
-                    <div className="mb-3 flex items-center gap-2 text-xs sm:text-sm">
+                    <div className="mb-3 flex flex-col items-center gap-2 text-xs sm:flex-row sm:text-sm">
                       <span className="text-secondary-text">Using selected values</span>
-                      <span className="border-status-success/20 bg-status-success/80 inline-flex items-center rounded-full border px-2 py-0.5 text-white">
-                        {cleanCount} clean
-                      </span>
-                      <span className="border-status-error/20 bg-status-error/80 inline-flex items-center rounded-full border px-2 py-0.5 text-white">
-                        {dupedCount} duped
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="border-status-success/20 bg-status-success/80 text-form-button-text inline-flex items-center rounded-full border px-2 py-0.5">
+                          {cleanCount} clean
+                        </span>
+                        <span className="border-status-error/20 bg-status-error/80 text-form-button-text inline-flex items-center rounded-full border px-2 py-0.5">
+                          {dupedCount} duped
+                        </span>
+                      </div>
                     </div>
 
                     {/* Range controls */}
-                    <div className="border-stroke bg-secondary-bg mb-4 rounded-lg border p-4">
+                    <div className="bg-secondary-bg border-border-primary hover:border-border-focus hover:shadow-card-shadow mb-4 rounded-lg border p-4 transition-colors duration-200 hover:shadow-lg">
                       <div className="flex flex-col gap-3">
                         <div className="flex items-center justify-between gap-3">
                           <div className="flex items-center gap-2">
@@ -1552,7 +1596,6 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
                           : requestingSimilarItemsRange
                       }
                       title={title}
-                      accentColor={accentColor}
                       contextLabel={contextLabel}
                       baselineDemand={baselineDemand}
                       enableDemandSort={true}

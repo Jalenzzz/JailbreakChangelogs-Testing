@@ -15,7 +15,6 @@ interface TotalSimilarItemsProps {
   typeFilter?: string | null; // when null/undefined, include all types
   range?: number; // +/- range in raw value, default 2.5m
   title?: string;
-  accentColor?: string;
   contextLabel?: string;
   baselineDemand?: string | null;
   enableDemandSort?: boolean;
@@ -48,7 +47,6 @@ export const TotalSimilarItems: React.FC<TotalSimilarItemsProps> = ({
   typeFilter = null,
   range = 2_500_000,
   title,
-  accentColor,
   contextLabel,
   baselineDemand = null,
   enableDemandSort = true,
@@ -99,47 +97,60 @@ export const TotalSimilarItems: React.FC<TotalSimilarItemsProps> = ({
   const baselineDemandIndex = baselineDemand ? getDemandIndex(baselineDemand) : -1;
 
   return (
-    <div className="rounded-lg border p-6">
-      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-2">
-          <h3 className="text-primary-text font-semibold">{heading}</h3>
-          {contextLabel && (
-            <span
-              className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium text-white"
-              style={{
-                backgroundColor:
+    <div className="bg-secondary-bg border-border-primary hover:border-border-focus hover:shadow-card-shadow rounded-lg border p-8 transition-colors duration-200 hover:shadow-lg">
+      {/* Header Section */}
+      <div className="mb-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <h3 className="text-primary-text text-2xl font-bold">{heading}</h3>
+            {contextLabel && (
+              <span
+                className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${
                   contextLabel.toLowerCase() === 'offering'
-                    ? 'var(--color-status-error)'
-                    : accentColor || 'var(--color-button-info)',
-              }}
-            >
-              {contextLabel}
-            </span>
-          )}
-        </div>
-        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
-          {enableDemandSort && (
-            <div className="border-border-primary inline-flex overflow-hidden rounded-md border">
-              <button
-                onClick={() => setSortMode('diff')}
-                className={`px-2 py-1 text-xs ${sortMode === 'diff' ? 'bg-button-info text-white' : 'text-secondary-text hover:bg-secondary-bg hover:text-primary-text'}`}
+                    ? 'bg-status-success/20 border-status-success/30 text-primary-text border'
+                    : 'bg-status-error/20 border-status-error/30 text-primary-text border'
+                }`}
               >
-                Closest
-              </button>
-              <button
-                onClick={() => setSortMode('demand-desc')}
-                className={`px-2 py-1 text-xs ${sortMode === 'demand-desc' ? 'bg-button-info text-white' : 'text-secondary-text hover:bg-secondary-bg hover:text-primary-text'}`}
-              >
-                Demand ↓
-              </button>
-              <button
-                onClick={() => setSortMode('demand-asc')}
-                className={`px-2 py-1 text-xs ${sortMode === 'demand-asc' ? 'bg-button-info text-white' : 'text-secondary-text hover:bg-secondary-bg hover:text-primary-text'}`}
-              >
-                Demand ↑
-              </button>
-            </div>
-          )}
+                {contextLabel}
+              </span>
+            )}
+          </div>
+          <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+            {enableDemandSort && (
+              <div className="bg-primary/5 border-primary/10 inline-flex overflow-hidden rounded-lg border">
+                <button
+                  onClick={() => setSortMode('diff')}
+                  className={`cursor-pointer px-4 py-2 text-sm font-medium transition-all duration-200 ${
+                    sortMode === 'diff'
+                      ? 'bg-button-info text-form-button-text shadow-sm'
+                      : 'text-secondary-text hover:bg-primary/10 hover:text-primary-text'
+                  }`}
+                >
+                  Closest
+                </button>
+                <button
+                  onClick={() => setSortMode('demand-desc')}
+                  className={`cursor-pointer px-4 py-2 text-sm font-medium transition-all duration-200 ${
+                    sortMode === 'demand-desc'
+                      ? 'bg-button-info text-form-button-text shadow-sm'
+                      : 'text-secondary-text hover:bg-primary/10 hover:text-primary-text'
+                  }`}
+                >
+                  Demand ↓
+                </button>
+                <button
+                  onClick={() => setSortMode('demand-asc')}
+                  className={`cursor-pointer px-4 py-2 text-sm font-medium transition-all duration-200 ${
+                    sortMode === 'demand-asc'
+                      ? 'bg-button-info text-form-button-text shadow-sm'
+                      : 'text-secondary-text hover:bg-primary/10 hover:text-primary-text'
+                  }`}
+                >
+                  Demand ↑
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -148,7 +159,7 @@ export const TotalSimilarItems: React.FC<TotalSimilarItemsProps> = ({
           No items found within ±{range.toLocaleString()} of your total.
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {candidates.map(({ item, diff }) => {
             const comparisonValueString =
               valuePreference === 'duped' && item.duped_value && item.duped_value !== 'N/A'
@@ -169,7 +180,8 @@ export const TotalSimilarItems: React.FC<TotalSimilarItemsProps> = ({
                 href={`/item/${item.type.toLowerCase()}/${item.name}${item.sub_name ? `?variant=${item.sub_name}` : ''}`}
                 className="group"
               >
-                <div className="border-border-primary bg-secondary-bg hover:border-button-info/30 overflow-hidden rounded-lg border transition-all duration-200 hover:shadow-lg">
+                <div className="bg-primary/5 border-primary/10 hover:border-primary/20 hover:bg-primary/10 overflow-hidden rounded-xl border transition-all duration-200 hover:shadow-lg">
+                  {/* Image Section */}
                   <div className="relative aspect-video">
                     <Image
                       src={getItemImagePath(item.type, item.name, true)}
@@ -179,95 +191,105 @@ export const TotalSimilarItems: React.FC<TotalSimilarItemsProps> = ({
                       onError={handleImageError}
                     />
                   </div>
-                  <div className="space-y-2 p-4">
-                    <div className="flex items-center justify-between">
-                      <h4 className="text-primary-text group-hover:text-link mr-2 line-clamp-1 font-medium transition-colors">
+
+                  {/* Content Section */}
+                  <div className="space-y-4 p-6">
+                    {/* Header */}
+                    <div className="flex items-start justify-between gap-3">
+                      <h4 className="text-primary-text group-hover:text-link line-clamp-2 text-base font-semibold transition-colors">
                         {displayName}
                       </h4>
-                      <span className="border-primary-text text-primary-text flex items-center rounded-full border bg-transparent px-2 py-0.5 text-xs">
+                      <span className="bg-primary/10 border-primary/30 text-primary-text flex items-center rounded-lg border px-2 py-1 text-xs font-medium whitespace-nowrap">
                         {item.type}
                       </span>
                     </div>
-                    <div className="text-secondary-text/80 flex items-start justify-between text-xs">
-                      <span className="flex flex-col space-y-1">
-                        <span className="flex items-center gap-1">
-                          <span className="text-secondary-text">Cash:</span>
-                          <span
-                            className="rounded-full px-2 py-0.5 text-xs font-semibold whitespace-nowrap text-white"
-                            style={{ backgroundColor: 'var(--color-button-info)' }}
-                          >
-                            {formatFullValue(item.cash_value)}
-                          </span>
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <span className="text-secondary-text">Duped:</span>
-                          <span
-                            className="rounded-full px-2 py-0.5 text-xs font-semibold whitespace-nowrap text-white"
-                            style={{ backgroundColor: 'var(--color-button-info)' }}
-                          >
-                            {formatFullValue(item.duped_value)}
-                          </span>
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <span className="text-secondary-text">Demand:</span>
-                          <span
-                            className="rounded-full px-2 py-0.5 text-xs font-semibold whitespace-nowrap text-white"
-                            style={{ backgroundColor: 'var(--color-button-info)' }}
-                          >
-                            {itemDemand === 'N/A' ? 'Unknown' : itemDemand}
-                          </span>
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <span className="text-secondary-text">Trend:</span>
-                          <span
-                            className="rounded-full px-2 py-0.5 text-xs font-semibold whitespace-nowrap text-white"
-                            style={{ backgroundColor: 'var(--color-button-info)' }}
-                          >
-                            {!item.trend || item.trend === 'N/A' ? 'Unknown' : item.trend}
-                          </span>
-                        </span>
-                      </span>
-                      <span className="flex flex-col items-end">
+
+                    {/* Values Grid */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-secondary-bg/50 border-border-primary rounded-lg border p-3">
+                        <div className="text-secondary-text mb-1 text-xs">Cash</div>
+                        <div className="text-primary-text text-sm font-semibold">
+                          {formatFullValue(item.cash_value)}
+                        </div>
+                      </div>
+                      <div className="bg-secondary-bg/50 border-border-primary rounded-lg border p-3">
+                        <div className="text-secondary-text mb-1 text-xs">Duped</div>
+                        <div className="text-primary-text text-sm font-semibold">
+                          {formatFullValue(item.duped_value)}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Demand and Trend */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-secondary-bg/50 border-border-primary rounded-lg border p-3">
+                        <div className="text-secondary-text mb-1 text-xs">Demand</div>
+                        <div className="text-primary-text text-sm font-semibold">
+                          {itemDemand === 'N/A' ? 'Unknown' : itemDemand}
+                        </div>
+                      </div>
+                      <div className="bg-secondary-bg/50 border-border-primary rounded-lg border p-3">
+                        <div className="text-secondary-text mb-1 text-xs">Trend</div>
+                        <div className="text-primary-text text-sm font-semibold">
+                          {!item.trend || item.trend === 'N/A' ? 'Unknown' : item.trend}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Comparison Section */}
+                    <div className="from-primary/5 to-primary/10 border-primary/20 rounded-lg border bg-gradient-to-r p-4">
+                      <div className="space-y-2">
+                        {/* Value Comparison */}
                         {diff === 0 ? (
-                          <span className="text-status-neutral inline-flex items-center gap-1">
-                            <span>Same value</span>
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <div className="bg-status-info h-2 w-2 rounded-full"></div>
+                            <span className="text-primary-text text-sm font-medium">
+                              Same value
+                            </span>
+                          </div>
                         ) : (
-                          <span
-                            className={`${isAbove ? 'text-status-success' : 'text-status-error'} inline-flex items-center gap-1`}
+                          <div
+                            className={`flex items-center gap-2 ${isAbove ? 'text-status-success' : 'text-status-error'}`}
                           >
                             {isAbove ? (
                               <FaArrowCircleUp className="h-4 w-4" />
                             ) : (
                               <FaArrowAltCircleDown className="h-4 w-4" />
                             )}
-                            <span>
+                            <span className="text-sm font-medium">
                               {isAbove ? 'Above by' : 'Below by'} {diff.toLocaleString()}
                             </span>
-                          </span>
+                          </div>
                         )}
-                        {demandDelta === null ? null : demandDelta === 0 ? (
-                          <span className="text-secondary-text mt-1 inline-flex items-center gap-1">
-                            <span>Same demand</span>
-                          </span>
-                        ) : (
-                          <span
-                            className={`mt-1 inline-flex items-center gap-1 ${demandDelta > 0 ? 'text-status-success' : 'text-status-error'}`}
-                          >
-                            {demandDelta > 0 ? (
-                              <FaArrowCircleUp className="h-4 w-4" />
+
+                        {/* Demand Comparison */}
+                        {demandDelta !== null && (
+                          <div className="border-border-primary border-t pt-1">
+                            {demandDelta === 0 ? (
+                              <div className="flex items-center gap-2">
+                                <div className="bg-status-info h-2 w-2 rounded-full"></div>
+                                <span className="text-secondary-text text-sm">Same demand</span>
+                              </div>
                             ) : (
-                              <FaArrowAltCircleDown className="h-4 w-4" />
+                              <div
+                                className={`flex items-center gap-2 ${demandDelta > 0 ? 'text-status-success' : 'text-status-error'}`}
+                              >
+                                {demandDelta > 0 ? (
+                                  <FaArrowCircleUp className="h-4 w-4" />
+                                ) : (
+                                  <FaArrowAltCircleDown className="h-4 w-4" />
+                                )}
+                                <span className="text-sm">
+                                  {Math.abs(demandDelta)} level
+                                  {Math.abs(demandDelta) === 1 ? '' : 's'}{' '}
+                                  {demandDelta > 0 ? 'higher' : 'lower'}
+                                  {baselineDemand ? ` than ${baselineDemand}` : ''}
+                                </span>
+                              </div>
                             )}
-                            <span>
-                              {Math.abs(demandDelta)} level
-                              {Math.abs(demandDelta) === 1 ? '' : 's'}{' '}
-                              {demandDelta > 0 ? 'higher' : 'lower'}
-                              {baselineDemand ? ` than ${baselineDemand}` : ''}
-                            </span>
-                          </span>
+                          </div>
                         )}
-                      </span>
+                      </div>
                     </div>
                   </div>
                 </div>
