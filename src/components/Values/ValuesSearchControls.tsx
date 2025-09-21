@@ -261,7 +261,7 @@ export default function ValuesSearchControls({
                     unstyled
                     classNames={{
                       control: () =>
-                        'text-secondary-text flex items-center justify-between rounded-lg border border-stroke bg-secondary-bg p-3 min-h-[56px] hover:cursor-pointer hover:bg-primary-bg',
+                        'text-secondary-text flex items-center justify-between rounded-lg border border-stroke bg-secondary-bg p-3 min-h-[56px] hover:cursor-pointer hover:bg-primary-bg focus-within:border-button-info',
                       singleValue: () => 'text-secondary-text',
                       placeholder: () => 'text-secondary-text',
                       menu: () =>
@@ -516,7 +516,7 @@ export default function ValuesSearchControls({
                     unstyled
                     classNames={{
                       control: () =>
-                        'text-secondary-text flex items-center justify-between rounded-lg border border-stroke bg-secondary-bg p-3 min-h-[56px] hover:cursor-pointer hover:bg-primary-bg',
+                        'text-secondary-text flex items-center justify-between rounded-lg border border-stroke bg-secondary-bg p-3 min-h-[56px] hover:cursor-pointer hover:bg-primary-bg focus-within:border-button-info',
                       singleValue: () => 'text-secondary-text',
                       placeholder: () => 'text-secondary-text',
                       menu: () =>

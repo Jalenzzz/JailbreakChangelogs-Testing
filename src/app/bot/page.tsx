@@ -142,7 +142,7 @@ export default function BotPage() {
                 <h3 className="text-card-headline text-xl font-semibold">Fast & Efficient</h3>
               </div>
               <p className="text-card-paragraph">
-                Optimized for performance with quick response times and efficient resource usage to
+                Optimized for performance with quick res ponse times and efficient resource usage to
                 keep your server running smoothly.
               </p>
             </div>

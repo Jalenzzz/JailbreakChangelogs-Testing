@@ -79,12 +79,12 @@ export const ItemGrid: React.FC<ItemGridProps> = ({ items, title, onRemove }) =>
   if (items.length === 0) {
     const isOffering = title.toLowerCase() === 'offering';
     const borderColor = isOffering
-      ? 'border-[#047857]/30 hover:border-[#047857]/60'
-      : 'border-[#B91C1C]/30 hover:border-[#B91C1C]/60';
+      ? 'border-status-success/30 hover:border-status-success/60'
+      : 'border-status-error/30 hover:border-status-error/60';
 
     return (
       <div
-        className={`cursor-pointer rounded-lg border-2 border-dashed p-6 text-center transition-colors hover:bg-[#37424D] ${borderColor}`}
+        className={`hover:bg-secondary-bg cursor-pointer rounded-lg border-2 border-dashed p-6 text-center transition-colors ${borderColor}`}
         onClick={() => {
           // Scroll to items grid after a short delay to ensure tab switch completes
           setTimeout(() => {
@@ -164,13 +164,13 @@ export const ItemGrid: React.FC<ItemGridProps> = ({ items, title, onRemove }) =>
                   slotProps={{
                     tooltip: {
                       sx: {
-                        bgcolor: '#1A2228',
-
+                        backgroundColor: 'var(--color-secondary-bg)',
+                        color: 'var(--color-primary-text)',
                         maxWidth: '400px',
                         width: 'auto',
                         minWidth: '300px',
                         '& .MuiTooltip-arrow': {
-                          color: '#1A2228',
+                          color: 'var(--color-secondary-bg)',
                         },
                       },
                     },
@@ -197,7 +197,7 @@ export const ItemGrid: React.FC<ItemGridProps> = ({ items, title, onRemove }) =>
                         />
                       )}
                       {item.count > 1 && (
-                        <div className="absolute top-1 right-1 rounded-full border border-[#5865F2] bg-[#5865F2]/90 px-1.5 py-0.5 text-xs text-white">
+                        <div className="border-button-info bg-button-info/90 absolute top-1 right-1 rounded-full border px-1.5 py-0.5 text-xs text-white">
                           ×{item.count}
                         </div>
                       )}

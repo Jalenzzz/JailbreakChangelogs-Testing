@@ -230,7 +230,7 @@ export default function HyperchromeCalculatorModal({
               <button
                 type="button"
                 onClick={() => setStep((s) => Math.min(2, s + 1))}
-                className="bg-button-info text-primary-text hover:bg-button-info-hover min-w-[100px] cursor-pointer rounded border-none px-4 py-2 text-sm"
+                className="bg-button-info text-form-button-text hover:bg-button-info-hover min-w-[100px] cursor-pointer rounded border-none px-4 py-2 text-sm"
               >
                 Next
               </button>
@@ -238,7 +238,7 @@ export default function HyperchromeCalculatorModal({
               <button
                 type="button"
                 onClick={() => setHasCalculated(true)}
-                className="bg-button-info text-primary-text hover:bg-button-info-hover min-w-[100px] cursor-pointer rounded border-none px-4 py-2 text-sm"
+                className="bg-button-info text-form-button-text hover:bg-button-info-hover min-w-[100px] cursor-pointer rounded border-none px-4 py-2 text-sm"
               >
                 Calculate
               </button>

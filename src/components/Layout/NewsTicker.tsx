@@ -29,7 +29,7 @@ export default function NewsTicker() {
           <div className="flex items-center gap-2">
             <div className="bg-button-info flex h-5 w-5 items-center justify-center rounded-full lg:h-6 lg:w-6">
               <svg
-                className="text-primary-text h-3 w-3 lg:h-4 lg:w-4"
+                className="text-form-button-text h-3 w-3 lg:h-4 lg:w-4"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -53,7 +53,7 @@ export default function NewsTicker() {
             <div className="flex gap-2">
               <Link
                 href="/og"
-                className="bg-button-info text-primary-text hover:bg-button-info-hover inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-colors lg:px-3"
+                className="bg-button-info text-form-button-text hover:bg-button-info-hover inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-colors lg:px-3"
               >
                 OG Finder
                 <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,7 +67,7 @@ export default function NewsTicker() {
               </Link>
               <Link
                 href="/dupes"
-                className="bg-button-info text-primary-text hover:bg-button-info-hover inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-colors lg:px-3"
+                className="bg-button-info text-form-button-text hover:bg-button-info-hover inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-colors lg:px-3"
               >
                 Dupe Finder
                 <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -9,7 +9,6 @@ import dynamic from 'next/dynamic';
 
 const Tooltip = dynamic(() => import('@mui/material/Tooltip'), { ssr: false });
 import { CustomConfirmationModal } from '../../Modals/CustomConfirmationModal';
-import { Checkbox, FormGroup, FormControlLabel } from '@mui/material';
 import Image from 'next/image';
 import { getItemImagePath, handleImageError } from '@/utils/images';
 import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
@@ -61,22 +60,11 @@ const EmptyState: React.FC<{ message: string; onBrowse: () => void }> = ({ messa
   };
 
   return (
-    <div
-      className="cursor-pointer rounded-lg border-2 border-dashed border-[#5865F2]/30 p-12 transition-colors hover:border-[#5865F2]/60 hover:bg-[#37424D]"
-      onClick={handleClick}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleClick();
-        }
-      }}
-    >
+    <div className="bg-secondary-bg rounded-lg p-12">
       <div className="text-center">
         <div className="mb-4">
           <svg
-            className="text-muted/50 mx-auto h-16 w-16"
+            className="text-secondary-text/50 mx-auto h-16 w-16"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -89,13 +77,15 @@ const EmptyState: React.FC<{ message: string; onBrowse: () => void }> = ({ messa
             />
           </svg>
         </div>
-        <h3 className="text-muted mb-2 text-lg font-medium">No Items Selected</h3>
-        <p className="text-muted/70 mb-6">{message}</p>
-        <div className="inline-flex items-center gap-2 rounded-lg bg-[#5865F2] px-4 py-2 text-white transition-colors hover:bg-[#4752C4]">
+        <h3 className="text-secondary-text mb-2 text-lg font-medium">No Items Selected</h3>
+        <p className="text-secondary-text/70 mb-6">{message}</p>
+        <button
+          className="bg-button-info text-form-button-text hover:bg-button-info-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 transition-colors hover:cursor-pointer"
+          onClick={handleClick}
+        >
           <CiBoxList className="h-4 w-4" />
           Browse Items
-        </div>
-        <p className="text-muted/60 mt-3 text-xs">Click anywhere to browse items</p>
+        </button>
       </div>
     </div>
   );
@@ -169,12 +159,12 @@ const CalculatorItemGrid: React.FC<{
 
     const isOffering = side === 'offering';
     const borderColor = isOffering
-      ? 'border-[#047857]/30 hover:border-[#047857]/60'
-      : 'border-[#B91C1C]/30 hover:border-[#B91C1C]/60';
+      ? 'border-status-success/30 hover:border-status-success/60'
+      : 'border-status-error/30 hover:border-status-error/60';
 
     return (
       <div
-        className={`cursor-pointer rounded-lg border-2 border-dashed p-6 text-center transition-colors hover:bg-[#37424D] ${borderColor}`}
+        className={`border-stroke bg-secondary-bg hover:bg-secondary-bg/80 cursor-pointer rounded-lg border-2 border-dashed p-6 text-center transition-colors ${borderColor}`}
         onClick={handleClick}
         role="button"
         tabIndex={0}
@@ -187,7 +177,7 @@ const CalculatorItemGrid: React.FC<{
       >
         <div className="mb-2">
           <svg
-            className="text-muted/50 mx-auto h-8 w-8"
+            className="text-secondary-text/50 mx-auto h-8 w-8"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -200,8 +190,8 @@ const CalculatorItemGrid: React.FC<{
             />
           </svg>
         </div>
-        <p className="text-muted text-sm font-medium">No items selected</p>
-        <p className="text-muted/60 mt-1 text-xs">Click to browse items</p>
+        <p className="text-secondary-text text-sm font-medium">No items selected</p>
+        <p className="text-secondary-text/60 mt-1 text-xs">Click to browse items</p>
       </div>
     );
   }
@@ -233,13 +223,14 @@ const CalculatorItemGrid: React.FC<{
                   slotProps={{
                     tooltip: {
                       sx: {
-                        bgcolor: '#1A2228',
-
+                        backgroundColor: 'var(--color-secondary-bg)',
+                        color: 'var(--color-primary-text)',
+                        border: '1px solid var(--color-border-primary)',
                         maxWidth: '400px',
                         width: 'auto',
                         minWidth: '300px',
                         '& .MuiTooltip-arrow': {
-                          color: '#1A2228',
+                          color: 'var(--color-secondary-bg)',
                         },
                       },
                     },
@@ -259,12 +250,11 @@ const CalculatorItemGrid: React.FC<{
                       />
                       {/* Status badge for Clean/Duped selection */}
                       <div
-                        className="absolute top-1 left-1 rounded-full px-1.5 py-0.5 text-xs text-white"
-                        style={{
-                          backgroundColor: isDupedSelected ? '#991B1B' : '#065F46',
-                          border: '1px solid',
-                          borderColor: isDupedSelected ? '#7F1D1D' : '#064E3B',
-                        }}
+                        className={`absolute top-1 left-1 rounded-full px-1.5 py-0.5 text-xs text-white ${
+                          isDupedSelected
+                            ? 'border-red-700 bg-red-600'
+                            : 'border-green-700 bg-green-600'
+                        } border`}
                         aria-label={
                           isDupedSelected ? 'Duped value selected' : 'Clean value selected'
                         }
@@ -283,7 +273,7 @@ const CalculatorItemGrid: React.FC<{
                         <EllipsisVerticalIcon className="h-4 w-4" />
                       </button>
                       {item.count > 1 && (
-                        <div className="absolute top-1 right-1 rounded-full border border-[#5865F2] bg-[#5865F2]/90 px-1.5 py-0.5 text-xs text-white">
+                        <div className="border-primary bg-primary/90 text-primary-foreground absolute top-1 right-1 rounded-full border px-1.5 py-0.5 text-xs">
                           ×{item.count}
                         </div>
                       )}
@@ -303,13 +293,13 @@ const CalculatorItemGrid: React.FC<{
       {actionModalOpen && (
         <div className="fixed inset-0 z-50">
           <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/30 backdrop-blur-sm"
             aria-hidden="true"
             onClick={closeActionModal}
           />
           <div className="fixed inset-0 flex items-center justify-center p-4">
-            <div className="mx-auto w-full max-w-sm rounded-lg border border-[#5865F2] p-6 shadow-xl">
-              <h2 className="mb-4 text-xl font-semibold text-white">
+            <div className="modal-container bg-secondary-bg border-button-info mx-auto w-full max-w-sm rounded-lg border p-6 shadow-lg">
+              <h2 className="text-primary-text mb-4 text-xl font-semibold">
                 {actionItem
                   ? actionItem.sub_name
                     ? `${actionItem.name} (${actionItem.sub_name})`
@@ -319,94 +309,110 @@ const CalculatorItemGrid: React.FC<{
               {actionItem && (
                 <div className="space-y-4">
                   <div className="flex items-center gap-2">
-                    <span
-                      className="inline-block rounded-full px-2 py-0.5 text-xs text-white"
-                      style={{
-                        backgroundColor: getItemTypeColor(actionItem.type),
-                      }}
-                    >
+                    <span className="border-primary-text text-primary-text flex items-center rounded-full border bg-transparent px-2 py-0.5 text-xs">
                       {actionItem.type}
                     </span>
                     {actionItem.count && actionItem.count > 1 && (
-                      <span className="inline-flex items-center rounded-full border border-[#5865F2]/30 bg-[#5865F2]/20 px-2 py-0.5 text-xs text-[#D3D9D4]">
+                      <span className="border-button-info bg-button-info/10 text-form-button-text inline-flex items-center rounded-full border px-2 py-0.5 text-xs">
                         Quantity ×{actionItem.count}
                       </span>
                     )}
                   </div>
-                  <div className="inline-flex rounded-md border border-[#36424E] px-2 py-1">
-                    <FormGroup row>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
+                  <div className="px-2 py-1">
+                    <div className="flex flex-col gap-2">
+                      <label className="flex cursor-pointer items-center gap-2">
+                        <div className="relative">
+                          <input
+                            type="checkbox"
                             checked={getSelectedValueType(actionItem) === 'cash'}
                             onChange={() => {
                               onValueTypeChange(actionItem.id, actionItem.sub_name, 'cash');
                             }}
-                            sx={{
-                              color: '#D3D9D4',
-                              '&.Mui-checked': { color: '#10B981' },
-                            }}
+                            className="sr-only"
                           />
-                        }
-                        label="Clean"
-                        sx={{
-                          color: '#D3D9D4',
-                          '.MuiFormControlLabel-label': { color: '#D3D9D4' },
-                        }}
-                      />
+                          <div
+                            className={`border-secondary flex h-4 w-4 items-center justify-center rounded border ${
+                              getSelectedValueType(actionItem) === 'cash'
+                                ? 'bg-button-info border-button-info'
+                                : 'bg-transparent'
+                            }`}
+                          >
+                            {getSelectedValueType(actionItem) === 'cash' && (
+                              <svg
+                                className="text-form-button-text h-3 w-3"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            )}
+                          </div>
+                        </div>
+                        <span className="text-secondary-text text-sm">Clean</span>
+                      </label>
                       {actionItem.duped_value && actionItem.duped_value !== 'N/A' ? (
-                        <FormControlLabel
-                          control={
-                            <Checkbox
+                        <label className="flex cursor-pointer items-center gap-2">
+                          <div className="relative">
+                            <input
+                              type="checkbox"
                               checked={getSelectedValueType(actionItem) === 'duped'}
                               onChange={() => {
                                 onValueTypeChange(actionItem.id, actionItem.sub_name, 'duped');
                               }}
-                              sx={{
-                                color: '#D3D9D4',
-                                '&.Mui-checked': { color: '#EF4444' },
-                              }}
+                              className="sr-only"
                             />
-                          }
-                          label="Duped"
-                          sx={{
-                            color: '#D3D9D4',
-                            '.MuiFormControlLabel-label': { color: '#D3D9D4' },
-                          }}
-                        />
+                            <div
+                              className={`border-secondary flex h-4 w-4 items-center justify-center rounded border ${
+                                getSelectedValueType(actionItem) === 'duped'
+                                  ? 'bg-button-info border-button-info'
+                                  : 'bg-transparent'
+                              }`}
+                            >
+                              {getSelectedValueType(actionItem) === 'duped' && (
+                                <svg
+                                  className="text-form-button-text h-3 w-3"
+                                  fill="currentColor"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                              )}
+                            </div>
+                          </div>
+                          <span className="text-secondary-text text-sm">Duped</span>
+                        </label>
                       ) : (
-                        <Tooltip title="Duped value not available for this item">
-                          <span style={{ display: 'inline-flex' }}>
-                            <FormControlLabel
-                              control={
-                                <Checkbox
-                                  disabled
-                                  sx={{
-                                    color: '#9CA3AF',
-                                    '&.Mui-disabled': { color: '#9CA3AF' },
-                                  }}
-                                />
-                              }
-                              label="Duped (N/A)"
-                              sx={{
-                                color: '#9CA3AF',
-                                '.MuiFormControlLabel-label': {
-                                  color: '#9CA3AF',
-                                },
-                                '&.Mui-disabled .MuiFormControlLabel-label': {
-                                  color: '#9CA3AF',
-                                },
-                              }}
-                            />
-                          </span>
-                        </Tooltip>
+                        <label className="flex cursor-not-allowed items-center gap-2 opacity-50">
+                          <div className="border-secondary flex h-4 w-4 items-center justify-center rounded border bg-transparent">
+                            <svg
+                              className="text-quaternary-text h-3 w-3"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          </div>
+                          <span className="text-quaternary-text text-sm">Duped (N/A)</span>
+                        </label>
                       )}
-                    </FormGroup>
+                    </div>
                   </div>
                   <div className="flex justify-end gap-3">
                     <button
                       onClick={closeActionModal}
-                      className="text-muted hover: rounded-md border border-[#37424D] px-4 py-2 text-sm font-medium transition-colors hover:text-white"
+                      className="text-secondary-text hover:text-primary-text cursor-pointer rounded border-none bg-transparent px-4 py-2 text-sm"
                     >
                       Close
                     </button>
@@ -417,7 +423,7 @@ const CalculatorItemGrid: React.FC<{
                             onRemove(actionItem.id, actionItem.sub_name);
                             closeActionModal();
                           }}
-                          className="rounded-md border border-[#B91C1C] px-3 py-2 text-sm font-medium text-[#FCA5A5] transition-colors hover:bg-[#B91C1C]/15"
+                          className="bg-button-info text-form-button-text hover:bg-button-info-hover cursor-pointer rounded border-none px-3 py-2 text-sm"
                         >
                           {actionItem.count && actionItem.count > 1 ? 'Remove one' : 'Remove'}
                         </button>
@@ -427,7 +433,7 @@ const CalculatorItemGrid: React.FC<{
                               onRemoveAll(actionItem.id, actionItem.sub_name);
                               closeActionModal();
                             }}
-                            className="rounded-md bg-[#B91C1C] px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-[#991B1B]"
+                            className="bg-button-info text-form-button-text hover:bg-button-info-hover cursor-pointer rounded border-none px-3 py-2 text-sm"
                           >
                             Remove all ×{actionItem.count}
                           </button>
@@ -500,26 +506,23 @@ const CalculatorValueComparison: React.FC<{
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg p-6">
-      <h3 className="text-muted mb-4 text-lg font-semibold">Value Comparison</h3>
+    <div className="border-stroke bg-secondary-bg overflow-x-auto rounded-lg border p-6">
+      <h3 className="text-secondary-text mb-4 text-lg font-semibold">Value Comparison</h3>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Offering Side */}
         <div>
           <div className="mb-3 flex items-center gap-2">
-            <h4 className="text-muted font-medium">Offering Side</h4>
-            <span
-              className="rounded-full px-2 py-0.5 text-xs font-medium text-white"
-              style={{ backgroundColor: '#047857' }}
-            >
+            <h4 className="text-secondary-text font-medium">Offering Side</h4>
+            <span className="rounded-full bg-green-500 px-2 py-0.5 text-xs font-medium text-white">
               Offering
             </span>
-            <span className="rounded-full border border-[#5865F2]/20 bg-[#5865F2] px-2 py-0.5 text-xs text-white">
+            <span className="border-primary/20 bg-primary text-primary-foreground rounded-full border px-2 py-0.5 text-xs">
               {groupItems(offering).reduce((sum, item) => sum + item.count, 0)} item
               {groupItems(offering).reduce((sum, item) => sum + item.count, 0) !== 1 ? 's' : ''}
             </span>
           </div>
-          <div className="rounded-lg bg-[#37424D] p-4" style={{ border: '1px solid #047857' }}>
+          <div className="border-status-success bg-secondary-bg rounded-lg border p-4">
             <div className="space-y-2">
               {groupItems(offering).map((item, index, array) => {
                 const selectedType = getSelectedValueType(item, 'offering');
@@ -529,13 +532,13 @@ const CalculatorValueComparison: React.FC<{
                 return (
                   <div
                     key={`${item.id}-${item.sub_name || 'base'}`}
-                    className={`flex items-center justify-between ${index !== array.length - 1 ? 'border-b border-[#4A5568] pb-3' : ''}`}
+                    className={`flex items-center justify-between ${index !== array.length - 1 ? 'border-stroke border-b pb-3' : ''}`}
                   >
                     <div>
-                      <div className="font-medium text-[#FFFFFF]">
+                      <div className="text-primary-foreground font-medium">
                         {item.sub_name ? `${item.name} (${item.sub_name})` : item.name}
                         {item.count > 1 && (
-                          <span className="ml-2 rounded-full border border-[#5865F2]/20 bg-[#5865F2] px-2.5 py-1 text-sm text-white">
+                          <span className="border-primary/20 bg-primary text-primary-foreground ml-2 rounded-full border px-2.5 py-1 text-sm text-white">
                             ×{item.count}
                           </span>
                         )}
@@ -560,12 +563,11 @@ const CalculatorValueComparison: React.FC<{
                           </span>
                         )}
                         <span
-                          className="ml-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs text-white"
-                          style={{
-                            backgroundColor: isDupedSelected ? '#991B1B' : '#065F46',
-                            border: '1px solid',
-                            borderColor: isDupedSelected ? '#7F1D1D' : '#064E3B',
-                          }}
+                          className={`ml-2 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs text-white ${
+                            isDupedSelected
+                              ? 'border-red-700 bg-red-600'
+                              : 'border-green-700 bg-green-600'
+                          }`}
                           aria-label={
                             isDupedSelected ? 'Duped value selected' : 'Clean value selected'
                           }
@@ -574,7 +576,7 @@ const CalculatorValueComparison: React.FC<{
                         </span>
                       </div>
                       <div className="mt-1 flex items-center gap-2">
-                        <span className="text-muted text-xs">Demand:</span>
+                        <span className="text-secondary-text text-xs">Demand:</span>
                         <span
                           className={`inline-block rounded-full px-2 py-0.5 text-xs font-semibold text-white ${getDemandColor(demand)}`}
                         >
@@ -582,7 +584,7 @@ const CalculatorValueComparison: React.FC<{
                         </span>
                       </div>
                       <div className="mt-1 flex items-center gap-2">
-                        <span className="text-muted text-xs">Trend:</span>
+                        <span className="text-secondary-text text-xs">Trend:</span>
                         <span
                           className={`inline-block rounded-full px-2 py-0.5 text-xs font-semibold text-white ${getTrendColor(item.trend || 'Unknown')}`}
                         >
@@ -593,17 +595,19 @@ const CalculatorValueComparison: React.FC<{
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="font-medium text-[#FFFFFF]">
+                      <div className="text-primary-foreground font-medium">
                         {formatCurrencyValue(getSelectedValue(item, 'offering'))}
                       </div>
                     </div>
                   </div>
                 );
               })}
-              <div className="mt-2 flex items-center justify-between border-t border-[#4A5568] pt-2 font-medium">
-                <span className="text-muted">Total</span>
+              <div className="border-stroke mt-2 flex items-center justify-between border-t pt-2 font-medium">
+                <span className="text-secondary-text">Total</span>
                 <div className="text-right">
-                  <div className="text-[#FFFFFF]">{formatCurrencyValue(offeringTotal)}</div>
+                  <div className="text-primary-foreground">
+                    {formatCurrencyValue(offeringTotal)}
+                  </div>
                 </div>
               </div>
             </div>
@@ -613,19 +617,16 @@ const CalculatorValueComparison: React.FC<{
         {/* Requesting Side */}
         <div>
           <div className="mb-3 flex items-center gap-2">
-            <h4 className="text-muted font-medium">Requesting Side</h4>
-            <span
-              className="rounded-full px-2 py-0.5 text-xs font-medium text-white"
-              style={{ backgroundColor: '#B91C1C' }}
-            >
+            <h4 className="text-secondary-text font-medium">Requesting Side</h4>
+            <span className="rounded-full bg-red-500 px-2 py-0.5 text-xs font-medium text-white">
               Requesting
             </span>
-            <span className="rounded-full border border-[#5865F2]/20 bg-[#5865F2] px-2 py-0.5 text-xs text-white">
+            <span className="border-primary/20 bg-primary text-primary-foreground rounded-full border px-2 py-0.5 text-xs">
               {groupItems(requesting).reduce((sum, item) => sum + item.count, 0)} item
               {groupItems(requesting).reduce((sum, item) => sum + item.count, 0) !== 1 ? 's' : ''}
             </span>
           </div>
-          <div className="rounded-lg bg-[#37424D] p-4" style={{ border: '1px solid #B91C1C' }}>
+          <div className="bg-secondary-bg rounded-lg border border-red-500 p-4">
             <div className="space-y-2">
               {groupItems(requesting).map((item, index, array) => {
                 const selectedType = getSelectedValueType(item, 'requesting');
@@ -635,13 +636,13 @@ const CalculatorValueComparison: React.FC<{
                 return (
                   <div
                     key={`${item.id}-${item.sub_name || 'base'}`}
-                    className={`flex items-center justify-between ${index !== array.length - 1 ? 'border-b border-[#4A5568] pb-3' : ''}`}
+                    className={`flex items-center justify-between ${index !== array.length - 1 ? 'border-stroke border-b pb-3' : ''}`}
                   >
                     <div>
-                      <div className="font-medium text-[#FFFFFF]">
+                      <div className="text-primary-foreground font-medium">
                         {item.sub_name ? `${item.name} (${item.sub_name})` : item.name}
                         {item.count > 1 && (
-                          <span className="ml-2 rounded-full border border-[#5865F2]/20 bg-[#5865F2] px-2.5 py-1 text-sm text-white">
+                          <span className="border-primary/20 bg-primary text-primary-foreground ml-2 rounded-full border px-2.5 py-1 text-sm text-white">
                             ×{item.count}
                           </span>
                         )}
@@ -666,12 +667,11 @@ const CalculatorValueComparison: React.FC<{
                           </span>
                         )}
                         <span
-                          className="ml-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs text-white"
-                          style={{
-                            backgroundColor: isDupedSelected ? '#991B1B' : '#065F46',
-                            border: '1px solid',
-                            borderColor: isDupedSelected ? '#7F1D1D' : '#064E3B',
-                          }}
+                          className={`ml-2 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs text-white ${
+                            isDupedSelected
+                              ? 'border-red-700 bg-red-600'
+                              : 'border-green-700 bg-green-600'
+                          }`}
                           aria-label={
                             isDupedSelected ? 'Duped value selected' : 'Clean value selected'
                           }
@@ -680,7 +680,7 @@ const CalculatorValueComparison: React.FC<{
                         </span>
                       </div>
                       <div className="mt-1 flex items-center gap-2">
-                        <span className="text-muted text-xs">Demand:</span>
+                        <span className="text-secondary-text text-xs">Demand:</span>
                         <span
                           className={`inline-block rounded-full px-2 py-0.5 text-xs font-semibold text-white ${getDemandColor(demand)}`}
                         >
@@ -688,7 +688,7 @@ const CalculatorValueComparison: React.FC<{
                         </span>
                       </div>
                       <div className="mt-1 flex items-center gap-2">
-                        <span className="text-muted text-xs">Trend:</span>
+                        <span className="text-secondary-text text-xs">Trend:</span>
                         <span
                           className={`inline-block rounded-full px-2 py-0.5 text-xs font-semibold text-white ${getTrendColor(item.trend || 'Unknown')}`}
                         >
@@ -699,17 +699,19 @@ const CalculatorValueComparison: React.FC<{
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="font-medium text-[#FFFFFF]">
+                      <div className="text-primary-foreground font-medium">
                         {formatCurrencyValue(getSelectedValue(item, 'requesting'))}
                       </div>
                     </div>
                   </div>
                 );
               })}
-              <div className="mt-2 flex items-center justify-between border-t border-[#4A5568] pt-2 font-medium">
-                <span className="text-muted">Total</span>
+              <div className="border-stroke mt-2 flex items-center justify-between border-t pt-2 font-medium">
+                <span className="text-secondary-text">Total</span>
                 <div className="text-right">
-                  <div className="text-[#FFFFFF]">{formatCurrencyValue(requestingTotal)}</div>
+                  <div className="text-primary-foreground">
+                    {formatCurrencyValue(requestingTotal)}
+                  </div>
                 </div>
               </div>
             </div>
@@ -718,15 +720,14 @@ const CalculatorValueComparison: React.FC<{
       </div>
 
       {/* Overall Difference */}
-      <div className="mt-6 rounded-lg bg-[#37424D] p-4">
-        <h4 className="text-muted mb-3 font-medium">Overall Difference</h4>
+      <div className="border-stroke bg-secondary-bg mt-6 rounded-lg border p-4">
+        <h4 className="text-secondary-text mb-3 font-medium">Overall Difference</h4>
         <div className="flex items-center justify-between">
-          <span className="text-muted">Value Difference</span>
+          <span className="text-secondary-text">Value Difference</span>
           <span
-            className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-sm font-medium text-white"
-            style={{
-              backgroundColor: difference < 0 ? '#047857' : difference > 0 ? '#B91C1C' : '#37424D',
-            }}
+            className={`inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-sm font-medium text-white ${
+              difference < 0 ? 'bg-green-500' : difference > 0 ? 'bg-red-500' : 'bg-secondary-bg'
+            }`}
           >
             {difference !== 0 &&
               (difference < 0 ? (
@@ -1044,16 +1045,20 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
       {showClearConfirmModal && (
         <div className="fixed inset-0 z-50">
           <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/30 backdrop-blur-sm"
             aria-hidden="true"
             onClick={() => setShowClearConfirmModal(false)}
           />
           <div className="fixed inset-0 flex items-center justify-center p-4">
-            <div className="mx-auto w-full max-w-sm rounded-lg border border-[#5865F2] p-6 shadow-xl">
-              <h2 className="mb-2 text-xl font-semibold text-white">Clear Calculator?</h2>
-              <p className="text-muted/80 mb-6">
-                Choose what to clear. This action cannot be undone.
-              </p>
+            <div className="modal-container bg-secondary-bg border-button-info mx-auto w-full max-w-sm rounded-lg border p-6 shadow-lg">
+              <div className="modal-header text-primary-text mb-2 text-xl font-semibold">
+                Clear Calculator?
+              </div>
+              <div className="modal-content mb-6">
+                <p className="text-secondary-text">
+                  Choose what to clear. This action cannot be undone.
+                </p>
+              </div>
               <div className="mb-4 grid grid-cols-1 gap-3">
                 <button
                   onClick={() => {
@@ -1074,7 +1079,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
                     }
                     setShowClearConfirmModal(false);
                   }}
-                  className="w-full rounded-md border border-[#047857] bg-[#047857]/20 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#047857]/30"
+                  className="border-button-success bg-button-success/10 text-button-success hover:bg-button-success/20 w-full rounded-md border px-4 py-2 text-sm font-medium transition-colors"
                 >
                   Clear Offering
                 </button>
@@ -1097,7 +1102,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
                     }
                     setShowClearConfirmModal(false);
                   }}
-                  className="w-full rounded-md border border-[#B91C1C] bg-[#B91C1C]/20 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#B91C1C]/30"
+                  className="border-button-danger bg-button-danger/10 text-button-danger hover:bg-button-danger/20 w-full rounded-md border px-4 py-2 text-sm font-medium transition-colors"
                 >
                   Clear Requesting
                 </button>
@@ -1105,15 +1110,15 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
                   onClick={() => {
                     handleStartNew();
                   }}
-                  className="w-full rounded-md bg-[#B91C1C] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#991B1B]"
+                  className="bg-button-danger text-form-button-text hover:bg-button-danger-hover w-full rounded-md px-4 py-2 text-sm font-medium transition-colors"
                 >
                   Clear Both
                 </button>
               </div>
-              <div className="flex justify-end">
+              <div className="modal-footer flex justify-end">
                 <button
                   onClick={() => setShowClearConfirmModal(false)}
-                  className="text-muted hover: rounded-md border border-[#37424D] px-4 py-2 text-sm font-medium transition-colors hover:text-white"
+                  className="text-secondary-text hover:text-primary-text cursor-pointer rounded border-none bg-transparent px-4 py-2 text-sm"
                 >
                   Cancel
                 </button>
@@ -1127,33 +1132,51 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
       <div className="space-y-4">
         {/* Action Buttons */}
         <div className="flex items-center justify-center gap-3">
-          <Tooltip title="Swap sides">
+          <Tooltip
+            title="Swap sides"
+            arrow
+            placement="top"
+            slotProps={{
+              tooltip: {
+                sx: {
+                  backgroundColor: 'var(--color-secondary-bg)',
+                  color: 'var(--color-primary-text)',
+                  '& .MuiTooltip-arrow': {
+                    color: 'var(--color-secondary-bg)',
+                  },
+                },
+              },
+            }}
+          >
             <Button
               variant="contained"
               onClick={handleSwapSides}
-              sx={{
-                backgroundColor: '#5865F2',
-                color: '#FFFFFF',
-                '&:hover': {
-                  backgroundColor: '#4752C4',
-                },
-              }}
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
             >
               <ArrowsRightLeftIcon className="mr-1 h-5 w-5" />
               Swap Sides
             </Button>
           </Tooltip>
-          <Tooltip title="Clear all items (hold Shift to clear both sides instantly)">
+          <Tooltip
+            title="Clear all items (hold Shift to clear both sides instantly)"
+            arrow
+            placement="top"
+            slotProps={{
+              tooltip: {
+                sx: {
+                  backgroundColor: 'var(--color-secondary-bg)',
+                  color: 'var(--color-primary-text)',
+                  '& .MuiTooltip-arrow': {
+                    color: 'var(--color-secondary-bg)',
+                  },
+                },
+              },
+            }}
+          >
             <Button
               variant="contained"
               onClick={handleClearSides}
-              sx={{
-                backgroundColor: '#EF4444',
-                color: '#FFFFFF',
-                '&:hover': {
-                  backgroundColor: '#DC2626',
-                },
-              }}
+              className="bg-red-500 text-white hover:bg-red-600"
             >
               <TrashIcon className="mr-1 h-5 w-5" />
               Clear
@@ -1163,7 +1186,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
 
         {/* Pro tip about Shift+Clear */}
         <div className="text-center">
-          <div className="hidden items-center justify-center gap-1 text-xs text-[#D3D9D4] lg:flex">
+          <div className="text-secondary-text hidden items-center justify-center gap-1 text-xs lg:flex">
             💡 Pro tip: Hold Shift while clicking Clear to clear both sides instantly without
             confirmation
           </div>
@@ -1172,27 +1195,33 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
         {/* Trade Panels */}
         <div className="space-y-6 md:flex md:space-y-0 md:space-x-6">
           {/* Offering Items */}
-          <div className="flex-1 rounded-lg border p-4" style={{ borderColor: '#047857' }}>
+          <div className="border-status-success bg-secondary-bg flex-1 rounded-lg border p-4">
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <h3 className="text-muted font-medium">Offering</h3>
-                <span className="text-muted/70 text-sm">({offeringItems.length}/40)</span>
+                <h3 className="text-secondary-text font-medium">Offering</h3>
+                <span className="text-secondary-text/70 text-sm">({offeringItems.length}/40)</span>
               </div>
-              <Tooltip title="Mirror to requesting">
+              <Tooltip
+                title="Mirror to requesting"
+                arrow
+                placement="top"
+                slotProps={{
+                  tooltip: {
+                    sx: {
+                      backgroundColor: 'var(--color-secondary-bg)',
+                      color: 'var(--color-primary-text)',
+                      '& .MuiTooltip-arrow': {
+                        color: 'var(--color-secondary-bg)',
+                      },
+                    },
+                  },
+                }}
+              >
                 <Button
                   variant="outlined"
                   onClick={() => handleMirrorItems('offering')}
                   size="small"
-                  sx={{
-                    borderColor: '#047857',
-                    color: '#FFFFFF',
-                    backgroundColor: 'rgba(4, 120, 87, 0.15)',
-                    '&:hover': {
-                      borderColor: '#065F46',
-                      backgroundColor: 'rgba(4, 120, 87, 0.25)',
-                      color: '#FFFFFF',
-                    },
-                  }}
+                  className="border-status-success text-primary-text bg-status-success/15 hover:border-status-success hover:bg-status-success/25"
                 >
                   <ArrowsRightLeftIcon className="mr-1 h-4 w-4" />
                   Mirror
@@ -1213,14 +1242,14 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
             {(() => {
               const t = calculateTotals(offeringItems, 'offering');
               return (
-                <div className="text-muted/70 mt-4 flex flex-col flex-wrap items-start gap-2 text-xs sm:flex-row sm:items-center sm:gap-3 sm:text-sm">
+                <div className="text-secondary-text/70 mt-4 flex flex-col flex-wrap items-start gap-2 text-xs sm:flex-row sm:items-center sm:gap-3 sm:text-sm">
                   <span>
-                    Total: <span className="text-muted font-bold">{t.cashValue}</span>
+                    Total: <span className="text-secondary-text font-bold">{t.cashValue}</span>
                   </span>
-                  <span className="inline-flex items-center rounded-full border border-green-500/20 bg-green-500/80 px-2 py-0.5 text-white">
+                  <span className="border-status-success/20 bg-status-success/80 inline-flex items-center rounded-full border px-2 py-0.5 text-white">
                     {t.breakdown.clean.count} clean • {t.breakdown.clean.formatted}
                   </span>
-                  <span className="inline-flex items-center rounded-full border border-red-500/20 bg-red-500/80 px-2 py-0.5 text-white">
+                  <span className="border-status-error/20 bg-status-error/80 inline-flex items-center rounded-full border px-2 py-0.5 text-white">
                     {t.breakdown.duped.count} duped • {t.breakdown.duped.formatted}
                   </span>
                 </div>
@@ -1229,27 +1258,35 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
           </div>
 
           {/* Requesting Items */}
-          <div className="flex-1 rounded-lg border p-4" style={{ borderColor: '#B91C1C' }}>
+          <div className="bg-secondary-bg flex-1 rounded-lg border border-red-500 p-4">
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <h3 className="text-muted font-medium">Requesting</h3>
-                <span className="text-muted/70 text-sm">({requestingItems.length}/40)</span>
+                <h3 className="text-secondary-text font-medium">Requesting</h3>
+                <span className="text-secondary-text/70 text-sm">
+                  ({requestingItems.length}/40)
+                </span>
               </div>
-              <Tooltip title="Mirror to offering">
+              <Tooltip
+                title="Mirror to offering"
+                arrow
+                placement="top"
+                slotProps={{
+                  tooltip: {
+                    sx: {
+                      backgroundColor: 'var(--color-secondary-bg)',
+                      color: 'var(--color-primary-text)',
+                      '& .MuiTooltip-arrow': {
+                        color: 'var(--color-secondary-bg)',
+                      },
+                    },
+                  },
+                }}
+              >
                 <Button
                   variant="outlined"
                   onClick={() => handleMirrorItems('requesting')}
                   size="small"
-                  sx={{
-                    borderColor: '#B91C1C',
-                    color: '#FFFFFF',
-                    backgroundColor: 'rgba(185, 28, 28, 0.15)',
-                    '&:hover': {
-                      borderColor: '#991B1B',
-                      backgroundColor: 'rgba(185, 28, 28, 0.25)',
-                      color: '#FFFFFF',
-                    },
-                  }}
+                  className="text-primary-text border-red-500 bg-red-500/15 hover:border-red-600 hover:bg-red-500/25"
                 >
                   <ArrowsRightLeftIcon className="mr-1 h-4 w-4" />
                   Mirror
@@ -1270,14 +1307,14 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
             {(() => {
               const t = calculateTotals(requestingItems, 'requesting');
               return (
-                <div className="text-muted/70 mt-4 flex flex-col flex-wrap items-start gap-2 text-xs sm:flex-row sm:items-center sm:gap-3 sm:text-sm">
+                <div className="text-secondary-text/70 mt-4 flex flex-col flex-wrap items-start gap-2 text-xs sm:flex-row sm:items-center sm:gap-3 sm:text-sm">
                   <span>
-                    Total: <span className="text-muted font-bold">{t.cashValue}</span>
+                    Total: <span className="text-secondary-text font-bold">{t.cashValue}</span>
                   </span>
-                  <span className="inline-flex items-center rounded-full border border-green-500/20 bg-green-500/80 px-2 py-0.5 text-white">
+                  <span className="border-status-success/20 bg-status-success/80 inline-flex items-center rounded-full border px-2 py-0.5 text-white">
                     {t.breakdown.clean.count} clean • {t.breakdown.clean.formatted}
                   </span>
-                  <span className="inline-flex items-center rounded-full border border-red-500/20 bg-red-500/80 px-2 py-0.5 text-white">
+                  <span className="border-status-error/20 bg-status-error/80 inline-flex items-center rounded-full border px-2 py-0.5 text-white">
                     {t.breakdown.duped.count} duped • {t.breakdown.duped.formatted}
                   </span>
                 </div>
@@ -1288,15 +1325,15 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
       </div>
 
       {/* Tabs */}
-      <div className="mb-6 rounded-lg border">
+      <div className="border-stroke bg-secondary-bg mb-6 rounded-lg border">
         <nav className="px-6 py-4">
           <div className="flex flex-col space-y-1 rounded-lg p-1 sm:flex-row sm:space-y-0 sm:space-x-1">
             <button
               onClick={() => handleTabChange('items')}
               className={`${
                 activeTab === 'items'
-                  ? 'bg-[#5865F2] text-white shadow-sm'
-                  : 'text-muted hover:bg-[#37424D] hover:text-[#FFFFFF]'
+                  ? 'bg-button-info text-form-button-text shadow-sm'
+                  : 'text-secondary-text hover:bg-button-info/20 hover:text-primary-text hover:cursor-pointer'
               } flex w-full items-center justify-center gap-2 rounded-md px-4 py-3 text-sm font-medium transition-all duration-200 sm:flex-1`}
             >
               Browse Items
@@ -1305,8 +1342,8 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
               onClick={() => handleTabChange('similar')}
               className={`${
                 activeTab === 'similar'
-                  ? 'bg-[#5865F2] text-white shadow-sm'
-                  : 'text-muted hover:bg-[#37424D] hover:text-[#FFFFFF]'
+                  ? 'bg-button-info text-form-button-text shadow-sm'
+                  : 'text-secondary-text hover:bg-button-info/20 hover:text-primary-text hover:cursor-pointer'
               } flex w-full items-center justify-center gap-2 rounded-md px-4 py-3 text-sm font-medium transition-all duration-200 sm:flex-1`}
             >
               Similar by Total
@@ -1315,8 +1352,8 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
               onClick={() => handleTabChange('values')}
               className={`${
                 activeTab === 'values'
-                  ? 'bg-[#5865F2] text-white shadow-sm'
-                  : 'text-muted hover:bg-[#37424D] hover:text-[#FFFFFF]'
+                  ? 'bg-button-info text-form-button-text shadow-sm'
+                  : 'text-secondary-text hover:bg-button-info/20 hover:text-primary-text hover:cursor-pointer'
               } flex w-full items-center justify-center gap-2 rounded-md px-4 py-3 text-sm font-medium transition-all duration-200 sm:flex-1`}
             >
               Value Comparison
@@ -1337,7 +1374,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
         </div>
       ) : activeTab === 'values' ? (
         <div className="mb-8">
-          <div className="rounded-lg border p-4">
+          <div className="border-stroke bg-secondary-bg rounded-lg border p-4">
             <CalculatorValueComparison
               offering={offeringItems}
               requesting={requestingItems}
@@ -1352,7 +1389,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
         <div className="mb-8">
           {/* Similar Items Near Total - Selector and Results */}
           {offeringItems.length === 0 && requestingItems.length === 0 ? (
-            <div className="rounded-lg border p-4">
+            <div className="border-stroke bg-secondary-bg rounded-lg border p-4">
               <EmptyState
                 message={
                   'Go to the "Browse Items" tab to select items and see similar items near your total.'
@@ -1365,34 +1402,35 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
               {(offeringItems.length === 0 || requestingItems.length === 0) &&
                 !(offeringItems.length === 0 && requestingItems.length === 0) && (
                   <div
-                    className="mb-4 rounded-lg border p-3"
-                    style={{
-                      borderColor: offeringItems.length === 0 ? '#047857' : '#B91C1C',
-                    }}
+                    className={`bg-secondary-bg mb-4 rounded-lg border p-3 ${
+                      offeringItems.length === 0 ? 'border-status-success' : 'border-status-error'
+                    }`}
                   >
-                    <p className="text-muted text-sm">
+                    <p className="text-secondary-text text-sm">
                       {offeringItems.length === 0
                         ? 'Select at least 1 item for the Offering side.'
                         : 'Select at least 1 item for the Requesting side.'}
                     </p>
                   </div>
                 )}
-              <div className="mb-4 inline-flex gap-1 rounded-lg border p-2">
+              <div className="border-stroke bg-secondary-bg mb-4 inline-flex gap-1 rounded-lg border p-2">
                 <button
                   onClick={() => setTotalBasis('offering')}
-                  className={`${totalBasis === 'offering' ? 'text-white' : 'text-muted hover:bg-[#37424D] hover:text-[#FFFFFF]'} rounded-md px-3 py-1 text-sm font-medium`}
-                  style={{
-                    backgroundColor: totalBasis === 'offering' ? '#047857' : 'transparent',
-                  }}
+                  className={`cursor-pointer rounded-md px-3 py-1 text-sm font-medium ${
+                    totalBasis === 'offering'
+                      ? 'bg-green-500 text-white'
+                      : 'text-secondary-text hover:bg-secondary-bg/80 hover:text-primary-foreground'
+                  }`}
                 >
                   Offering Total
                 </button>
                 <button
                   onClick={() => setTotalBasis('requesting')}
-                  className={`${totalBasis === 'requesting' ? 'text-white' : 'text-muted hover:bg-[#37424D] hover:text-[#FFFFFF]'} rounded-md px-3 py-1 text-sm font-medium`}
-                  style={{
-                    backgroundColor: totalBasis === 'requesting' ? '#B91C1C' : 'transparent',
-                  }}
+                  className={`cursor-pointer rounded-md px-3 py-1 text-sm font-medium ${
+                    totalBasis === 'requesting'
+                      ? 'bg-red-500 text-white'
+                      : 'text-secondary-text hover:bg-secondary-bg/80 hover:text-primary-foreground'
+                  }`}
                 >
                   Requesting Total
                 </button>
@@ -1412,7 +1450,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
                   totalBasis === 'offering'
                     ? 'Similar Items Near Offering Total'
                     : 'Similar Items Near Requesting Total';
-                const accentColor = totalBasis === 'offering' ? '#047857' : '#B91C1C';
+                const accentColor = totalBasis === 'offering' ? 'green-500' : 'red-500';
                 const contextLabel = totalBasis === 'offering' ? 'Offering' : 'Requesting';
 
                 // Compute a baseline demand from the selected side (average of valid demand indices)
@@ -1453,24 +1491,21 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
                 return (
                   <>
                     <div className="mb-3 flex items-center gap-2 text-xs sm:text-sm">
-                      <span className="text-muted">Using selected values</span>
-                      <span className="inline-flex items-center rounded-full border border-green-500/20 bg-green-500/80 px-2 py-0.5 text-white">
+                      <span className="text-secondary-text">Using selected values</span>
+                      <span className="border-status-success/20 bg-status-success/80 inline-flex items-center rounded-full border px-2 py-0.5 text-white">
                         {cleanCount} clean
                       </span>
-                      <span className="inline-flex items-center rounded-full border border-red-500/20 bg-red-500/80 px-2 py-0.5 text-white">
+                      <span className="border-status-error/20 bg-status-error/80 inline-flex items-center rounded-full border px-2 py-0.5 text-white">
                         {dupedCount} duped
                       </span>
                     </div>
 
                     {/* Range controls */}
-                    <div className="mb-4 rounded-lg border p-4">
+                    <div className="border-stroke bg-secondary-bg mb-4 rounded-lg border p-4">
                       <div className="flex flex-col gap-3">
                         <div className="flex items-center justify-between gap-3">
                           <div className="flex items-center gap-2">
-                            <span className="text-muted text-sm">Range</span>
-                            <span className="rounded bg-[#5865F2] px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase">
-                              New
-                            </span>
+                            <span className="text-secondary-text text-sm">Range</span>
                           </div>
                         </div>
                         <Slider
@@ -1489,9 +1524,14 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
                               else setRequestingSimilarItemsRange(val);
                             }
                           }}
-                          sx={{ color: '#5865F2' }}
+                          sx={{
+                            color: 'var(--color-button-info)',
+                            mt: 1,
+                            '& .MuiSlider-markLabel': { color: 'var(--color-secondary-text)' },
+                            '& .MuiSlider-mark': { backgroundColor: 'var(--color-secondary-text)' },
+                          }}
                         />
-                        <div className="text-muted text-xs">
+                        <div className="text-secondary-text text-xs">
                           Current:{' '}
                           {(totalBasis === 'offering'
                             ? offeringSimilarItemsRange

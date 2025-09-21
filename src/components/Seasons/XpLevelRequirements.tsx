@@ -73,7 +73,7 @@ export default function XpLevelRequirements({ season }: XpLevelRequirementsProps
       <div className="mb-6 flex items-center gap-3">
         <div className="from-button-info to-button-info/80 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br">
           <svg
-            className="text-primary-text h-6 w-6"
+            className="text-form-button-text h-6 w-6"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

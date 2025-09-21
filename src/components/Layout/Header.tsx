@@ -307,7 +307,7 @@ export default function Header() {
                 setShowLoginModal(true);
                 handleDrawerToggle();
               }}
-              className="bg-button-info hover:bg-button-info-hover w-full"
+              className="bg-button-info hover:bg-button-info-hover text-form-button-text w-full"
             >
               Login
             </Button>
@@ -446,14 +446,14 @@ export default function Header() {
         component={Link}
         href="/inventories"
         onClick={handleDrawerToggle}
-        className="hover:bg-primary-bg cursor-pointer pl-4"
+        className="group hover:bg-primary-bg cursor-pointer pl-4"
       >
         <ListItemText
           primary={
             <Box className="flex flex-wrap items-center gap-1">
               <span>Inventory Calculator</span>
               {isFeatureEnabled('INVENTORY_CALCULATOR') ? (
-                <span className="border-border-primary text-border-primary rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                <span className="border-primary-text text-primary-text group-hover:border-form-button-text group-hover:text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase transition-colors duration-200">
                   Beta
                 </span>
               ) : (
@@ -903,13 +903,13 @@ export default function Header() {
                           >
                             <Link
                               href="/inventories"
-                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
+                              className="group text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleNavMenuClose}
                             >
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>Inventory Calculator</span>
                                 {isFeatureEnabled('INVENTORY_CALCULATOR') ? (
-                                  <span className="border-border-primary text-border-primary rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                  <span className="border-primary-text text-primary-text group-hover:border-form-button-text group-hover:text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase transition-colors duration-200">
                                     Beta
                                   </span>
                                 ) : (
@@ -1148,7 +1148,22 @@ export default function Header() {
                     />
                   </IconButton>
                 </Link>
-                <Tooltip title="Join our Discord">
+                <Tooltip
+                  title="Join our Discord"
+                  arrow
+                  placement="bottom"
+                  slotProps={{
+                    tooltip: {
+                      sx: {
+                        backgroundColor: 'var(--color-secondary-bg)',
+                        color: 'var(--color-primary-text)',
+                        '& .MuiTooltip-arrow': {
+                          color: 'var(--color-secondary-bg)',
+                        },
+                      },
+                    },
+                  }}
+                >
                   <IconButton
                     onClick={() => setIsDiscordModalOpen(true)}
                     className="text-button-info hover:bg-quaternary-bg transition-colors duration-200"
@@ -1326,7 +1341,7 @@ export default function Header() {
                   <Button
                     variant="contained"
                     onClick={() => setShowLoginModal(true)}
-                    className="bg-button-info hover:bg-button-info-hover active:bg-button-info-active text-primary-text transition-colors duration-200"
+                    className="bg-button-info hover:bg-button-info-hover active:bg-button-info-active text-form-button-text transition-colors duration-200"
                   >
                     <Typography variant="button">Login</Typography>
                   </Button>
@@ -1350,7 +1365,22 @@ export default function Header() {
                   />
                 </IconButton>
               </Link>
-              <Tooltip title="Join our Discord">
+              <Tooltip
+                title="Join our Discord"
+                arrow
+                placement="bottom"
+                slotProps={{
+                  tooltip: {
+                    sx: {
+                      backgroundColor: 'var(--color-secondary-bg)',
+                      color: 'var(--color-primary-text)',
+                      '& .MuiTooltip-arrow': {
+                        color: 'var(--color-secondary-bg)',
+                      },
+                    },
+                  },
+                }}
+              >
                 <IconButton
                   onClick={() => setIsDiscordModalOpen(true)}
                   className="text-button-info hover:bg-quaternary-bg transition-colors duration-200"

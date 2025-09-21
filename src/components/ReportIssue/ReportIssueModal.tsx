@@ -136,7 +136,7 @@ export default function ReportIssueModal({ isOpen, onClose }: ReportIssueModalPr
               <button
                 type="submit"
                 disabled={!title.trim() || !description.trim() || isSubmitting}
-                className="bg-button-info text-primary-text min-w-[100px] cursor-pointer rounded border-none px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+                className="bg-button-info text-form-button-text min-w-[100px] cursor-pointer rounded border-none px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isSubmitting ? 'Submitting...' : 'Submit Issue'}
               </button>

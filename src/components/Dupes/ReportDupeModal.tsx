@@ -132,8 +132,11 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
       <div className="absolute inset-0 bg-black/75" onClick={onClose} />
       <div className="relative mx-4 w-full max-w-md rounded-lg shadow-xl">
         <div className="flex items-center justify-between border-b p-4">
-          <h2 className="text-xl font-semibold text-[#FFFFFF]">Report Dupe</h2>
-          <button onClick={onClose} className="text-muted transition-colors hover:text-[#FFFFFF]">
+          <h2 className="text-primary-text text-xl font-semibold">Report Dupe</h2>
+          <button
+            onClick={onClose}
+            className="text-muted hover:text-primary-text transition-colors"
+          >
             <XMarkIcon className="h-6 w-6" />
           </button>
         </div>
@@ -153,7 +156,7 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
                 />
               </div>
               <div className="text-center">
-                <h4 className="text-lg font-medium text-[#FFFFFF]">{itemName}</h4>
+                <h4 className="text-primary-text text-lg font-medium">{itemName}</h4>
                 <span
                   className="mt-1 inline-block rounded-full px-2 py-0.5 text-xs"
                   style={{ backgroundColor: getItemTypeColor(itemType) }}
@@ -175,7 +178,7 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
                 onChange={(e) => setOwnerName(e.target.value)}
                 placeholder="Enter duper's username"
                 readOnly={isOwnerNameReadOnly}
-                className={`text-muted w-full rounded-lg border bg-[#37424D] px-3 py-2 ${isOwnerNameReadOnly ? 'cursor-not-allowed' : ''}`}
+                className={`text-muted bg-secondary-bg w-full rounded-lg border px-3 py-2 ${isOwnerNameReadOnly ? 'cursor-not-allowed' : ''}`}
               />
             </div>
 
@@ -209,7 +212,7 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
                     value={url}
                     onChange={(e) => handleProofUrlChange(index, e.target.value)}
                     placeholder="Imgur URL or Postimg URL"
-                    className="text-muted w-full rounded-lg border bg-[#37424D] py-2 pr-10 pl-3"
+                    className="text-muted bg-secondary-bg w-full rounded-lg border py-2 pr-10 pl-3"
                   />
                   {index > 0 && (
                     <button
@@ -236,7 +239,7 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg bg-[#5865F2] px-4 py-2 text-white transition-colors duration-200 hover:bg-[#4752C4] focus:ring-2 focus:ring-[#5865F2] focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+              className="bg-button-info text-form-button-text hover:bg-button-info-hover focus:ring-button-info w-full rounded-lg px-4 py-2 transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading ? 'Submitting...' : 'Submit Report'}
             </button>

@@ -30,7 +30,7 @@ export default function ReportIssueButton() {
     <>
       <button
         onClick={handleOpenModal}
-        className="text-link hover:text-link-hover flex w-full items-center gap-2"
+        className="text-link hover:text-link-hover flex w-full cursor-pointer items-center gap-2"
       >
         <BugAntIcon className="h-5 w-5" />
         Report an Issue
