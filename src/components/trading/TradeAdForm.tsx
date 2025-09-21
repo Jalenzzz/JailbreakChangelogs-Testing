@@ -393,7 +393,7 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
     return (
       <div className="space-y-6">
         {/* Expiration Time Selection Skeleton */}
-        <div className="rounded-lg border bg-[#212A31] p-4">
+        <div className="rounded-lg border p-4">
           <Skeleton variant="text" width={200} height={24} className="mb-4" />
           <div className="flex items-center gap-4">
             <Skeleton variant="rectangular" width="100%" height={40} className="rounded-lg" />
@@ -406,7 +406,7 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
 
         {/* Offering and Requesting Items Skeleton */}
         <div className="space-y-6 md:flex md:space-y-0 md:space-x-6">
-          <div className="flex-1 rounded-lg border bg-[#212A31] p-4">
+          <div className="flex-1 rounded-lg border p-4">
             <Skeleton variant="text" width={100} height={24} className="mb-4" />
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
               {[...Array(8)].map((_, i) => (
@@ -421,7 +421,7 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
             </div>
           </div>
 
-          <div className="flex-1 rounded-lg border bg-[#212A31] p-4">
+          <div className="flex-1 rounded-lg border p-4">
             <Skeleton variant="text" width={100} height={24} className="mb-4" />
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
               {[...Array(8)].map((_, i) => (
@@ -464,7 +464,7 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
 
   if (!isAuthenticated) {
     return (
-      <div className="mb-8 rounded-lg border bg-[#212A31] p-6 text-center">
+      <div className="mb-8 rounded-lg border p-6 text-center">
         <h3 className="text-muted mb-4 text-lg font-medium">Create Trade Ads</h3>
         <p className="text-muted/70 mb-8">Please log in to create your own trade ads.</p>
       </div>
@@ -506,7 +506,7 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
               onClick={() => setShowClearConfirmModal(false)}
             />
             <div className="fixed inset-0 flex items-center justify-center p-4">
-              <div className="mx-auto w-full max-w-sm rounded-lg border border-[#5865F2] bg-[#212A31] p-6 shadow-xl">
+              <div className="mx-auto w-full max-w-sm rounded-lg border border-[#5865F2] p-6 shadow-xl">
                 <h2 className="mb-2 text-xl font-semibold text-white">Clear Trade Ad?</h2>
                 <p className="text-muted/80 mb-6">
                   Choose what to clear. This action cannot be undone.
@@ -574,7 +574,7 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
 
         {/* Expiration Time Selection */}
         {!editMode && (
-          <div className="mb-4 rounded-lg border bg-[#212A31] p-4">
+          <div className="mb-4 rounded-lg border p-4">
             <h3 className="text-muted mb-2 flex items-center gap-2 font-medium">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -693,7 +693,7 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
 
         {/* Status Selection (Edit Mode Only) */}
         {editMode && tradeAd && (
-          <div className="mt-4 rounded-lg border bg-[#212A31] p-4">
+          <div className="mt-4 rounded-lg border p-4">
             <h3 className="text-muted mb-4 font-medium">Trade Status</h3>
             {selectLoaded ? (
               <Select
@@ -813,10 +813,7 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
 
         {/* Offering Items */}
         <div className="space-y-6 md:flex md:space-y-0 md:space-x-6">
-          <div
-            className="flex-1 rounded-lg border bg-[#212A31] p-4"
-            style={{ borderColor: '#047857' }}
-          >
+          <div className="flex-1 rounded-lg border p-4" style={{ borderColor: '#047857' }}>
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <h3 className="text-muted font-medium">Offering</h3>
@@ -863,10 +860,7 @@ export const TradeAdForm: React.FC<TradeAdFormProps> = ({
           </div>
 
           {/* Requesting Items */}
-          <div
-            className="flex-1 rounded-lg border bg-[#212A31] p-4"
-            style={{ borderColor: '#B91C1C' }}
-          >
+          <div className="flex-1 rounded-lg border p-4" style={{ borderColor: '#B91C1C' }}>
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <h3 className="text-muted font-medium">Requesting</h3>

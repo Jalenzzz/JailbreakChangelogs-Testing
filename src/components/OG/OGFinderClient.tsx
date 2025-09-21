@@ -141,8 +141,8 @@ export default function OGFinderClient({
           <button
             type="submit"
             disabled={isLoading || !searchId.trim()}
-            className={`flex h-10 min-w-[100px] items-center justify-center gap-2 rounded-lg px-6 text-sm font-medium text-white transition-all duration-200 focus:ring-2 focus:ring-[#5865F2] focus:ring-offset-2 focus:ring-offset-[#212A31] focus:outline-none ${
-              isLoading ? 'cursor-progress bg-[#212A31]' : 'bg-[#5865F2] hover:bg-[#4752C4]'
+            className={`flex h-10 min-w-[100px] items-center justify-center gap-2 rounded-lg px-6 text-sm font-medium text-white transition-all duration-200 focus:ring-2 focus:ring-[#5865F2] focus:ring-offset-2 focus:outline-none ${
+              isLoading ? 'cursor-progress' : 'bg-[#5865F2] hover:bg-[#4752C4]'
             }`}
           >
             {isLoading && (
@@ -187,7 +187,7 @@ export default function OGFinderClient({
 
       {/* Error Display */}
       {error && !initialData && (
-        <div className="rounded-lg border bg-[#212A31] p-6 shadow-sm">
+        <div className="rounded-lg border p-6 shadow-sm">
           <div className="text-center">
             <div className="mb-4 flex justify-center">
               <div className="rounded-full bg-red-500/10 p-3">

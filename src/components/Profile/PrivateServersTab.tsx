@@ -30,7 +30,7 @@ const PrivateServersTab: React.FC<PrivateServersTabProps> = ({ servers, isOwnPro
 
   if (!servers || servers.length === 0) {
     return (
-      <div className="rounded-lg border bg-[#212A31] p-8 text-center">
+      <div className="rounded-lg border p-8 text-center">
         <ShieldCheckIcon className="mx-auto mb-4 h-12 w-12 text-[#5865F2]" />
         <h3 className="text-muted mb-2 text-xl font-semibold">
           {isOwnProfile
@@ -58,7 +58,7 @@ const PrivateServersTab: React.FC<PrivateServersTabProps> = ({ servers, isOwnPro
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {servers.map((server, index) => (
-            <div key={server.id} className="rounded-lg border bg-[#212A31] p-4 sm:p-6">
+            <div key={server.id} className="rounded-lg border p-4 sm:p-6">
               <div className="mb-4 flex flex-col gap-3">
                 <div className="flex items-center space-x-2">
                   <ShieldCheckIcon className="h-5 w-5 text-[#5865F2]" />

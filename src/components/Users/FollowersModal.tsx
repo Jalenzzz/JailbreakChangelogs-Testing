@@ -246,7 +246,6 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
       slotProps={{
         paper: {
           style: {
-            backgroundColor: '#212A31',
             color: '#D3D9D4',
             maxHeight: '70vh',
             margin: '8px',

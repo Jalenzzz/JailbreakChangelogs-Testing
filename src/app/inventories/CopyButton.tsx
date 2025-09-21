@@ -51,7 +51,6 @@ export default function CopyButton({ text, className = '' }: CopyButtonProps) {
           variant="filled"
           severity="success"
           sx={{
-            background: '#212A31',
             color: '#fff',
             border: '1px solid #5865F2',
             fontWeight: 500,

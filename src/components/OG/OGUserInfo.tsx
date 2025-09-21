@@ -28,7 +28,7 @@ export default function OGUserInfo({
   originalItemsCount,
 }: OGUserInfoProps) {
   return (
-    <div className="rounded-lg border bg-[#212A31] p-6 shadow-sm">
+    <div className="rounded-lg border p-6 shadow-sm">
       <h2 className="text-muted mb-4 text-xl font-semibold">User Information</h2>
 
       {/* Roblox User Profile */}
@@ -39,7 +39,7 @@ export default function OGUserInfo({
             alt="Roblox Avatar"
             width={64}
             height={64}
-            className="flex-shrink-0 rounded-full bg-[#212A31]"
+            className="flex-shrink-0 rounded-full"
           />
         ) : (
           <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-[#37424D]">

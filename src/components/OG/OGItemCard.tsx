@@ -105,7 +105,7 @@ export default function OGItemCard({
       </div>
 
       {/* Item Image - Always show container for consistent layout */}
-      <div className="relative mb-3 h-48 w-full overflow-hidden rounded-lg bg-[#212A31]">
+      <div className="relative mb-3 h-48 w-full overflow-hidden rounded-lg">
         {!['Brakes'].includes(item.categoryTitle) ? (
           isVideoItem(item.title) ? (
             <video
@@ -214,7 +214,7 @@ export default function OGItemCard({
           <div className="text-xl font-bold italic">
             <div className="flex flex-col items-center justify-center gap-2 sm:flex-row">
               {/* Always show avatar container - use placeholder when no avatar available */}
-              <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border bg-[#212A31]">
+              <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border">
                 {getUserAvatar(item.user_id) ? (
                   <Image
                     src={getUserAvatar(item.user_id)!}

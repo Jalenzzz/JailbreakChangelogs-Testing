@@ -115,7 +115,6 @@ export const DeleteAccount = () => {
         slotProps={{
           paper: {
             sx: {
-              bgcolor: '#212A31',
               color: '#D3D9D4',
 
               maxWidth: '500px',

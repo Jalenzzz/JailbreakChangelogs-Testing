@@ -141,7 +141,6 @@ export default function FAQPage() {
               key={index}
               defaultExpanded={index === 0}
               sx={{
-                backgroundColor: '#212A31',
                 color: '#D3D9D4',
                 '&:before': {
                   display: 'none',

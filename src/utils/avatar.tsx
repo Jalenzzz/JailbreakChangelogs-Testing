@@ -107,7 +107,7 @@ const BadgeWrapper = ({
         }}
       >
         <div
-          className={`absolute right-0 bottom-0 h-4 w-4 translate-x-1 translate-y-1 transform cursor-help rounded-full border-2 border-[#212A31] ${
+          className={`absolute right-0 bottom-0 h-4 w-4 translate-x-1 translate-y-1 transform cursor-help rounded-full border-2 ${
             isOnline ? 'bg-[#44b700]' : 'bg-[#bdbdbd]'
           }`}
         />
@@ -237,7 +237,7 @@ export const UserAvatar = ({
             <CircularProgress size={24} sx={{ color: '#5865F2' }} />
           </div>
         )}
-        <div className="absolute inset-0 bg-[#212A31]">
+        <div className="absolute inset-0">
           <Image
             src={avatarSource.src}
             alt={avatarSource.alt}

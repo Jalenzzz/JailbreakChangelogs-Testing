@@ -42,7 +42,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
       {/* Dialog */}
-      <div className="relative mx-4 w-full max-w-md rounded-lg border bg-[#212A31] p-6 shadow-xl">
+      <div className="relative mx-4 w-full max-w-md rounded-lg border p-6 shadow-xl">
         {/* Close button */}
         <button
           onClick={onClose}

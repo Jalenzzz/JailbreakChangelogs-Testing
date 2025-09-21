@@ -310,7 +310,7 @@ const DupeSearchForm: React.FC<DupeSearchFormProps> = ({
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-[#5865F2] px-4 py-2 text-white transition-colors duration-200 hover:bg-[#4752C4] focus:ring-2 focus:ring-[#5865F2] focus:ring-offset-2 focus:ring-offset-[#212A31] focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+            className="w-full rounded-lg bg-[#5865F2] px-4 py-2 text-white transition-colors duration-200 hover:bg-[#4752C4] focus:ring-2 focus:ring-[#5865F2] focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? 'Checking...' : 'Check if Dupe'}
           </button>

@@ -135,7 +135,7 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center">
         <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-        <div className="relative mx-4 w-full max-w-md rounded-lg bg-[#212A31] shadow-xl">
+        <div className="relative mx-4 w-full max-w-md rounded-lg shadow-xl">
           <div className="flex items-center justify-between border-b p-4">
             <h2 className="text-xl font-semibold text-[#FFFFFF]">Dupe Check Results</h2>
             <button onClick={onClose} className="text-muted transition-colors hover:text-[#FFFFFF]">

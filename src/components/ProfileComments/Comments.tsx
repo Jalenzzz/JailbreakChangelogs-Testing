@@ -251,7 +251,7 @@ export default function Comment({
       }
       className="group block"
     >
-      <Box className="rounded-lg border bg-[#212A31] p-3 shadow-sm transition-colors hover:border-[#5865F2]">
+      <Box className="rounded-lg border p-3 shadow-sm transition-colors hover:border-[#5865F2]">
         <div className="mb-2 flex">
           {renderThumbnail()}
           <div className="min-w-0 flex-1">

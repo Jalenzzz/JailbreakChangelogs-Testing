@@ -135,7 +135,7 @@ export default function ConnectedBotsPolling() {
             </span>
           </div>
         </div>
-        <div className="rounded-lg border bg-[#212A31] p-4 shadow-sm">
+        <div className="rounded-lg border p-4 shadow-sm">
           <div className="py-8 text-center">
             <div className="mb-2 text-lg font-medium text-red-400">Error loading bots</div>
             <div className="mb-2 text-sm text-gray-500">{error}</div>
@@ -166,7 +166,7 @@ export default function ConnectedBotsPolling() {
             </span>
           </div>
         </div>
-        <div className="rounded-lg border bg-[#212A31] p-4 shadow-sm">
+        <div className="rounded-lg border p-4 shadow-sm">
           <div className="py-8 text-center">
             <div className="mb-2 text-lg font-medium text-gray-400">Loading bots...</div>
             <div className="text-sm text-gray-500">Fetching bot data</div>
@@ -188,7 +188,7 @@ export default function ConnectedBotsPolling() {
             </span>
           </div>
         </div>
-        <div className="rounded-lg border bg-[#212A31] p-4 shadow-sm">
+        <div className="rounded-lg border p-4 shadow-sm">
           <div className="py-8 text-center">
             <div className="mb-2 text-lg font-medium text-gray-400">
               {pollingStopped ? 'Bots offline' : 'No bots active'}
@@ -213,7 +213,7 @@ export default function ConnectedBotsPolling() {
           <span className="text-xs font-medium tracking-wide text-red-400 uppercase">LIVE</span>
         </div>
       </div>
-      <div className="rounded-lg border bg-[#212A31] p-4 shadow-sm">
+      <div className="rounded-lg border p-4 shadow-sm">
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
             <div className="flex items-center gap-2">
@@ -353,7 +353,7 @@ function BotStatusCard({
   const avatarUrl = avatarData?.imageUrl || null;
 
   return (
-    <div className="rounded-lg border bg-[#212A31] p-3">
+    <div className="rounded-lg border p-3">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-gray-600">

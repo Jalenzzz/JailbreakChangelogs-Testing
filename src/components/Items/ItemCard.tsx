@@ -289,7 +289,7 @@ export default function ItemCard({ item, isFavorited, onFavoriteChange }: ItemCa
           </div>
           <button
             onClick={handleFavoriteClick}
-            className={`border-stroke bg-secondary-bg/80 absolute top-2 left-2 z-10 rounded-full border p-1.5 transition-opacity ${
+            className={`border-stroke bg-secondary-bg/80 absolute top-2 left-2 z-10 cursor-pointer rounded-full border p-1.5 transition-opacity ${
               isHovered ? 'opacity-100' : 'opacity-0'
             } hover:bg-secondary-bg`}
             title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
@@ -392,7 +392,7 @@ export default function ItemCard({ item, isFavorited, onFavoriteChange }: ItemCa
             </div>
 
             <div className="space-y-1 pb-2 sm:space-y-2">
-              <div className="bg-secondary-bg flex items-center justify-between rounded-lg p-1 sm:p-2.5">
+              <div className="bg-primary-bg flex items-center justify-between rounded-lg p-1 sm:p-2.5">
                 <div className="flex items-center gap-1 sm:gap-2">
                   <span className="text-secondary-text text-xs font-medium whitespace-nowrap sm:text-xs">
                     <span className="sm:hidden">Cash</span>
@@ -404,7 +404,7 @@ export default function ItemCard({ item, isFavorited, onFavoriteChange }: ItemCa
                 </span>
               </div>
 
-              <div className="bg-secondary-bg flex items-center justify-between rounded-lg p-1 sm:p-2.5">
+              <div className="bg-primary-bg flex items-center justify-between rounded-lg p-1 sm:p-2.5">
                 <div className="flex items-center gap-1 sm:gap-2">
                   <span className="text-secondary-text text-xs font-medium whitespace-nowrap sm:text-xs">
                     <span className="sm:hidden">Duped</span>
@@ -416,7 +416,7 @@ export default function ItemCard({ item, isFavorited, onFavoriteChange }: ItemCa
                 </span>
               </div>
 
-              <div className="bg-secondary-bg flex items-center justify-between rounded-lg p-1 sm:p-2.5">
+              <div className="bg-primary-bg flex items-center justify-between rounded-lg p-1 sm:p-2.5">
                 <div className="flex items-center gap-1 sm:gap-2">
                   <span className="text-secondary-text text-xs font-medium whitespace-nowrap sm:text-xs">
                     Demand
@@ -428,7 +428,7 @@ export default function ItemCard({ item, isFavorited, onFavoriteChange }: ItemCa
               </div>
 
               {isValuesPage && (
-                <div className="bg-secondary-bg flex items-center justify-between rounded-lg p-1 sm:p-2.5">
+                <div className="bg-primary-bg flex items-center justify-between rounded-lg p-1 sm:p-2.5">
                   <div className="flex items-center gap-1 sm:gap-2">
                     <span className="text-secondary-text text-xs font-medium whitespace-nowrap sm:text-xs">
                       Trend

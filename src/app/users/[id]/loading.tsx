@@ -6,7 +6,7 @@ export default function UserProfileLoading() {
     <main className="min-h-screen">
       <div className="container mx-auto mb-8 max-w-7xl">
         <Breadcrumb loading={true} />
-        <div className="overflow-hidden rounded-lg border bg-[#212A31] shadow-md">
+        <div className="overflow-hidden rounded-lg border shadow-md">
           {/* Banner skeleton */}
           <Skeleton variant="rectangular" height={256} />
 
@@ -18,7 +18,7 @@ export default function UserProfileLoading() {
                 <div className="relative">
                   <Skeleton variant="circular" width={96} height={96} />
                   {/* Badge skeleton to account for dynamic badge loading - positioned like MUI Badge */}
-                  <div className="absolute right-0 bottom-0 h-4 w-4 translate-x-1 translate-y-1 transform rounded-full border-2 border-[#212A31]" />
+                  <div className="absolute right-0 bottom-0 h-4 w-4 translate-x-1 translate-y-1 transform rounded-full border-2" />
                 </div>
               </div>
 

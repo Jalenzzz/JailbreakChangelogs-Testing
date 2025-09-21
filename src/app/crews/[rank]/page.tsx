@@ -44,7 +44,7 @@ export default async function CrewPage({ params, searchParams }: CrewPageProps) 
               </div>
             </div>
 
-            <div className="rounded-lg border bg-[#212A31] p-8 text-center">
+            <div className="rounded-lg border p-8 text-center">
               <h2 className="mb-4 text-2xl font-bold text-gray-100">
                 Rank #{rankNumber} Not Available
               </h2>

@@ -415,7 +415,7 @@ export default function ChangelogDetailsClient({
         </div>
 
         {/* Filter by Item Type - Chip Style */}
-        <div className="rounded-lg border border-[#37424D] bg-[#212A31] p-4">
+        <div className="rounded-lg border border-[#37424D] p-4">
           <div className="mb-3">
             <h3 className="mb-2 text-sm font-medium text-[#D3D9D4]">Filter by item type:</h3>
           </div>
@@ -496,8 +496,6 @@ export default function ChangelogDetailsClient({
           slotProps={{
             paper: {
               sx: {
-                backgroundColor: '#212A31',
-
                 borderRadius: '8px',
               },
             },
@@ -505,13 +503,12 @@ export default function ChangelogDetailsClient({
         >
           <DialogTitle
             sx={{
-              bgcolor: '#212A31',
               color: '#FFFFFF',
             }}
           >
             Voters
           </DialogTitle>
-          <DialogContent dividers sx={{ bgcolor: '#212A31' }}>
+          <DialogContent dividers>
             <Tabs
               value={votersTab === 'up' ? 0 : 1}
               onChange={(_, val) => setVotersTab(val === 0 ? 'up' : 'down')}
@@ -610,7 +607,7 @@ export default function ChangelogDetailsClient({
               )}
             </div>
           </DialogContent>
-          <DialogActions sx={{ bgcolor: '#212A31' }}>
+          <DialogActions>
             <Button onClick={() => setVotersOpen(false)} variant="contained">
               Close
             </Button>
@@ -627,7 +624,7 @@ export default function ChangelogDetailsClient({
             {paginatedChanges.map((change) => (
               <div
                 key={change.change_id}
-                className="relative rounded-lg border border-[#37424D] bg-[#212A31] p-4"
+                className="relative rounded-lg border border-[#37424D] p-4"
               >
                 {/* Suggestion # Pill - Responsive placement */}
                 {change.suggestion && (

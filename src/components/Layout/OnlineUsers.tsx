@@ -67,15 +67,7 @@ export default function OnlineUsers({
       <div className={`flex items-center space-x-2 ${className}`}>
         <div className="flex -space-x-2">
           {[...Array(max)].map((_, i) => (
-            <Skeleton
-              key={i}
-              variant="circular"
-              width={32}
-              height={32}
-              sx={{
-                border: '2px solid #212A31',
-              }}
-            />
+            <Skeleton key={i} variant="circular" width={32} height={32} />
           ))}
         </div>
         <span className="text-sm text-[#B9BBBE]">Loading online users...</span>
@@ -98,7 +90,7 @@ export default function OnlineUsers({
           <Link
             key={user.id}
             href={`/users/${user.id}`}
-            className="relative h-8 w-8 cursor-pointer overflow-hidden rounded-full border-2 border-[#212A31] transition-colors hover:border-[#5865F2]"
+            className="relative h-8 w-8 cursor-pointer overflow-hidden rounded-full border-2 transition-colors hover:border-[#5865F2]"
             style={{ zIndex: visibleUsers.length - index }}
           >
             {user.avatar && user.avatar !== 'None' ? (
@@ -133,7 +125,7 @@ export default function OnlineUsers({
         ))}
         {hiddenCount > 0 && (
           <div
-            className="relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#212A31] bg-[#5865F2] text-xs font-medium text-white"
+            className="relative flex h-8 w-8 items-center justify-center rounded-full border-2 bg-[#5865F2] text-xs font-medium text-white"
             style={{ zIndex: 0 }}
           >
             +{hiddenCount}

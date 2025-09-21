@@ -101,7 +101,7 @@ export const TotalSimilarItems: React.FC<TotalSimilarItemsProps> = ({
   const baselineDemandIndex = baselineDemand ? getDemandIndex(baselineDemand) : -1;
 
   return (
-    <div className="rounded-lg border bg-[#212A31] p-6">
+    <div className="rounded-lg border p-6">
       <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
           <h3 className="text-muted font-semibold">{heading}</h3>

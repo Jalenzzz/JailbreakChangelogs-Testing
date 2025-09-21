@@ -82,7 +82,7 @@ export default function DupeItemCard({
       </div>
 
       {/* Item Image */}
-      <div className="relative mb-3 h-48 w-full overflow-hidden rounded-lg bg-[#212A31]">
+      <div className="relative mb-3 h-48 w-full overflow-hidden rounded-lg">
         {!['Brakes'].includes(item.categoryTitle) ? (
           isVideoItem(item.title) ? (
             <video
@@ -144,7 +144,7 @@ export default function DupeItemCard({
           <div className="text-sm opacity-90">CURRENT OWNER</div>
           <div className="text-xl font-bold italic">
             <div className="flex flex-col items-center justify-center gap-2 sm:flex-row">
-              <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border bg-[#212A31]">
+              <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border">
                 {getUserAvatar(item.latest_owner) ? (
                   <Image
                     src={getUserAvatar(item.latest_owner)!}

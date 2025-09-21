@@ -158,7 +158,7 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
               ? 'border-gray-300/50 bg-gradient-to-r from-gray-400/20 to-gray-500/20'
               : rank === 3
                 ? 'border-amber-500/50 bg-gradient-to-r from-amber-600/20 to-amber-700/20'
-                : 'bg-[#212A31]'
+                : ''
         }`}
       >
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6">
@@ -222,7 +222,7 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
       </div>
 
       {/* Modern Crew Stats */}
-      <div className="rounded-xl border bg-gradient-to-br from-[#212A31] to-[#1A2328] p-6 shadow-lg">
+      <div className="rounded-xl border bg-gradient-to-br p-6 shadow-lg">
         <h3 className="mb-6 flex items-center gap-2 text-lg font-semibold text-gray-300">
           <div className="h-2 w-2 rounded-full bg-blue-400"></div>
           Crew Performance
@@ -380,7 +380,7 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
       </div>
 
       {/* Crew Members */}
-      <div className="rounded-lg border bg-[#212A31] p-4 sm:p-6">
+      <div className="rounded-lg border p-4 sm:p-6">
         <h2 className="mb-4 text-xl font-bold text-gray-100">
           Crew Members ({crew.MemberUserIds.length})
         </h2>

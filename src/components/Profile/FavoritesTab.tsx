@@ -166,7 +166,7 @@ export default function FavoritesTab({
         href={itemUrl}
         className="group block"
       >
-        <Box className="rounded-lg border bg-[#212A31] p-3 shadow-sm transition-colors hover:border-[#5865F2]">
+        <Box className="rounded-lg border p-3 shadow-sm transition-colors hover:border-[#5865F2]">
           <div className="mb-2 flex items-center">
             <div className="relative mr-3 h-16 w-16 flex-shrink-0 overflow-hidden rounded-md md:h-[4.5rem] md:w-32">
               {isVideo ? (
@@ -267,7 +267,7 @@ export default function FavoritesTab({
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {[...Array(6)].map((_, index) => (
-              <Box key={index} className="rounded-lg border bg-[#212A31] p-3 shadow-sm">
+              <Box key={index} className="rounded-lg border p-3 shadow-sm">
                 <div className="mb-2 flex items-center">
                   <div className="relative mr-3 h-16 w-16 flex-shrink-0 overflow-hidden rounded-md md:h-[4.5rem] md:w-32">
                     <Skeleton variant="rectangular" width="100%" height="100%" />

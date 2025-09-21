@@ -372,7 +372,7 @@ export default function OGFinderResults({
 
       {/* Error Display */}
       {error && (
-        <div className="rounded-lg border bg-[#212A31] p-6 shadow-sm">
+        <div className="rounded-lg border p-6 shadow-sm">
           <div className="text-center">
             <div className="mb-4 flex justify-center">
               <div className="rounded-full bg-red-500/10 p-3">
@@ -388,7 +388,7 @@ export default function OGFinderResults({
       {/* No Items Found Display */}
       {!error && (!initialData?.results || initialData.results.length === 0) && (
         <>
-          <div className="rounded-lg border bg-[#212A31] p-6 shadow-sm">
+          <div className="rounded-lg border p-6 shadow-sm">
             <div className="text-center">
               <div className="mb-4 flex justify-center">
                 <div className="rounded-full bg-red-500/10 p-3">
@@ -458,7 +458,7 @@ export default function OGFinderResults({
           />
 
           {/* Items Grid */}
-          <div className="rounded-lg border bg-[#212A31] p-6 shadow-sm">
+          <div className="rounded-lg border p-6 shadow-sm">
             <h2 className="text-muted mb-4 text-xl font-semibold">OG Items</h2>
 
             {/* Pro Tip - Only show when there are results */}

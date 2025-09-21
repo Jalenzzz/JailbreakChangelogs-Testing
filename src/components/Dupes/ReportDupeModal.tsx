@@ -130,7 +130,7 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center">
       <div className="absolute inset-0 bg-black/75" onClick={onClose} />
-      <div className="relative mx-4 w-full max-w-md rounded-lg bg-[#212A31] shadow-xl">
+      <div className="relative mx-4 w-full max-w-md rounded-lg shadow-xl">
         <div className="flex items-center justify-between border-b p-4">
           <h2 className="text-xl font-semibold text-[#FFFFFF]">Report Dupe</h2>
           <button onClick={onClose} className="text-muted transition-colors hover:text-[#FFFFFF]">
@@ -236,7 +236,7 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg bg-[#5865F2] px-4 py-2 text-white transition-colors duration-200 hover:bg-[#4752C4] focus:ring-2 focus:ring-[#5865F2] focus:ring-offset-2 focus:ring-offset-[#212A31] focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full rounded-lg bg-[#5865F2] px-4 py-2 text-white transition-colors duration-200 hover:bg-[#4752C4] focus:ring-2 focus:ring-[#5865F2] focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading ? 'Submitting...' : 'Submit Report'}
             </button>

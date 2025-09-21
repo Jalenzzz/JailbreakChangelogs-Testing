@@ -53,7 +53,7 @@ export default function OGStats({ initialData }: OGStatsProps) {
   })();
 
   return (
-    <div className="rounded-lg border bg-[#212A31] p-6 shadow-sm">
+    <div className="rounded-lg border p-6 shadow-sm">
       <h2 className="text-muted mb-4 text-xl font-semibold">OG Statistics</h2>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">

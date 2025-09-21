@@ -63,9 +63,9 @@ export default function DupeSearchInput({
         <button
           type="submit"
           disabled={isCurrentlyLoading || !searchId.trim()}
-          className={`flex h-10 min-w-[100px] items-center justify-center gap-2 rounded-lg px-6 text-sm font-medium text-white transition-all duration-200 focus:ring-2 focus:ring-[#5865F2] focus:ring-offset-2 focus:ring-offset-[#212A31] focus:outline-none ${
+          className={`flex h-10 min-w-[100px] items-center justify-center gap-2 rounded-lg px-6 text-sm font-medium text-white transition-all duration-200 focus:ring-2 focus:ring-[#5865F2] focus:ring-offset-2 focus:outline-none ${
             isCurrentlyLoading
-              ? 'cursor-progress bg-[#212A31]'
+              ? 'cursor-progress'
               : 'bg-[#5865F2] hover:cursor-pointer hover:bg-[#4752C4]'
           }`}
         >

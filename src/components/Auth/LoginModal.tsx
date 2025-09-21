@@ -148,7 +148,6 @@ function LoginModalInner({ open, onClose }: LoginModalProps) {
                 boxShadow: 'none',
                 overflow: 'visible',
                 '& .MuiDialogContent-root': {
-                  backgroundColor: '#212A31',
                   padding: '24px',
                   borderRadius: '8px',
 
@@ -190,7 +189,7 @@ function LoginModalInner({ open, onClose }: LoginModalProps) {
             }}
             className="relative z-10"
           >
-            <DialogContent sx={{ p: 3, backgroundColor: '#212A31 !important' }}>
+            <DialogContent sx={{ p: 3 }}>
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}

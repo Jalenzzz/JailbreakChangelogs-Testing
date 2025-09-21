@@ -49,9 +49,9 @@ export default function TradeHistoryModal({
       <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <div className="mx-auto max-h-[80vh] w-full max-w-4xl overflow-hidden rounded-lg border bg-[#212A31]">
+        <div className="mx-auto max-h-[80vh] w-full max-w-4xl overflow-hidden rounded-lg border">
           {/* Modal Header */}
-          <div className="border-b bg-[#212A31] p-4 sm:p-6">
+          <div className="border-b p-4 sm:p-6">
             <div className="flex items-start justify-between gap-4 sm:items-center">
               <div className="min-w-0 flex-1">
                 <Dialog.Title className="text-muted text-lg font-semibold sm:text-xl">
@@ -165,7 +165,7 @@ export default function TradeHistoryModal({
                             className={`rounded-lg border p-3 ${
                               trade.tradeNumber === firstTradeNumber
                                 ? 'border-[#37424D] bg-[#1A2332] shadow-lg'
-                                : 'border-[#37424D] bg-[#212A31]'
+                                : 'border-[#37424D]'
                             }`}
                           >
                             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

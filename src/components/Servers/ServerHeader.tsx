@@ -2,7 +2,7 @@ import React from 'react';
 
 const ServerHeader: React.FC = () => {
   return (
-    <div className="mb-8 rounded-lg border bg-[#212A31] p-6">
+    <div className="mb-8 rounded-lg border p-6">
       <h2 className="text-muted mb-4 text-2xl font-semibold">Roblox Jailbreak Private Servers</h2>
       <p className="text-muted mb-4">
         Welcome to our Private Servers hub! Connect with fellow Jailbreak players in dedicated

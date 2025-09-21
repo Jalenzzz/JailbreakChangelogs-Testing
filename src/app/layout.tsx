@@ -90,44 +90,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <AppRouterCacheProvider options={{ enableCssLayer: true }}>
             <ThemeProvider>
               <MaintenanceBypass>
-                <Toaster
-                  position="bottom-right"
-                  toastOptions={{
-                    success: {
-                      style: {
-                        background: 'var(--color-button-success)',
-                        color: 'var(--color-primary-text)',
-                        border: '1px solid var(--color-button-success)',
-                      },
-                      iconTheme: {
-                        primary: 'var(--color-primary-text)',
-                        secondary: 'var(--color-button-success)',
-                      },
-                    },
-                    error: {
-                      style: {
-                        background: 'var(--color-button-danger)',
-                        color: 'var(--color-primary-text)',
-                        border: '1px solid var(--color-button-danger)',
-                      },
-                      iconTheme: {
-                        primary: 'var(--color-primary-text)',
-                        secondary: 'var(--color-button-danger)',
-                      },
-                    },
-                    loading: {
-                      style: {
-                        background: 'var(--color-button-info)',
-                        color: 'var(--color-primary-text)',
-                        border: '1px solid var(--color-button-info)',
-                      },
-                      iconTheme: {
-                        primary: 'var(--color-primary-text)',
-                        secondary: 'var(--color-button-info)',
-                      },
-                    },
-                  }}
-                />
                 <NextTopLoader
                   color="var(--color-button-info)"
                   initialPosition={0.08}
@@ -196,35 +158,47 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               toastOptions={{
                 success: {
                   style: {
-                    background: 'var(--color-primary-bg)',
+                    background: 'rgba(30,30,30,0.8)',
                     color: 'var(--color-primary-text)',
-                    border: '1px solid var(--color-button-info)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    borderRadius: '16px',
+                    backdropFilter: 'blur(20px)',
+                    WebkitBackdropFilter: 'blur(20px)',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
                   },
                   iconTheme: {
                     primary: 'var(--color-button-info)',
-                    secondary: 'var(--color-primary-bg)',
+                    secondary: 'rgba(30,30,30,0.8)',
                   },
                 },
                 error: {
                   style: {
-                    background: 'var(--color-button-danger)',
+                    background: 'rgba(30,30,30,0.8)',
                     color: 'var(--color-primary-text)',
-                    border: '1px solid var(--color-button-danger)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    borderRadius: '16px',
+                    backdropFilter: 'blur(20px)',
+                    WebkitBackdropFilter: 'blur(20px)',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
                   },
                   iconTheme: {
-                    primary: 'var(--color-primary-text)',
-                    secondary: 'var(--color-button-danger)',
+                    primary: 'var(--color-button-info)',
+                    secondary: 'rgba(30,30,30,0.8)',
                   },
                 },
                 loading: {
                   style: {
-                    background: 'var(--color-button-info)',
+                    background: 'rgba(30,30,30,0.8)',
                     color: 'var(--color-primary-text)',
-                    border: '1px solid var(--color-button-info)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    borderRadius: '16px',
+                    backdropFilter: 'blur(20px)',
+                    WebkitBackdropFilter: 'blur(20px)',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
                   },
                   iconTheme: {
-                    primary: 'var(--color-primary-text)',
-                    secondary: 'var(--color-button-info)',
+                    primary: 'var(--color-button-info)',
+                    secondary: 'rgba(30,30,30,0.8)',
                   },
                 },
               }}

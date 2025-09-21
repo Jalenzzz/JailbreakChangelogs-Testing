@@ -193,7 +193,7 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
                     : `/users/${user.id}`
                 }
                 prefetch={false}
-                className={`block rounded-lg border bg-[#212A31] p-4 shadow-md ${
+                className={`block rounded-lg border p-4 shadow-md ${
                   user.settings?.profile_public === 0 && currentUserId !== user.id
                     ? 'cursor-not-allowed opacity-75'
                     : 'group hover:border-blue-300'

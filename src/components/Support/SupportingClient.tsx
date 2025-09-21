@@ -183,7 +183,7 @@ export default function SupportingClient({ supporters }: SupportingClientProps) 
               </Link>
             </div>
 
-            <div className="flex flex-1 flex-col justify-center rounded-lg border border-gray-700/50 bg-[#212a31] p-4">
+            <div className="flex flex-1 flex-col justify-center rounded-lg border border-gray-700/50 p-4">
               <p className="text-gray-300">
                 By supporting Jailbreak Changelogs, you&apos;re helping us maintain and improve this
                 open-source project, community made for Roblox Jailbreak. Your support enables us to
@@ -210,7 +210,7 @@ export default function SupportingClient({ supporters }: SupportingClientProps) 
                   highlightedTier === tier.tierNumber
                     ? 'ring-opacity-75 scale-110 transform ring-4 ring-yellow-400'
                     : ''
-                } bg-[#212a31]`}
+                } `}
               >
                 {tier.recommended && (
                   <div className="bg-[#1d7da3] py-2 text-center font-semibold text-white">
@@ -275,7 +275,7 @@ export default function SupportingClient({ supporters }: SupportingClientProps) 
           </div>
 
           <div className="flex-shrink-0 lg:w-80">
-            <div className="sticky top-8 rounded-lg bg-[#212a31] p-6 shadow-lg">
+            <div className="sticky top-8 rounded-lg p-6 shadow-lg">
               <h2 className="mb-6 text-center text-xl font-bold text-white">Ready to Support?</h2>
               <div className="space-y-8">
                 <div className="text-center">

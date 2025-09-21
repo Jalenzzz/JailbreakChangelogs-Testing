@@ -23,7 +23,7 @@ export default function PrivacyPage() {
         </div>
         <p className="text-muted mb-6 text-sm">Last updated: May 07th, 2025</p>
 
-        <div className="rounded-lg border bg-[#212A31] p-6 transition-colors hover:border-[#5865F2]">
+        <div className="rounded-lg border p-6 transition-colors hover:border-[#5865F2]">
           <Typography className="text-muted">
             This Privacy Policy outlines our commitment to protecting your privacy. We prioritize
             transparency and do not collect any personal information from users of our website.

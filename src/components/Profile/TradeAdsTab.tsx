@@ -85,7 +85,7 @@ export default function TradeAdsTab({
     return (
       <div
         key={itemData.id}
-        className="rounded-lg border bg-[#212A31] p-3 shadow-sm transition-colors hover:border-[#5865F2]"
+        className="rounded-lg border p-3 shadow-sm transition-colors hover:border-[#5865F2]"
       >
         <div className="mb-2 flex items-center">
           <div className="relative mr-3 h-16 w-16 flex-shrink-0 overflow-hidden rounded-md md:h-[4.5rem] md:w-32">

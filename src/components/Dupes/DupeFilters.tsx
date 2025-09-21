@@ -79,7 +79,7 @@ export default function DupeFilters({
   ];
 
   return (
-    <div className="rounded-lg border bg-[#212A31] p-6 shadow-sm">
+    <div className="rounded-lg border p-6 shadow-sm">
       <h2 className="text-muted mb-4 text-xl font-semibold">Filter & Sort</h2>
 
       <div className="flex w-full flex-col gap-4 sm:flex-row">

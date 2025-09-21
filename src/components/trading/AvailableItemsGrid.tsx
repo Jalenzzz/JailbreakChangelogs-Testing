@@ -253,7 +253,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
 
   return (
     <div className="space-y-4" data-component="available-items-grid">
-      <div className="rounded-lg border bg-[#212A31] p-1 pt-4 sm:p-2">
+      <div className="rounded-lg border p-1 pt-4 sm:p-2">
         {/* Ad Placement: Above the grid, only for non-premium users */}
         {premiumStatusLoaded && currentUserPremiumType === 0 && (
           <div className="mb-6 flex w-full flex-col items-center">
@@ -261,7 +261,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
               className="relative w-full max-w-[700px] overflow-hidden rounded-lg border bg-[#1a2127] shadow transition-all duration-300"
               style={{ minHeight: '250px' }}
             >
-              <span className="text-muted absolute top-2 left-2 z-10 rounded bg-[#212A31] px-2 py-0.5 text-xs">
+              <span className="text-muted absolute top-2 left-2 z-10 rounded px-2 py-0.5 text-xs">
                 Advertisement
               </span>
               <DisplayAd
@@ -605,7 +605,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
                 key={item.id}
                 className={`group flex w-full flex-col rounded-lg p-2 text-left transition-colors ${
                   item.tradable === 1
-                    ? 'bg-[#1a2127] hover:bg-[#212A31]'
+                    ? 'hover: bg-[#1a2127]'
                     : 'cursor-not-allowed bg-[#1a2127] opacity-50'
                 }`}
                 tabIndex={0}

@@ -308,7 +308,7 @@ const CalculatorItemGrid: React.FC<{
             onClick={closeActionModal}
           />
           <div className="fixed inset-0 flex items-center justify-center p-4">
-            <div className="mx-auto w-full max-w-sm rounded-lg border border-[#5865F2] bg-[#212A31] p-6 shadow-xl">
+            <div className="mx-auto w-full max-w-sm rounded-lg border border-[#5865F2] p-6 shadow-xl">
               <h2 className="mb-4 text-xl font-semibold text-white">
                 {actionItem
                   ? actionItem.sub_name
@@ -1049,7 +1049,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
             onClick={() => setShowClearConfirmModal(false)}
           />
           <div className="fixed inset-0 flex items-center justify-center p-4">
-            <div className="mx-auto w-full max-w-sm rounded-lg border border-[#5865F2] bg-[#212A31] p-6 shadow-xl">
+            <div className="mx-auto w-full max-w-sm rounded-lg border border-[#5865F2] p-6 shadow-xl">
               <h2 className="mb-2 text-xl font-semibold text-white">Clear Calculator?</h2>
               <p className="text-muted/80 mb-6">
                 Choose what to clear. This action cannot be undone.
@@ -1172,10 +1172,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
         {/* Trade Panels */}
         <div className="space-y-6 md:flex md:space-y-0 md:space-x-6">
           {/* Offering Items */}
-          <div
-            className="flex-1 rounded-lg border bg-[#212A31] p-4"
-            style={{ borderColor: '#047857' }}
-          >
+          <div className="flex-1 rounded-lg border p-4" style={{ borderColor: '#047857' }}>
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <h3 className="text-muted font-medium">Offering</h3>
@@ -1232,10 +1229,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
           </div>
 
           {/* Requesting Items */}
-          <div
-            className="flex-1 rounded-lg border bg-[#212A31] p-4"
-            style={{ borderColor: '#B91C1C' }}
-          >
+          <div className="flex-1 rounded-lg border p-4" style={{ borderColor: '#B91C1C' }}>
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <h3 className="text-muted font-medium">Requesting</h3>
@@ -1294,7 +1288,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
       </div>
 
       {/* Tabs */}
-      <div className="mb-6 rounded-lg border bg-[#212A31]">
+      <div className="mb-6 rounded-lg border">
         <nav className="px-6 py-4">
           <div className="flex flex-col space-y-1 rounded-lg p-1 sm:flex-row sm:space-y-0 sm:space-x-1">
             <button
@@ -1343,7 +1337,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
         </div>
       ) : activeTab === 'values' ? (
         <div className="mb-8">
-          <div className="rounded-lg border bg-[#212A31] p-4">
+          <div className="rounded-lg border p-4">
             <CalculatorValueComparison
               offering={offeringItems}
               requesting={requestingItems}
@@ -1358,7 +1352,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
         <div className="mb-8">
           {/* Similar Items Near Total - Selector and Results */}
           {offeringItems.length === 0 && requestingItems.length === 0 ? (
-            <div className="rounded-lg border bg-[#212A31] p-4">
+            <div className="rounded-lg border p-4">
               <EmptyState
                 message={
                   'Go to the "Browse Items" tab to select items and see similar items near your total.'
@@ -1383,7 +1377,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
                     </p>
                   </div>
                 )}
-              <div className="mb-4 inline-flex gap-1 rounded-lg border bg-[#212A31] p-2">
+              <div className="mb-4 inline-flex gap-1 rounded-lg border p-2">
                 <button
                   onClick={() => setTotalBasis('offering')}
                   className={`${totalBasis === 'offering' ? 'text-white' : 'text-muted hover:bg-[#37424D] hover:text-[#FFFFFF]'} rounded-md px-3 py-1 text-sm font-medium`}
@@ -1469,7 +1463,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
                     </div>
 
                     {/* Range controls */}
-                    <div className="mb-4 rounded-lg border bg-[#212A31] p-4">
+                    <div className="mb-4 rounded-lg border p-4">
                       <div className="flex flex-col gap-3">
                         <div className="flex items-center justify-between gap-3">
                           <div className="flex items-center gap-2">

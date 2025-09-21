@@ -191,7 +191,7 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal */}
-      <div className="relative w-full max-w-md rounded-lg bg-[#212A31] shadow-xl">
+      <div className="relative w-full max-w-md rounded-lg shadow-xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b p-4">
           <h2 className="text-muted text-xl font-semibold">

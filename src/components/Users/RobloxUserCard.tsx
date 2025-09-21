@@ -65,7 +65,7 @@ export default function RobloxUserCard({ user, currentUserId }: RobloxUserCardPr
               <CircularProgress size={24} sx={{ color: '#5865F2' }} />
             </div>
           )}
-          <div className="absolute inset-0 bg-[#212A31]">
+          <div className="absolute inset-0">
             <Image
               src={user.roblox_avatar}
               alt={`${user.roblox_display_name || user.roblox_username || 'Roblox'} user's profile picture`}

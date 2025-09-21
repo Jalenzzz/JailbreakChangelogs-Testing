@@ -24,17 +24,17 @@ import ItemVariantDropdown from '@/components/Items/ItemVariantDropdown';
 import { Change as ItemChange } from '@/components/Items/ItemChangelogs';
 
 const ItemValueChart = dynamic(() => import('@/components/Items/ItemValueChart'), {
-  loading: () => <div className="h-[350px] animate-pulse rounded bg-[#212A31]" />,
+  loading: () => <div className="bg-secondary-bg h-[350px] animate-pulse rounded" />,
   ssr: false,
 });
 
 const ItemChangelogs = dynamic(() => import('@/components/Items/ItemChangelogs'), {
-  loading: () => <div className="h-[350px] animate-pulse rounded bg-[#212A31]" />,
+  loading: () => <div className="bg-secondary-bg h-[350px] animate-pulse rounded" />,
   ssr: false,
 });
 
 const ChangelogComments = dynamic(() => import('@/components/PageComments/ChangelogComments'), {
-  loading: () => <div className="h-[350px] animate-pulse rounded bg-[#212A31]" />,
+  loading: () => <div className="bg-secondary-bg h-[350px] animate-pulse rounded" />,
   ssr: false,
 });
 
@@ -54,7 +54,6 @@ import {
 import { formatCustomDate } from '@/utils/timestamp';
 import { useOptimizedRealTimeRelativeDate } from '@/hooks/useSharedTimer';
 import { useAuthContext } from '@/contexts/AuthContext';
-import { getItemTypeColor } from '@/utils/badgeColors';
 import { CategoryIconBadge } from '@/utils/categoryIcons';
 import { convertUrlsToLinks } from '@/utils/urlConverter';
 import { ItemDetails, DupedOwner } from '@/types';
@@ -262,7 +261,7 @@ export default function ItemDetailsClient({
             {/* Left column - Media */}
             <div className="relative">
               <div
-                className="relative aspect-video w-full overflow-hidden rounded-lg bg-[#212A31]"
+                className="bg-secondary-bg relative aspect-video w-full overflow-hidden rounded-lg"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
               >
@@ -285,16 +284,16 @@ export default function ItemDetailsClient({
                 <div className="absolute top-4 left-4 z-10">
                   <button
                     onClick={handleFavoriteClick}
-                    className="flex items-center gap-1.5 rounded-full bg-black/50 px-2 py-1.5 transition-opacity hover:bg-black/70"
+                    className="border-stroke bg-secondary-bg/80 hover:bg-secondary-bg flex cursor-pointer items-center gap-1.5 rounded-full border px-2 py-1.5 transition-opacity"
                     title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
                   >
                     {isFavorited ? (
-                      <StarIconSolid className="h-5 w-5 text-yellow-400" />
+                      <StarIconSolid className="text-button-info h-5 w-5" />
                     ) : (
-                      <StarIcon className="h-5 w-5 text-white" />
+                      <StarIcon className="text-primary-text h-5 w-5" />
                     )}
                     {favoriteCount > 0 && (
-                      <span className="text-sm text-white">{favoriteCount}</span>
+                      <span className="text-primary-text text-sm">{favoriteCount}</span>
                     )}
                   </button>
                 </div>
@@ -348,14 +347,14 @@ export default function ItemDetailsClient({
                 {isHornItem(item.type) && (
                   <button
                     onClick={handleHornClick}
-                    className={`absolute inset-0 flex items-center justify-center bg-black/50 transition-opacity ${
+                    className={`bg-primary-bg/50 absolute inset-0 flex items-center justify-center transition-opacity ${
                       isHovered || isPlaying ? 'opacity-100' : 'opacity-0'
                     }`}
                   >
                     {isPlaying ? (
-                      <PauseIcon className="h-12 w-12 text-white transition-transform" />
+                      <PauseIcon className="text-primary-text h-12 w-12 transition-transform" />
                     ) : (
-                      <PlayIcon className="h-12 w-12 text-white transition-transform" />
+                      <PlayIcon className="text-primary-text h-12 w-12 transition-transform" />
                     )}
                   </button>
                 )}
@@ -365,10 +364,10 @@ export default function ItemDetailsClient({
               {premiumStatusLoaded && currentUserPremiumType === 0 && (
                 <div className="my-6 flex flex-col items-center">
                   <div
-                    className="relative w-full max-w-[700px] overflow-hidden rounded-lg border bg-[#1a2127] shadow transition-all duration-300"
+                    className="border-stroke bg-secondary-bg relative w-full max-w-[700px] overflow-hidden rounded-lg border shadow transition-all duration-300"
                     style={{ minHeight: '250px' }}
                   >
-                    <span className="text-muted absolute top-2 left-2 z-10 rounded bg-[#212A31] px-2 py-0.5 text-xs">
+                    <span className="text-secondary-text bg-primary-bg absolute top-2 left-2 z-10 rounded px-2 py-0.5 text-xs">
                       Advertisement
                     </span>
                     <DisplayAd
@@ -385,30 +384,13 @@ export default function ItemDetailsClient({
                 </div>
               )}
 
-              <div className="mt-4 rounded-lg border border-[#37424D] bg-gradient-to-br from-[#2A3441] to-[#1E252B] p-6 shadow-lg">
+              <div className="border-stroke bg-secondary-bg mt-4 rounded-lg border p-6 shadow-lg">
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600">
-                      <svg
-                        className="h-5 w-5 text-white"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                        />
-                      </svg>
-                    </div>
-                  </div>
                   <div className="flex-1">
-                    <h3 className="mb-2 text-lg font-semibold text-white">
+                    <h3 className="text-primary-text mb-2 text-lg font-semibold">
                       Don&apos;t agree with the value?
                     </h3>
-                    <p className="mb-4 text-sm leading-relaxed text-[#D3D9D4]">
+                    <p className="text-secondary-text mb-4 text-sm leading-relaxed">
                       Help us keep our values accurate by suggesting a new value for{' '}
                       {currentItem.name}.
                     </p>
@@ -416,7 +398,7 @@ export default function ItemDetailsClient({
                       href="https://discord.com/invite/baHCsb8N5A"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#5865F2] to-[#4752C4] px-4 py-2 text-sm font-medium text-white transition-all duration-200 hover:scale-105 hover:from-[#4752C4] hover:to-[#3C45A5] hover:shadow-lg"
+                      className="bg-button-info text-primary-text hover:bg-button-info-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
                     >
                       <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z" />
@@ -431,38 +413,33 @@ export default function ItemDetailsClient({
             {/* Right column - Details */}
             <div className="space-y-6">
               <div>
-                <h2 className={`text-3xl font-bold text-white ${inter.className}`}>
+                <h2 className={`text-primary-text text-3xl font-bold ${inter.className}`}>
                   {currentItem.name}
                 </h2>
-                <p className="text-muted mt-2 text-sm">
+                <p className="text-secondary-text mt-2 text-sm">
                   Created by <CreatorLink creator={currentItem.creator} />
                 </p>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  <span
-                    className="bg-opacity-80 inline-block rounded-full px-3 py-1 text-sm text-white"
-                    style={{
-                      backgroundColor: getItemTypeColor(currentItem.type),
-                    }}
-                  >
+                  <span className="border-primary-text text-primary-text flex items-center rounded-full border bg-transparent px-2 py-1 text-xs">
                     {currentItem.type}
                   </span>
                   {currentItem.is_limited === 1 && (
-                    <span className="rounded-full bg-[#ffd700]/80 px-3 py-1 text-sm text-white">
+                    <span className="border-primary-text text-primary-text flex items-center rounded-full border bg-transparent px-2 py-1 text-xs">
                       Limited
                     </span>
                   )}
                   {currentItem.is_seasonal === 1 && (
-                    <span className="rounded-full bg-[#40c0e7]/80 px-3 py-1 text-sm text-white">
+                    <span className="border-primary-text text-primary-text flex items-center rounded-full border bg-transparent px-2 py-1 text-xs">
                       Seasonal
                     </span>
                   )}
                   {currentItem.tradable === 0 && (
-                    <span className="rounded-full bg-red-600/80 px-3 py-1 text-white">
+                    <span className="border-primary-text text-primary-text flex items-center rounded-full border bg-transparent px-2 py-1 text-xs">
                       Non-Tradable
                     </span>
                   )}
                 </div>
-                <div className="text-muted mt-2 text-sm">
+                <div className="text-secondary-text mt-2 text-sm">
                   {currentItem.last_updated ? (
                     <Tooltip
                       title={formatCustomDate(currentItem.last_updated)}
@@ -470,18 +447,8 @@ export default function ItemDetailsClient({
                       arrow
                       slotProps={{
                         tooltip: {
-                          sx: {
-                            backgroundColor: '#0F1419',
-                            color: '#D3D9D4',
-                            fontSize: '0.75rem',
-                            padding: '8px 12px',
-                            borderRadius: '8px',
-
-                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-                            '& .MuiTooltip-arrow': {
-                              color: '#0F1419',
-                            },
-                          },
+                          className:
+                            'bg-secondary-bg text-secondary-text text-xs px-3 py-2 rounded-lg shadow-lg border border-stroke [&_.MuiTooltip-arrow]:text-primary-bg',
                         },
                       }}
                     >
@@ -495,11 +462,11 @@ export default function ItemDetailsClient({
                 {/* Official Metrics from Badimo dataset */}
                 {currentItem.metadata && Object.keys(currentItem.metadata).length > 0 && (
                   <div className="mt-3">
-                    <div className="rounded-md border border-[#5865F2]/30 bg-[#5865F2]/10 px-2 py-1">
-                      <div className="text-xs font-semibold tracking-wide text-[#8BA2FF] uppercase">
+                    <div className="border-button-info/30 bg-button-info/10 rounded-md border px-2 py-1">
+                      <div className="text-button-info text-xs font-semibold tracking-wide uppercase">
                         Official Trading Metrics
                       </div>
-                      <div className="text-xs text-[#D3D9D4]/70">
+                      <div className="text-secondary-text text-xs">
                         by Badimo •{' '}
                         {currentItem.metadata.LastUpdated
                           ? `updated ${formatCustomDate(currentItem.metadata.LastUpdated)}`
@@ -507,25 +474,25 @@ export default function ItemDetailsClient({
                       </div>
                       <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3">
                         {typeof currentItem.metadata.TimesTraded === 'number' && (
-                          <div className="rounded-md border border-[#5865F2]/30 bg-[#1A1F2E] p-3">
-                            <div className="text-xs text-[#8BA2FF]">Times Traded</div>
-                            <div className="text-lg font-semibold text-white">
+                          <div className="border-button-info/30 rounded-md border p-3">
+                            <div className="text-secondary-text text-xs">Times Traded</div>
+                            <div className="text-primary-text text-lg font-semibold">
                               {currentItem.metadata.TimesTraded.toLocaleString()}
                             </div>
                           </div>
                         )}
                         {typeof currentItem.metadata.UniqueCirculation === 'number' && (
-                          <div className="rounded-md border border-[#5865F2]/30 bg-[#1A1F2E] p-3">
-                            <div className="text-xs text-[#8BA2FF]">Unique Circulation</div>
-                            <div className="text-lg font-semibold text-white">
+                          <div className="border-button-info/30 rounded-md border p-3">
+                            <div className="text-secondary-text text-xs">Unique Circulation</div>
+                            <div className="text-primary-text text-lg font-semibold">
                               {currentItem.metadata.UniqueCirculation.toLocaleString()}
                             </div>
                           </div>
                         )}
                         {typeof currentItem.metadata.DemandMultiple === 'number' && (
-                          <div className="rounded-md border border-[#5865F2]/30 bg-[#1A1F2E] p-3">
-                            <div className="text-xs text-[#8BA2FF]">Demand Multiple</div>
-                            <div className="text-lg font-semibold text-white">
+                          <div className="border-button-info/30 rounded-md border p-3">
+                            <div className="text-secondary-text text-xs">Demand Multiple</div>
+                            <div className="text-primary-text text-lg font-semibold">
                               {currentItem.metadata.DemandMultiple.toLocaleString()}
                             </div>
                           </div>
@@ -536,51 +503,14 @@ export default function ItemDetailsClient({
                 )}
               </div>
 
-              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <Box className="border-secondary-text border-b">
                 <Tabs
                   value={activeTab}
                   onChange={handleTabChange}
                   variant="scrollable"
                   scrollButtons="auto"
                   allowScrollButtonsMobile
-                  sx={{
-                    '& .MuiTab-root': {
-                      color: '#9CA3AF',
-                      fontSize: '0.875rem',
-                      fontWeight: 500,
-                      textTransform: 'none',
-                      minHeight: '48px',
-                      padding: '12px 20px',
-                      borderRadius: '8px 8px 0 0',
-                      marginRight: '4px',
-                      transition: 'all 0.2s ease-in-out',
-                      '&:hover': {
-                        color: '#D3D9D4',
-                        backgroundColor: 'rgba(88, 101, 242, 0.1)',
-                      },
-                      '&.Mui-selected': {
-                        color: '#5865F2',
-                        fontWeight: 600,
-                        backgroundColor: 'rgba(88, 101, 242, 0.15)',
-                        borderBottom: '2px solid #5865F2',
-                      },
-                    },
-                    '& .MuiTabs-indicator': {
-                      backgroundColor: '#5865F2',
-                      height: '3px',
-                      borderRadius: '2px',
-                    },
-                    '& .MuiTabs-scrollButtons': {
-                      color: '#9CA3AF',
-                      '&.Mui-disabled': {
-                        opacity: 0.3,
-                      },
-                      '&:hover': {
-                        backgroundColor: 'rgba(88, 101, 242, 0.1)',
-                        color: '#D3D9D4',
-                      },
-                    },
-                  }}
+                  className="[&_.MuiTab-root]:text-secondary-text [&_.MuiTab-root:hover]:text-primary-text [&_.MuiTab-root:hover]:bg-button-info/10 [&_.MuiTab-root.Mui-selected]:text-button-info [&_.MuiTab-root.Mui-selected]:border-button-info [&_.MuiTabs-indicator]:bg-button-info [&_.MuiTabs-scrollButtons]:text-secondary-text [&_.MuiTabs-scrollButtons:hover]:bg-button-info/10 [&_.MuiTabs-scrollButtons:hover]:text-primary-text [&_.MuiTab-root]:mr-1 [&_.MuiTab-root]:min-h-12 [&_.MuiTab-root]:rounded-t-lg [&_.MuiTab-root]:px-5 [&_.MuiTab-root]:py-3 [&_.MuiTab-root]:text-sm [&_.MuiTab-root]:font-medium [&_.MuiTab-root]:normal-case [&_.MuiTab-root]:transition-all [&_.MuiTab-root]:duration-200 [&_.MuiTab-root.Mui-selected]:border-b-2 [&_.MuiTab-root.Mui-selected]:font-semibold [&_.MuiTabs-indicator]:h-1 [&_.MuiTabs-indicator]:rounded-sm [&_.MuiTabs-scrollButtons.Mui-disabled]:opacity-30"
                 >
                   <Tab label="Details" />
                   <Tab label="Value History" />
@@ -597,15 +527,15 @@ export default function ItemDetailsClient({
                   currentItem.description === 'N/A' ||
                   currentItem.description === '' ? (
                     <div className="space-y-3">
-                      <h3 className="text-lg font-semibold text-white">Description</h3>
-                      <div className="leading-relaxed text-[#D3D9D4]">
+                      <h3 className="text-primary-text text-lg font-semibold">Description</h3>
+                      <div className="text-secondary-text leading-relaxed">
                         <p className="whitespace-pre-wrap">No description available</p>
                       </div>
                     </div>
                   ) : (
                     <div className="space-y-3">
-                      <h3 className="text-lg font-semibold text-white">Description</h3>
-                      <div className="leading-relaxed text-[#D3D9D4]">
+                      <h3 className="text-primary-text text-lg font-semibold">Description</h3>
+                      <div className="text-secondary-text leading-relaxed">
                         <p className="whitespace-pre-wrap">
                           {currentItem.description.length > visibleLength ? (
                             <>
@@ -616,7 +546,7 @@ export default function ItemDetailsClient({
                                 onClick={() =>
                                   setVisibleLength((prev) => prev + INITIAL_DESCRIPTION_LENGTH)
                                 }
-                                className="ml-1 inline-flex items-center gap-1 text-sm font-medium text-blue-300 transition-colors hover:text-blue-400 hover:underline"
+                                className="text-button-info hover:text-button-info-hover ml-1 inline-flex items-center gap-1 text-sm font-medium transition-colors hover:underline"
                               >
                                 <ChevronDownIcon className="h-4 w-4" />
                                 Read More
@@ -630,7 +560,7 @@ export default function ItemDetailsClient({
                           currentItem.description.length > INITIAL_DESCRIPTION_LENGTH && (
                             <button
                               onClick={() => setVisibleLength(INITIAL_DESCRIPTION_LENGTH)}
-                              className="mt-2 flex items-center gap-1 text-sm font-medium text-blue-300 transition-colors hover:text-blue-400 hover:underline"
+                              className="text-button-info hover:text-button-info-hover mt-2 flex items-center gap-1 text-sm font-medium transition-colors hover:underline"
                             >
                               <ChevronUpIcon className="h-4 w-4" />
                               Show Less
@@ -655,7 +585,7 @@ export default function ItemDetailsClient({
 
               {activeTab === 1 && (
                 <div className="mb-8 space-y-6">
-                  <div className="rounded-lg bg-[#212A31] p-4">
+                  <div className="bg-secondary-bg rounded-lg p-4">
                     {(() => {
                       const urlVariant = new URLSearchParams(window.location.search).get('variant');
 
@@ -681,47 +611,14 @@ export default function ItemDetailsClient({
               )}
 
               {activeTab === 3 && (
-                <div className="space-y-8">
-                  {/* Header Section */}
-                  <div className="space-y-4">
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                      <div className="flex items-center gap-4">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-red-500 to-red-600 shadow-lg">
-                          <svg
-                            className="h-6 w-6 text-white"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
-                            />
-                          </svg>
-                        </div>
-                        <div>
-                          <h2 className="text-3xl font-bold text-white">Duped Owners</h2>
-                          <p className="text-sm text-[#D3D9D4]">
-                            Users known to own duplicated versions of this item
-                          </p>
-                        </div>
-                      </div>
-                      <div className="sm:ml-auto">
-                        <span className="rounded-full border border-red-500/30 bg-red-500/20 px-4 py-2 text-lg font-bold text-red-400 shadow-lg">
-                          {currentItem.duped_owners && Array.isArray(currentItem.duped_owners)
-                            ? currentItem.duped_owners.length
-                            : 0}{' '}
-                          owners
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="rounded-lg border border-red-500/20 bg-gradient-to-r from-red-500/10 to-orange-500/10 p-4">
-                      <div className="flex items-start gap-3">
+                <div className="space-y-6">
+                  {!currentItem.duped_owners ||
+                  !Array.isArray(currentItem.duped_owners) ||
+                  currentItem.duped_owners.length === 0 ? (
+                    <div className="bg-secondary-bg rounded-lg p-8 text-center">
+                      <div className="border-button-info/30 bg-button-info/20 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border">
                         <svg
-                          className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-400"
+                          className="text-button-info h-8 w-8"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -730,28 +627,37 @@ export default function ItemDetailsClient({
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth={2}
-                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
                           />
                         </svg>
-                        <div>
-                          <h3 className="mb-1 font-semibold text-white">About Duped Items</h3>
-                          <p className="text-sm leading-relaxed text-[#D3D9D4]">
-                            Duped items are duplicated versions of original items, often obtained
-                            through exploits. These items may have reduced value compared to
-                            legitimate versions.
-                          </p>
-                        </div>
+                      </div>
+                      <h3 className="text-primary-text mb-2 text-xl font-semibold">
+                        No Duped Owners Found
+                      </h3>
+                      <p className="text-secondary-text mx-auto max-w-md text-sm leading-relaxed">
+                        No duped versions of this item have been manually reported.
+                      </p>
+                      <div className="bg-button-info/10 mx-auto mt-4 max-w-md rounded-lg p-4">
+                        <p className="text-secondary-text text-center text-sm leading-relaxed">
+                          This tab shows manually reported duped owners. For comprehensive dupe
+                          detection, use our automated system below.
+                        </p>
+                      </div>
+                      <div className="mt-6">
+                        <Link href="/dupes">
+                          <button className="bg-button-info text-form-button-text hover:bg-button-info-hover border-stroke cursor-pointer rounded-lg border px-6 py-3 text-sm font-semibold normal-case">
+                            View All Dupes
+                          </button>
+                        </Link>
                       </div>
                     </div>
-                  </div>
-
-                  {/* Owners Grid */}
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-xl font-semibold text-white">Owner List</h3>
-                      <div className="text-sm text-[#D3D9D4]">
-                        {currentItem.duped_owners && Array.isArray(currentItem.duped_owners) ? (
-                          <>
+                  ) : (
+                    <>
+                      {/* Owners Grid */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-primary-text text-xl font-semibold">Owner List</h3>
+                          <div className="text-secondary-text text-sm">
                             Showing{' '}
                             {Math.min(
                               ITEMS_PER_PAGE,
@@ -759,88 +665,60 @@ export default function ItemDetailsClient({
                                 (dupedOwnersPage - 1) * ITEMS_PER_PAGE,
                             )}{' '}
                             of {currentItem.duped_owners.length}
-                          </>
-                        ) : (
-                          <>No duped owners found</>
-                        )}
-                      </div>
-                    </div>
-
-                    {!currentItem.duped_owners ||
-                    !Array.isArray(currentItem.duped_owners) ||
-                    currentItem.duped_owners.length === 0 ? (
-                      <div className="rounded-lg border border-[#37424D] bg-gradient-to-br from-[#2A3441] to-[#1E252B] p-8 text-center shadow-lg">
-                        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-green-500/30 bg-gradient-to-br from-green-500/20 to-green-600/20">
-                          <svg
-                            className="h-8 w-8 text-green-400"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                          </svg>
-                        </div>
-                        <h3 className="mb-2 text-xl font-semibold text-white">
-                          No Duped Owners Found
-                        </h3>
-                        <p className="mx-auto mb-6 max-w-md text-sm leading-relaxed text-[#D3D9D4]">
-                          Great news! No duped versions of this item have been reported yet. This
-                          item appears to be clean and legitimate.
-                        </p>
-                        <div className="rounded-lg border border-blue-500/20 bg-gradient-to-r from-blue-500/10 to-blue-600/10 p-4">
-                          <div className="flex items-start gap-3">
-                            <svg
-                              className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-400"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                              />
-                            </svg>
-                            <div className="text-left">
-                              <h4 className="mb-1 font-medium text-white">
-                                Want to check for dupes?
-                              </h4>
-                              <p className="text-sm leading-relaxed text-[#D3D9D4]">
-                                Use our new{' '}
-                                <Link
-                                  href="/dupes"
-                                  className="font-medium text-blue-400 transition-colors hover:text-blue-300 hover:underline"
-                                >
-                                  Dupe Finder
-                                </Link>{' '}
-                              </p>
-                            </div>
                           </div>
                         </div>
                       </div>
-                    ) : (
-                      <>
-                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                          {currentItem.duped_owners
-                            .slice(
-                              (dupedOwnersPage - 1) * ITEMS_PER_PAGE,
-                              dupedOwnersPage * ITEMS_PER_PAGE,
-                            )
-                            .map((owner: DupedOwner, index: number) => (
-                              <div
-                                key={index}
-                                className="group relative rounded-lg border border-[#37424D] bg-gradient-to-br from-[#2A3441] to-[#1E252B] p-4 transition-all duration-200 hover:scale-[1.02] hover:border-red-500/50 hover:shadow-lg"
-                              >
-                                <div className="flex items-center gap-3">
-                                  <div className="flex h-8 w-8 items-center justify-center rounded-full border border-red-500/30 bg-gradient-to-br from-red-500/20 to-red-600/20">
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        {currentItem.duped_owners
+                          .slice(
+                            (dupedOwnersPage - 1) * ITEMS_PER_PAGE,
+                            dupedOwnersPage * ITEMS_PER_PAGE,
+                          )
+                          .map((owner: DupedOwner, index: number) => (
+                            <div
+                              key={index}
+                              className="group border-stroke bg-secondary-bg hover:border-button-danger/50 relative rounded-lg border p-4 transition-all duration-200"
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className="border-button-danger/30 bg-button-danger/20 flex h-8 w-8 items-center justify-center rounded-full border">
+                                  <svg
+                                    className="text-button-danger h-4 w-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                    />
+                                  </svg>
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                  {owner.user_id ? (
+                                    <a
+                                      href={`https://www.roblox.com/users/${owner.user_id}/profile`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-link hover:text-link-hover block truncate font-medium transition-colors hover:underline"
+                                    >
+                                      {owner.owner}
+                                    </a>
+                                  ) : (
+                                    <span className="text-secondary-text block truncate font-medium">
+                                      {owner.owner}
+                                    </span>
+                                  )}
+                                  <div className="text-secondary-text mt-1 text-xs">
+                                    Duped Owner #
+                                    {(dupedOwnersPage - 1) * ITEMS_PER_PAGE + index + 1}
+                                  </div>
+                                </div>
+                                {owner.user_id && (
+                                  <div className="opacity-0 transition-opacity group-hover:opacity-100">
                                     <svg
-                                      className="h-4 w-4 text-red-400"
+                                      className="text-button-danger h-4 w-4"
                                       fill="none"
                                       stroke="currentColor"
                                       viewBox="0 0 24 24"
@@ -849,82 +727,30 @@ export default function ItemDetailsClient({
                                         strokeLinecap="round"
                                         strokeLinejoin="round"
                                         strokeWidth={2}
-                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
                                       />
                                     </svg>
                                   </div>
-                                  <div className="min-w-0 flex-1">
-                                    {owner.user_id ? (
-                                      <a
-                                        href={`https://www.roblox.com/users/${owner.user_id}/profile`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="block truncate font-medium text-blue-400 transition-colors hover:text-blue-300 hover:underline"
-                                      >
-                                        {owner.owner}
-                                      </a>
-                                    ) : (
-                                      <span className="block truncate font-medium text-[#D3D9D4]">
-                                        {owner.owner}
-                                      </span>
-                                    )}
-                                    <div className="mt-1 text-xs text-[#9CA3AF]">
-                                      Duped Owner #
-                                      {(dupedOwnersPage - 1) * ITEMS_PER_PAGE + index + 1}
-                                    </div>
-                                  </div>
-                                  {owner.user_id && (
-                                    <div className="opacity-0 transition-opacity group-hover:opacity-100">
-                                      <svg
-                                        className="h-4 w-4 text-red-400"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                      >
-                                        <path
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          strokeWidth={2}
-                                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                                        />
-                                      </svg>
-                                    </div>
-                                  )}
-                                </div>
+                                )}
                               </div>
-                            ))}
-                        </div>
+                            </div>
+                          ))}
+                      </div>
 
-                        {currentItem.duped_owners.length > ITEMS_PER_PAGE && (
-                          <div className="flex justify-center pt-6">
-                            <Pagination
-                              count={Math.ceil(currentItem.duped_owners.length / ITEMS_PER_PAGE)}
-                              page={dupedOwnersPage}
-                              onChange={(_, page) => setDupedOwnersPage(page)}
-                              color="primary"
-                              size="large"
-                              sx={{
-                                '& .MuiPaginationItem-root': {
-                                  color: '#D3D9D4',
-                                  borderColor: '#37424D',
-                                  '&:hover': {
-                                    backgroundColor: '#37424D',
-                                  },
-                                },
-                                '& .Mui-selected': {
-                                  backgroundColor: '#5865F2',
-                                  color: 'white',
-                                  '&:hover': {
-                                    backgroundColor: '#4752C4',
-                                  },
-                                },
-                              }}
-                            />
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
+                      {currentItem.duped_owners.length > ITEMS_PER_PAGE && (
+                        <div className="flex justify-center pt-6">
+                          <Pagination
+                            count={Math.ceil(currentItem.duped_owners.length / ITEMS_PER_PAGE)}
+                            page={dupedOwnersPage}
+                            onChange={(_, page) => setDupedOwnersPage(page)}
+                            color="primary"
+                            size="large"
+                            className="[&_.MuiPaginationItem-root]:text-secondary-text [&_.MuiPaginationItem-root]:border-stroke [&_.MuiPaginationItem-root:hover]:bg-secondary-bg [&_.Mui-selected]:bg-button-info [&_.Mui-selected]:text-primary-text [&_.Mui-selected:hover]:bg-button-info-hover"
+                          />
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
               )}
 

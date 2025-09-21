@@ -91,8 +91,6 @@ const SurveyModal: React.FC<SurveyModalProps> = ({ open, onClose, survey }) => {
         className="modal-container"
         onClick={(e: React.MouseEvent) => e.stopPropagation()}
         style={{
-          backgroundColor: '#212A31',
-
           borderRadius: '8px',
           minWidth: '400px',
           maxWidth: '600px',

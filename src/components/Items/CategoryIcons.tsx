@@ -29,7 +29,7 @@ export default function CategoryIcons({
       id: 'favorites',
       name: 'My Favorites',
       icon: StarIcon,
-      color: '#5865F2',
+      color: 'var(--color-button-info)',
       onClick: () => {
         if (!isAuthenticated) {
           toast.error('Please log in to view your favorites');
@@ -42,13 +42,13 @@ export default function CategoryIcons({
       id: 'name-limited-items',
       name: 'Limited',
       icon: FaClock,
-      color: '#FF6B35',
+      color: 'var(--color-warning)',
     },
     {
       id: 'name-seasonal-items',
       name: 'Seasonal',
       icon: FaRegSnowflake,
-      color: '#00B4D8',
+      color: 'var(--color-tertiary)',
     },
   ];
 

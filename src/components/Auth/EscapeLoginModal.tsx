@@ -26,7 +26,7 @@ export default function EscapeLoginModal() {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="fixed inset-0 bg-black/50" onClick={() => setShowModal(false)} />
-      <div className="relative w-full max-w-md rounded-lg bg-[#212A31] p-6 shadow-xl">
+      <div className="relative w-full max-w-md rounded-lg p-6 shadow-xl">
         {/* Header */}
         <div className="mb-6 flex items-center justify-between border-b pb-4">
           <h2 className="text-muted text-xl font-semibold">Login with Token</h2>

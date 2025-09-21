@@ -210,7 +210,7 @@ export default function RedeemPage() {
                   id="code"
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
-                  className={`w-full rounded-lg border bg-[#212a31] px-6 py-3 text-lg text-white transition-colors focus:ring-2 focus:outline-none ${
+                  className={`w-full rounded-lg border px-6 py-3 text-lg text-white transition-colors focus:ring-2 focus:outline-none ${
                     message?.type === 'error'
                       ? 'border-red-500 focus:ring-red-500'
                       : 'border-gray-700 focus:ring-[#1d7da3]'
@@ -305,7 +305,7 @@ export default function RedeemPage() {
           </div>
 
           {/* Right Column - Instructions */}
-          <div className="rounded-lg border border-gray-700/50 bg-[#212a31] p-4 sm:p-8">
+          <div className="rounded-lg border border-gray-700/50 p-4 sm:p-8">
             <h2 className="mb-6 text-2xl font-semibold text-white">How to Get a Code</h2>
             <ol className="space-y-6 text-gray-300">
               <li className="flex flex-col sm:flex-row sm:items-start">
@@ -434,7 +434,7 @@ export default function RedeemPage() {
         <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
 
         <div className="fixed inset-0 flex items-center justify-center p-4">
-          <Dialog.Panel className="mx-auto w-full max-w-md rounded-lg bg-[#212A31] p-4 sm:p-6">
+          <Dialog.Panel className="mx-auto w-full max-w-md rounded-lg p-4 sm:p-6">
             <div className="mb-4">
               <Dialog.Title className="text-xl font-semibold text-white">
                 Confirm Code Redemption
@@ -477,7 +477,7 @@ export default function RedeemPage() {
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm" aria-hidden="true" />
 
         <div className="fixed inset-0 flex items-center justify-center p-4">
-          <Dialog.Panel className="mx-auto w-full max-w-lg rounded-lg bg-[#212A31] p-4 sm:p-8">
+          <Dialog.Panel className="mx-auto w-full max-w-lg rounded-lg p-4 sm:p-8">
             <div className="absolute inset-0 overflow-hidden rounded-lg">
               <div
                 className="absolute -top-4 left-1/4 h-2 w-2 animate-bounce rounded-full bg-yellow-400"

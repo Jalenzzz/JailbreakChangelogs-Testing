@@ -51,7 +51,7 @@ function CrewLeaderboardSkeleton() {
   return (
     <div className="mt-8">
       <h2 className="mb-4 text-xl font-bold text-gray-300">Crew Leaderboard</h2>
-      <div className="rounded-lg border bg-[#212A31] p-4 shadow-sm">
+      <div className="rounded-lg border p-4 shadow-sm">
         <div className="max-h-[48rem] space-y-3 overflow-y-auto pr-2">
           {Array.from({ length: 10 }).map((_, index) => (
             <div

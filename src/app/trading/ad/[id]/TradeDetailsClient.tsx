@@ -158,7 +158,7 @@ export default function TradeDetailsClient({
         </div>
 
         {/* Trade Card */}
-        <div className="rounded-lg border bg-[#212A31]">
+        <div className="rounded-lg border">
           {/* Header */}
           <div className="border-b p-6">
             <div className="flex flex-col gap-4">
@@ -236,7 +236,7 @@ export default function TradeDetailsClient({
             <TradeItemsImages offering={trade.offering} requesting={trade.requesting} />
 
             {/* Tabs - calculator style */}
-            <div className="mb-6 rounded-lg border bg-[#212A31]">
+            <div className="mb-6 rounded-lg border">
               <nav className="px-6 py-4">
                 <div className="flex flex-col space-y-1 rounded-lg p-1 sm:flex-row sm:space-y-0 sm:space-x-1">
                   <button

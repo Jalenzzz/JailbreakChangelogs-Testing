@@ -16,7 +16,7 @@ interface DupeFinderDataStreamerProps {
 // Loading fallback component
 function DupeFinderLoadingFallback() {
   return (
-    <div className="rounded-lg border bg-[#212A31] p-6 shadow-sm">
+    <div className="rounded-lg border p-6 shadow-sm">
       <div className="animate-pulse space-y-4">
         <div className="flex items-center gap-4">
           <div className="h-16 w-16 rounded-full bg-gray-600"></div>

@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 const CalculatorDescription: React.FC = () => {
   return (
-    <div className="mb-8 rounded-lg border bg-[#212A31] p-6">
+    <div className="mb-8 rounded-lg border p-6">
       <div className="mb-4">
         <h2 className="text-muted text-2xl font-semibold">Roblox Jailbreak Value Calculator</h2>
       </div>

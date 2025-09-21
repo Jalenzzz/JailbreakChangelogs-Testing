@@ -44,7 +44,7 @@ const faqs = [
 
 const OGFinderFAQ: React.FC = () => {
   return (
-    <div className="mt-8 rounded-lg border bg-[#212A31] p-6">
+    <div className="mt-8 rounded-lg border p-6">
       <h3 className="text-muted mb-4 text-xl font-semibold">Frequently Asked Questions</h3>
 
       <div className="space-y-4">
@@ -53,7 +53,6 @@ const OGFinderFAQ: React.FC = () => {
             key={index}
             defaultExpanded={index === 0}
             sx={{
-              backgroundColor: '#212A31',
               color: '#D3D9D4',
               '&:before': {
                 display: 'none',

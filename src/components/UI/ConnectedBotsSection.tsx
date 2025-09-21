@@ -29,7 +29,7 @@ export default async function ConnectedBotsSection() {
             </span>
           </div>
         </div>
-        <div className="rounded-lg border bg-[#212A31] p-4 shadow-sm">
+        <div className="rounded-lg border p-4 shadow-sm">
           <div className="py-8 text-center">
             <div className="mb-2 text-lg font-medium text-gray-400">No bots available</div>
             <div className="text-sm text-gray-500">

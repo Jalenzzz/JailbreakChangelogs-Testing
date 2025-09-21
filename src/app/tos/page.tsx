@@ -24,7 +24,7 @@ export default function TermsOfServicePage() {
         </div>
         <p className="text-muted mb-6 text-sm">Last updated: September 12th, 2025</p>
 
-        <div className="rounded-lg border bg-[#212A31] p-6 transition-colors hover:border-[#5865F2]">
+        <div className="rounded-lg border p-6 transition-colors hover:border-[#5865F2]">
           <Typography className="text-muted">
             Please read these Terms of Service carefully before using Jailbreak Changelogs.
           </Typography>

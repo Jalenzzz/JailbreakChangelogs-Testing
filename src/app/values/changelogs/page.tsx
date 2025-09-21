@@ -147,7 +147,7 @@ export default function ValuesChangelogPage() {
                   sx={{
                     borderColor: '#5865F2',
                     color: '#5865F2',
-                    backgroundColor: '#212A31',
+
                     '&:hover': {
                       borderColor: '#4752C4',
                       backgroundColor: '#2B2F4C',
@@ -170,7 +170,7 @@ export default function ValuesChangelogPage() {
                         className={`rounded-lg border p-4 transition-all duration-200 hover:translate-y-[-2px] hover:shadow-lg ${
                           isLatest
                             ? 'border-[#5865F2] bg-gradient-to-r from-[#5865F2]/10 to-[#4752C4]/10 shadow-lg shadow-[#5865F2]/20'
-                            : 'border-[#37424D] bg-[#212A31] hover:border-[#5865F2]'
+                            : 'border-[#37424D] hover:border-[#5865F2]'
                         }`}
                       >
                         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">

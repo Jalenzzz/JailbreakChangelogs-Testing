@@ -49,7 +49,7 @@ export default function UserRankDisplay() {
 
   if (isLoading) {
     return (
-      <div className="mb-6 rounded-lg border bg-[#212A31] p-4">
+      <div className="mb-6 rounded-lg border p-4">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold text-gray-200">Your Rank</h3>
@@ -79,7 +79,7 @@ export default function UserRankDisplay() {
           {formatRelativeDate(userRank.updated_at)})
         </span>
       </div>
-      <div className="rounded-lg border bg-[#212A31] p-3 shadow-sm sm:p-4">
+      <div className="rounded-lg border p-3 shadow-sm sm:p-4">
         <div className="rounded-lg border p-3 transition-colors hover:border-[#5865F2]">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2 sm:space-x-3">

@@ -253,7 +253,7 @@ export default function TradeAds({ initialTradeAds, initialItems = [] }: TradeAd
           hasTradeAds={userTradeAds.length > 0}
         />
         {activeTab === 'view' && (
-          <div className="mb-8 rounded-lg border bg-[#212A31] p-6 text-center">
+          <div className="mb-8 rounded-lg border p-6 text-center">
             <h3 className="text-muted mb-4 text-lg font-medium">No Trade Ads Available</h3>
             <p className="text-muted/70 mb-8">This page seems empty at the moment.</p>
             <div className="flex justify-center gap-4">
@@ -396,7 +396,7 @@ export default function TradeAds({ initialTradeAds, initialItems = [] }: TradeAd
           )}
         </>
       ) : activeTab === 'edit' && !selectedTradeAd ? (
-        <div className="mb-8 rounded-lg border bg-[#212A31] p-6 text-center">
+        <div className="mb-8 rounded-lg border p-6 text-center">
           <p className="text-muted mb-4">
             Please click the edit button on the trade ad you want to modify
           </p>

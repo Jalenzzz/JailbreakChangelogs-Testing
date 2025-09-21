@@ -77,8 +77,11 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
       const loadingToast = toast.loading('Finding a random item...');
       const item = await fetchRandomItem();
       toast.dismiss(loadingToast);
-      toast.success(`Redirecting to ${item.name} ${item.type}...`);
+      const redirectToast = toast.loading(`Redirecting to ${item.name} ${item.type}...`);
       router.push(`/item/${item.type.toLowerCase()}/${item.name}`);
+      setTimeout(() => {
+        toast.dismiss(redirectToast);
+      }, 2000);
     } catch (error) {
       console.error('Error fetching random item:', error);
       toast.error('Failed to fetch random item');
@@ -172,14 +175,14 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
         <div className="mb-4 flex flex-wrap gap-2">
           <button
             onClick={handleRandomItem}
-            className="border-stroke bg-button-info text-form-button-text hover:bg-button-info-hover flex items-center gap-1.5 rounded-lg border px-4 py-2 focus:outline-none sm:gap-2 sm:px-6 sm:py-3"
+            className="border-stroke bg-button-info text-form-button-text hover:bg-button-info-hover flex cursor-pointer items-center gap-1.5 rounded-lg border px-4 py-2 focus:outline-none sm:gap-2 sm:px-6 sm:py-3"
           >
             <SparklesIcon className="h-4 w-4 sm:h-6 sm:w-6" />
             <span className="text-sm sm:text-base">Random Item</span>
           </button>
           <button
             onClick={() => setShowHcModal(true)}
-            className="border-stroke bg-button-info text-form-button-text hover:bg-button-info-hover flex items-center gap-1.5 rounded-lg border px-4 py-2 focus:outline-none sm:gap-2 sm:px-6 sm:py-3"
+            className="border-stroke bg-button-info text-form-button-text hover:bg-button-info-hover flex cursor-pointer items-center gap-1.5 rounded-lg border px-4 py-2 focus:outline-none sm:gap-2 sm:px-6 sm:py-3"
           >
             <span className="text-sm sm:text-base">Hyperchrome Pity Calculator</span>
           </button>

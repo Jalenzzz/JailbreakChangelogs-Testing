@@ -115,7 +115,7 @@ export default function SettingsPage() {
           sx={{
             mb: 4,
             p: 3,
-            bgcolor: '#212A31',
+
             color: '#D3D9D4',
           }}
         >
@@ -140,7 +140,7 @@ export default function SettingsPage() {
           sx={{
             mb: 4,
             p: 3,
-            bgcolor: '#212A31',
+
             color: '#D3D9D4',
           }}
         >
@@ -165,7 +165,7 @@ export default function SettingsPage() {
           sx={{
             mb: 4,
             p: 3,
-            bgcolor: '#212A31',
+
             color: '#D3D9D4',
           }}
         >
@@ -215,7 +215,7 @@ export default function SettingsPage() {
             sx={{
               mb: 4,
               p: 3,
-              bgcolor: '#212A31',
+
               color: '#D3D9D4',
             }}
           >
@@ -406,7 +406,7 @@ export default function SettingsPage() {
         sx={{
           mb: 4,
           p: 3,
-          bgcolor: '#212A31',
+
           color: '#D3D9D4',
           border: '2px solid #FF6B6B',
           borderRadius: 2,

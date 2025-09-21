@@ -1,21 +1,12 @@
 import { useMemo, useState } from 'react';
 import { convertUrlsToLinks } from '@/utils/urlConverter';
-import {
-  Button,
-  Pagination,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Tabs,
-  Tab,
-} from '@mui/material';
+import { Button, Pagination } from '@mui/material';
+import { Dialog } from '@headlessui/react';
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import { formatFullValue } from '@/utils/values';
 import { formatCustomDate } from '@/utils/timestamp';
-import { Chip } from '@mui/material';
 import Image from 'next/image';
 import { DefaultAvatar } from '@/utils/avatar';
 import type { UserData } from '@/types/auth';
@@ -219,13 +210,25 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleVotersClick = (tab: 'up' | 'down', suggestionData: Change['suggestion_data']) => {
+    const voters: VoteRecord[] = suggestionData?.vote_data.voters || [];
+    const up = voters.filter((v: VoteRecord) => v.vote_type === 'upvote');
+    const down = voters.filter((v: VoteRecord) => v.vote_type === 'downvote');
+    const upCount = suggestionData?.vote_data.upvotes || 0;
+    const downCount = suggestionData?.vote_data.downvotes || 0;
+    if (up.length === 0 && down.length === 0) return;
+    setActiveVoters({ up, down, upCount, downCount });
+    setVotersTab(tab);
+    setVotersOpen(true);
+  };
+
   if (loading) {
     return (
       <div className="space-y-4">
         {[...Array(3)].map((_, i) => (
-          <div key={i} className="animate-pulse rounded-lg bg-[#212A31] p-4">
-            <div className="mb-2 h-4 w-1/4 rounded bg-[#37424D]"></div>
-            <div className="h-4 w-3/4 rounded bg-[#37424D]"></div>
+          <div key={i} className="animate-pulse rounded-lg p-4">
+            <div className="bg-secondary-bg mb-2 h-4 w-1/4 rounded"></div>
+            <div className="bg-secondary-bg h-4 w-3/4 rounded"></div>
           </div>
         ))}
       </div>
@@ -233,15 +236,15 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
   }
 
   if (error) {
-    return <div className="rounded-lg bg-red-500/20 p-4 text-red-500">{error}</div>;
+    return <div className="bg-button-danger/20 text-button-danger rounded-lg p-4">{error}</div>;
   }
 
   if (changes.length === 0) {
     return (
-      <div className="rounded-lg border border-[#37424D] bg-gradient-to-br from-[#2A3441] to-[#1E252B] p-8 text-center shadow-lg">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-[#40C0E7]/30 bg-gradient-to-br from-[#40C0E7]/20 to-[#2B9CD9]/20">
+      <div className="bg-secondary-bg rounded-lg p-8 text-center">
+        <div className="border-button-info/30 bg-button-info/20 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border">
           <svg
-            className="h-8 w-8 text-[#40C0E7]"
+            className="text-button-info h-8 w-8"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -254,34 +257,20 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
             />
           </svg>
         </div>
-        <h3 className="mb-2 text-xl font-semibold text-white">No Changes Available</h3>
-        <p className="mx-auto mb-6 max-w-md text-sm leading-relaxed text-[#D3D9D4]">
-          This item hasn&apos;t had any recorded changes yet. Changes will appear here once the
-          item&apos;s values, demand, or other properties are updated.
+        <h3 className="text-primary-text mb-2 text-xl font-semibold">Discover All Item Changes</h3>
+        <p className="text-secondary-text mx-auto mb-6 max-w-md text-sm leading-relaxed">
+          Want to see changes across all items? Visit our central changelogs page to browse all item
+          updates, value changes, and community suggestions in one place.
         </p>
-        <div className="rounded-lg border border-[#40C0E7]/20 bg-gradient-to-r from-[#40C0E7]/10 to-[#2B9CD9]/10 p-4">
-          <div className="flex items-start gap-3">
-            <svg
-              className="mt-0.5 h-5 w-5 flex-shrink-0 text-[#40C0E7]"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+        <div className="mt-6">
+          <Link href="/changelogs">
+            <Button
+              variant="contained"
+              className="bg-button-info text-form-button-text hover:bg-button-info-hover border-stroke rounded-lg border px-6 py-3 text-sm font-semibold normal-case"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <div className="text-left">
-              <h4 className="mb-1 font-medium text-white">Stay Updated</h4>
-              <p className="text-sm leading-relaxed text-[#D3D9D4]">
-                Check back regularly to see when this item&apos;s values or properties are updated
-                by our team.
-              </p>
-            </div>
-          </div>
+              View All Changelogs
+            </Button>
+          </Link>
         </div>
       </div>
     );
@@ -289,159 +278,125 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
 
   return (
     <div className="mb-8 space-y-4">
-      <Dialog
-        open={votersOpen}
-        onClose={() => setVotersOpen(false)}
-        fullWidth
-        maxWidth="xs"
-        slotProps={{
-          paper: {
-            sx: {
-              backgroundColor: '#212A31',
+      <Dialog open={votersOpen} onClose={() => setVotersOpen(false)} className="relative z-50">
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
 
-              borderRadius: '8px',
-            },
-          },
-        }}
-      >
-        <DialogTitle
-          sx={{
-            bgcolor: '#212A31',
-            color: '#FFFFFF',
-          }}
-        >
-          Voters
-        </DialogTitle>
-        <DialogContent dividers sx={{ bgcolor: '#212A31' }}>
-          <Tabs
-            value={votersTab === 'up' ? 0 : 1}
-            onChange={(_, val) => setVotersTab(val === 0 ? 'up' : 'down')}
-            textColor="primary"
-            indicatorColor="primary"
-            variant="fullWidth"
-            sx={{
-              '& .MuiTab-root': {
-                minHeight: 'auto',
-                padding: '8px 12px',
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                color: '#D3D9D4',
-                '&.Mui-selected': {
-                  color: '#FFFFFF',
-                  fontWeight: 600,
-                },
-                '&:hover': {
-                  color: '#FFFFFF',
-                  backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                },
-              },
-              '& .MuiTabs-indicator': {
-                backgroundColor: '#5865F2',
-                height: '3px',
-              },
-            }}
-          >
-            <Tab
-              label={
-                <div className="flex flex-col items-center">
-                  <span>Upvotes</span>
-                  <span className="text-muted mt-1 text-xs">({activeVoters?.upCount ?? 0})</span>
-                </div>
-              }
-            />
-            <Tab
-              label={
-                <div className="flex flex-col items-center">
-                  <span>Downvotes</span>
-                  <span className="text-muted mt-1 text-xs">({activeVoters?.downCount ?? 0})</span>
-                </div>
-              }
-            />
-          </Tabs>
-          <div className="mt-3 space-y-2">
-            {(votersTab === 'up' ? activeVoters?.up || [] : activeVoters?.down || []).length ===
-            0 ? (
-              <div className="text-muted text-sm">No voters to display.</div>
-            ) : (
-              (votersTab === 'up' ? activeVoters?.up || [] : activeVoters?.down || []).map(
-                (voter: VoteRecord) => (
-                  <div key={voter.id} className="flex items-center gap-2">
-                    <div className="relative h-6 w-6 flex-shrink-0 overflow-hidden rounded-full">
-                      <DefaultAvatar />
-                      {voter.avatar_hash && (
-                        <Image
-                          src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(`https://cdn.discordapp.com/avatars/${voter.id}/${voter.avatar_hash}?size=128`)}`}
-                          alt={voter.name}
-                          fill
-                          className="object-cover"
-                          onError={(e) => {
-                            (
-                              e as unknown as { currentTarget: HTMLElement }
-                            ).currentTarget.style.display = 'none';
-                          }}
-                        />
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-sm text-white">
-                        <a
-                          href={`https://discord.com/users/${voter.id}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-400 hover:text-blue-300 hover:underline"
-                        >
-                          {voter.name}
-                        </a>
-                      </div>
-                      <div className="text-muted text-xs">
-                        {new Date(voter.timestamp * 1000).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </div>
-                    </div>
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <Dialog.Panel className="modal-container bg-secondary-bg border-button-info w-full max-w-[480px] min-w-[320px] rounded-lg border shadow-lg">
+            <div className="modal-header text-primary-text border-secondary-text border-b px-6 py-4 text-xl font-semibold">
+              Voters
+            </div>
+
+            <div className="modal-content p-6">
+              <div className="border-secondary-text mb-4 flex border-b">
+                <button
+                  onClick={() => setVotersTab('up')}
+                  className={`flex-1 py-2 text-sm font-medium transition-colors ${
+                    votersTab === 'up'
+                      ? 'text-primary-text border-button-info border-b-2'
+                      : 'text-secondary-text hover:text-primary-text'
+                  }`}
+                >
+                  <div className="flex flex-col items-center">
+                    <span>Upvotes</span>
+                    <span className="text-xs opacity-70">({activeVoters?.upCount ?? 0})</span>
                   </div>
-                ),
-              )
-            )}
-          </div>
-        </DialogContent>
-        <DialogActions sx={{ bgcolor: '#212A31' }}>
-          <Button onClick={() => setVotersOpen(false)} variant="contained">
-            Close
-          </Button>
-        </DialogActions>
+                </button>
+                <button
+                  onClick={() => setVotersTab('down')}
+                  className={`flex-1 py-2 text-sm font-medium transition-colors ${
+                    votersTab === 'down'
+                      ? 'text-primary-text border-button-info border-b-2'
+                      : 'text-secondary-text hover:text-primary-text'
+                  }`}
+                >
+                  <div className="flex flex-col items-center">
+                    <span>Downvotes</span>
+                    <span className="text-xs opacity-70">({activeVoters?.downCount ?? 0})</span>
+                  </div>
+                </button>
+              </div>
+
+              <div className="max-h-[400px] space-y-2 overflow-y-auto">
+                {(votersTab === 'up' ? activeVoters?.up || [] : activeVoters?.down || []).length ===
+                0 ? (
+                  <div className="text-secondary-text py-4 text-center text-sm">
+                    No voters to display.
+                  </div>
+                ) : (
+                  (votersTab === 'up' ? activeVoters?.up || [] : activeVoters?.down || []).map(
+                    (voter: VoteRecord) => (
+                      <div key={voter.id} className="flex items-center gap-3 py-2">
+                        <div className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full">
+                          <DefaultAvatar />
+                          {voter.avatar_hash && (
+                            <Image
+                              src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(`https://cdn.discordapp.com/avatars/${voter.id}/${voter.avatar_hash}?size=128`)}`}
+                              alt={voter.name}
+                              fill
+                              className="object-cover"
+                              onError={(e) => {
+                                (
+                                  e as unknown as { currentTarget: HTMLElement }
+                                ).currentTarget.style.display = 'none';
+                              }}
+                            />
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-primary-text text-sm">
+                            <a
+                              href={`https://discord.com/users/${voter.id}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-link hover:text-link-hover hover:underline"
+                            >
+                              {voter.name.replace(/(.+)\1/, '$1')}
+                            </a>
+                          </div>
+                          <div className="text-secondary-text text-xs">
+                            {new Date(voter.timestamp * 1000).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    ),
+                  )
+                )}
+              </div>
+            </div>
+
+            <div className="modal-footer border-secondary-text flex justify-end gap-2 border-t px-6 py-4">
+              <button
+                onClick={() => setVotersOpen(false)}
+                className="bg-button-info hover:bg-button-info-hover text-primary-text min-w-[100px] cursor-pointer rounded border-none px-4 py-2 text-sm transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </Dialog.Panel>
+        </div>
       </Dialog>
+
       {/* Central Changelogs Information Banner */}
-      <div className="mb-6 rounded-lg border border-[#5865F2]/20 bg-gradient-to-r from-[#5865F2]/10 to-[#4752C4]/10 p-4">
-        <div className="flex items-start gap-3">
-          <div className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-[#5865F2]/20">
-            <svg
-              className="h-5 w-5 text-[#5865F2]"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-          </div>
+      <div className="border-stroke bg-secondary-bg mb-6 rounded-lg border p-6 shadow-lg">
+        <div className="flex items-start gap-4">
           <div className="flex-1">
-            <h4 className="mb-1 font-medium text-white">Discover All Item Changes</h4>
-            <p className="mb-3 text-sm leading-relaxed text-[#D3D9D4]">
+            <h3 className="text-primary-text mb-2 text-lg font-semibold">
+              Discover All Item Changes
+            </h3>
+            <p className="text-secondary-text mb-4 text-sm leading-relaxed">
               Want to see changes across all items? Visit our central changelogs page to browse all
               item updates, value changes, and community suggestions in one place.
             </p>
             <Link
               href="/values/changelogs"
-              className="inline-flex items-center gap-2 rounded-lg bg-[#5865F2] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#4752C4]"
+              className="bg-button-info text-primary-text hover:bg-button-info-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
             >
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -457,33 +412,21 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
         </div>
       </div>
 
-      <div className="mb-4 rounded-lg border border-[#37424D] bg-gradient-to-r from-[#2A3441] to-[#1E252B] p-3">
+      <div className="border-stroke bg-secondary-bg mb-4 rounded-lg border p-3">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-2">
-            <Chip
-              label={`${displayableChanges.length} change${displayableChanges.length !== 1 ? 's' : ''}`}
-              size="small"
-              sx={{
-                backgroundColor: '#5865F2',
-                color: '#FFFFFF',
-                '& .MuiChip-label': { color: '#FFFFFF', fontWeight: 600 },
-              }}
-            />
+            <span className="border-primary-text text-primary-text flex items-center rounded-full border bg-transparent px-1.5 py-0.5 text-[10px] sm:px-2 sm:py-1 sm:text-xs">
+              {displayableChanges.length} change{displayableChanges.length !== 1 ? 's' : ''}
+            </span>
             {suggestionsCount > 0 && (
-              <Chip
-                label={`${suggestionsCount} suggestion${suggestionsCount !== 1 ? 's' : ''}`}
-                size="small"
-                sx={{
-                  backgroundColor: '#5865F2',
-                  color: '#FFFFFF',
-                  '& .MuiChip-label': { color: '#FFFFFF', fontWeight: 600 },
-                }}
-              />
+              <span className="border-primary-text text-primary-text flex items-center rounded-full border bg-transparent px-1.5 py-0.5 text-[10px] sm:px-2 sm:py-1 sm:text-xs">
+                {suggestionsCount} suggestion{suggestionsCount !== 1 ? 's' : ''}
+              </span>
             )}
           </div>
           <button
             onClick={toggleSortOrder}
-            className="hover: flex w-full items-center justify-center gap-1 rounded-lg border bg-[#37424D] px-3 py-1.5 text-sm text-white transition-colors sm:w-auto"
+            className="hover:bg-button-info-hover border-stroke bg-button-info text-form-button-text flex w-full items-center justify-center gap-1 rounded-lg border px-3 py-1.5 text-sm transition-colors sm:w-auto"
           >
             {sortOrder === 'newest' ? (
               <ArrowDownIcon className="h-4 w-4" />
@@ -510,34 +453,26 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
           if (!hasMeaningfulChanges && !change.suggestion_data) return null;
 
           return (
-            <div key={change.change_id} className="overflow-hidden rounded-lg bg-[#212A31] p-4">
+            <div
+              key={change.change_id}
+              className="border-stroke hover:border-button-info bg-secondary-bg overflow-hidden rounded-lg border p-4 transition-colors"
+            >
               <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
                 <div className="flex items-center gap-2">
                   {change.suggestion_data ? (
                     <>
-                      <Chip
-                        label={`Suggestion #${change.suggestion_data.id}`}
-                        size="small"
-                        sx={{
-                          backgroundColor: '#5865F2',
-                          color: 'white',
-                          '& .MuiChip-label': {
-                            color: 'white',
-                            fontWeight: 700,
-                          },
-                        }}
-                      />
+                      <span className="border-primary-text text-primary-text flex items-center rounded-full border bg-transparent px-1.5 py-0.5 text-[10px] sm:px-2 sm:py-1 sm:text-xs">
+                        Suggestion #{change.suggestion_data.id}
+                      </span>
                     </>
                   ) : null}
                 </div>
                 <div className="flex flex-col items-end gap-1"></div>
               </div>
 
-              {!change.suggestion_data && <div className="mb-4 border-b"></div>}
-
               {change.suggestion_data && (
                 <>
-                  <div className="mt-2 rounded-lg border border-[#5865F2]/20 bg-[#5865F2]/10 p-3">
+                  <div className="border-button-info/20 bg-button-info/10 mt-2 rounded-lg border p-3">
                     <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                       <div className="flex items-center gap-2">
                         {change.suggestion_data.metadata?.avatar_hash && (
@@ -556,66 +491,46 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                             />
                           </div>
                         )}
-                        <span className="text-sm font-medium text-white">
+                        <span className="text-primary-text text-sm font-medium">
                           Suggested by{' '}
                           <a
                             href={`https://discord.com/users/${change.suggestion_data.user_id}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-400 hover:text-blue-300 hover:underline"
+                            className="text-link hover:text-link-hover hover:underline"
                           >
                             {change.suggestion_data.suggestor_name}
                           </a>
                         </span>
                       </div>
                       <div className="flex items-center justify-center text-xs">
-                        <div className="flex items-center justify-center overflow-hidden rounded-full border border-gray-600">
+                        <div className="flex items-center justify-center overflow-hidden rounded-full">
                           <button
                             type="button"
-                            onClick={() => {
-                              const voters = change.suggestion_data?.vote_data.voters || [];
-                              const up = voters.filter((v) => v.vote_type === 'upvote');
-                              const down = voters.filter((v) => v.vote_type === 'downvote');
-                              const upCount = change.suggestion_data?.vote_data.upvotes || 0;
-                              const downCount = change.suggestion_data?.vote_data.downvotes || 0;
-                              if (up.length === 0 && down.length === 0) return;
-                              setActiveVoters({ up, down, upCount, downCount });
-                              setVotersTab('up');
-                              setVotersOpen(true);
-                            }}
-                            className="flex items-center justify-center gap-1 border-r border-gray-600 bg-green-500/10 px-2 py-1 hover:bg-green-500/20 focus:outline-none"
+                            onClick={() => handleVotersClick('up', change.suggestion_data)}
+                            className="bg-button-success/10 hover:bg-button-success/20 flex items-center justify-center gap-1 px-2 py-1 focus:outline-none"
                             aria-label="View voters"
                           >
-                            <span className="font-medium text-green-400">↑</span>
-                            <span className="font-semibold text-green-400">
+                            <span className="text-button-success font-medium">↑</span>
+                            <span className="text-button-success font-semibold">
                               {change.suggestion_data.vote_data.upvotes}
                             </span>
                           </button>
                           <button
                             type="button"
-                            onClick={() => {
-                              const voters = change.suggestion_data?.vote_data.voters || [];
-                              const up = voters.filter((v) => v.vote_type === 'upvote');
-                              const down = voters.filter((v) => v.vote_type === 'downvote');
-                              const upCount = change.suggestion_data?.vote_data.upvotes || 0;
-                              const downCount = change.suggestion_data?.vote_data.downvotes || 0;
-                              if (up.length === 0 && down.length === 0) return;
-                              setActiveVoters({ up, down, upCount, downCount });
-                              setVotersTab('down');
-                              setVotersOpen(true);
-                            }}
-                            className="flex items-center justify-center gap-1 bg-red-500/10 px-2 py-1 hover:bg-red-500/20 focus:outline-none"
+                            onClick={() => handleVotersClick('down', change.suggestion_data)}
+                            className="bg-button-danger/10 hover:bg-button-danger/20 flex items-center justify-center gap-1 px-2 py-1 focus:outline-none"
                             aria-label="View voters"
                           >
-                            <span className="font-medium text-red-400">↓</span>
-                            <span className="font-semibold text-red-400">
+                            <span className="text-button-danger font-medium">↓</span>
+                            <span className="text-button-danger font-semibold">
                               {change.suggestion_data.vote_data.downvotes}
                             </span>
                           </button>
                         </div>
                       </div>
                     </div>
-                    <div className="mb-2 text-sm text-gray-300">
+                    <div className="text-secondary-text mb-2 text-sm">
                       {(() => {
                         const { text, isTruncated } = truncateText(
                           change.suggestion_data.data.reason,
@@ -635,7 +550,7 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                                 href={`https://discord.com/channels/${change.suggestion_data.metadata?.guild_id || DISCORD_GUILD_ID}/${change.suggestion_data.metadata?.channel_id || '1102253731849969764'}/${change.suggestion_data.message_id}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="ml-1 text-blue-400 hover:text-blue-300 hover:underline"
+                                className="text-link hover:text-link-hover ml-1 hover:underline"
                               >
                                 View full reason
                               </a>
@@ -646,15 +561,14 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                     </div>
 
                     {/* Suggestion details removed; changes will be shown in the unified list below */}
-                    <div className="text-xs text-gray-400">
+                    <div className="text-secondary-text text-xs">
                       Suggested on {formatCustomDate(change.suggestion_data.created_at * 1000)}
                     </div>
                   </div>
-                  <div className="mb-4 border-b"></div>
                 </>
               )}
 
-              <div className="space-y-4">
+              <div className="mt-4 space-y-4">
                 {Object.entries(change.changes.old).map(([key, oldValue], index) => {
                   if (key === 'last_updated') return null;
                   const newValue = change.changes.new[key];
@@ -692,13 +606,13 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                     <div key={key}>
                       <div className="flex items-start gap-2 overflow-hidden">
                         <div className="min-w-0 flex-1">
-                          <div className="text-sm text-[#D3D9D4] capitalize">
+                          <div className="text-secondary-text text-sm capitalize">
                             {doesSuggestionTypeApplyToKey(
                               change.suggestion_data?.metadata?.suggestion_type,
                               key,
                             ) ? (
-                              <Chip
-                                label={(() => {
+                              <span className="border-primary-text text-primary-text mb-2 inline-flex items-center rounded-full border bg-transparent px-1.5 py-0.5 text-[10px] sm:px-2 sm:py-1 sm:text-xs">
+                                {(() => {
                                   const text =
                                     change.suggestion_data!.metadata!.suggestion_type!.replace(
                                       /_/g,
@@ -709,28 +623,19 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                                     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
                                     .join(' ');
                                 })()}
-                                size="small"
-                                sx={{
-                                  backgroundColor: '#124E66',
-                                  color: '#FFFFFF',
-                                  '& .MuiChip-label': {
-                                    color: '#FFFFFF',
-                                    fontWeight: 600,
-                                  },
-                                }}
-                              />
+                              </span>
                             ) : (
                               <>{key.replace(/_/g, ' ')}:</>
                             )}
                           </div>
                           <div className="mt-1 grid grid-cols-2 gap-4">
                             <div className="min-w-0">
-                              <div className="mb-1 flex items-center gap-1 text-xs font-medium text-[#9CA3AF]">
-                                <FaCircleMinus className="h-3 w-3 text-red-400" />
+                              <div className="text-secondary-text mb-1 flex items-center gap-1 text-xs font-medium">
+                                <FaCircleMinus className="text-button-danger h-3 w-3" />
                                 OLD VALUE
                               </div>
                               <div
-                                className="overflow-hidden text-sm break-words text-[#D3D9D4] line-through"
+                                className="text-secondary-text overflow-hidden text-sm break-words line-through"
                                 style={{
                                   wordBreak: 'normal',
                                   overflowWrap: 'anywhere',
@@ -744,7 +649,7 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                                         href={`https://www.roblox.com/users/${formatted.robloxId}/profile`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="text-blue-400 transition-colors hover:text-blue-300 hover:underline"
+                                        className="text-link hover:text-link-hover transition-colors hover:underline"
                                       >
                                         {formatted.display}
                                       </a>
@@ -755,12 +660,12 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                               </div>
                             </div>
                             <div className="min-w-0">
-                              <div className="mb-1 flex items-center gap-1 text-xs font-medium text-[#9CA3AF]">
-                                <FaPlusCircle className="h-3 w-3 text-green-400" />
+                              <div className="text-secondary-text mb-1 flex items-center gap-1 text-xs font-medium">
+                                <FaPlusCircle className="text-button-success h-3 w-3" />
                                 NEW VALUE
                               </div>
                               <div
-                                className="overflow-hidden text-sm font-medium break-words text-white"
+                                className="text-primary-text overflow-hidden text-sm font-medium break-words"
                                 style={{
                                   wordBreak: 'normal',
                                   overflowWrap: 'anywhere',
@@ -774,7 +679,7 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                                         href={`https://www.roblox.com/users/${formatted.robloxId}/profile`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="text-blue-400 transition-colors hover:text-blue-300 hover:underline"
+                                        className="text-link hover:text-link-hover transition-colors hover:underline"
                                       >
                                         {formatted.display}
                                       </a>
@@ -802,7 +707,7 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                   );
                 })}
               </div>
-              <div className="mt-4 flex items-center gap-2 border-t pt-4">
+              <div className="border-secondary-text mt-4 flex items-center gap-2 border-t pt-4">
                 <div className="relative h-6 w-6 flex-shrink-0 overflow-hidden rounded-full">
                   <DefaultAvatar />
                   {userMap[change.changed_by_id]?.avatar &&
@@ -821,16 +726,16 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                     )}
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-muted text-sm">
+                  <span className="text-primary-text text-sm font-medium">
                     Changed by{' '}
                     <Link
                       href={`/users/${change.changed_by_id}`}
-                      className="text-blue-400 hover:text-blue-300 hover:underline"
+                      className="text-link hover:text-link-hover hover:underline"
                     >
                       {change.changed_by}
                     </Link>
                   </span>
-                  <span className="text-xs text-gray-400">
+                  <span className="text-secondary-text text-xs">
                     on {formatCustomDate(change.created_at * 1000)}
                   </span>
                 </div>
@@ -840,26 +745,12 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
         })}
 
         {totalPages > 1 && (
-          <div className="mt-8 flex justify-center">
+          <div className="mt-4 flex justify-center sm:mt-6">
             <Pagination
               count={totalPages}
               page={page}
               onChange={handlePageChange}
-              color="primary"
-              sx={{
-                '& .MuiPaginationItem-root': {
-                  color: '#D3D9D4',
-                  '&.Mui-selected': {
-                    backgroundColor: '#5865F2',
-                    '&:hover': {
-                      backgroundColor: '#4752C4',
-                    },
-                  },
-                  '&:hover': {
-                    backgroundColor: 'rgba(88, 101, 242, 0.1)',
-                  },
-                },
-              }}
+              className="[&_.MuiPaginationItem-root]:text-primary-text [&_.MuiPaginationItem-root.Mui-selected]:bg-button-info [&_.MuiPaginationItem-root.Mui-selected:hover]:bg-button-info-hover [&_.MuiPaginationItem-root:hover]:bg-secondary-bg"
             />
           </div>
         )}

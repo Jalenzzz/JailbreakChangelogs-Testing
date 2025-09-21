@@ -239,7 +239,7 @@ const ServerList: React.FC = () => {
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="rounded-lg border bg-[#212A31] p-4 sm:p-6">
+            <div key={i} className="rounded-lg border p-4 sm:p-6">
               <div className="mb-4 flex flex-col gap-3">
                 <div className="flex items-center space-x-2">
                   <ShieldCheckIcon className="h-5 w-5 text-[#5865F2]" />
@@ -289,7 +289,7 @@ const ServerList: React.FC = () => {
 
   if (servers.length === 0) {
     return (
-      <div className="rounded-lg border bg-[#212A31] p-8 text-center">
+      <div className="rounded-lg border p-8 text-center">
         <ShieldCheckIcon className="mx-auto mb-4 h-12 w-12 text-[#5865F2]" />
         <h3 className="text-muted mb-2 text-xl font-semibold">No servers available</h3>
         <p className="text-[#FFFFFF]">You can add a server or check back later</p>
@@ -319,7 +319,7 @@ const ServerList: React.FC = () => {
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {currentServers.map((server, index) => (
-          <div key={server.id} className="rounded-lg border bg-[#212A31] p-4 sm:p-6">
+          <div key={server.id} className="rounded-lg border p-4 sm:p-6">
             <div className="mb-4 flex flex-col gap-3">
               <div className="flex items-center space-x-2">
                 <ShieldCheckIcon className="h-5 w-5 text-[#5865F2]" />

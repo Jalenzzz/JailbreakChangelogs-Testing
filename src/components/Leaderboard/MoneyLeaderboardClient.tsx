@@ -121,7 +121,7 @@ export default function MoneyLeaderboardClient({
 
           <MoneyLeaderboardSearch onSearch={handleSearch} />
 
-          <div className="rounded-lg border bg-[#212A31] p-4 shadow-sm">
+          <div className="rounded-lg border p-4 shadow-sm">
             <div className="max-h-[48rem] space-y-3 overflow-y-auto pr-2">
               {filteredLeaderboard.length === 0 && searchTerm ? (
                 <div className="py-8 text-center">
@@ -215,7 +215,7 @@ export default function MoneyLeaderboardClient({
           </div>
         </div>
       ) : (
-        <div className="rounded-lg border bg-[#212A31] p-8 text-center">
+        <div className="rounded-lg border p-8 text-center">
           <p className="text-gray-400">No money leaderboard data available at this time.</p>
         </div>
       )}

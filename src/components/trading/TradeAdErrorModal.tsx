@@ -33,7 +33,6 @@ export const TradeAdErrorModal: React.FC<TradeAdErrorModalProps> = ({
       slotProps={{
         paper: {
           style: {
-            backgroundColor: '#212A31',
             color: '#D3D9D4',
           },
         },

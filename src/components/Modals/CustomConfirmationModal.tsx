@@ -29,7 +29,7 @@ export const CustomConfirmationModal: React.FC<CustomConfirmationModalProps> = (
     <div className="fixed inset-0 z-50">
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <div className="mx-auto w-full max-w-sm rounded-lg border border-[#5865F2] bg-[#212A31] p-6 shadow-xl">
+        <div className="mx-auto w-full max-w-sm rounded-lg border border-[#5865F2] p-6 shadow-xl">
           <h2 className="mb-4 text-xl font-semibold text-white">{title}</h2>
           <p className="text-muted/80 mb-6">{message}</p>
           <div className="flex justify-end gap-3">

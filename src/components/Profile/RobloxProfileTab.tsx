@@ -78,11 +78,11 @@ export default function RobloxProfileTab({
             {!imageError && user.roblox_avatar ? (
               <>
                 {isLoading && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-[#212A31]">
+                  <div className="absolute inset-0 flex items-center justify-center">
                     <CircularProgress size={32} sx={{ color: '#5865F2' }} />
                   </div>
                 )}
-                <div className="absolute inset-0 bg-[#212A31]">
+                <div className="absolute inset-0">
                   <Image
                     src={user.roblox_avatar}
                     alt={`${user.roblox_display_name || user.roblox_username || 'Roblox'} user's profile picture`}
@@ -95,7 +95,7 @@ export default function RobloxProfileTab({
                 </div>
               </>
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-[#212A31]">
+              <div className="flex h-full w-full items-center justify-center">
                 <RobloxIcon className="h-12 w-12 text-white" />
               </div>
             )}

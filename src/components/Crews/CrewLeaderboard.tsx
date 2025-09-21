@@ -100,7 +100,7 @@ export default function CrewLeaderboard({ leaderboard, currentSeason }: CrewLead
     return (
       <div className="mt-8">
         <h2 className="mb-4 text-xl font-bold text-gray-300">Crew Leaderboard</h2>
-        <div className="rounded-lg border bg-[#212A31] p-4 shadow-sm">
+        <div className="rounded-lg border p-4 shadow-sm">
           <p className="py-8 text-center text-gray-400">No crew data available.</p>
         </div>
       </div>
@@ -166,7 +166,7 @@ export default function CrewLeaderboard({ leaderboard, currentSeason }: CrewLead
         </div>
       )}
 
-      <div className="rounded-lg border bg-[#212A31] p-4 shadow-sm">
+      <div className="rounded-lg border p-4 shadow-sm">
         <div className="max-h-[48rem] space-y-3 overflow-y-auto pr-2">
           {filteredLeaderboard.map((crew, crewIndex) => {
             // The API data is already sorted by rating, so the position in the array is the rank

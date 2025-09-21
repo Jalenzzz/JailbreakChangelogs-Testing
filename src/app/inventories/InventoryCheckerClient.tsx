@@ -457,7 +457,7 @@ export default function InventoryCheckerClient({
         />
 
         {/* Loading Skeleton for User Data */}
-        <div className="rounded-lg border bg-[#212A31] p-6 shadow-sm">
+        <div className="rounded-lg border p-6 shadow-sm">
           <div className="animate-pulse space-y-4">
             <div className="flex items-center gap-4">
               <div className="h-16 w-16 rounded-full bg-gray-600"></div>
@@ -493,7 +493,7 @@ export default function InventoryCheckerClient({
 
       {/* Error Display */}
       {error && !initialData && (
-        <div className="rounded-lg border bg-[#212A31] p-6 shadow-sm">
+        <div className="rounded-lg border p-6 shadow-sm">
           <div className="text-center">
             <div className="mb-4 flex justify-center">
               <div className="rounded-full bg-red-500/10 p-3">

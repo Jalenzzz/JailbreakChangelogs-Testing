@@ -170,7 +170,7 @@ export default function AboutTab({
         {isEditingBio && currentUserId === user.id ? (
           <div className="space-y-2">
             <textarea
-              className="text-muted w-full resize-none rounded-md border border-[#5865F2] bg-[#212A31] p-2 focus:ring-2 focus:ring-[#5865F2] focus:outline-none"
+              className="text-muted w-full resize-none rounded-md border border-[#5865F2] p-2 focus:ring-2 focus:ring-[#5865F2] focus:outline-none"
               rows={3}
               value={newBio}
               onChange={handleBioChange}

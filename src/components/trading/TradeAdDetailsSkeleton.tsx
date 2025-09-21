@@ -3,7 +3,7 @@ import { Skeleton } from '@mui/material';
 
 export const TradeAdDetailsSkeleton: React.FC = () => {
   return (
-    <div className="rounded-lg border bg-[#212A31]">
+    <div className="rounded-lg border">
       {/* Header */}
       <div className="border-b p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">

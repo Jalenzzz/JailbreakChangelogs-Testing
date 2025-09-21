@@ -130,7 +130,7 @@ export default function SupporterModal({
       <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="mx-auto w-full max-w-2xl overflow-hidden rounded-lg border bg-[#212A31] shadow-xl">
+        <Dialog.Panel className="mx-auto w-full max-w-2xl overflow-hidden rounded-lg border shadow-xl">
           {/* Header */}
           <div className="flex items-center justify-between border-b p-6">
             <div className="flex items-center gap-3">
