@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Breadcrumb from '@/components/Layout/Breadcrumb';
 import React from 'react';
-import { ThemeProvider, Skeleton, Pagination, Button } from '@mui/material';
+import { ThemeProvider, Skeleton, Pagination } from '@mui/material';
 import { darkTheme } from '@/theme/darkTheme';
 import ValuesChangelogHeader from '@/components/Values/ValuesChangelogHeader';
 import { PUBLIC_API_URL } from '@/utils/api';
@@ -125,37 +125,25 @@ export default function ValuesChangelogPage() {
               ))}
             </div>
           ) : error ? (
-            <div className="mt-8 text-center text-red-500">{error}</div>
+            <div className="text-button-danger mt-8 text-center">{error}</div>
           ) : (
             <>
               <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between">
-                <p className="text-muted mb-2 md:mb-0">
+                <p className="text-secondary-text mb-2 md:mb-0">
                   Showing {paginatedChangelogs.length} of {changelogs.length} changelog
                   {changelogs.length === 1 ? '' : 's'}
                 </p>
-                <Button
-                  variant="outlined"
+                <button
                   onClick={toggleSortOrder}
-                  startIcon={
-                    sortOrder === 'newest' ? (
-                      <ArrowDownIcon className="h-4 w-4" />
-                    ) : (
-                      <ArrowUpIcon className="h-4 w-4" />
-                    )
-                  }
-                  size="small"
-                  sx={{
-                    borderColor: '#5865F2',
-                    color: '#5865F2',
-
-                    '&:hover': {
-                      borderColor: '#4752C4',
-                      backgroundColor: '#2B2F4C',
-                    },
-                  }}
+                  className="border-stroke bg-button-info text-form-button-text hover:bg-button-info-hover flex cursor-pointer items-center gap-1 rounded-lg border px-3 py-1.5 text-sm transition-colors"
                 >
+                  {sortOrder === 'newest' ? (
+                    <ArrowDownIcon className="h-4 w-4" />
+                  ) : (
+                    <ArrowUpIcon className="h-4 w-4" />
+                  )}
                   {sortOrder === 'newest' ? 'Newest First' : 'Oldest First'}
-                </Button>
+                </button>
               </div>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 {paginatedChangelogs.map((changelog) => {
@@ -169,27 +157,27 @@ export default function ValuesChangelogPage() {
                       <div
                         className={`rounded-lg border p-4 transition-all duration-200 hover:translate-y-[-2px] hover:shadow-lg ${
                           isLatest
-                            ? 'border-[#5865F2] bg-gradient-to-r from-[#5865F2]/10 to-[#4752C4]/10 shadow-lg shadow-[#5865F2]/20'
-                            : 'border-[#37424D] hover:border-[#5865F2]'
+                            ? 'border-button-info from-button-info/10 to-button-info-hover/10 shadow-button-info/20 bg-gradient-to-r shadow-lg'
+                            : 'border-border-primary hover:border-button-info'
                         }`}
                       >
                         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                           <div>
                             <div className="flex items-center gap-2">
-                              <h3 className="text-lg font-semibold text-[#D3D9D4]">
+                              <h3 className="text-primary-text text-lg font-semibold">
                                 Changelog #{changelog.id}
                               </h3>
                               {isLatest && (
-                                <span className="rounded-full bg-[#5865F2] px-2 py-0.5 text-xs font-medium text-white">
+                                <span className="bg-button-info text-form-button-text rounded-full px-2 py-0.5 text-xs font-medium">
                                   Latest
                                 </span>
                               )}
                             </div>
-                            <p className="text-sm text-gray-400">
+                            <p className="text-secondary-text text-sm">
                               {changelog.change_count} changes
                             </p>
                           </div>
-                          <p className="mt-2 text-sm text-gray-400 lg:mt-0">
+                          <p className="text-secondary-text mt-2 text-sm lg:mt-0">
                             {formatMessageDate(changelog.created_at)}
                           </p>
                         </div>

@@ -13,7 +13,7 @@ export default function ChangelogNotFound() {
       <div className="absolute inset-0 z-[1] bg-[url('https://assets.jailbreakchangelogs.xyz/assets/backgrounds/vignette.png')] bg-cover bg-center bg-no-repeat" />
 
       <div className="relative z-[2] mx-auto max-w-md px-4 text-center">
-        <div className="rounded-2xl border border-white/[0.12] bg-[rgba(30,30,30,0.35)] px-8 py-8 shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] backdrop-blur-xl">
+        <div className="border-border-primary bg-secondary-bg/90 shadow-card-shadow rounded-2xl border px-8 py-8 backdrop-blur-xl">
           <div className="mb-8">
             <div className={`${inter.className} text-button-info text-9xl font-bold`}>404</div>
             <h1 className="text-primary-text mb-2 text-2xl font-bold">Changelog Not Found</h1>

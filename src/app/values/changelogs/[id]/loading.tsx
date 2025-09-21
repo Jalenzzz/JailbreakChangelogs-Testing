@@ -52,13 +52,13 @@ export default function Loading() {
                 variant="rectangular"
                 width="100%"
                 height={56}
-                className="rounded bg-[#37424D]"
+                className="bg-surface-bg rounded"
               />
               <Skeleton
                 variant="rectangular"
                 width={150}
                 height={56}
-                className="rounded bg-[#37424D]"
+                className="bg-surface-bg rounded"
               />
             </div>
           </div>
