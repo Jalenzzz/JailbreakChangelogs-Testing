@@ -68,7 +68,7 @@ export default function SubItemsDropdown({
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="text-muted flex items-center gap-1 rounded-lg border bg-[#37424D] px-2 py-0.5 text-xs hover:bg-[#124E66] focus:outline-none sm:px-3 sm:py-1.5 sm:text-sm"
+        className="text-secondary-text border-stroke bg-secondary-bg hover:bg-primary-bg flex items-center gap-1 rounded-lg border px-2 py-0.5 text-xs focus:outline-none sm:px-3 sm:py-1.5 sm:text-sm"
       >
         {getDisplayText()}
         <ChevronDownIcon
@@ -84,15 +84,17 @@ export default function SubItemsDropdown({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.18, ease: 'easeOut' }}
-            className="absolute right-0 z-10 mt-1 w-24 rounded-lg border bg-[#37424D] shadow-lg sm:w-32"
+            className="border-stroke bg-secondary-bg absolute right-0 z-10 mt-1 w-24 rounded-lg border shadow-lg sm:w-32"
           >
             <button
               onClick={() => {
                 onSelect(null);
                 setIsOpen(false);
               }}
-              className={`text-muted w-full px-2 py-1 text-left text-xs hover:bg-[#124E66] sm:px-3 sm:py-2 sm:text-sm ${
-                selectedSubItem === null ? 'bg-[#124E66]' : ''
+              className={`hover:bg-primary-bg w-full px-2 py-1 text-left text-xs sm:px-3 sm:py-2 sm:text-sm ${
+                selectedSubItem === null
+                  ? 'bg-button-info text-primary-text'
+                  : 'text-secondary-text'
               }`}
             >
               2025
@@ -104,8 +106,10 @@ export default function SubItemsDropdown({
                   onSelect(child);
                   setIsOpen(false);
                 }}
-                className={`text-muted w-full px-2 py-1 text-left text-xs hover:bg-[#124E66] sm:px-3 sm:py-2 sm:text-sm ${
-                  selectedSubItem?.id === child.id ? 'bg-[#124E66]' : ''
+                className={`hover:bg-primary-bg w-full px-2 py-1 text-left text-xs sm:px-3 sm:py-2 sm:text-sm ${
+                  selectedSubItem?.id === child.id
+                    ? 'bg-button-info text-primary-text'
+                    : 'text-secondary-text'
                 }`}
               >
                 {child.sub_name}

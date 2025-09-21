@@ -26,7 +26,6 @@ import SubItemsDropdown from './SubItemsDropdown';
 import toast from 'react-hot-toast';
 import { useIsAuthenticated } from '@/contexts/AuthContext';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { getItemTypeColor, getTrendColor, getDemandColor } from '@/utils/badgeColors';
 import { CategoryIconBadge } from '@/utils/categoryIcons';
 
 interface ItemCardProps {
@@ -259,11 +258,11 @@ export default function ItemCard({ item, isFavorited, onFavoriteChange }: ItemCa
       <div
         className={`group relative overflow-hidden rounded-lg transition-all duration-300 hover:shadow-lg ${
           currentItemData.is_seasonal === 1
-            ? 'border-2 border-[#40c0e7] hover:border-[#60d0f7]'
+            ? 'border-button-info hover:border-button-info-hover border-2'
             : currentItemData.is_limited === 1
-              ? 'border-2 border-[#ffd700] hover:border-[#ffed4e]'
-              : 'border-2 border-transparent hover:border-gray-600'
-        } bg-[#1a2127]`}
+              ? 'border-button-info hover:border-button-info-hover border-2'
+              : 'hover:border-button-info border-2 border-transparent'
+        } bg-secondary-bg`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onClick={handleCardClick}
@@ -277,7 +276,7 @@ export default function ItemCard({ item, isFavorited, onFavoriteChange }: ItemCa
         )}
         <div
           ref={mediaRef}
-          className="aspect-h-1 aspect-w-1 relative w-full overflow-hidden rounded-t-lg bg-[#212A31]"
+          className="aspect-h-1 aspect-w-1 bg-primary-bg relative w-full overflow-hidden rounded-t-lg"
         >
           <div className="absolute top-2 right-2 z-10 flex gap-2">
             <CategoryIconBadge
@@ -290,15 +289,15 @@ export default function ItemCard({ item, isFavorited, onFavoriteChange }: ItemCa
           </div>
           <button
             onClick={handleFavoriteClick}
-            className={`absolute top-2 left-2 z-10 rounded-full bg-black/50 p-1.5 transition-opacity ${
+            className={`border-stroke bg-secondary-bg/80 absolute top-2 left-2 z-10 rounded-full border p-1.5 transition-opacity ${
               isHovered ? 'opacity-100' : 'opacity-0'
-            } hover:bg-black/70`}
+            } hover:bg-secondary-bg`}
             title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
           >
             {isFavorited ? (
-              <StarIconSolid className="h-4 w-4 text-yellow-400 sm:h-5 sm:w-5" />
+              <StarIconSolid className="text-button-info h-4 w-4 sm:h-5 sm:w-5" />
             ) : (
-              <StarIcon className="h-4 w-4 text-white sm:h-5 sm:w-5" />
+              <StarIcon className="text-primary-text h-4 w-4 sm:h-5 sm:w-5" />
             )}
           </button>
           {isHornItem(item.type) ? (
@@ -313,14 +312,14 @@ export default function ItemCard({ item, isFavorited, onFavoriteChange }: ItemCa
               />
               <button
                 onClick={handleHornClick}
-                className={`absolute inset-0 flex items-center justify-center bg-black/50 transition-opacity ${
+                className={`bg-primary-bg/50 absolute inset-0 flex items-center justify-center transition-opacity ${
                   isHovered || isPlaying ? 'opacity-100' : 'opacity-0'
                 }`}
               >
                 {isPlaying ? (
-                  <PauseIcon className="h-8 w-8 text-white transition-transform sm:h-12 sm:w-12" />
+                  <PauseIcon className="text-primary-text h-8 w-8 transition-transform sm:h-12 sm:w-12" />
                 ) : (
-                  <PlayIcon className="h-8 w-8 text-white transition-transform sm:h-12 sm:w-12" />
+                  <PlayIcon className="text-primary-text h-8 w-8 transition-transform sm:h-12 sm:w-12" />
                 )}
               </button>
             </div>
@@ -376,80 +375,73 @@ export default function ItemCard({ item, isFavorited, onFavoriteChange }: ItemCa
         <Link href={itemUrl} className="block" prefetch={false}>
           <div className="flex flex-1 flex-col space-y-2 p-2 sm:space-y-4 sm:p-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-muted text-sm font-semibold transition-colors hover:text-[#40c0e7] min-[375px]:text-xs min-[425px]:text-sm sm:text-lg">
+              <h3 className="text-link hover:text-link-hover text-sm font-semibold transition-colors min-[375px]:text-xs min-[425px]:text-sm sm:text-lg">
                 {item.name}
               </h3>
             </div>
 
             <div className="flex flex-wrap gap-1 pb-2 sm:gap-2">
-              <span
-                className="bg-opacity-80 flex items-center rounded-full px-1.5 py-0.5 text-[10px] text-white sm:px-2 sm:py-1 sm:text-xs"
-                style={{ backgroundColor: getItemTypeColor(item.type) }}
-              >
+              <span className="border-primary-text text-primary-text flex items-center rounded-full border bg-transparent px-1.5 py-0.5 text-[10px] sm:px-2 sm:py-1 sm:text-xs">
                 {item.type}
               </span>
               {(currentItemData.tradable === 0 || currentItemData.tradable === false) && (
-                <span className="hidden items-center rounded-full bg-red-600/80 px-2 py-0.5 text-xs text-white sm:flex sm:py-1">
+                <span className="border-primary-text text-primary-text hidden items-center rounded-full border bg-transparent px-2 py-0.5 text-xs sm:flex sm:py-1">
                   Non-Tradable
                 </span>
               )}
             </div>
 
             <div className="space-y-1 pb-2 sm:space-y-2">
-              <div className="flex items-center justify-between rounded-lg bg-gradient-to-r p-1 sm:p-2.5">
+              <div className="bg-secondary-bg flex items-center justify-between rounded-lg p-1 sm:p-2.5">
                 <div className="flex items-center gap-1 sm:gap-2">
-                  <span className="text-muted text-xs font-medium whitespace-nowrap sm:text-xs">
+                  <span className="text-secondary-text text-xs font-medium whitespace-nowrap sm:text-xs">
                     <span className="sm:hidden">Cash</span>
                     <span className="hidden sm:inline">Cash Value</span>
                   </span>
                 </div>
-                <span className="rounded-lg bg-[#1d7da3] px-0.5 py-0.5 text-[9px] font-bold text-white shadow-sm min-[401px]:px-2 min-[401px]:py-1 min-[401px]:text-xs min-[480px]:px-3 min-[480px]:py-1.5">
+                <span className="bg-button-info text-form-button-text rounded-lg px-0.5 py-0.5 text-[9px] font-bold shadow-sm min-[401px]:px-2 min-[401px]:py-1 min-[401px]:text-xs min-[480px]:px-3 min-[480px]:py-1.5">
                   {formatFullValue(currentItemData.cash_value)}
                 </span>
               </div>
 
-              <div className="flex items-center justify-between rounded-lg bg-gradient-to-r p-1 sm:p-2.5">
+              <div className="bg-secondary-bg flex items-center justify-between rounded-lg p-1 sm:p-2.5">
                 <div className="flex items-center gap-1 sm:gap-2">
-                  <span className="text-muted text-xs font-medium whitespace-nowrap sm:text-xs">
+                  <span className="text-secondary-text text-xs font-medium whitespace-nowrap sm:text-xs">
                     <span className="sm:hidden">Duped</span>
                     <span className="hidden sm:inline">Duped Value</span>
                   </span>
                 </div>
-                <span className="rounded-lg bg-gray-600 px-0.5 py-0.5 text-[9px] font-bold text-white shadow-sm min-[401px]:px-2 min-[401px]:py-1 min-[401px]:text-xs min-[480px]:px-3 min-[480px]:py-1.5">
+                <span className="bg-button-info text-form-button-text rounded-lg px-0.5 py-0.5 text-[9px] font-bold shadow-sm min-[401px]:px-2 min-[401px]:py-1 min-[401px]:text-xs min-[480px]:px-3 min-[480px]:py-1.5">
                   {formatFullValue(currentItemData.duped_value)}
                 </span>
               </div>
 
-              <div className="flex items-center justify-between rounded-lg bg-gradient-to-r p-1 sm:p-2.5">
+              <div className="bg-secondary-bg flex items-center justify-between rounded-lg p-1 sm:p-2.5">
                 <div className="flex items-center gap-1 sm:gap-2">
-                  <span className="text-muted text-xs font-medium whitespace-nowrap sm:text-xs">
+                  <span className="text-secondary-text text-xs font-medium whitespace-nowrap sm:text-xs">
                     Demand
                   </span>
                 </div>
-                <span
-                  className={`rounded-lg px-0.5 py-0.5 text-[9px] font-bold whitespace-nowrap shadow-sm min-[401px]:px-2 min-[401px]:py-1 min-[401px]:text-xs min-[480px]:px-3 min-[480px]:py-1.5 ${getDemandColor(currentItemData.demand)}`}
-                >
+                <span className="bg-button-info text-form-button-text rounded-lg px-0.5 py-0.5 text-[9px] font-bold whitespace-nowrap shadow-sm min-[401px]:px-2 min-[401px]:py-1 min-[401px]:text-xs min-[480px]:px-3 min-[480px]:py-1.5">
                   {currentItemData.demand === 'N/A' ? 'Unknown' : currentItemData.demand}
                 </span>
               </div>
 
               {isValuesPage && (
-                <div className="flex items-center justify-between rounded-lg bg-gradient-to-r p-1 sm:p-2.5">
+                <div className="bg-secondary-bg flex items-center justify-between rounded-lg p-1 sm:p-2.5">
                   <div className="flex items-center gap-1 sm:gap-2">
-                    <span className="text-muted text-xs font-medium whitespace-nowrap sm:text-xs">
+                    <span className="text-secondary-text text-xs font-medium whitespace-nowrap sm:text-xs">
                       Trend
                     </span>
                   </div>
-                  <span
-                    className={`rounded-lg px-0.5 py-0.5 text-[9px] font-bold whitespace-nowrap shadow-sm min-[401px]:px-2 min-[401px]:py-1 min-[401px]:text-xs min-[480px]:px-3 min-[480px]:py-1.5 ${getTrendColor(item.trend === null || item.trend === 'N/A' ? 'Unknown' : item.trend)}`}
-                  >
+                  <span className="bg-button-info text-form-button-text rounded-lg px-0.5 py-0.5 text-[9px] font-bold whitespace-nowrap shadow-sm min-[401px]:px-2 min-[401px]:py-1 min-[401px]:text-xs min-[480px]:px-3 min-[480px]:py-1.5">
                     {item.trend === null || item.trend === 'N/A' ? 'Unknown' : item.trend}
                   </span>
                 </div>
               )}
             </div>
 
-            <div className="text-muted mt-auto border-t pt-1 text-[10px] sm:pt-2 sm:text-xs">
+            <div className="text-secondary-text border-secondary-text mt-auto border-t pt-1 text-[10px] sm:pt-2 sm:text-xs">
               {currentItemData.last_updated ? (
                 <Tooltip
                   title={formatCustomDate(currentItemData.last_updated)}
@@ -457,18 +449,11 @@ export default function ItemCard({ item, isFavorited, onFavoriteChange }: ItemCa
                   arrow
                   slotProps={{
                     tooltip: {
-                      sx: {
-                        backgroundColor: '#0F1419',
-                        color: '#D3D9D4',
-                        fontSize: '0.75rem',
-                        padding: '8px 12px',
-                        borderRadius: '8px',
-
-                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-                        '& .MuiTooltip-arrow': {
-                          color: '#0F1419',
-                        },
-                      },
+                      className:
+                        'bg-primary-bg text-primary-text text-xs px-3 py-2 rounded-lg shadow-lg',
+                    },
+                    arrow: {
+                      className: 'text-primary-bg',
                     },
                   }}
                 >

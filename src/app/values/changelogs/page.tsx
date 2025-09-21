@@ -113,7 +113,7 @@ export default function ValuesChangelogPage() {
           {loading ? (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {[...Array(10)].map((_, i) => (
-                <div key={i} className="rounded-lg border border-[#37424D] bg-[#212A31] p-4">
+                <div key={i} className="border-stroke bg-secondary-bg rounded-lg border p-4">
                   <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                     <div>
                       <Skeleton variant="text" width={120} height={24} />

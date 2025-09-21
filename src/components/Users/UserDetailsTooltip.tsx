@@ -14,11 +14,11 @@ export const UserDetailsTooltip: React.FC<UserDetailsTooltipProps> = ({ user }) 
   // Don't show tooltip for private profiles
   if (user.settings?.profile_public === 0) {
     return (
-      <div className="p-2">
+      <div className="bg-primary-bg p-2">
         <div className="flex gap-3">
           <div className="relative flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg">
             <svg
-              className="h-8 w-8 text-[#FFFFFF]"
+              className="text-primary-text h-8 w-8"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -32,8 +32,8 @@ export const UserDetailsTooltip: React.FC<UserDetailsTooltipProps> = ({ user }) 
             </svg>
           </div>
           <div className="min-w-0 flex-1">
-            <div className="text-muted text-lg font-semibold">Private Profile</div>
-            <p className="text-muted text-sm">This user&apos;s profile is private</p>
+            <div className="text-secondary-text text-lg font-semibold">Private Profile</div>
+            <p className="text-secondary-text text-sm">This user&apos;s profile is private</p>
           </div>
         </div>
       </div>
@@ -41,7 +41,7 @@ export const UserDetailsTooltip: React.FC<UserDetailsTooltipProps> = ({ user }) 
   }
 
   return (
-    <div className="p-2">
+    <div className="bg-primary-bg p-2">
       <div className="flex gap-3">
         {/* User Avatar */}
         <UserAvatar
@@ -66,7 +66,7 @@ export const UserDetailsTooltip: React.FC<UserDetailsTooltipProps> = ({ user }) 
               className="block transition-opacity hover:opacity-80"
             >
               <div className="flex items-center gap-2">
-                <h3 className="text-muted text-lg font-semibold transition-colors hover:text-blue-300">
+                <h3 className="text-link hover:text-link-hover text-lg font-semibold transition-colors">
                   {user.global_name && user.global_name !== 'None'
                     ? user.global_name
                     : user.username}
@@ -78,7 +78,7 @@ export const UserDetailsTooltip: React.FC<UserDetailsTooltipProps> = ({ user }) 
                   size="sm"
                 />
               </div>
-              <p className="text-sm text-[#B9BBBE]">@{user.username}</p>
+              <p className="text-link hover:text-link-hover text-sm">@{user.username}</p>
             </Link>
           </div>
 
@@ -86,7 +86,7 @@ export const UserDetailsTooltip: React.FC<UserDetailsTooltipProps> = ({ user }) 
             {/* Roblox Connection */}
             {user.roblox_id && (
               <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1 rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-xs text-white">
+                <span className="border-secondary-text text-primary-text inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs">
                   <RobloxIcon className="h-3 w-3" />
                   {user.roblox_username}
                 </span>
@@ -94,8 +94,8 @@ export const UserDetailsTooltip: React.FC<UserDetailsTooltipProps> = ({ user }) 
             )}
 
             {/* Additional Info */}
-            <p className="text-muted">Member #{user.usernumber}</p>
-            <p className="text-muted">
+            <p className="text-secondary-text">Member #{user.usernumber}</p>
+            <p className="text-secondary-text">
               Joined {formatRelativeDate(parseInt(user.created_at) * 1000)}
             </p>
           </div>

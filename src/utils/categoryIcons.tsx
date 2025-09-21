@@ -18,7 +18,6 @@ interface CategoryIcon {
     className?: string;
     style?: React.CSSProperties;
   }>;
-  color: string;
 }
 
 export const getCategoryIcon = (type: string): CategoryIcon | null => {
@@ -26,39 +25,39 @@ export const getCategoryIcon = (type: string): CategoryIcon | null => {
   switch (normalizedType) {
     case 'vehicles':
     case 'vehicle':
-      return { Icon: FaCarAlt, color: '#c82c2c' };
+      return { Icon: FaCarAlt };
     case 'hyperchromes':
     case 'hyperchrome':
-      return { Icon: FaJar, color: '#e91e63' };
+      return { Icon: FaJar };
     case 'rims':
     case 'rim':
-      return { Icon: GiCarWheel, color: '#6335b1' };
+      return { Icon: GiCarWheel };
     case 'spoilers':
     case 'spoiler':
-      return { Icon: RocketLaunchIcon, color: '#c18800' };
+      return { Icon: RocketLaunchIcon };
     case 'body colors':
     case 'body color':
-      return { Icon: RiPaintFill, color: '#8a2be2' };
+      return { Icon: RiPaintFill };
     case 'textures':
     case 'texture':
-      return { Icon: FaLayerGroup, color: '#708090' };
+      return { Icon: FaLayerGroup };
     case 'tire stickers':
     case 'tire sticker':
-      return { Icon: PiStickerFill, color: '#1ca1bd' };
+      return { Icon: PiStickerFill };
     case 'tire styles':
     case 'tire style':
-      return { Icon: CircleStackIcon, color: '#4caf50' };
+      return { Icon: CircleStackIcon };
     case 'drifts':
     case 'drift':
-      return { Icon: FaFire, color: '#ff4500' };
+      return { Icon: FaFire };
     case 'furniture':
-      return { Icon: FaHome, color: '#9c6644' };
+      return { Icon: FaHome };
     case 'horns':
     case 'horn':
-      return { Icon: FaBullhorn, color: '#4a90e2' };
+      return { Icon: FaBullhorn };
     case 'weapon skins':
     case 'weapon skin':
-      return { Icon: FaGun, color: '#4a6741' };
+      return { Icon: FaGun };
     default:
       return null;
   }
@@ -81,16 +80,16 @@ export const CategoryIconBadge = ({
 }) => {
   if (isSeasonal) {
     return (
-      <div className="rounded-full bg-black/50 p-1.5">
-        <FaRegSnowflake className={className} style={{ color: '#40c0e7' }} />
+      <div className="bg-primary-bg/50 rounded-full p-1.5">
+        <FaRegSnowflake className={`${className} text-secondary-text`} />
       </div>
     );
   }
 
   if (isLimited) {
     return (
-      <div className="rounded-full bg-black/50 p-1.5">
-        <FaClock className={className} style={{ color: '#ffd700' }} />
+      <div className="bg-primary-bg/50 rounded-full p-1.5">
+        <FaClock className={`${className} text-secondary-text`} />
       </div>
     );
   }
@@ -100,8 +99,8 @@ export const CategoryIconBadge = ({
     const categoryIcon = getCategoryIcon(type);
     if (categoryIcon) {
       return (
-        <div className="rounded-full bg-black/50 p-1.5">
-          <categoryIcon.Icon className={className} style={{ color: categoryIcon.color }} />
+        <div className="bg-primary-bg/50 rounded-full p-1.5">
+          <categoryIcon.Icon className={`${className} text-secondary-text`} />
         </div>
       );
     }
