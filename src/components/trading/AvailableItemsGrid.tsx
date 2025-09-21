@@ -1,6 +1,7 @@
 function useWindowWidth() {
-  const [width, setWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
+  const [width, setWidth] = useState(1024);
   useEffect(() => {
+    setWidth(window.innerWidth);
     const handleResize = () => setWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -53,7 +54,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
   const [currentUserPremiumType, setCurrentUserPremiumType] = useState<number>(0);
   const [premiumStatusLoaded, setPremiumStatusLoaded] = useState(false);
   const router = useRouter();
-  const ITEMS_PER_PAGE = windowWidth === 1024 ? 25 : 24;
+  const ITEMS_PER_PAGE = 24; // Fixed value to prevent hydration mismatch
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const MAX_QUERY_DISPLAY_LENGTH = 120;
   const displayDebouncedSearchQuery =

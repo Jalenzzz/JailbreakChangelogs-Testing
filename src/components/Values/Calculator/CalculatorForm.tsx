@@ -224,7 +224,7 @@ const CalculatorItemGrid: React.FC<{
                       sx: {
                         backgroundColor: 'var(--color-secondary-bg)',
                         color: 'var(--color-primary-text)',
-                        border: '1px solid var(--color-border-primary)',
+                        border: '1px solid var(--color-stroke)',
                         maxWidth: '400px',
                         width: 'auto',
                         minWidth: '300px',

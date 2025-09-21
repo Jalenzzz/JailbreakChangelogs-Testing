@@ -72,15 +72,15 @@ export const darkTheme = createTheme({
     MuiTooltip: {
       styleOverrides: {
         tooltip: {
-          backgroundColor: 'hsl(240, 8%, 9%)', // --color-primary-bg
-          color: 'hsl(60, 100%, 100%)', // --color-primary-text
+          backgroundColor: 'var(--color-primary-bg)',
+          color: 'var(--color-primary-text)',
           fontSize: '0.875rem',
-          border: '1px solid hsl(0, 0%, 0%)', // --color-stroke
+          border: '1px solid var(--color-stroke)',
         },
         arrow: {
-          color: '#16161a', // --color-primary-bg
+          color: 'var(--color-primary-bg)',
           '&::before': {
-            border: '1px solid hsl(0, 0%, 0%)', // --color-stroke
+            border: '1px solid var(--color-stroke)',
           },
         },
       },
