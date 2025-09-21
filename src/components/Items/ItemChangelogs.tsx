@@ -216,7 +216,7 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
     const down = voters.filter((v: VoteRecord) => v.vote_type === 'downvote');
     const upCount = suggestionData?.vote_data.upvotes || 0;
     const downCount = suggestionData?.vote_data.downvotes || 0;
-    if (up.length === 0 && down.length === 0) return;
+    if (upCount === 0 && downCount === 0) return;
     setActiveVoters({ up, down, upCount, downCount });
     setVotersTab(tab);
     setVotersOpen(true);
@@ -283,55 +283,79 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
 
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <Dialog.Panel className="modal-container bg-secondary-bg border-button-info w-full max-w-[480px] min-w-[320px] rounded-lg border shadow-lg">
-            <div className="modal-header text-primary-text border-secondary-text border-b px-6 py-4 text-xl font-semibold">
+            <div className="modal-header text-primary-text px-6 py-4 text-2xl font-bold">
               Voters
             </div>
 
-            <div className="modal-content p-6">
-              <div className="border-secondary-text mb-4 flex border-b">
+            <div className="modal-content px-6 pt-3 pb-6">
+              <div className="bg-primary-bg border-border-primary mb-4 flex rounded-lg border">
                 <button
                   onClick={() => setVotersTab('up')}
-                  className={`flex-1 py-2 text-sm font-medium transition-colors ${
+                  className={`flex-1 cursor-pointer rounded-l-lg py-3 text-sm font-semibold transition-colors ${
                     votersTab === 'up'
-                      ? 'text-primary-text border-button-info border-b-2'
-                      : 'text-secondary-text hover:text-primary-text'
+                      ? 'text-primary-text bg-button-success/30 border-button-success border-b-2'
+                      : 'text-tertiary-text hover:text-primary-text'
                   }`}
                 >
-                  <div className="flex flex-col items-center">
-                    <span>Upvotes</span>
-                    <span className="text-xs opacity-70">({activeVoters?.upCount ?? 0})</span>
+                  <div className="flex flex-col items-center gap-1">
+                    <span className="text-base font-bold">Upvotes</span>
+                    <span className="text-xs font-semibold opacity-80">
+                      ({activeVoters?.upCount ?? 0})
+                    </span>
                   </div>
                 </button>
                 <button
                   onClick={() => setVotersTab('down')}
-                  className={`flex-1 py-2 text-sm font-medium transition-colors ${
+                  className={`flex-1 cursor-pointer rounded-r-lg py-3 text-sm font-semibold transition-colors ${
                     votersTab === 'down'
-                      ? 'text-primary-text border-button-info border-b-2'
-                      : 'text-secondary-text hover:text-primary-text'
+                      ? 'text-primary-text bg-button-danger/20 border-button-danger border-b-2'
+                      : 'text-tertiary-text hover:text-primary-text'
                   }`}
                 >
-                  <div className="flex flex-col items-center">
-                    <span>Downvotes</span>
-                    <span className="text-xs opacity-70">({activeVoters?.downCount ?? 0})</span>
+                  <div className="flex flex-col items-center gap-1">
+                    <span className="text-base font-bold">Downvotes</span>
+                    <span className="text-xs font-semibold opacity-80">
+                      ({activeVoters?.downCount ?? 0})
+                    </span>
                   </div>
                 </button>
               </div>
 
-              <div className="max-h-[400px] space-y-2 overflow-y-auto">
+              <div className="max-h-[400px] space-y-3 overflow-y-auto">
                 {(votersTab === 'up' ? activeVoters?.up || [] : activeVoters?.down || []).length ===
                 0 ? (
-                  <div className="text-secondary-text py-4 text-center text-sm">
-                    No voters to display.
+                  <div className="text-secondary-text py-8 text-center">
+                    <div className="mb-2 text-lg font-semibold">
+                      {(votersTab === 'up'
+                        ? activeVoters?.upCount || 0
+                        : activeVoters?.downCount || 0) === 0
+                        ? 'No voters to display'
+                        : 'Voter details not available'}
+                    </div>
+                    <div className="text-sm">
+                      {(votersTab === 'up'
+                        ? activeVoters?.upCount || 0
+                        : activeVoters?.downCount || 0) === 0
+                        ? votersTab === 'up'
+                          ? "This suggestion hasn't received any upvotes yet."
+                          : "This suggestion hasn't received any downvotes yet."
+                        : votersTab === 'up'
+                          ? `This suggestion has ${activeVoters?.upCount || 0} upvote${(activeVoters?.upCount || 0) === 1 ? '' : 's'}, but individual voter details are not available.`
+                          : `This suggestion has ${activeVoters?.downCount || 0} downvote${(activeVoters?.downCount || 0) === 1 ? '' : 's'}, but individual voter details are not available.`}
+                    </div>
                   </div>
                 ) : (
                   (votersTab === 'up' ? activeVoters?.up || [] : activeVoters?.down || []).map(
                     (voter: VoteRecord) => (
-                      <div key={voter.id} className="flex items-center gap-3 py-2">
-                        <div className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full">
+                      <div
+                        key={voter.id}
+                        className="bg-primary-bg border-border-primary hover:border-border-focus flex items-center gap-4 rounded-lg border px-4 py-3 transition-colors"
+                      >
+                        <div className="ring-border-primary relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-full ring-2">
                           <DefaultAvatar />
-                          {voter.avatar_hash && (
+                          {voter.avatar && (
                             <Image
-                              src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(`https://cdn.discordapp.com/avatars/${voter.id}/${voter.avatar_hash}?size=128`)}`}
+                              src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(voter.avatar)}`}
                               alt={voter.name}
                               fill
                               className="object-cover"
@@ -344,17 +368,17 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                           )}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <div className="text-primary-text text-sm">
+                          <div className="text-primary-text mb-1 text-base font-bold">
                             <a
                               href={`https://discord.com/users/${voter.id}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-link hover:text-link-hover hover:underline"
+                              className="text-link hover:text-link-hover transition-colors hover:underline"
                             >
                               {voter.name.replace(/(.+)\1/, '$1')}
                             </a>
                           </div>
-                          <div className="text-secondary-text text-xs">
+                          <div className="text-tertiary-text text-sm font-medium">
                             {new Date(voter.timestamp * 1000).toLocaleDateString('en-US', {
                               month: 'short',
                               day: 'numeric',
@@ -371,10 +395,10 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
               </div>
             </div>
 
-            <div className="modal-footer border-secondary-text flex justify-end gap-2 border-t px-6 py-4">
+            <div className="modal-footer flex justify-end gap-3 px-6 py-4">
               <button
                 onClick={() => setVotersOpen(false)}
-                className="bg-button-info hover:bg-button-info-hover text-primary-text min-w-[100px] cursor-pointer rounded border-none px-4 py-2 text-sm transition-colors"
+                className="bg-button-info hover:bg-button-info-hover text-form-button-text border-border-primary min-w-[100px] cursor-pointer rounded-lg border px-6 py-3 text-sm font-semibold transition-colors"
               >
                 Close
               </button>
@@ -396,7 +420,7 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
             </p>
             <Link
               href="/values/changelogs"
-              className="bg-button-info text-primary-text hover:bg-button-info-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+              className="bg-button-info text-form-button-text hover:bg-button-info-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
             >
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -472,11 +496,11 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
 
               {change.suggestion_data && (
                 <>
-                  <div className="border-button-info/20 bg-button-info/10 mt-2 rounded-lg border p-3">
-                    <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                      <div className="flex items-center gap-2">
+                  <div className="bg-primary-bg border-border-primary hover:shadow-card-shadow mt-2 rounded-lg border p-5 shadow-lg transition-all duration-200">
+                    <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="flex items-center gap-3">
                         {change.suggestion_data.metadata?.avatar_hash && (
-                          <div className="relative h-6 w-6 flex-shrink-0 overflow-hidden rounded-full">
+                          <div className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full">
                             <DefaultAvatar />
                             <Image
                               src={`http://proxy.jailbreakchangelogs.xyz/?destination=${encodeURIComponent(`https://cdn.discordapp.com/avatars/${change.suggestion_data.user_id}/${change.suggestion_data.metadata.avatar_hash}?size=128`)}`}
@@ -491,46 +515,48 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                             />
                           </div>
                         )}
-                        <span className="text-primary-text text-sm font-medium">
-                          Suggested by{' '}
+                        <div className="flex flex-col">
+                          <span className="text-tertiary-text text-xs font-semibold tracking-wide uppercase">
+                            Suggested by
+                          </span>
                           <a
                             href={`https://discord.com/users/${change.suggestion_data.user_id}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-link hover:text-link-hover hover:underline"
+                            className="text-link hover:text-link-hover text-lg font-bold transition-colors hover:underline"
                           >
                             {change.suggestion_data.suggestor_name}
                           </a>
-                        </span>
+                        </div>
                       </div>
-                      <div className="flex items-center justify-center text-xs">
-                        <div className="flex items-center justify-center overflow-hidden rounded-full">
+                      <div className="flex items-center justify-center">
+                        <div className="border-border-primary flex items-center justify-center overflow-hidden rounded-lg border">
                           <button
                             type="button"
                             onClick={() => handleVotersClick('up', change.suggestion_data)}
-                            className="bg-button-success/10 hover:bg-button-success/20 flex items-center justify-center gap-1 px-2 py-1 focus:outline-none"
+                            className="bg-button-success/10 hover:bg-button-success/20 flex items-center justify-center gap-2 px-3 py-2 transition-colors focus:outline-none"
                             aria-label="View voters"
                           >
-                            <span className="text-button-success font-medium">↑</span>
-                            <span className="text-button-success font-semibold">
+                            <span className="text-button-success text-lg font-bold">↑</span>
+                            <span className="text-button-success text-lg font-bold">
                               {change.suggestion_data.vote_data.upvotes}
                             </span>
                           </button>
                           <button
                             type="button"
                             onClick={() => handleVotersClick('down', change.suggestion_data)}
-                            className="bg-button-danger/10 hover:bg-button-danger/20 flex items-center justify-center gap-1 px-2 py-1 focus:outline-none"
+                            className="bg-button-danger/10 hover:bg-button-danger/20 flex items-center justify-center gap-2 px-3 py-2 transition-colors focus:outline-none"
                             aria-label="View voters"
                           >
-                            <span className="text-button-danger font-medium">↓</span>
-                            <span className="text-button-danger font-semibold">
+                            <span className="text-button-danger text-lg font-bold">↓</span>
+                            <span className="text-button-danger text-lg font-bold">
                               {change.suggestion_data.vote_data.downvotes}
                             </span>
                           </button>
                         </div>
                       </div>
                     </div>
-                    <div className="text-secondary-text mb-2 text-sm">
+                    <div className="text-tertiary-text mb-4 text-sm leading-relaxed font-medium">
                       {(() => {
                         const { text, isTruncated } = truncateText(
                           change.suggestion_data.data.reason,
@@ -561,15 +587,15 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                     </div>
 
                     {/* Suggestion details removed; changes will be shown in the unified list below */}
-                    <div className="text-secondary-text text-xs">
+                    <div className="text-tertiary-text text-xs font-semibold tracking-wide uppercase">
                       Suggested on {formatCustomDate(change.suggestion_data.created_at * 1000)}
                     </div>
                   </div>
                 </>
               )}
 
-              <div className="mt-4 space-y-4">
-                {Object.entries(change.changes.old).map(([key, oldValue], index) => {
+              <div className="mt-6 space-y-6">
+                {Object.entries(change.changes.old).map(([key, oldValue]) => {
                   if (key === 'last_updated') return null;
                   const newValue = change.changes.new[key];
                   const isNA = (v: unknown) =>
@@ -606,7 +632,7 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                     <div key={key}>
                       <div className="flex items-start gap-2 overflow-hidden">
                         <div className="min-w-0 flex-1">
-                          <div className="text-secondary-text text-sm capitalize">
+                          <div className="text-primary-text mb-3 text-lg font-bold capitalize">
                             {doesSuggestionTypeApplyToKey(
                               change.suggestion_data?.metadata?.suggestion_type,
                               key,
@@ -628,14 +654,14 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                               <>{key.replace(/_/g, ' ')}:</>
                             )}
                           </div>
-                          <div className="mt-1 grid grid-cols-2 gap-4">
+                          <div className="grid grid-cols-2 gap-6">
                             <div className="min-w-0">
-                              <div className="text-secondary-text mb-1 flex items-center gap-1 text-xs font-medium">
-                                <FaCircleMinus className="text-button-danger h-3 w-3" />
+                              <div className="text-tertiary-text mb-2 flex items-center gap-2 text-xs font-semibold tracking-wide uppercase">
+                                <FaCircleMinus className="text-button-danger h-4 w-4" />
                                 OLD VALUE
                               </div>
                               <div
-                                className="text-secondary-text overflow-hidden text-sm break-words line-through"
+                                className="text-secondary-text overflow-hidden text-lg font-bold break-words line-through"
                                 style={{
                                   wordBreak: 'normal',
                                   overflowWrap: 'anywhere',
@@ -660,12 +686,12 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                               </div>
                             </div>
                             <div className="min-w-0">
-                              <div className="text-secondary-text mb-1 flex items-center gap-1 text-xs font-medium">
-                                <FaPlusCircle className="text-button-success h-3 w-3" />
+                              <div className="text-tertiary-text mb-2 flex items-center gap-2 text-xs font-semibold tracking-wide uppercase">
+                                <FaPlusCircle className="text-button-success h-4 w-4" />
                                 NEW VALUE
                               </div>
                               <div
-                                className="text-primary-text overflow-hidden text-sm font-medium break-words"
+                                className="text-primary-text overflow-hidden text-lg font-bold break-words"
                                 style={{
                                   wordBreak: 'normal',
                                   overflowWrap: 'anywhere',
@@ -692,17 +718,6 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                           </div>
                         </div>
                       </div>
-                      {index <
-                        Object.entries(change.changes.old).filter(([k, v]) => {
-                          if (k === 'last_updated') return false;
-                          const nv = change.changes.new[k];
-                          const isNA = (val: unknown) =>
-                            val == null ||
-                            (typeof val === 'string' && val.trim().toUpperCase() === 'N/A');
-                          if (isNA(v) && isNA(nv)) return false;
-                          return v !== nv;
-                        }).length -
-                          1 && <div className="mt-4 border-t pt-4"></div>}
                     </div>
                   );
                 })}
@@ -750,7 +765,24 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
               count={totalPages}
               page={page}
               onChange={handlePageChange}
-              className="[&_.MuiPaginationItem-root]:text-primary-text [&_.MuiPaginationItem-root.Mui-selected]:bg-button-info [&_.MuiPaginationItem-root.Mui-selected:hover]:bg-button-info-hover [&_.MuiPaginationItem-root:hover]:bg-secondary-bg"
+              sx={{
+                '& .MuiPaginationItem-root': {
+                  color: 'var(--color-primary-text)',
+                  '&.Mui-selected': {
+                    backgroundColor: 'var(--color-button-info)',
+                    color: 'var(--color-form-button-text)',
+                    '&:hover': {
+                      backgroundColor: 'var(--color-button-info-hover)',
+                    },
+                  },
+                  '&:hover': {
+                    backgroundColor: 'var(--color-quaternary-bg)',
+                  },
+                },
+                '& .MuiPaginationItem-icon': {
+                  color: 'var(--color-primary-text)',
+                },
+              }}
             />
           </div>
         )}

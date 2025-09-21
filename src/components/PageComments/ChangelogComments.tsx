@@ -502,7 +502,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
 
   return (
     <div className="space-y-2 sm:space-y-3">
-      <div className="border-button-info bg-secondary-bg rounded-lg border p-2 sm:p-3">
+      <div className="border-border-primary bg-secondary-bg rounded-lg border p-2 sm:p-3">
         <div className="flex flex-col gap-4">
           <div>
             <h2
@@ -551,7 +551,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
             <div className="mt-2 flex items-center justify-between">
               <button
                 onClick={toggleSortOrder}
-                className="border-stroke bg-button-info text-primary-text hover:bg-button-info-hover flex items-center gap-1 rounded-lg border px-3 py-1.5 text-sm transition-colors"
+                className="border-stroke bg-button-info text-form-button-text hover:bg-button-info-hover flex items-center gap-1 rounded-lg border px-3 py-1.5 text-sm transition-colors"
               >
                 {sortOrder === 'newest' ? (
                   <ArrowDownIcon className="h-4 w-4" />
@@ -573,16 +573,16 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                 }
                 className={`flex items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium transition-colors ${
                   isSubmittingComment
-                    ? 'bg-primary-bg text-secondary-text border-secondary-bg cursor-progress'
+                    ? 'bg-button-info-disabled text-form-button-text border-button-info-disabled cursor-progress'
                     : isLoggedIn && !newComment.trim()
-                      ? 'bg-primary-bg text-secondary-text border-secondary-bg cursor-not-allowed'
-                      : 'bg-button-info text-primary-text border-button-info hover:bg-button-info-hover cursor-pointer'
+                      ? 'bg-button-secondary text-secondary-text border-button-secondary cursor-not-allowed'
+                      : 'bg-button-info text-form-button-text border-button-info hover:bg-button-info-hover cursor-pointer'
                 }`}
               >
                 {isLoggedIn ? (
                   isSubmittingComment ? (
                     <>
-                      <CircularProgress size={16} className="text-primary-text" />
+                      <CircularProgress size={16} className="text-form-button-text" />
                       Posting...
                     </>
                   ) : (
@@ -612,9 +612,9 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
           {filteredComments.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center sm:py-16">
               <div className="relative mb-6">
-                <div className="from-button-info/20 to-button-info-hover/20 absolute inset-0 rounded-full bg-gradient-to-r blur-xl"></div>
-                <div className="border-button-info/30 bg-secondary-bg relative rounded-full border p-4">
-                  <ChatBubbleLeftIcon className="text-button-info h-8 w-8 sm:h-10 sm:w-10" />
+                <div className="from-border-focus/20 to-button-info-hover/20 absolute inset-0 rounded-full bg-gradient-to-r blur-xl"></div>
+                <div className="border-border-focus/30 bg-secondary-bg relative rounded-full border p-4">
+                  <ChatBubbleLeftIcon className="text-border-focus h-8 w-8 sm:h-10 sm:w-10" />
                 </div>
               </div>
               <h3 className="text-primary-text mb-2 text-lg font-semibold sm:text-xl">
@@ -634,7 +634,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
             </div>
           ) : (
             <>
-              <div className="bg-secondary-bg rounded-xl p-2">
+              <div className="bg-tertiary-bg rounded-xl p-2">
                 <div className="space-y-2 sm:space-y-3">
                   {currentComments.map((comment) => {
                     const flags = userData[comment.user_id]?.flags || [];
@@ -645,17 +645,17 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                     return (
                       <div
                         key={comment.id}
-                        className="group hover:border-button-info relative overflow-hidden rounded-lg border border-transparent p-3 transition-all duration-200"
+                        className="group hover:border-border-focus border-border-tertiary relative overflow-hidden rounded-lg border p-3 transition-all duration-200"
                       >
                         {/* Header Section */}
                         <div className="flex items-center justify-between pb-2">
                           <div className="flex items-center gap-3">
                             {loadingUserData[comment.user_id] ? (
-                              <div className="bg-secondary-bg ring-button-info/20 flex h-10 w-10 items-center justify-center rounded-full ring-2">
-                                <CircularProgress size={20} className="text-button-info" />
+                              <div className="bg-tertiary-bg ring-border-focus/20 flex h-10 w-10 items-center justify-center rounded-full ring-2">
+                                <CircularProgress size={20} className="text-border-focus" />
                               </div>
                             ) : hideRecent ? (
-                              <div className="border-stroke bg-primary-bg ring-secondary-text/20 flex h-10 w-10 items-center justify-center rounded-full border ring-2">
+                              <div className="border-border-primary bg-primary-bg ring-tertiary-text/20 flex h-10 w-10 items-center justify-center rounded-full border ring-2">
                                 <svg
                                   className="text-secondary-text h-5 w-5"
                                   fill="none"
@@ -671,7 +671,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                                 </svg>
                               </div>
                             ) : (
-                              <div className="group-hover:ring-button-info/20 rounded-full ring-2 ring-transparent transition-all duration-200">
+                              <div className="group-hover:ring-border-focus/20 rounded-full ring-2 ring-transparent transition-all duration-200">
                                 <UserAvatar
                                   userId={comment.user_id}
                                   avatarHash={userData[comment.user_id]?.avatar}
@@ -725,8 +725,13 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                                         disableTouchListener
                                         slotProps={{
                                           tooltip: {
-                                            className:
-                                              'bg-primary-bg border border-secondary-bg max-w-sm w-auto min-w-[300px] [&_.MuiTooltip-arrow]:text-primary-bg',
+                                            sx: {
+                                              backgroundColor: 'var(--color-primary-bg)',
+                                              color: 'var(--color-primary-text)',
+                                              '& .MuiTooltip-arrow': {
+                                                color: 'var(--color-primary-bg)',
+                                              },
+                                            },
                                           },
                                         }}
                                       >
@@ -753,7 +758,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                                     {type === 'trade' &&
                                       trade &&
                                       comment.user_id === trade.author && (
-                                        <span className="from-button-info to-button-info-hover text-primary-text rounded-full bg-gradient-to-r px-2 py-0.5 text-xs font-medium shadow-sm">
+                                        <span className="from-button-info to-button-info-hover text-card-tag-text rounded-full bg-gradient-to-r px-2 py-0.5 text-xs font-medium shadow-sm">
                                           OP
                                         </span>
                                       )}
@@ -774,7 +779,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                             <IconButton
                               size="small"
                               onClick={(e) => handleMenuOpen(e, comment.id)}
-                              className={`text-primary-text hover:bg-button-info/15 rounded-lg p-2 opacity-0 transition-all duration-200 group-hover:opacity-100 ${Boolean(menuAnchorEl) && selectedCommentId === comment.id ? 'opacity-100' : ''}`}
+                              className={`text-primary-text hover:bg-quaternary-bg rounded-lg p-2 opacity-0 transition-all duration-200 group-hover:opacity-100 ${Boolean(menuAnchorEl) && selectedCommentId === comment.id ? 'opacity-100' : ''}`}
                             >
                               <EllipsisHorizontalIcon className="h-4 w-4" />
                             </IconButton>
@@ -818,7 +823,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                                   variant="contained"
                                   onClick={() => handleEditComment(comment.id)}
                                   disabled={!editContent.trim()}
-                                  className="bg-button-info text-primary-text hover:bg-button-info-hover rounded-md text-sm normal-case"
+                                  className="bg-button-info text-form-button-text hover:bg-button-info-hover rounded-md text-sm normal-case"
                                 >
                                   Update
                                 </Button>
@@ -920,7 +925,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                               <MenuItem
                                 key="delete"
                                 onClick={handleDeleteClick}
-                                className="bg:text-button-danger hover:bg-button-danger/10"
+                                className="text-button-danger hover:bg-button-danger/10"
                               >
                                 <TrashIcon className="text-button-danger mr-3 h-4 w-4" />
                                 Delete Comment
@@ -946,7 +951,24 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                     count={totalPages}
                     page={currentPage}
                     onChange={handlePageChange}
-                    className="[&_.MuiPaginationItem-root]:text-primary-text [&_.MuiPaginationItem-root.Mui-selected]:bg-button-info [&_.MuiPaginationItem-root.Mui-selected:hover]:bg-button-info-hover [&_.MuiPaginationItem-root:hover]:bg-secondary-bg"
+                    sx={{
+                      '& .MuiPaginationItem-root': {
+                        color: 'var(--color-primary-text)',
+                        '&.Mui-selected': {
+                          backgroundColor: 'var(--color-button-info)',
+                          color: 'var(--color-form-button-text)',
+                          '&:hover': {
+                            backgroundColor: 'var(--color-button-info-hover)',
+                          },
+                        },
+                        '&:hover': {
+                          backgroundColor: 'var(--color-quaternary-bg)',
+                        },
+                      },
+                      '& .MuiPaginationItem-icon': {
+                        color: 'var(--color-primary-text)',
+                      },
+                    }}
                   />
                 </div>
               )}
@@ -1008,7 +1030,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
           elevation={6}
           variant="filled"
           severity="success"
-          className="bg-secondary-bg text-primary-text border-button-info border font-medium"
+          className="bg-secondary-bg text-primary-text border-border-focus border font-medium"
         >
           {postSnackbarMsg}
         </MuiAlert>
@@ -1025,7 +1047,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
           elevation={6}
           variant="filled"
           severity="error"
-          className="bg-secondary-bg text-primary-text border-button-danger border font-medium"
+          className="bg-secondary-bg text-primary-text border-border-error border font-medium"
         >
           {postErrorSnackbarMsg}
         </MuiAlert>
@@ -1042,7 +1064,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
           elevation={6}
           variant="filled"
           severity="success"
-          className="bg-secondary-bg text-primary-text border-button-info border font-medium"
+          className="bg-secondary-bg text-primary-text border-border-focus border font-medium"
         >
           {editSnackbarMsg}
         </MuiAlert>
@@ -1059,7 +1081,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
           elevation={6}
           variant="filled"
           severity="error"
-          className="bg-secondary-bg text-primary-text border-button-danger border font-medium"
+          className="bg-secondary-bg text-primary-text border-border-error border font-medium"
         >
           {globalErrorSnackbarMsg}
         </MuiAlert>
@@ -1076,7 +1098,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
           elevation={6}
           variant="filled"
           severity="info"
-          className="bg-secondary-bg text-primary-text border-button-info border font-medium"
+          className="bg-secondary-bg text-primary-text border-border-focus border font-medium"
         >
           {infoSnackbarMsg}
         </MuiAlert>

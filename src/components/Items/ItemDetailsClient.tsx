@@ -391,7 +391,7 @@ export default function ItemDetailsClient({
                 </div>
               )}
 
-              <div className="border-stroke bg-secondary-bg mt-4 rounded-lg border p-6 shadow-lg">
+              <div className="bg-secondary-bg border-border-primary mt-4 rounded-lg border p-6 shadow-lg">
                 <div className="flex items-start gap-4">
                   <div className="flex-1">
                     <h3 className="text-primary-text mb-2 text-lg font-semibold">
@@ -405,7 +405,7 @@ export default function ItemDetailsClient({
                       href="https://discord.com/invite/baHCsb8N5A"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="bg-button-info text-primary-text hover:bg-button-info-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+                      className="bg-button-info text-form-button-text hover:bg-button-info-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
                     >
                       <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z" />
@@ -592,7 +592,7 @@ export default function ItemDetailsClient({
 
               {activeTab === 1 && (
                 <div className="mb-8 space-y-6">
-                  <div className="bg-secondary-bg rounded-lg p-4">
+                  <div className="rounded-lg p-4" style={{ backgroundColor: '#242629' }}>
                     {(() => {
                       const urlVariant = new URLSearchParams(window.location.search).get('variant');
 
@@ -663,10 +663,10 @@ export default function ItemDetailsClient({
                       {/* Owners Grid */}
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                          <h3 className="text-primary-text text-xl font-semibold">
+                          <h3 className="text-primary-text text-2xl font-bold">
                             Duped Owners List
                           </h3>
-                          <div className="text-secondary-text text-sm">
+                          <div className="text-tertiary-text text-sm font-semibold tracking-wide uppercase">
                             {(() => {
                               const filteredOwners = currentItem.duped_owners.filter((owner) =>
                                 owner.owner.toLowerCase().includes(ownerSearchTerm.toLowerCase()),
@@ -700,9 +700,9 @@ export default function ItemDetailsClient({
                               setOwnerSearchTerm(e.target.value);
                               setDupedOwnersPage(1); // Reset to first page when searching
                             }}
-                            className="text-primary-text border-stroke bg-secondary-bg placeholder-secondary-text focus:border-button-info w-full rounded-lg border px-4 py-2 pr-10 pl-10 transition-all duration-300 focus:outline-none"
+                            className="text-primary-text border-border-primary bg-secondary-bg placeholder-tertiary-text focus:border-border-focus w-full rounded-lg border px-4 py-3 pr-10 pl-10 font-medium transition-all duration-300 focus:outline-none"
                           />
-                          <MagnifyingGlassIcon className="text-secondary-text absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
+                          <MagnifyingGlassIcon className="text-tertiary-text absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
                           {ownerSearchTerm && (
                             <button
                               type="button"
@@ -710,7 +710,7 @@ export default function ItemDetailsClient({
                                 setOwnerSearchTerm('');
                                 setDupedOwnersPage(1);
                               }}
-                              className="text-secondary-text hover:text-primary-text absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2 transition-colors"
+                              className="text-tertiary-text hover:text-primary-text absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2 transition-colors"
                               aria-label="Clear search"
                             >
                               <XMarkIcon />
@@ -719,21 +719,21 @@ export default function ItemDetailsClient({
                         </div>
 
                         {/* Dupe Finder Info */}
-                        <div className="bg-button-info/10 rounded-lg p-4">
-                          <p className="text-secondary-text text-center text-sm leading-relaxed">
+                        <div className="bg-button-info/10 border-border-primary rounded-lg border p-5">
+                          <p className="text-tertiary-text text-center text-sm leading-relaxed font-medium">
                             This tab shows manually reported duped owners. For comprehensive dupe
                             detection, use our automated system below.
                           </p>
                           <div className="mt-4 text-center">
                             <Link href="/dupes">
-                              <button className="bg-button-info text-form-button-text hover:bg-button-info-hover border-stroke cursor-pointer rounded-lg border px-6 py-3 text-sm font-semibold normal-case">
+                              <button className="bg-button-info text-form-button-text hover:bg-button-info-hover border-border-primary cursor-pointer rounded-lg border px-6 py-3 text-sm font-semibold normal-case transition-colors">
                                 Search for Dupes
                               </button>
                             </Link>
                           </div>
                         </div>
                       </div>
-                      <div className="bg-secondary-bg space-y-2 rounded-lg p-4">
+                      <div className="bg-secondary-bg border-border-primary space-y-2 rounded-lg border p-4">
                         {(() => {
                           // Filter owners based on search term
                           const filteredOwners = currentItem.duped_owners.filter((owner) =>
@@ -757,7 +757,7 @@ export default function ItemDetailsClient({
                                     setOwnerSearchTerm('');
                                     setDupedOwnersPage(1);
                                   }}
-                                  className="bg-button-info text-primary-text hover:bg-button-info-hover border-stroke mt-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:cursor-pointer"
+                                  className="bg-button-info text-primary-text hover:bg-button-info-hover border-border-primary mt-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:cursor-pointer"
                                 >
                                   Clear search
                                 </button>
@@ -782,10 +782,10 @@ export default function ItemDetailsClient({
                           return currentPageOwners.map((owner: DupedOwner, index: number) => (
                             <div
                               key={index}
-                              className="hover:bg-primary-bg/50 flex items-center justify-between rounded px-3 py-2 transition-colors"
+                              className="hover:bg-secondary-bg hover:border-border-primary flex items-center justify-between rounded-lg border border-transparent px-4 py-3 transition-colors"
                             >
-                              <div className="flex items-center gap-3">
-                                <span className="text-secondary-text min-w-[80px] text-sm font-medium">
+                              <div className="flex items-center gap-4">
+                                <span className="text-tertiary-text min-w-[80px] text-sm font-semibold tracking-wide uppercase">
                                   #{(dupedOwnersPage - 1) * ITEMS_PER_PAGE + index + 1}
                                 </span>
                                 {owner.user_id ? (
@@ -793,12 +793,14 @@ export default function ItemDetailsClient({
                                     href={`https://www.roblox.com/users/${owner.user_id}/profile`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-link-hover font-medium transition-colors hover:underline"
+                                    className="text-primary-text hover:text-link-hover text-lg font-bold transition-colors hover:underline"
                                   >
                                     {owner.owner}
                                   </a>
                                 ) : (
-                                  <span className="text-link font-medium">{owner.owner}</span>
+                                  <span className="text-primary-text text-lg font-bold">
+                                    {owner.owner}
+                                  </span>
                                 )}
                               </div>
                             </div>
@@ -818,7 +820,24 @@ export default function ItemDetailsClient({
                                   count={Math.ceil(filteredOwners.length / ITEMS_PER_PAGE)}
                                   page={dupedOwnersPage}
                                   onChange={(_, page) => setDupedOwnersPage(page)}
-                                  className="[&_.MuiPaginationItem-root]:text-primary-text [&_.MuiPaginationItem-root.Mui-selected]:bg-button-info [&_.MuiPaginationItem-root.Mui-selected:hover]:bg-button-info-hover [&_.MuiPaginationItem-root:hover]:bg-secondary-bg"
+                                  sx={{
+                                    '& .MuiPaginationItem-root': {
+                                      color: 'var(--color-primary-text)',
+                                      '&.Mui-selected': {
+                                        backgroundColor: 'var(--color-button-info)',
+                                        color: 'var(--color-form-button-text)',
+                                        '&:hover': {
+                                          backgroundColor: 'var(--color-button-info-hover)',
+                                        },
+                                      },
+                                      '&:hover': {
+                                        backgroundColor: 'var(--color-quaternary-bg)',
+                                      },
+                                    },
+                                    '& .MuiPaginationItem-icon': {
+                                      color: 'var(--color-primary-text)',
+                                    },
+                                  }}
                                 />
                               </div>
                             )

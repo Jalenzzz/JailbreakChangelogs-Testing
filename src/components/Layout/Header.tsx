@@ -44,6 +44,7 @@ import { useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { isFeatureEnabled } from '@/utils/featureFlags';
 import { useAuthContext } from '@/contexts/AuthContext';
+import ThemeToggle from './ThemeToggle';
 
 export default function Header() {
   const pathname = usePathname();
@@ -296,7 +297,6 @@ export default function Header() {
             </ListItemIcon>
             <ListItemText primary="Logout" />
           </ListItem>
-          <Divider className="border-primary-bg" />
         </>
       ) : (
         <>
@@ -312,7 +312,6 @@ export default function Header() {
               Login
             </Button>
           </ListItem>
-          <Divider className="border-primary-bg" />
         </>
       )}
 
@@ -324,7 +323,6 @@ export default function Header() {
           <CloseIcon />
         </IconButton>
       </ListItem>
-      <Divider className="border-secondary-text" />
 
       <ListItem
         component={Link}
@@ -352,7 +350,7 @@ export default function Header() {
           primary={
             <Box className="flex flex-wrap items-center gap-1">
               <span>Will I Make It</span>
-              <span className="bg-button-info border-stroke text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+              <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                 New
               </span>
             </Box>
@@ -369,7 +367,7 @@ export default function Header() {
           primary={
             <Box className="flex flex-wrap items-center gap-1">
               <span>Weekly Contracts</span>
-              <span className="bg-button-info border-stroke text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+              <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                 New
               </span>
             </Box>
@@ -381,7 +379,6 @@ export default function Header() {
           Values
         </Typography>
       </ListItem>
-      <Divider className="border-secondary-text" />
       <ListItem
         component={Link}
         href="/values"
@@ -417,11 +414,11 @@ export default function Header() {
             <Box className="flex flex-wrap items-center gap-1">
               <span>Dupe Finder</span>
               {isFeatureEnabled('DUPE_FINDER') ? (
-                <span className="bg-button-info border-stroke text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                   New
                 </span>
               ) : (
-                <span className="bg-button-info text-primary-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                   Coming Soon
                 </span>
               )}
@@ -456,11 +453,11 @@ export default function Header() {
             <Box className="flex flex-wrap items-center gap-1">
               <span>Inventory Calculator</span>
               {isFeatureEnabled('INVENTORY_CALCULATOR') ? (
-                <span className="border-secondary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold text-transparent uppercase">
+                <span className="border-border-primary text-border-primary rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                   Beta
                 </span>
               ) : (
-                <span className="bg-button-info text-primary-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                   Coming Soon
                 </span>
               )}
@@ -479,11 +476,11 @@ export default function Header() {
             <Box className="flex flex-wrap items-center gap-1">
               <span>OG Finder</span>
               {isFeatureEnabled('OG_FINDER') ? (
-                <span className="bg-button-info border-stroke text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                   New
                 </span>
               ) : (
-                <span className="bg-button-info text-primary-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                   Coming Soon
                 </span>
               )}
@@ -496,7 +493,6 @@ export default function Header() {
           Community
         </Typography>
       </ListItem>
-      <Divider className="border-secondary-text" />
       <ListItem
         component={Link}
         href="/users"
@@ -515,7 +511,7 @@ export default function Header() {
           primary={
             <Box className="flex flex-wrap items-center gap-1">
               <span>Crew Leaderboard</span>
-              <span className="bg-button-info border-stroke text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+              <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                 New
               </span>
             </Box>
@@ -530,7 +526,7 @@ export default function Header() {
       >
         <Box className="flex items-center gap-1">
           <span>Money Leaderboard</span>
-          <span className="bg-button-info border-stroke text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+          <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
             New
           </span>
         </Box>
@@ -567,12 +563,23 @@ export default function Header() {
       >
         <ListItemText primary="Meet the team" />
       </ListItem>
+
+      <Divider className="my-4" />
+
+      <ListItem>
+        <Box className="w-full px-4">
+          <ThemeToggle />
+        </Box>
+      </ListItem>
     </List>
   );
 
   return (
     <>
-      <AppBar position="sticky" className="bg-primary-bg/75 top-0 z-[1200] backdrop-blur-lg">
+      <AppBar
+        position="sticky"
+        className="bg-primary-bg/75 border-border-primary top-0 z-[1200] border-b backdrop-blur-lg"
+      >
         <Toolbar className="flex items-center justify-between">
           <Box className="flex items-center">
             <Link href="/" style={{ display: 'block' }}>
@@ -600,7 +607,7 @@ export default function Header() {
                 <Button
                   component={Link}
                   href="/changelogs"
-                  className="text-primary-text hover:bg-button-info-hover rounded-lg hover:text-white"
+                  className="text-primary-text hover:bg-button-info-hover active:bg-button-info-active active:text-form-button-text hover:text-form-button-text rounded-lg transition-colors duration-200"
                 >
                   <Typography variant="button" className="font-bold">
                     Changelogs
@@ -616,15 +623,15 @@ export default function Header() {
                 >
                   <Button
                     type="button"
-                    className={`rounded-lg ${
+                    className={`rounded-lg transition-colors duration-200 ${
                       seasonsMenuOpen
-                        ? 'bg-button-info text-white'
-                        : 'text-primary-text hover:bg-button-info-hover hover:text-white'
+                        ? 'bg-button-info text-form-button-text'
+                        : 'text-primary-text hover:bg-button-info-hover hover:text-form-button-text active:bg-button-info-active'
                     }`}
                   >
                     <Typography
                       variant="button"
-                      className={`font-bold ${seasonsMenuOpen ? 'text-white' : ''}`}
+                      className={`font-bold ${seasonsMenuOpen ? 'text-form-button-text' : ''}`}
                     >
                       Seasons
                     </Typography>
@@ -634,7 +641,7 @@ export default function Header() {
                     >
                       <KeyboardArrowDownIcon
                         className={`ml-0.5 text-xl ${
-                          seasonsMenuOpen ? 'text-white' : 'text-secondary-text'
+                          seasonsMenuOpen ? 'text-form-button-text' : 'text-secondary-text'
                         }`}
                       />
                     </motion.div>
@@ -643,7 +650,7 @@ export default function Header() {
                   <AnimatePresence>
                     {seasonsMenuOpen && (
                       <motion.div
-                        className="bg-secondary-bg absolute left-1/2 z-50 mt-0 min-w-[260px] -translate-x-1/2 rounded-2xl shadow-2xl"
+                        className="bg-secondary-bg border-border-primary shadow-card-shadow absolute left-1/2 z-50 mt-0 min-w-[260px] -translate-x-1/2 rounded-2xl border shadow-lg"
                         style={{
                           top: '100%',
                         }}
@@ -675,7 +682,7 @@ export default function Header() {
                           >
                             <Link
                               href="/seasons"
-                              className="text-primary-text hover:bg-button-info-hover block rounded-lg px-4 py-2 text-base font-bold"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleSeasonsMenuClose}
                             >
                               Browse Seasons
@@ -690,12 +697,12 @@ export default function Header() {
                           >
                             <Link
                               href="/seasons/will-i-make-it"
-                              className="text-primary-text hover:bg-button-info-hover block rounded-lg px-4 py-2 text-base font-bold"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleSeasonsMenuClose}
                             >
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>Will I Make It</span>
-                                <span className="bg-button-info border-stroke text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                   New
                                 </span>
                               </div>
@@ -710,12 +717,12 @@ export default function Header() {
                           >
                             <Link
                               href="/seasons/contracts"
-                              className="text-primary-text hover:bg-button-info-hover block rounded-lg px-4 py-2 text-base font-bold"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleSeasonsMenuClose}
                             >
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>Weekly Contracts</span>
-                                <span className="bg-button-info border-stroke text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                   New
                                 </span>
                               </div>
@@ -739,7 +746,7 @@ export default function Header() {
                     className={`rounded-lg ${
                       navMenuOpen
                         ? 'bg-button-info text-white'
-                        : 'text-primary-text hover:bg-button-info-hover hover:text-white'
+                        : 'text-primary-text hover:bg-button-info-hover hover:text-form-button-text'
                     }`}
                   >
                     <Typography
@@ -795,7 +802,7 @@ export default function Header() {
                           >
                             <Link
                               href="/values"
-                              className="text-primary-text hover:bg-button-info-hover block rounded-lg px-4 py-2 text-base font-bold"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleNavMenuClose}
                             >
                               Value List
@@ -810,7 +817,7 @@ export default function Header() {
                           >
                             <Link
                               href="/values/changelogs"
-                              className="text-primary-text hover:bg-button-info-hover block rounded-lg px-4 py-2 text-base font-bold"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleNavMenuClose}
                             >
                               Value Changelogs
@@ -825,7 +832,7 @@ export default function Header() {
                           >
                             <Link
                               href="/values/calculator"
-                              className="text-primary-text hover:bg-button-info-hover block rounded-lg px-4 py-2 text-base font-bold"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleNavMenuClose}
                             >
                               Value Calculator
@@ -840,17 +847,17 @@ export default function Header() {
                           >
                             <Link
                               href="/dupes"
-                              className="text-primary-text hover:bg-button-info-hover block rounded-lg px-4 py-2 text-base font-bold"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleNavMenuClose}
                             >
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>Dupe Finder</span>
                                 {isFeatureEnabled('DUPE_FINDER') ? (
-                                  <span className="bg-button-info border-stroke text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                  <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                     New
                                   </span>
                                 ) : (
-                                  <span className="bg-button-info text-primary-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                  <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                     Coming Soon
                                   </span>
                                 )}
@@ -866,7 +873,7 @@ export default function Header() {
                           >
                             <Link
                               href="/dupes/calculator"
-                              className="text-primary-text hover:bg-button-info-hover block rounded-lg px-4 py-2 text-base font-bold"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleNavMenuClose}
                             >
                               Dupe Calculator
@@ -881,7 +888,7 @@ export default function Header() {
                           >
                             <Link
                               href="/trading"
-                              className="text-primary-text hover:bg-button-info-hover block rounded-lg px-4 py-2 text-base font-bold"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleNavMenuClose}
                             >
                               Trade Ads
@@ -896,17 +903,17 @@ export default function Header() {
                           >
                             <Link
                               href="/inventories"
-                              className="text-primary-text hover:bg-button-info-hover block rounded-lg px-4 py-2 text-base font-bold"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleNavMenuClose}
                             >
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>Inventory Calculator</span>
                                 {isFeatureEnabled('INVENTORY_CALCULATOR') ? (
-                                  <span className="border-secondary-text text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                  <span className="border-border-primary text-border-primary rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                     Beta
                                   </span>
                                 ) : (
-                                  <span className="bg-button-info text-primary-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                  <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                     Coming Soon
                                   </span>
                                 )}
@@ -922,17 +929,17 @@ export default function Header() {
                           >
                             <Link
                               href="/og"
-                              className="text-primary-text hover:bg-button-info-hover block rounded-lg px-4 py-2 text-base font-bold"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleNavMenuClose}
                             >
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>OG Finder</span>
                                 {isFeatureEnabled('OG_FINDER') ? (
-                                  <span className="bg-button-info border-stroke text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                  <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                     New
                                   </span>
                                 ) : (
-                                  <span className="bg-button-info text-primary-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                  <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                     Coming Soon
                                   </span>
                                 )}
@@ -957,7 +964,7 @@ export default function Header() {
                     className={`rounded-lg ${
                       communityMenuOpen
                         ? 'bg-button-info text-white'
-                        : 'text-primary-text hover:bg-button-info-hover hover:text-white'
+                        : 'text-primary-text hover:bg-button-info-hover hover:text-form-button-text'
                     }`}
                   >
                     <Typography
@@ -1013,7 +1020,7 @@ export default function Header() {
                           >
                             <Link
                               href="/users"
-                              className="text-primary-text hover:bg-button-info-hover block rounded-lg px-4 py-2 text-base font-bold"
+                              className="text-primary-text hover:bg-button-info-hover active:bg-button-info-active hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold transition-colors duration-200"
                               onClick={handleCommunityMenuClose}
                             >
                               User Search
@@ -1028,12 +1035,12 @@ export default function Header() {
                           >
                             <Link
                               href="/crews"
-                              className="text-primary-text hover:bg-button-info-hover block rounded-lg px-4 py-2 text-base font-bold"
+                              className="text-primary-text hover:bg-button-info-hover active:bg-button-info-active hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold transition-colors duration-200"
                               onClick={handleCommunityMenuClose}
                             >
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>Crew Leaderboard</span>
-                                <span className="bg-button-info border-stroke text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                   New
                                 </span>
                               </div>
@@ -1048,12 +1055,12 @@ export default function Header() {
                           >
                             <Link
                               href="/leaderboard/money"
-                              className="text-primary-text hover:bg-button-info-hover block rounded-lg px-4 py-2 text-base font-bold"
+                              className="text-primary-text hover:bg-button-info-hover active:bg-button-info-active hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold transition-colors duration-200"
                               onClick={handleCommunityMenuClose}
                             >
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>Money Leaderboard</span>
-                                <span className="bg-button-info border-stroke text-primary-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                   New
                                 </span>
                               </div>
@@ -1068,7 +1075,7 @@ export default function Header() {
                           >
                             <Link
                               href="/servers"
-                              className="text-primary-text hover:bg-button-info-hover block rounded-lg px-4 py-2 text-base font-bold"
+                              className="text-primary-text hover:bg-button-info-hover active:bg-button-info-active hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold transition-colors duration-200"
                               onClick={handleCommunityMenuClose}
                             >
                               Private Servers
@@ -1083,7 +1090,7 @@ export default function Header() {
                           >
                             <Link
                               href="/bot"
-                              className="text-primary-text hover:bg-button-info-hover block rounded-lg px-4 py-2 text-base font-bold"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleCommunityMenuClose}
                             >
                               Discord Bot
@@ -1098,7 +1105,7 @@ export default function Header() {
                           >
                             <Link
                               href="/faq"
-                              className="text-primary-text hover:bg-button-info-hover block rounded-lg px-4 py-2 text-base font-bold"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleCommunityMenuClose}
                             >
                               FAQ
@@ -1113,7 +1120,7 @@ export default function Header() {
                           >
                             <Link
                               href="/contributors"
-                              className="text-primary-text hover:bg-button-info-hover block rounded-lg px-4 py-2 text-base font-bold"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleCommunityMenuClose}
                             >
                               Meet the team
@@ -1129,7 +1136,7 @@ export default function Header() {
               <Box className="ml-auto flex items-center gap-2">
                 <Link href="/supporting">
                   <IconButton
-                    className="hover:bg-button-info/10 text-white"
+                    className="hover:bg-quaternary-bg text-tertiary-text transition-colors duration-200"
                     aria-label="Support us"
                   >
                     <Image
@@ -1144,7 +1151,7 @@ export default function Header() {
                 <Tooltip title="Join our Discord">
                   <IconButton
                     onClick={() => setIsDiscordModalOpen(true)}
-                    className="text-button-info hover:text-button-info-hover hover:bg-button-info/10"
+                    className="text-button-info hover:bg-quaternary-bg transition-colors duration-200"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -1158,6 +1165,8 @@ export default function Header() {
                   </IconButton>
                 </Tooltip>
 
+                <ThemeToggle />
+
                 {userData ? (
                   <>
                     <Box
@@ -1166,17 +1175,17 @@ export default function Header() {
                       onMouseLeave={handleMenuClose}
                     >
                       <Box
-                        className={`ml-2 flex cursor-pointer items-center gap-1 rounded-lg px-3 py-1.5 transition-colors ${
+                        className={`ml-2 flex cursor-pointer items-center gap-1 rounded-lg px-3 py-1.5 transition-colors duration-200 ${
                           Boolean(anchorEl)
                             ? 'bg-button-info'
-                            : 'bg-secondary-bg hover:bg-button-info'
+                            : 'bg-secondary-bg hover:bg-button-info active:bg-button-info-active'
                         }`}
                       >
                         <Box className="flex items-center gap-1">
                           <Typography
                             variant="body1"
-                            className={`font-semibold transition-colors ${
-                              Boolean(anchorEl) ? 'text-white' : 'text-primary-text'
+                            className={`font-semibold transition-colors duration-200 ${
+                              Boolean(anchorEl) ? 'text-primary-text' : 'text-primary-text'
                             }`}
                           >
                             {userData.username}
@@ -1232,7 +1241,7 @@ export default function Header() {
                               >
                                 <Link
                                   href={`/users/${String(userData?.id).replace(/\D/g, '')}`}
-                                  className="text-primary-text hover:bg-button-info-hover flex items-center rounded-lg px-4 py-3 text-base font-bold transition-colors hover:text-white"
+                                  className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text flex items-center rounded-lg px-4 py-3 text-base font-bold transition-colors"
                                   onClick={handleMenuClose}
                                 >
                                   <UserAvatar
@@ -1261,7 +1270,7 @@ export default function Header() {
                                   transition={{ duration: 0.2, delay: 0.05 }}
                                 >
                                   <button
-                                    className="text-primary-text hover:bg-primary-bg flex w-full items-center rounded-lg px-4 py-2 text-base font-bold transition-colors hover:text-white"
+                                    className="text-primary-text hover:bg-primary-bg hover:text-form-button-text flex w-full items-center rounded-lg px-4 py-2 text-base font-bold transition-colors"
                                     onClick={() => {
                                       handleMenuClose();
                                       setShowLoginModal(true);
@@ -1284,7 +1293,7 @@ export default function Header() {
                               >
                                 <Link
                                   href="/settings"
-                                  className="text-primary-text hover:bg-button-info-hover flex items-center rounded-lg px-4 py-2 text-base font-bold transition-colors hover:text-white"
+                                  className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text flex items-center rounded-lg px-4 py-2 text-base font-bold transition-colors"
                                   onClick={handleMenuClose}
                                 >
                                   <SettingsIcon className="text-primary-text mr-3 text-xl" />
@@ -1317,7 +1326,7 @@ export default function Header() {
                   <Button
                     variant="contained"
                     onClick={() => setShowLoginModal(true)}
-                    className="bg-button-info hover:bg-button-info-hover"
+                    className="bg-button-info hover:bg-button-info-hover active:bg-button-info-active text-primary-text transition-colors duration-200"
                   >
                     <Typography variant="button">Login</Typography>
                   </Button>
@@ -1328,7 +1337,10 @@ export default function Header() {
           {mounted && isMobile && (
             <Box className="flex items-center gap-1">
               <Link href="/supporting">
-                <IconButton className="text-white hover:bg-blue-500/10" aria-label="Support us">
+                <IconButton
+                  className="text-tertiary-text hover:bg-quaternary-bg transition-colors duration-200"
+                  aria-label="Support us"
+                >
                   <Image
                     src="https://assets.jailbreakchangelogs.xyz/assets/images/kofi_assets/kofi_symbol.svg"
                     alt="Ko-fi"
@@ -1341,7 +1353,7 @@ export default function Header() {
               <Tooltip title="Join our Discord">
                 <IconButton
                   onClick={() => setIsDiscordModalOpen(true)}
-                  className="text-button-info hover:text-button-info-hover hover:bg-button-info/10"
+                  className="text-button-info hover:bg-quaternary-bg transition-colors duration-200"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -1374,7 +1386,7 @@ export default function Header() {
         ModalProps={{
           keepMounted: true,
         }}
-        className="[&_.MuiDrawer-paper]:bg-secondary-bg [&_.MuiDrawer-paper]:text-primary-text [&_.MuiDrawer-paper]:box-border [&_.MuiDrawer-paper]:w-60"
+        className="[&_.MuiDrawer-paper]:bg-secondary-bg [&_.MuiDrawer-paper]:border-border-primary [&_.MuiDrawer-paper]:text-primary-text [&_.MuiDrawer-paper]:box-border [&_.MuiDrawer-paper]:w-60 [&_.MuiDrawer-paper]:border-l"
       >
         {drawer}
       </Drawer>

@@ -68,7 +68,7 @@ export default function SubItemsDropdown({
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="text-secondary-text border-stroke bg-secondary-bg hover:bg-primary-bg flex items-center gap-1 rounded-lg border px-2 py-0.5 text-xs focus:outline-none sm:px-3 sm:py-1.5 sm:text-sm"
+        className="text-secondary-text border-stroke bg-secondary-bg hover:bg-quaternary-bg flex items-center gap-1 rounded-lg border px-2 py-0.5 text-xs focus:outline-none sm:px-3 sm:py-1.5 sm:text-sm"
       >
         {getDisplayText()}
         <ChevronDownIcon
@@ -91,10 +91,10 @@ export default function SubItemsDropdown({
                 onSelect(null);
                 setIsOpen(false);
               }}
-              className={`hover:bg-primary-bg w-full px-2 py-1 text-left text-xs sm:px-3 sm:py-2 sm:text-sm ${
+              className={`w-full px-2 py-1 text-left text-xs sm:px-3 sm:py-2 sm:text-sm ${
                 selectedSubItem === null
-                  ? 'bg-button-info text-primary-text'
-                  : 'text-secondary-text'
+                  ? 'bg-button-info text-form-button-text hover:bg-button-info-hover'
+                  : 'text-secondary-text hover:bg-quaternary-bg hover:text-primary-text'
               }`}
             >
               2025
@@ -106,10 +106,10 @@ export default function SubItemsDropdown({
                   onSelect(child);
                   setIsOpen(false);
                 }}
-                className={`hover:bg-primary-bg w-full px-2 py-1 text-left text-xs sm:px-3 sm:py-2 sm:text-sm ${
+                className={`w-full px-2 py-1 text-left text-xs sm:px-3 sm:py-2 sm:text-sm ${
                   selectedSubItem?.id === child.id
-                    ? 'bg-button-info text-primary-text'
-                    : 'text-secondary-text'
+                    ? 'bg-button-info text-form-button-text hover:bg-button-info-hover'
+                    : 'text-secondary-text hover:bg-quaternary-bg hover:text-primary-text'
                 }`}
               >
                 {child.sub_name}

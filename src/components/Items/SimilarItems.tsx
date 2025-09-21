@@ -260,7 +260,7 @@ const SimilarItems = ({ currentItem, similarItemsPromise }: SimilarItemsProps) =
   };
 
   return (
-    <div className="border-stroke bg-secondary-bg space-y-6 rounded-lg border p-6">
+    <div className="bg-secondary-bg border-border-primary hover:shadow-card-shadow space-y-6 rounded-lg border p-6 shadow-lg transition-all duration-200">
       {/* Header Section */}
       <div className="space-y-4">
         <div className="flex items-center gap-3">

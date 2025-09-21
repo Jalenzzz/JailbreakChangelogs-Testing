@@ -78,7 +78,7 @@ export default function CategoryIcons({
 
   return (
     <div className="mb-8">
-      <h3 className="text-primary-text mb-4 text-xl font-semibold">Categories</h3>
+      <h3 className="text-primary-text mb-6 text-2xl font-bold">Categories</h3>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         {categories.map((category) => {
           const Icon = category.icon;
@@ -90,8 +90,8 @@ export default function CategoryIcons({
             <button
               key={category.id}
               onClick={category.onClick || (() => handleCategoryClick(category.id))}
-              className={`border-stroke flex items-center gap-2 rounded-lg border p-2 transition-all hover:scale-105 sm:p-3 ${
-                isSelected ? 'ring-2' : 'bg-secondary-bg'
+              className={`border-border-primary hover:border-border-focus flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-all hover:scale-105 sm:p-4 ${
+                isSelected ? 'ring-border-focus bg-primary-bg ring-2' : 'bg-primary-bg'
               }`}
               style={
                 {
@@ -100,8 +100,8 @@ export default function CategoryIcons({
                 } as React.CSSProperties
               }
             >
-              <Icon className="text-secondary-text h-4 w-4 sm:h-5 sm:w-5" />
-              <span className="text-primary-text text-xs font-medium sm:text-sm">
+              <Icon className="text-tertiary-text h-5 w-5 sm:h-6 sm:w-6" />
+              <span className="text-primary-text text-sm font-semibold sm:text-base">
                 {category.name}
               </span>
             </button>

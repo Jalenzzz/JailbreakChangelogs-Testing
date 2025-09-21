@@ -4,36 +4,36 @@ export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#2462CD', // --color-button-info
+      main: 'hsl(218, 70%, 47%)', // --color-button-info
     },
     secondary: {
-      main: '#2cb67d', // --color-tertiary
+      main: 'hsl(155, 61%, 44%)', // --color-tertiary
     },
     background: {
-      paper: '#242629', // --color-secondary-bg
-      default: '#16161a', // --color-primary-bg
+      paper: 'hsl(216, 6%, 15%)', // --color-secondary-bg
+      default: 'hsl(240, 8%, 9%)', // --color-primary-bg
     },
     text: {
-      primary: '#fffffe', // --color-primary-text
-      secondary: '#94a1b2', // --color-secondary-text
+      primary: 'hsl(60, 100%, 100%)', // --color-primary-text
+      secondary: 'hsl(214, 16%, 64%)', // --color-secondary-text
     },
     error: {
-      main: '#ed4f4f', // --color-button-danger
+      main: 'hsl(0, 81%, 62%)', // --color-button-danger
     },
   },
   components: {
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          color: '#fffffe', // --color-primary-text
+          color: 'hsl(60, 100%, 100%)', // --color-primary-text
           '& fieldset': {
-            borderColor: '#010101', // --color-stroke
+            borderColor: 'hsl(0, 0%, 0%)', // --color-stroke
           },
           '&:hover fieldset': {
-            borderColor: '#2462CD', // --color-button-info
+            borderColor: 'hsl(218, 70%, 47%)', // --color-button-info
           },
           '&.Mui-focused fieldset': {
-            borderColor: '#2462CD', // --color-button-info
+            borderColor: 'hsl(218, 70%, 47%)', // --color-button-info
           },
         },
       },
@@ -41,9 +41,9 @@ export const darkTheme = createTheme({
     MuiInputLabel: {
       styleOverrides: {
         root: {
-          color: '#fffffe', // --color-primary-text
+          color: 'hsl(60, 100%, 100%)', // --color-primary-text
           '&.Mui-focused': {
-            color: '#2462CD', // --color-button-info
+            color: 'hsl(218, 70%, 47%)', // --color-button-info
           },
         },
       },
@@ -51,12 +51,12 @@ export const darkTheme = createTheme({
     MuiInputBase: {
       styleOverrides: {
         root: {
-          color: '#fffffe', // --color-primary-text
+          color: 'hsl(60, 100%, 100%)', // --color-primary-text
         },
         input: {
-          color: '#fffffe', // --color-primary-text
+          color: 'hsl(60, 100%, 100%)', // --color-primary-text
           '&::placeholder': {
-            color: '#fffffe', // --color-primary-text
+            color: 'hsl(60, 100%, 100%)', // --color-primary-text
             opacity: 1,
           },
         },
@@ -65,22 +65,22 @@ export const darkTheme = createTheme({
     MuiSvgIcon: {
       styleOverrides: {
         root: {
-          color: '#fffffe', // --color-primary-text
+          color: 'hsl(60, 100%, 100%)', // --color-primary-text
         },
       },
     },
     MuiTooltip: {
       styleOverrides: {
         tooltip: {
-          backgroundColor: '#16161a', // --color-primary-bg
-          color: '#fffffe', // --color-primary-text
+          backgroundColor: 'hsl(240, 8%, 9%)', // --color-primary-bg
+          color: 'hsl(60, 100%, 100%)', // --color-primary-text
           fontSize: '0.875rem',
-          border: '1px solid #010101', // --color-stroke
+          border: '1px solid hsl(0, 0%, 0%)', // --color-stroke
         },
         arrow: {
           color: '#16161a', // --color-primary-bg
           '&::before': {
-            border: '1px solid #010101', // --color-stroke
+            border: '1px solid hsl(0, 0%, 0%)', // --color-stroke
           },
         },
       },

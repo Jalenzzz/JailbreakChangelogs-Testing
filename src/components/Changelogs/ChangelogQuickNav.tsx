@@ -34,6 +34,7 @@ const ChangelogQuickNav: React.FC<ChangelogQuickNavProps> = ({
                 tooltip: {
                   sx: {
                     backgroundColor: 'var(--color-secondary-bg)',
+                    color: 'var(--color-primary-text)',
                     '& .MuiTooltip-arrow': {
                       color: 'var(--color-secondary-bg)',
                     },
@@ -67,6 +68,7 @@ const ChangelogQuickNav: React.FC<ChangelogQuickNavProps> = ({
                 tooltip: {
                   sx: {
                     backgroundColor: 'var(--color-secondary-bg)',
+                    color: 'var(--color-primary-text)',
                     '& .MuiTooltip-arrow': {
                       color: 'var(--color-secondary-bg)',
                     },

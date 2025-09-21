@@ -162,17 +162,17 @@ export default function TradingGuides({
               <li>Please don&apos;t 100% rely on the value list, use your own judgment as well</li>
             </ul>
 
-            <h3 className="text-primary-text mb-2 text-xl font-semibold">Demand Levels Guide</h3>
-            <div className="mb-4 flex flex-wrap gap-2">
+            <h3 className="text-primary-text mb-4 text-xl font-semibold">Demand Levels Guide</h3>
+            <div className="mb-4 flex flex-wrap gap-3">
               {demandOrder.map((demand) => (
                 <button
                   key={demand}
                   onClick={() => handleDemandClick(demand)}
-                  className={`border-stroke bg-secondary-bg flex items-center gap-2 rounded-lg border px-3 py-1.5 transition-all hover:scale-105 focus:outline-none ${
-                    valueSort === getDemandValue(demand) ? 'ring-button-info ring-2' : ''
+                  className={`border-border-primary bg-primary-bg hover:border-border-focus flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-2 transition-all hover:scale-105 focus:outline-none ${
+                    valueSort === getDemandValue(demand) ? 'ring-border-focus ring-2' : ''
                   }`}
                 >
-                  <span className="text-primary-text text-sm font-bold">{demand}</span>
+                  <span className="text-primary-text text-sm font-semibold">{demand}</span>
                 </button>
               ))}
             </div>
@@ -183,8 +183,8 @@ export default function TradingGuides({
               Not all demand levels are currently in use; some may not be represented among items.
             </p>
 
-            <h3 className="text-primary-text mb-2 text-xl font-semibold">Trend Levels Guide</h3>
-            <div className="mb-4 flex flex-wrap gap-2">
+            <h3 className="text-primary-text mb-4 text-xl font-semibold">Trend Levels Guide</h3>
+            <div className="mb-4 flex flex-wrap gap-3">
               {trendOrder.map((trend) => (
                 <Tooltip
                   key={trend}
@@ -210,11 +210,11 @@ export default function TradingGuides({
                 >
                   <button
                     onClick={() => handleTrendClick(trend)}
-                    className={`border-stroke bg-secondary-bg flex items-center gap-2 rounded-lg border px-3 py-1.5 transition-all hover:scale-105 focus:outline-none ${
-                      valueSort === getTrendValue(trend) ? 'ring-button-info ring-2' : ''
+                    className={`border-border-primary bg-primary-bg hover:border-border-focus flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-2 transition-all hover:scale-105 focus:outline-none ${
+                      valueSort === getTrendValue(trend) ? 'ring-border-focus ring-2' : ''
                     }`}
                   >
-                    <span className="text-primary-text text-sm font-bold">{trend}</span>
+                    <span className="text-primary-text text-sm font-semibold">{trend}</span>
                   </button>
                 </Tooltip>
               ))}

@@ -113,8 +113,8 @@ export default function ItemVariantDropdown({ item, onVariantSelect }: ItemVaria
                 }}
                 className={`w-full cursor-pointer px-4 py-3 text-left ${
                   selectedYear === child.sub_name
-                    ? 'bg-button-info text-form-button-text hover:bg-primary-bg hover:text-primary-text'
-                    : 'bg-secondary-bg text-secondary-text hover:bg-primary-bg hover:text-primary-text'
+                    ? 'bg-button-info text-form-button-text hover:bg-button-info-hover'
+                    : 'bg-secondary-bg text-secondary-text hover:bg-quaternary-bg hover:text-primary-text'
                 }`}
               >
                 {child.sub_name}

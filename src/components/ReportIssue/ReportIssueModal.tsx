@@ -71,7 +71,7 @@ export default function ReportIssueModal({ isOpen, onClose }: ReportIssueModalPr
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <Dialog.Panel className="modal-container bg-secondary-bg border-button-info w-full max-w-[480px] min-w-[320px] rounded-lg border shadow-lg">
-          <div className="modal-header text-primary-text border-secondary-text border-b px-6 py-4 text-xl font-semibold">
+          <div className="modal-header text-primary-text px-6 py-4 text-xl font-semibold">
             Report an Issue
           </div>
 
@@ -124,7 +124,7 @@ export default function ReportIssueModal({ isOpen, onClose }: ReportIssueModalPr
               </div>
             </div>
 
-            <div className="modal-footer border-secondary-text flex justify-end gap-2 border-t px-6 py-4">
+            <div className="modal-footer flex justify-end gap-2 px-6 py-4">
               <button
                 type="button"
                 onClick={onClose}

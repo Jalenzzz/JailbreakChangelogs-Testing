@@ -206,14 +206,20 @@ export default function ValuesChangelogPage() {
                     onChange={handlePageChange}
                     sx={{
                       '& .MuiPaginationItem-root': {
-                        color: '#D3D9D4',
+                        color: 'var(--color-primary-text)',
                         '&.Mui-selected': {
-                          backgroundColor: '#5865F2',
+                          backgroundColor: 'var(--color-button-info)',
+                          color: 'var(--color-form-button-text)',
                           '&:hover': {
-                            backgroundColor: '#4752C4',
+                            backgroundColor: 'var(--color-button-info-hover)',
                           },
                         },
-                        '&:hover': {},
+                        '&:hover': {
+                          backgroundColor: 'var(--color-quaternary-bg)',
+                        },
+                      },
+                      '& .MuiPaginationItem-icon': {
+                        color: 'var(--color-primary-text)',
                       },
                     }}
                   />

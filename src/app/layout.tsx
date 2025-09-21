@@ -12,6 +12,7 @@ import NextTopLoader from 'nextjs-toploader';
 import AuthCheck from '@/components/Auth/AuthCheck';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import ThemeProvider from '@/components/ThemeProvider';
+import { ThemeProvider as CustomThemeProvider } from '@/contexts/ThemeContext';
 import SurveyProvider from '@/components/Survey/SurveyProvider';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { checkMaintenanceMode, getMaintenanceMetadata } from '@/utils/maintenance';
@@ -88,40 +89,42 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </head>
         <body className={`${inter.className} bg-primary-bg`}>
           <AppRouterCacheProvider options={{ enableCssLayer: true }}>
-            <ThemeProvider>
-              <MaintenanceBypass>
-                <NextTopLoader
-                  color="var(--color-button-info)"
-                  initialPosition={0.08}
-                  crawlSpeed={200}
-                  height={3}
-                  crawl={true}
-                  showSpinner={false}
-                  easing="ease"
-                  speed={200}
-                  shadow="0 0 10px var(--color-button-info),0 0 5px var(--color-button-info)"
-                  zIndex={1600}
-                />
-                <OfflineDetector />
-                <AuthCheck />
-                <AuthProvider>
-                  <SurveyProvider>
-                    <div className="flex min-h-screen flex-col">
-                      <Suspense
-                        fallback={
-                          <div className="border-secondary-text bg-secondary-bg h-16 border-b" />
-                        }
-                      >
-                        <Header />
-                      </Suspense>
-                      <NewsTicker />
-                      <main className="flex-1">{children}</main>
-                      <Footer />
-                    </div>
-                  </SurveyProvider>
-                </AuthProvider>
-              </MaintenanceBypass>
-            </ThemeProvider>
+            <CustomThemeProvider>
+              <ThemeProvider>
+                <MaintenanceBypass>
+                  <NextTopLoader
+                    color="var(--color-button-info)"
+                    initialPosition={0.08}
+                    crawlSpeed={200}
+                    height={3}
+                    crawl={true}
+                    showSpinner={false}
+                    easing="ease"
+                    speed={200}
+                    shadow="0 0 10px var(--color-button-info),0 0 5px var(--color-button-info)"
+                    zIndex={1600}
+                  />
+                  <OfflineDetector />
+                  <AuthCheck />
+                  <AuthProvider>
+                    <SurveyProvider>
+                      <div className="flex min-h-screen flex-col">
+                        <Suspense
+                          fallback={
+                            <div className="border-secondary-text bg-secondary-bg h-16 border-b" />
+                          }
+                        >
+                          <Header />
+                        </Suspense>
+                        <NewsTicker />
+                        <main className="flex-1">{children}</main>
+                        <Footer />
+                      </div>
+                    </SurveyProvider>
+                  </AuthProvider>
+                </MaintenanceBypass>
+              </ThemeProvider>
+            </CustomThemeProvider>
           </AppRouterCacheProvider>
           <Script id="clarity-script" strategy="afterInteractive">
             {`
@@ -152,88 +155,90 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className={`${inter.className} bg-primary-bg`}>
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
-          <ThemeProvider>
-            <Toaster
-              position="bottom-right"
-              toastOptions={{
-                success: {
-                  style: {
-                    background: 'rgba(30,30,30,0.8)',
-                    color: 'var(--color-primary-text)',
-                    border: '1px solid rgba(255,255,255,0.2)',
-                    borderRadius: '16px',
-                    backdropFilter: 'blur(20px)',
-                    WebkitBackdropFilter: 'blur(20px)',
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+          <CustomThemeProvider>
+            <ThemeProvider>
+              <Toaster
+                position="bottom-right"
+                toastOptions={{
+                  success: {
+                    style: {
+                      background: 'var(--color-secondary-bg)',
+                      color: 'var(--color-primary-text)',
+                      border: '1px solid var(--color-border-primary)',
+                      borderRadius: '16px',
+                      backdropFilter: 'blur(20px)',
+                      WebkitBackdropFilter: 'blur(20px)',
+                      boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+                    },
+                    iconTheme: {
+                      primary: 'var(--color-button-info)',
+                      secondary: 'var(--color-secondary-bg)',
+                    },
                   },
-                  iconTheme: {
-                    primary: 'var(--color-button-info)',
-                    secondary: 'rgba(30,30,30,0.8)',
+                  error: {
+                    style: {
+                      background: 'var(--color-secondary-bg)',
+                      color: 'var(--color-primary-text)',
+                      border: '1px solid var(--color-border-primary)',
+                      borderRadius: '16px',
+                      backdropFilter: 'blur(20px)',
+                      WebkitBackdropFilter: 'blur(20px)',
+                      boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+                    },
+                    iconTheme: {
+                      primary: 'var(--color-button-info)',
+                      secondary: 'var(--color-secondary-bg)',
+                    },
                   },
-                },
-                error: {
-                  style: {
-                    background: 'rgba(30,30,30,0.8)',
-                    color: 'var(--color-primary-text)',
-                    border: '1px solid rgba(255,255,255,0.2)',
-                    borderRadius: '16px',
-                    backdropFilter: 'blur(20px)',
-                    WebkitBackdropFilter: 'blur(20px)',
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+                  loading: {
+                    style: {
+                      background: 'var(--color-secondary-bg)',
+                      color: 'var(--color-primary-text)',
+                      border: '1px solid var(--color-border-primary)',
+                      borderRadius: '16px',
+                      backdropFilter: 'blur(20px)',
+                      WebkitBackdropFilter: 'blur(20px)',
+                      boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+                    },
+                    iconTheme: {
+                      primary: 'var(--color-button-info)',
+                      secondary: 'var(--color-secondary-bg)',
+                    },
                   },
-                  iconTheme: {
-                    primary: 'var(--color-button-info)',
-                    secondary: 'rgba(30,30,30,0.8)',
-                  },
-                },
-                loading: {
-                  style: {
-                    background: 'rgba(30,30,30,0.8)',
-                    color: 'var(--color-primary-text)',
-                    border: '1px solid rgba(255,255,255,0.2)',
-                    borderRadius: '16px',
-                    backdropFilter: 'blur(20px)',
-                    WebkitBackdropFilter: 'blur(20px)',
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-                  },
-                  iconTheme: {
-                    primary: 'var(--color-button-info)',
-                    secondary: 'rgba(30,30,30,0.8)',
-                  },
-                },
-              }}
-            />
-            <NextTopLoader
-              color="var(--color-button-info)"
-              initialPosition={0.08}
-              crawlSpeed={200}
-              height={3}
-              crawl={true}
-              showSpinner={false}
-              easing="ease"
-              speed={200}
-              shadow="0 0 10px var(--color-button-info),0 0 5px var(--color-button-info)"
-              zIndex={1600}
-            />
-            <OfflineDetector />
-            <AuthCheck />
-            <AuthProvider>
-              <SurveyProvider>
-                <div className="flex min-h-screen flex-col">
-                  <Suspense
-                    fallback={
-                      <div className="border-secondary-text bg-secondary-bg h-16 border-b" />
-                    }
-                  >
-                    <Header />
-                  </Suspense>
-                  <NewsTicker />
-                  <main className="flex-1">{children}</main>
-                  <Footer />
-                </div>
-              </SurveyProvider>
-            </AuthProvider>
-          </ThemeProvider>
+                }}
+              />
+              <NextTopLoader
+                color="var(--color-button-info)"
+                initialPosition={0.08}
+                crawlSpeed={200}
+                height={3}
+                crawl={true}
+                showSpinner={false}
+                easing="ease"
+                speed={200}
+                shadow="0 0 10px var(--color-button-info),0 0 5px var(--color-button-info)"
+                zIndex={1600}
+              />
+              <OfflineDetector />
+              <AuthCheck />
+              <AuthProvider>
+                <SurveyProvider>
+                  <div className="flex min-h-screen flex-col">
+                    <Suspense
+                      fallback={
+                        <div className="border-secondary-text bg-secondary-bg h-16 border-b" />
+                      }
+                    >
+                      <Header />
+                    </Suspense>
+                    <NewsTicker />
+                    <main className="flex-1">{children}</main>
+                    <Footer />
+                  </div>
+                </SurveyProvider>
+              </AuthProvider>
+            </ThemeProvider>
+          </CustomThemeProvider>
         </AppRouterCacheProvider>
         <Script id="clarity-script" strategy="afterInteractive">
           {`

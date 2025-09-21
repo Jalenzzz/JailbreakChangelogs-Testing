@@ -341,45 +341,52 @@ const ItemValueChart = ({ itemId, variantId }: ItemValueChartProps) => {
   return (
     <div className="mb-8 rounded-lg p-2">
       <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-primary-text text-sm">Value History</h3>
+        <h3 className="text-sm" style={{ color: '#fffffe' }}>
+          Value History
+        </h3>
         <ButtonGroup size="small" variant="outlined">
           <Button
             onClick={() => handleDateRangeChange('1w')}
             className={`border-secondary hover:border-button-info transition-colors ${
-              dateRange === '1w' ? 'text-button-info' : 'text-primary-text'
-            } ${hasDataForRange('1w') ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+              hasDataForRange('1w') ? 'cursor-pointer' : 'cursor-not-allowed'
+            }`}
+            style={{ color: dateRange === '1w' ? '#2461cc' : '#fffffe' }}
           >
             1W
           </Button>
           <Button
             onClick={() => handleDateRangeChange('1m')}
             className={`border-secondary hover:border-button-info transition-colors ${
-              dateRange === '1m' ? 'text-button-info' : 'text-primary-text'
-            } ${hasDataForRange('1m') ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+              hasDataForRange('1m') ? 'cursor-pointer' : 'cursor-not-allowed'
+            }`}
+            style={{ color: dateRange === '1m' ? '#2461cc' : '#fffffe' }}
           >
             1M
           </Button>
           <Button
             onClick={() => handleDateRangeChange('6m')}
             className={`border-secondary hover:border-button-info transition-colors ${
-              dateRange === '6m' ? 'text-button-info' : 'text-primary-text'
-            } ${hasDataForRange('6m') ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+              hasDataForRange('6m') ? 'cursor-pointer' : 'cursor-not-allowed'
+            }`}
+            style={{ color: dateRange === '6m' ? '#2461cc' : '#fffffe' }}
           >
             6M
           </Button>
           <Button
             onClick={() => handleDateRangeChange('1y')}
             className={`border-secondary hover:border-button-info transition-colors ${
-              dateRange === '1y' ? 'text-button-info' : 'text-primary-text'
-            } ${hasDataForRange('1y') ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+              hasDataForRange('1y') ? 'cursor-pointer' : 'cursor-not-allowed'
+            }`}
+            style={{ color: dateRange === '1y' ? '#2461cc' : '#fffffe' }}
           >
             1Y
           </Button>
           <Button
             onClick={() => handleDateRangeChange('all')}
             className={`border-secondary hover:border-button-info transition-colors ${
-              dateRange === 'all' ? 'text-button-info' : 'text-primary-text'
-            } ${hasDataForRange('all') ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+              hasDataForRange('all') ? 'cursor-pointer' : 'cursor-not-allowed'
+            }`}
+            style={{ color: dateRange === 'all' ? '#2461cc' : '#fffffe' }}
           >
             All
           </Button>
@@ -391,7 +398,7 @@ const ItemValueChart = ({ itemId, variantId }: ItemValueChartProps) => {
       <div className="mt-2 flex justify-end">
         <button
           onClick={() => chartRef.current?.resetZoom()}
-          className="bg-button-info text-primary-text hover:bg-button-info-hover inline-flex cursor-pointer items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+          className="bg-button-info hover:bg-button-info-hover inline-flex cursor-pointer items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors"
         >
           Reset Zoom
         </button>
