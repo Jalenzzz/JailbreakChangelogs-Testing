@@ -11,7 +11,13 @@ const Tooltip = dynamic(() => import('@mui/material/Tooltip'), { ssr: false });
 import { darkTheme } from '@/theme/darkTheme';
 
 import { PlayIcon, PauseIcon } from '@heroicons/react/24/solid';
-import { StarIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
+import {
+  StarIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  MagnifyingGlassIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline';
 import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
 
 import toast from 'react-hot-toast';
@@ -91,6 +97,7 @@ export default function ItemDetailsClient({
   const [visibleLength, setVisibleLength] = useState(500);
   const [activeTab, setActiveTab] = useState(0);
   const [dupedOwnersPage, setDupedOwnersPage] = useState(1);
+  const [ownerSearchTerm, setOwnerSearchTerm] = useState('');
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [currentUserPremiumType, setCurrentUserPremiumType] = useState<number>(0);
@@ -646,7 +653,7 @@ export default function ItemDetailsClient({
                       <div className="mt-6">
                         <Link href="/dupes">
                           <button className="bg-button-info text-form-button-text hover:bg-button-info-hover border-stroke cursor-pointer rounded-lg border px-6 py-3 text-sm font-semibold normal-case">
-                            View All Dupes
+                            Search for Dupes
                           </button>
                         </Link>
                       </div>
@@ -656,99 +663,168 @@ export default function ItemDetailsClient({
                       {/* Owners Grid */}
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                          <h3 className="text-primary-text text-xl font-semibold">Owner List</h3>
+                          <h3 className="text-primary-text text-xl font-semibold">
+                            Duped Owners List
+                          </h3>
                           <div className="text-secondary-text text-sm">
-                            Showing{' '}
-                            {Math.min(
-                              ITEMS_PER_PAGE,
-                              currentItem.duped_owners.length -
-                                (dupedOwnersPage - 1) * ITEMS_PER_PAGE,
-                            )}{' '}
-                            of {currentItem.duped_owners.length}
+                            {(() => {
+                              const filteredOwners = currentItem.duped_owners.filter((owner) =>
+                                owner.owner.toLowerCase().includes(ownerSearchTerm.toLowerCase()),
+                              );
+                              const totalFilteredPages = Math.ceil(
+                                filteredOwners.length / ITEMS_PER_PAGE,
+                              );
+                              const currentFilteredPage = Math.min(
+                                dupedOwnersPage,
+                                totalFilteredPages || 1,
+                              );
+                              const startIndex = (currentFilteredPage - 1) * ITEMS_PER_PAGE;
+                              const endIndex = startIndex + ITEMS_PER_PAGE;
+                              const currentPageCount = Math.min(
+                                endIndex - startIndex,
+                                filteredOwners.length - startIndex,
+                              );
+
+                              return `Showing ${currentPageCount} of ${filteredOwners.length}`;
+                            })()}
+                          </div>
+                        </div>
+
+                        {/* Search Form */}
+                        <div className="relative">
+                          <input
+                            type="text"
+                            placeholder="Search owners..."
+                            value={ownerSearchTerm}
+                            onChange={(e) => {
+                              setOwnerSearchTerm(e.target.value);
+                              setDupedOwnersPage(1); // Reset to first page when searching
+                            }}
+                            className="text-primary-text border-stroke bg-secondary-bg placeholder-secondary-text focus:border-button-info w-full rounded-lg border px-4 py-2 pr-10 pl-10 transition-all duration-300 focus:outline-none"
+                          />
+                          <MagnifyingGlassIcon className="text-secondary-text absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
+                          {ownerSearchTerm && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setOwnerSearchTerm('');
+                                setDupedOwnersPage(1);
+                              }}
+                              className="text-secondary-text hover:text-primary-text absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2 transition-colors"
+                              aria-label="Clear search"
+                            >
+                              <XMarkIcon />
+                            </button>
+                          )}
+                        </div>
+
+                        {/* Dupe Finder Info */}
+                        <div className="bg-button-info/10 rounded-lg p-4">
+                          <p className="text-secondary-text text-center text-sm leading-relaxed">
+                            This tab shows manually reported duped owners. For comprehensive dupe
+                            detection, use our automated system below.
+                          </p>
+                          <div className="mt-4 text-center">
+                            <Link href="/dupes">
+                              <button className="bg-button-info text-form-button-text hover:bg-button-info-hover border-stroke cursor-pointer rounded-lg border px-6 py-3 text-sm font-semibold normal-case">
+                                Search for Dupes
+                              </button>
+                            </Link>
                           </div>
                         </div>
                       </div>
-                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                        {currentItem.duped_owners
-                          .slice(
-                            (dupedOwnersPage - 1) * ITEMS_PER_PAGE,
-                            dupedOwnersPage * ITEMS_PER_PAGE,
-                          )
-                          .map((owner: DupedOwner, index: number) => (
+                      <div className="bg-secondary-bg space-y-2 rounded-lg p-4">
+                        {(() => {
+                          // Filter owners based on search term
+                          const filteredOwners = currentItem.duped_owners.filter((owner) =>
+                            owner.owner.toLowerCase().includes(ownerSearchTerm.toLowerCase()),
+                          );
+
+                          if (ownerSearchTerm && filteredOwners.length === 0) {
+                            const MAX_QUERY_DISPLAY_LENGTH = 50;
+                            const displayQuery =
+                              ownerSearchTerm.length > MAX_QUERY_DISPLAY_LENGTH
+                                ? `${ownerSearchTerm.substring(0, MAX_QUERY_DISPLAY_LENGTH)}...`
+                                : ownerSearchTerm;
+
+                            return (
+                              <div className="py-8 text-center">
+                                <div className="text-secondary-text text-sm break-words">
+                                  No duped owners found matching &quot;{displayQuery}&quot;
+                                </div>
+                                <button
+                                  onClick={() => {
+                                    setOwnerSearchTerm('');
+                                    setDupedOwnersPage(1);
+                                  }}
+                                  className="bg-button-info text-primary-text hover:bg-button-info-hover border-stroke mt-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:cursor-pointer"
+                                >
+                                  Clear search
+                                </button>
+                              </div>
+                            );
+                          }
+
+                          // Calculate pagination for filtered results
+                          const totalFilteredPages = Math.ceil(
+                            filteredOwners.length / ITEMS_PER_PAGE,
+                          );
+                          const currentFilteredPage = Math.min(
+                            dupedOwnersPage,
+                            totalFilteredPages || 1,
+                          );
+
+                          // Get current page of filtered results
+                          const startIndex = (currentFilteredPage - 1) * ITEMS_PER_PAGE;
+                          const endIndex = startIndex + ITEMS_PER_PAGE;
+                          const currentPageOwners = filteredOwners.slice(startIndex, endIndex);
+
+                          return currentPageOwners.map((owner: DupedOwner, index: number) => (
                             <div
                               key={index}
-                              className="group border-stroke bg-secondary-bg hover:border-button-danger/50 relative rounded-lg border p-4 transition-all duration-200"
+                              className="hover:bg-primary-bg/50 flex items-center justify-between rounded px-3 py-2 transition-colors"
                             >
                               <div className="flex items-center gap-3">
-                                <div className="border-button-danger/30 bg-button-danger/20 flex h-8 w-8 items-center justify-center rounded-full border">
-                                  <svg
-                                    className="text-button-danger h-4 w-4"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
+                                <span className="text-secondary-text min-w-[80px] text-sm font-medium">
+                                  #{(dupedOwnersPage - 1) * ITEMS_PER_PAGE + index + 1}
+                                </span>
+                                {owner.user_id ? (
+                                  <a
+                                    href={`https://www.roblox.com/users/${owner.user_id}/profile`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-link-hover font-medium transition-colors hover:underline"
                                   >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth={2}
-                                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                    />
-                                  </svg>
-                                </div>
-                                <div className="min-w-0 flex-1">
-                                  {owner.user_id ? (
-                                    <a
-                                      href={`https://www.roblox.com/users/${owner.user_id}/profile`}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-link hover:text-link-hover block truncate font-medium transition-colors hover:underline"
-                                    >
-                                      {owner.owner}
-                                    </a>
-                                  ) : (
-                                    <span className="text-secondary-text block truncate font-medium">
-                                      {owner.owner}
-                                    </span>
-                                  )}
-                                  <div className="text-secondary-text mt-1 text-xs">
-                                    Duped Owner #
-                                    {(dupedOwnersPage - 1) * ITEMS_PER_PAGE + index + 1}
-                                  </div>
-                                </div>
-                                {owner.user_id && (
-                                  <div className="opacity-0 transition-opacity group-hover:opacity-100">
-                                    <svg
-                                      className="text-button-danger h-4 w-4"
-                                      fill="none"
-                                      stroke="currentColor"
-                                      viewBox="0 0 24 24"
-                                    >
-                                      <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                                      />
-                                    </svg>
-                                  </div>
+                                    {owner.owner}
+                                  </a>
+                                ) : (
+                                  <span className="text-link font-medium">{owner.owner}</span>
                                 )}
                               </div>
                             </div>
-                          ))}
-                      </div>
+                          ));
+                        })()}
 
-                      {currentItem.duped_owners.length > ITEMS_PER_PAGE && (
-                        <div className="flex justify-center pt-6">
-                          <Pagination
-                            count={Math.ceil(currentItem.duped_owners.length / ITEMS_PER_PAGE)}
-                            page={dupedOwnersPage}
-                            onChange={(_, page) => setDupedOwnersPage(page)}
-                            color="primary"
-                            size="large"
-                            className="[&_.MuiPaginationItem-root]:text-secondary-text [&_.MuiPaginationItem-root]:border-stroke [&_.MuiPaginationItem-root:hover]:bg-secondary-bg [&_.Mui-selected]:bg-button-info [&_.Mui-selected]:text-primary-text [&_.Mui-selected:hover]:bg-button-info-hover"
-                          />
-                        </div>
-                      )}
+                        {(() => {
+                          // Filter owners based on search term for pagination
+                          const filteredOwners = currentItem.duped_owners.filter((owner) =>
+                            owner.owner.toLowerCase().includes(ownerSearchTerm.toLowerCase()),
+                          );
+
+                          return (
+                            filteredOwners.length > ITEMS_PER_PAGE && (
+                              <div className="mt-4 flex justify-center sm:mt-6">
+                                <Pagination
+                                  count={Math.ceil(filteredOwners.length / ITEMS_PER_PAGE)}
+                                  page={dupedOwnersPage}
+                                  onChange={(_, page) => setDupedOwnersPage(page)}
+                                  className="[&_.MuiPaginationItem-root]:text-primary-text [&_.MuiPaginationItem-root.Mui-selected]:bg-button-info [&_.MuiPaginationItem-root.Mui-selected:hover]:bg-button-info-hover [&_.MuiPaginationItem-root:hover]:bg-secondary-bg"
+                                />
+                              </div>
+                            )
+                          );
+                        })()}
+                      </div>
                     </>
                   )}
                 </div>
