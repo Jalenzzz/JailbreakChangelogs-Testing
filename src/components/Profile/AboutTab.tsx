@@ -140,7 +140,7 @@ export default function AboutTab({
                     fontSize: '0.75rem',
                     padding: '8px 12px',
                     borderRadius: '8px',
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                    boxShadow: '0 4px 12px var(--color-card-shadow)',
                     '& .MuiTooltip-arrow': {
                       color: 'var(--color-primary-bg)',
                     },
@@ -256,7 +256,7 @@ export default function AboutTab({
                         fontSize: '0.75rem',
                         padding: '8px 12px',
                         borderRadius: '8px',
-                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                        boxShadow: '0 4px 12px var(--color-card-shadow)',
                         '& .MuiTooltip-arrow': {
                           color: 'var(--color-secondary-bg)',
                         },

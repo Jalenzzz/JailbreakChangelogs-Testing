@@ -29,7 +29,6 @@ export async function generateViewport({
       themeColor: formatAccentColor(user?.accent_color),
     };
   } catch (error: unknown) {
-    // Handle banned user errors gracefully
     if (
       error &&
       typeof error === 'object' &&
@@ -37,16 +36,9 @@ export async function generateViewport({
       typeof error.message === 'string' &&
       error.message.startsWith('BANNED_USER:')
     ) {
-      // Return a default theme color for banned users
-      return {
-        themeColor: '#2462CD',
-      };
+      return {};
     }
-
-    // For other errors, return default theme color
-    return {
-      themeColor: '#2462CD',
-    };
+    return {};
   }
 }
 

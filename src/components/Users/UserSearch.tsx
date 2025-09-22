@@ -172,11 +172,7 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
           currentUsers.map((user) => (
             <Tooltip
               key={user.id}
-              title={
-                user.settings?.profile_public === 0 && currentUserId !== user.id ? null : (
-                  <UserDetailsTooltip user={user} />
-                )
-              }
+              title={<UserDetailsTooltip user={user} currentUserId={currentUserId} />}
               arrow
               disableTouchListener
               slotProps={{
@@ -187,28 +183,15 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
               }}
             >
               <Link
-                href={
-                  user.settings?.profile_public === 0 && currentUserId !== user.id
-                    ? '#'
-                    : `/users/${user.id}`
-                }
+                href={`/users/${user.id}`}
                 prefetch={false}
-                className={`border-border-primary bg-secondary-bg block rounded-lg border p-4 shadow-md ${
-                  user.settings?.profile_public === 0 && currentUserId !== user.id
-                    ? 'cursor-not-allowed opacity-75'
-                    : 'group hover:border-border-focus'
-                } transition-colors`}
-                onClick={(e) => {
-                  if (user.settings?.profile_public === 0 && currentUserId !== user.id) {
-                    e.preventDefault();
-                  }
-                }}
+                className="border-border-primary bg-secondary-bg group hover:border-border-focus block rounded-lg border p-4 shadow-md transition-colors"
               >
                 <div className="flex items-center space-x-3">
                   {userType === 'roblox' ? (
-                    <RobloxUserCard user={user} currentUserId={currentUserId} />
+                    <RobloxUserCard user={user} />
                   ) : (
-                    <DiscordUserCard user={user} currentUserId={currentUserId} />
+                    <DiscordUserCard user={user} />
                   )}
                 </div>
               </Link>

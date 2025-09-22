@@ -81,6 +81,51 @@
   --color-warning-light: hsl(48, 100%, 62%); /* Yellow for 2 weeks left */
   --color-warning-dark: hsl(32, 85%, 52%); /* Darker warning */
 
+  /* Badge Colors */
+  --color-badge-owner: linear-gradient(
+    to right,
+    hsl(270, 100%, 50%),
+    hsl(240, 100%, 50%)
+  ); /* Purple to indigo gradient */
+  --color-badge-tester: hsl(270, 100%, 60%); /* Purple */
+  --color-badge-vtm: linear-gradient(
+    to right,
+    hsl(155, 100%, 30%),
+    hsl(155, 100%, 25%)
+  ); /* Emerald gradient */
+  --color-badge-vt: hsl(220, 100%, 50%); /* Blue */
+  --color-badge-partner: hsl(25, 100%, 50%); /* Orange */
+  --color-badge-contributor: linear-gradient(
+    to right,
+    hsl(180, 100%, 30%),
+    hsl(180, 100%, 25%)
+  ); /* Teal gradient */
+  --color-badge-developer: linear-gradient(
+    to right,
+    hsl(90, 100%, 50%),
+    hsl(90, 100%, 45%)
+  ); /* Lime gradient */
+  --color-badge-early-adopter: linear-gradient(
+    to right,
+    hsl(45, 100%, 50%),
+    hsl(45, 100%, 45%)
+  ); /* Amber to yellow gradient */
+  --color-badge-premium-bronze: linear-gradient(
+    to right,
+    hsl(30, 100%, 50%),
+    hsl(30, 100%, 45%)
+  ); /* Bronze gradient */
+  --color-badge-premium-silver: linear-gradient(
+    to right,
+    hsl(0, 0%, 75%),
+    hsl(0, 0%, 65%)
+  ); /* Silver gradient */
+  --color-badge-premium-gold: linear-gradient(
+    to right,
+    hsl(45, 100%, 50%),
+    hsl(45, 100%, 45%)
+  ); /* Gold gradient */
+
   /* Opacity Variations */
   --color-overlay-light: hsl(240, 8%, 9%, 0.5); /* Light overlay */
   --color-overlay-medium: hsl(240, 8%, 9%, 0.7); /* Medium overlay */
@@ -165,6 +210,51 @@
   --color-warning: hsl(38, 100%, 61%); /* Orange for Double XP alerts */
   --color-warning-light: hsl(48, 100%, 62%); /* Yellow for 2 weeks left */
   --color-warning-dark: hsl(32, 85%, 52%); /* Darker warning */
+
+  /* Badge Colors - Light theme (same as dark) */
+  --color-badge-owner: linear-gradient(
+    to right,
+    hsl(270, 100%, 50%),
+    hsl(240, 100%, 50%)
+  ); /* Purple to indigo gradient */
+  --color-badge-tester: hsl(270, 100%, 60%); /* Purple */
+  --color-badge-vtm: linear-gradient(
+    to right,
+    hsl(155, 100%, 30%),
+    hsl(155, 100%, 25%)
+  ); /* Emerald gradient */
+  --color-badge-vt: hsl(220, 100%, 50%); /* Blue */
+  --color-badge-partner: hsl(25, 100%, 50%); /* Orange */
+  --color-badge-contributor: linear-gradient(
+    to right,
+    hsl(180, 100%, 30%),
+    hsl(180, 100%, 25%)
+  ); /* Teal gradient */
+  --color-badge-developer: linear-gradient(
+    to right,
+    hsl(90, 100%, 50%),
+    hsl(90, 100%, 45%)
+  ); /* Lime gradient */
+  --color-badge-early-adopter: linear-gradient(
+    to right,
+    hsl(45, 100%, 50%),
+    hsl(45, 100%, 45%)
+  ); /* Amber to yellow gradient */
+  --color-badge-premium-bronze: linear-gradient(
+    to right,
+    hsl(30, 100%, 50%),
+    hsl(30, 100%, 45%)
+  ); /* Bronze gradient */
+  --color-badge-premium-silver: linear-gradient(
+    to right,
+    hsl(0, 0%, 75%),
+    hsl(0, 0%, 65%)
+  ); /* Silver gradient */
+  --color-badge-premium-gold: linear-gradient(
+    to right,
+    hsl(45, 100%, 50%),
+    hsl(45, 100%, 45%)
+  ); /* Gold gradient */
 
   /* Opacity Variations - Light theme */
   --color-overlay-light: hsl(0, 0%, 100%, 0.5); /* Light overlay - White */

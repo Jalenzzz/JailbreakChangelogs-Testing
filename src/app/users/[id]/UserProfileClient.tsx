@@ -25,7 +25,8 @@ const UserBadges = dynamic(
     loading: () => <div className="h-6 w-6" />, // Placeholder with same size as lg badge
   },
 );
-import { formatRelativeDate, formatShortDate, formatCustomDate } from '@/utils/timestamp';
+import { formatShortDate, formatCustomDate } from '@/utils/timestamp';
+import { useOptimizedRealTimeRelativeDate } from '@/hooks/useSharedTimer';
 import ProfileTabs from '@/components/Profile/ProfileTabs';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { DiscordIcon } from '@/components/Icons/DiscordIcon';
@@ -82,7 +83,7 @@ const LinSuperIdol = ({ userId }: { userId: string }) => {
     <div className="fixed right-4 bottom-4 z-50">
       <button
         onClick={handlePlayClick}
-        className="group rounded-full bg-white/10 p-3 text-white/80 shadow-lg backdrop-blur-sm transition-all duration-300 hover:bg-white/20 hover:text-white"
+        className="group bg-secondary-bg/80 text-primary-text/80 hover:bg-secondary-bg hover:text-primary-text rounded-full p-3 shadow-lg backdrop-blur-sm transition-all duration-300"
         title="Lin is a super idol"
       >
         <BsMusicNoteBeamed className="text-xl opacity-60 transition-opacity duration-300 group-hover:opacity-100" />
@@ -247,6 +248,12 @@ export default function UserProfileClient({
     initialData?.favoriteItemDetails || {},
   );
   const [tradeAds] = useState<TradeAd[]>(initialData?.tradeAds || []);
+
+  // Use realtime relative date for last seen timestamp
+  const lastSeenTime = useOptimizedRealTimeRelativeDate(
+    user?.last_seen,
+    `user-last-seen-${user?.id || 'unknown'}`,
+  );
 
   const refreshBio = async (newBio: string) => {
     setBio(newBio);
@@ -430,7 +437,8 @@ export default function UserProfileClient({
                   <div className="w-full max-w-md rounded-lg border border-red-500/20 bg-red-500/10 p-6 text-center">
                     <div className="mb-4 flex items-center justify-center space-x-3">
                       <svg
-                        className="h-6 w-6 text-red-500"
+                        className="h-6 w-6"
+                        style={{ color: 'var(--color-form-error)' }}
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -442,7 +450,12 @@ export default function UserProfileClient({
                           d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
                         />
                       </svg>
-                      <h2 className="text-lg font-semibold text-red-500">User Banned</h2>
+                      <h2
+                        className="text-lg font-semibold"
+                        style={{ color: 'var(--color-form-error)' }}
+                      >
+                        User Banned
+                      </h2>
                     </div>
                     <p className="text-primary-text">{errorState}</p>
                   </div>
@@ -466,7 +479,7 @@ export default function UserProfileClient({
       <main className="min-h-screen pb-8">
         <div className="container mx-auto">
           <Breadcrumb userData={user} />
-          <div className="border-border-primary overflow-hidden rounded-lg border shadow-md">
+          <div className="bg-secondary-bg border-border-primary overflow-hidden rounded-lg border shadow-md">
             <div className="p-8">
               <div className="flex flex-col items-center justify-center space-y-6">
                 <div className="relative -mt-6">
@@ -484,7 +497,7 @@ export default function UserProfileClient({
                 </div>
                 <div className="space-y-2 text-center">
                   <div className="flex flex-col items-center justify-center gap-2 md:flex-row md:flex-wrap">
-                    <h1 className="text-muted text-xl font-bold md:text-2xl">
+                    <h1 className="text-primary-text text-xl font-bold md:text-2xl">
                       {user.global_name && user.global_name !== 'None'
                         ? user.global_name
                         : user.username}
@@ -499,7 +512,7 @@ export default function UserProfileClient({
                       />
                     </div>
                   </div>
-                  <p className="text-primary-text">@{user.username}</p>
+                  <p className="text-secondary-text">@{user.username}</p>
                 </div>
                 <div className="w-full max-w-md rounded-lg p-6 text-center">
                   <div className="mb-4 flex items-center justify-center space-x-3">
@@ -516,9 +529,9 @@ export default function UserProfileClient({
                         d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                       />
                     </svg>
-                    <h2 className="text-muted text-lg font-semibold">Private Profile</h2>
+                    <h2 className="text-primary-text text-lg font-semibold">Private Profile</h2>
                   </div>
-                  <p className="text-primary-text">
+                  <p className="text-secondary-text">
                     This user has chosen to keep their profile private
                   </p>
                 </div>
@@ -601,7 +614,7 @@ export default function UserProfileClient({
                           <p className="text-secondary-text text-sm">Online</p>
                         ) : user.last_seen === null ? (
                           <div className="mt-2 mb-2 rounded-lg p-4">
-                            <p className="text-muted mb-1 text-sm font-medium">
+                            <p className="text-secondary-text mb-1 text-sm font-medium">
                               Are you the owner of this profile?
                             </p>
                             <p className="text-primary-text text-sm">
@@ -625,7 +638,7 @@ export default function UserProfileClient({
                                     padding: '8px 12px',
                                     borderRadius: '8px',
 
-                                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                                    boxShadow: '0 4px 12px var(--color-card-shadow)',
                                     '& .MuiTooltip-arrow': {
                                       color: 'var(--color-primary-bg)',
                                     },
@@ -635,9 +648,9 @@ export default function UserProfileClient({
                             >
                               <p
                                 className="text-secondary-text cursor-help text-sm"
-                                aria-label={`User was last seen ${formatRelativeDate(user.last_seen)}`}
+                                aria-label={`User was last seen ${lastSeenTime}`}
                               >
-                                Last seen: {formatRelativeDate(user.last_seen)}
+                                Last seen: {lastSeenTime}
                               </p>
                             </Tooltip>
                           )
@@ -665,7 +678,7 @@ export default function UserProfileClient({
                                   padding: '8px 12px',
                                   borderRadius: '8px',
 
-                                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                                  boxShadow: '0 4px 12px var(--color-card-shadow)',
                                   '& .MuiTooltip-arrow': {
                                     color: 'var(--color-primary-bg)',
                                   },
@@ -727,7 +740,7 @@ export default function UserProfileClient({
                                   padding: '8px 12px',
                                   borderRadius: '8px',
 
-                                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                                  boxShadow: '0 4px 12px var(--color-card-shadow)',
                                   '& .MuiTooltip-arrow': {
                                     color: 'var(--color-primary-bg)',
                                   },
@@ -760,7 +773,7 @@ export default function UserProfileClient({
                                     padding: '8px 12px',
                                     borderRadius: '8px',
 
-                                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                                    boxShadow: '0 4px 12px var(--color-card-shadow)',
                                     '& .MuiTooltip-arrow': {
                                       color: 'var(--color-primary-bg)',
                                     },
@@ -810,7 +823,7 @@ export default function UserProfileClient({
                               padding: '8px 12px',
                               borderRadius: '8px',
 
-                              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                              boxShadow: '0 4px 12px var(--color-card-shadow)',
                               '& .MuiTooltip-arrow': {
                                 color: 'var(--color-primary-bg)',
                               },
@@ -820,45 +833,26 @@ export default function UserProfileClient({
                       >
                         <span>
                           <Button
-                            variant={isFollowing ? 'outlined' : 'contained'}
+                            variant="contained"
                             startIcon={<UserPlusIcon className="h-5 w-5" />}
                             onClick={handleFollow}
                             disabled={isLoadingFollow}
-                            sx={
-                              isFollowing
-                                ? {
-                                    color: 'var(--color-button-danger)',
-                                    borderColor: 'var(--color-button-danger)',
-                                    backgroundColor: 'var(--color-secondary-bg)',
-                                    '&:hover': {
-                                      backgroundColor: 'var(--color-button-danger-hover)',
-                                      borderColor: 'var(--color-button-danger)',
-                                    },
-                                    '&.Mui-disabled': {
-                                      backgroundColor: 'var(--color-quaternary-bg)',
-                                      color: 'var(--color-tertiary-text)',
-                                    },
-                                    '& .MuiButton-startIcon': {
-                                      color: 'var(--color-button-danger)',
-                                    },
-                                  }
-                                : {
-                                    backgroundColor: 'var(--color-button-info)',
-                                    color: 'var(--color-form-button-text)',
-                                    borderColor: 'var(--color-button-info)',
-                                    '&:hover': {
-                                      backgroundColor: 'var(--color-button-info-hover)',
-                                      borderColor: 'var(--color-button-info-hover)',
-                                    },
-                                    '&.Mui-disabled': {
-                                      backgroundColor: 'var(--color-quaternary-bg)',
-                                      color: 'var(--color-tertiary-text)',
-                                    },
-                                    '& .MuiButton-startIcon': {
-                                      color: 'var(--color-form-button-text)',
-                                    },
-                                  }
-                            }
+                            sx={{
+                              backgroundColor: 'var(--color-button-info)',
+                              color: 'var(--color-form-button-text)',
+                              borderColor: 'var(--color-button-info)',
+                              '&:hover': {
+                                backgroundColor: 'var(--color-button-info-hover)',
+                                borderColor: 'var(--color-button-info-hover)',
+                              },
+                              '&.Mui-disabled': {
+                                backgroundColor: 'var(--color-quaternary-bg)',
+                                color: 'var(--color-tertiary-text)',
+                              },
+                              '& .MuiButton-startIcon': {
+                                color: 'var(--color-form-button-text)',
+                              },
+                            }}
                           >
                             {isFollowing ? 'Unfollow' : 'Follow'}
                           </Button>
@@ -878,7 +872,7 @@ export default function UserProfileClient({
                               padding: '8px 12px',
                               borderRadius: '8px',
 
-                              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                              boxShadow: '0 4px 12px var(--color-card-shadow)',
                               '& .MuiTooltip-arrow': {
                                 color: 'var(--color-primary-bg)',
                               },

@@ -16,45 +16,11 @@ interface RobloxUserCardProps {
       profile_public: number;
     };
   };
-  currentUserId: string | null;
 }
 
-export default function RobloxUserCard({ user, currentUserId }: RobloxUserCardProps) {
+export default function RobloxUserCard({ user }: RobloxUserCardProps) {
   const [avatarError, setAvatarError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
-  const isPrivate = user.settings?.profile_public === 0 && currentUserId !== user.id;
-
-  if (isPrivate) {
-    return (
-      <div className="flex items-center space-x-3">
-        <div className="border-border-primary bg-tertiary-bg flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border">
-          <svg
-            className="text-primary-text h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-            />
-          </svg>
-        </div>
-        <div className="min-w-0 flex-1">
-          <h2 className="text-secondary-text group-hover:text-border-focus truncate text-base font-semibold transition-colors">
-            Hidden User
-          </h2>
-          <p className="text-primary-text group-hover:text-border-focus truncate text-sm transition-colors">
-            Private Profile
-          </p>
-          <p className="text-primary-text text-sm">Joined ???</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="flex items-center space-x-3">
