@@ -7,7 +7,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { getItemImagePath, isVideoItem, handleImageError, getVideoPath } from '@/utils/images';
-import { getItemTypeColor } from '@/utils/badgeColors';
 import { ItemDetails } from '@/types';
 import { convertUrlsToLinks } from '@/utils/urlConverter';
 
@@ -62,10 +61,8 @@ export default function Comment({
 
   const formattedDate = formatRelativeDate(parseInt(date));
   const contentType = item_type.charAt(0).toUpperCase() + item_type.slice(1);
-  const typeColor = getItemTypeColor(item_type);
 
   useEffect(() => {
-    // Update state when props change
     if (propChangelogDetails) {
       setChangelogDetails(propChangelogDetails as ChangelogDetails);
     }
@@ -251,7 +248,7 @@ export default function Comment({
       }
       className="group block"
     >
-      <Box className="rounded-lg border p-3 shadow-sm transition-colors hover:border-[#5865F2]">
+      <Box className="bg-primary-bg border-border-primary hover:border-button-info rounded-lg border p-3 shadow-sm transition-colors">
         <div className="mb-2 flex">
           {renderThumbnail()}
           <div className="min-w-0 flex-1">
@@ -259,7 +256,7 @@ export default function Comment({
             {getItemName() ? (
               <Typography
                 variant="body2"
-                className="text-muted mb-1 font-medium transition-colors group-hover:text-blue-300"
+                className="text-primary-text group-hover:text-button-info mb-1 font-medium transition-colors"
                 sx={{
                   maxWidth: '100%',
                   overflow: 'hidden',
@@ -280,11 +277,16 @@ export default function Comment({
               <Chip
                 label={contentType}
                 size="small"
+                variant="outlined"
                 sx={{
-                  backgroundColor: typeColor,
-                  color: '#fff',
+                  backgroundColor: 'transparent',
+                  borderColor: 'var(--color-secondary-text)',
+                  color: 'var(--color-primary-text)',
                   fontSize: '0.65rem',
                   height: '20px',
+                  '&:hover': {
+                    borderColor: 'var(--color-button-info)',
+                  },
                 }}
               />
             </div>
@@ -292,7 +294,7 @@ export default function Comment({
             {/* Comment Content Third */}
             <Typography
               variant="body2"
-              className="text-muted break-words whitespace-pre-wrap"
+              className="text-secondary-text break-words whitespace-pre-wrap"
               sx={{
                 overflowWrap: 'break-word',
                 wordBreak: 'break-word',
@@ -309,7 +311,7 @@ export default function Comment({
           </div>
         </div>
 
-        <Divider sx={{ my: 1, backgroundColor: '#2E3944' }} />
+        <Divider sx={{ my: 1, backgroundColor: 'var(--color-border-primary)' }} />
 
         <div className="flex items-center justify-start text-xs">
           <div className="flex items-center gap-1">
@@ -320,26 +322,25 @@ export default function Comment({
               slotProps={{
                 tooltip: {
                   sx: {
-                    backgroundColor: '#0F1419',
-                    color: '#D3D9D4',
+                    backgroundColor: 'var(--color-primary-bg)',
+                    color: 'var(--color-secondary-text)',
                     fontSize: '0.75rem',
                     padding: '8px 12px',
                     borderRadius: '8px',
-
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                    boxShadow: 'var(--color-card-shadow)',
                     '& .MuiTooltip-arrow': {
-                      color: '#0F1419',
+                      color: 'var(--color-primary-bg)',
                     },
                   },
                 },
               }}
             >
-              <Typography variant="caption" className="cursor-help text-[#FFFFFF]">
+              <Typography variant="caption" className="text-secondary-text cursor-help">
                 Posted {formattedDate}
               </Typography>
             </Tooltip>
             {edited_at && (
-              <Typography variant="caption" className="text-[#FFFFFF]">
+              <Typography variant="caption" className="text-secondary-text">
                 (edited)
               </Typography>
             )}
