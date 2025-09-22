@@ -53,7 +53,7 @@ export default function TradeItemsImages({ offering, requesting }: TradeItemsIma
     <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
       {/* Offering Items Images */}
       <div>
-        <h2 className="text-muted mb-4 text-lg font-semibold">Offering</h2>
+        <h2 className="text-primary-text mb-4 text-lg font-semibold">Offering</h2>
         <div className="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-5">
           {groupItems(offering).map((item) => (
             <Tooltip
@@ -120,7 +120,7 @@ export default function TradeItemsImages({ offering, requesting }: TradeItemsIma
 
       {/* Requesting Items Images */}
       <div>
-        <h2 className="text-muted mb-4 text-lg font-semibold">Requesting</h2>
+        <h2 className="text-primary-text mb-4 text-lg font-semibold">Requesting</h2>
         <div className="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-5">
           {groupItems(requesting).map((item) => (
             <Tooltip

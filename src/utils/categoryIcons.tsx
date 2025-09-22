@@ -69,6 +69,7 @@ export const CategoryIconBadge = ({
   isSeasonal,
   hasChildren,
   showCategoryForVariants = false,
+  preferItemType = false,
   className = 'h-5 w-5',
 }: {
   type: string;
@@ -76,33 +77,66 @@ export const CategoryIconBadge = ({
   isSeasonal: boolean;
   hasChildren: boolean;
   showCategoryForVariants?: boolean;
+  preferItemType?: boolean;
   className?: string;
 }) => {
-  if (isSeasonal) {
-    return (
-      <div className="bg-primary-bg/50 rounded-full p-1.5">
-        <FaRegSnowflake className={`${className} text-secondary-text`} />
-      </div>
-    );
-  }
+  // If preferItemType is true, show item type icon first
+  if (preferItemType) {
+    if (!hasChildren || showCategoryForVariants) {
+      const categoryIcon = getCategoryIcon(type);
+      if (categoryIcon) {
+        return (
+          <div className="bg-primary-bg/50 rounded-full p-1.5">
+            <categoryIcon.Icon className={`${className} text-secondary-text`} />
+          </div>
+        );
+      }
+    }
 
-  if (isLimited) {
-    return (
-      <div className="bg-primary-bg/50 rounded-full p-1.5">
-        <FaClock className={`${className} text-secondary-text`} />
-      </div>
-    );
-  }
-
-  // Show category icon based on showCategoryForVariants prop
-  if (!hasChildren || showCategoryForVariants) {
-    const categoryIcon = getCategoryIcon(type);
-    if (categoryIcon) {
+    // Fall back to limited/seasonal if no item type icon
+    if (isSeasonal) {
       return (
         <div className="bg-primary-bg/50 rounded-full p-1.5">
-          <categoryIcon.Icon className={`${className} text-secondary-text`} />
+          <FaRegSnowflake className={`${className} text-secondary-text`} />
         </div>
       );
+    }
+
+    if (isLimited) {
+      return (
+        <div className="bg-primary-bg/50 rounded-full p-1.5">
+          <FaClock className={`${className} text-secondary-text`} />
+        </div>
+      );
+    }
+  } else {
+    // Default behavior: prioritize limited/seasonal badges
+    if (isSeasonal) {
+      return (
+        <div className="bg-primary-bg/50 rounded-full p-1.5">
+          <FaRegSnowflake className={`${className} text-secondary-text`} />
+        </div>
+      );
+    }
+
+    if (isLimited) {
+      return (
+        <div className="bg-primary-bg/50 rounded-full p-1.5">
+          <FaClock className={`${className} text-secondary-text`} />
+        </div>
+      );
+    }
+
+    // Show category icon based on showCategoryForVariants prop
+    if (!hasChildren || showCategoryForVariants) {
+      const categoryIcon = getCategoryIcon(type);
+      if (categoryIcon) {
+        return (
+          <div className="bg-primary-bg/50 rounded-full p-1.5">
+            <categoryIcon.Icon className={`${className} text-secondary-text`} />
+          </div>
+        );
+      }
     }
   }
 

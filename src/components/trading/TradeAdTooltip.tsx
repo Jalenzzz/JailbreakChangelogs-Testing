@@ -24,6 +24,7 @@ export const TradeAdTooltip: React.FC<TradeAdTooltipProps> = ({ item }) => {
               isSeasonal={item.is_seasonal === 1}
               hasChildren={!!item.children?.length}
               showCategoryForVariants={true}
+              preferItemType={true}
               className="h-5 w-5"
             />
             <Link

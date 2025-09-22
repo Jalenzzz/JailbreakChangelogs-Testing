@@ -205,7 +205,10 @@ const CalculatorItemGrid: React.FC<{
             const isDupedSelected = selectedType === 'duped';
 
             return (
-              <div key={`${item.id}-${item.sub_name || 'base'}`} className="group relative">
+              <div
+                key={`${item.id}-${item.sub_name || 'base'}`}
+                className="group relative cursor-help"
+              >
                 <Tooltip
                   title={
                     <TradeAdTooltip
@@ -1124,7 +1127,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
                     }
                     setShowClearConfirmModal(false);
                   }}
-                  className="border-button-success bg-button-success/10 text-button-success hover:bg-button-success/20 w-full rounded-md border px-4 py-2 text-sm font-medium transition-colors"
+                  className="border-button-success bg-button-success/10 text-button-success hover:bg-button-success/20 w-full rounded-md border px-4 py-2 text-sm font-medium transition-colors hover:cursor-pointer"
                 >
                   Clear Offering
                 </button>
@@ -1147,7 +1150,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
                     }
                     setShowClearConfirmModal(false);
                   }}
-                  className="border-button-danger bg-button-danger/10 text-button-danger hover:bg-button-danger/20 w-full rounded-md border px-4 py-2 text-sm font-medium transition-colors"
+                  className="border-button-danger bg-button-danger/10 text-button-danger hover:bg-button-danger/20 w-full rounded-md border px-4 py-2 text-sm font-medium transition-colors hover:cursor-pointer"
                 >
                   Clear Requesting
                 </button>
@@ -1155,7 +1158,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
                   onClick={() => {
                     handleStartNew();
                   }}
-                  className="bg-button-danger text-form-button-text hover:bg-button-danger-hover w-full rounded-md px-4 py-2 text-sm font-medium transition-colors"
+                  className="bg-button-danger text-form-button-text hover:bg-button-danger-hover w-full rounded-md px-4 py-2 text-sm font-medium transition-colors hover:cursor-pointer"
                 >
                   Clear Both
                 </button>

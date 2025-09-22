@@ -563,7 +563,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
         <div className="grid grid-cols-1 gap-4 min-[375px]:grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">
           {paginatedItems.length === 0 ? (
             <div className="col-span-full py-8 text-center">
-              <p className="text-muted">
+              <p className="text-tertiary-text">
                 {searchQuery
                   ? `No items found matching "${displaySearchQuery}"${filterSort !== 'name-all-items' ? ` in ${filterSort.replace('name-', '').replace('-items', '').replace(/-/g, ' ')}` : ''}`
                   : `No items found${filterSort !== 'name-all-items' ? ` in ${filterSort.replace('name-', '').replace('-items', '').replace(/-/g, ' ')}` : ''}`}
@@ -583,7 +583,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
             paginatedItems.map((item) => (
               <div
                 key={item.id}
-                className={`group border-stroke bg-secondary-bg flex w-full flex-col rounded-lg border text-left transition-colors ${
+                className={`group border-border-primary bg-tertiary-bg flex w-full flex-col rounded-lg border text-left transition-colors ${
                   item.tradable === 1 ? 'hover:border-button-info' : 'cursor-not-allowed opacity-50'
                 }`}
                 tabIndex={0}
@@ -826,7 +826,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
                           e.preventDefault();
                           handleAddItem(item, 'offering');
                         }}
-                        className="flex-1 rounded-md bg-green-600 px-2 py-1 text-xs text-white transition-colors hover:bg-green-700"
+                        className="flex-1 rounded-md bg-green-600 px-2 py-1 text-xs text-white transition-colors hover:cursor-pointer hover:bg-green-700"
                       >
                         Offer
                       </button>
@@ -836,7 +836,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
                           e.preventDefault();
                           handleAddItem(item, 'requesting');
                         }}
-                        className="flex-1 rounded-md bg-red-600 px-2 py-1 text-xs text-white transition-colors hover:bg-red-700"
+                        className="flex-1 rounded-md bg-red-600 px-2 py-1 text-xs text-white transition-colors hover:cursor-pointer hover:bg-red-700"
                       >
                         Request
                       </button>
