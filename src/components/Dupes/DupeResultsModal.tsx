@@ -4,11 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { XMarkIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
 import { PUBLIC_API_URL } from '@/utils/api';
-import Image from 'next/image';
 import Link from 'next/link';
-import { getItemImagePath, handleImageError } from '@/utils/images';
-import { getItemTypeColor } from '@/utils/badgeColors';
-import { formatTimestamp } from '@/utils/timestamp';
+import { formatTimestamp, formatRelativeDate } from '@/utils/timestamp';
 import ReportDupeModal from './ReportDupeModal';
 
 interface DupeResult {
@@ -134,26 +131,28 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center">
-        <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-        <div className="relative mx-4 w-full max-w-md rounded-lg shadow-xl">
-          <div className="flex items-center justify-between border-b p-4">
-            <h2 className="text-xl font-semibold text-[#FFFFFF]">Dupe Check Results</h2>
-            <button onClick={onClose} className="text-muted transition-colors hover:text-[#FFFFFF]">
+        <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose} />
+        <div className="modal-container bg-secondary-bg border-button-info relative mx-4 w-full max-w-4xl rounded-lg border shadow-lg">
+          <div className="modal-header text-primary-text flex items-center justify-between px-6 py-4 text-xl font-semibold">
+            <h2>Dupe Check Results</h2>
+            <button onClick={onClose} className="text-secondary-text hover:text-primary-text">
               <XMarkIcon className="h-6 w-6" />
             </button>
           </div>
 
-          <div className="p-4">
+          <div className="modal-content p-6">
             {loading && (
               <div className="flex items-center justify-center py-8">
-                <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-[#5865F2]" />
+                <div className="border-button-info h-8 w-8 animate-spin rounded-full border-b-2" />
               </div>
             )}
 
-            {error && !suggestion && <div className="py-4 text-center text-red-500">{error}</div>}
+            {error && !suggestion && (
+              <div className="text-button-danger py-4 text-center">{error}</div>
+            )}
 
             {suggestion && (
-              <div className="py-2 text-center text-[#FFA500]">
+              <div className="text-status-warning py-2 text-center">
                 <div className="flex flex-col items-center">
                   <ExclamationTriangleIcon className="mb-2 h-12 w-12" />
                   <div>
@@ -168,12 +167,12 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
 
             {!loading && !error && !suggestion && results.length === 0 && (
               <div className="space-y-4">
-                <div className="flex flex-col items-center justify-center text-green-500">
+                <div className="text-status-success flex flex-col items-center justify-center">
                   <FaCheckCircle className="mb-2 h-12 w-12" />
                   <div className="text-center">
-                    <div className="text-muted">No dupes found for {ownerName}</div>
+                    <div className="text-secondary-text">No dupes found for {ownerName}</div>
                     {itemName && (
-                      <div className="text-muted">No dupe record found for {itemName}</div>
+                      <div className="text-secondary-text">No dupe record found for {itemName}</div>
                     )}
                   </div>
                 </div>
@@ -181,7 +180,7 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
                   <div className="flex justify-center">
                     <button
                       disabled
-                      className="cursor-not-allowed rounded-lg bg-gray-600 px-4 py-2 text-gray-400"
+                      className="bg-button-secondary text-secondary-text border-button-secondary cursor-not-allowed rounded-lg border px-4 py-2"
                     >
                       Report {itemName} as duped (Disabled)
                     </button>
@@ -192,61 +191,83 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
 
             {!loading && !error && results.length > 0 && (
               <div className="space-y-4">
-                <div className="mb-4 flex flex-col items-center justify-center text-red-500">
-                  <FaExclamationCircle className="mb-2 h-12 w-12" />
-                  <div className="text-muted">
-                    Found {uniqueItemsCount} unique dupe item
-                    {uniqueItemsCount !== 1 ? 's' : ''} for {results[0].owner}
+                {/* Header */}
+                <div className="bg-button-danger/10 border-button-danger/20 rounded-lg border p-4">
+                  <div className="flex items-center gap-3">
+                    <FaExclamationCircle className="text-button-danger h-6 w-6 flex-shrink-0" />
+                    <div className="flex-1">
+                      <h3 className="text-primary-text text-lg font-semibold">
+                        {uniqueItemsCount} Dupe Item{uniqueItemsCount !== 1 ? 's' : ''} Found
+                      </h3>
+                      <p className="text-secondary-text text-sm">
+                        Owner:{' '}
+                        <span className="text-primary-text font-medium">{results[0].owner}</span>
+                      </p>
+                      <p className="text-secondary-text mt-1 text-xs">
+                        Last recorded dupe:{' '}
+                        <span className="text-primary-text font-medium">
+                          {formatTimestamp(
+                            results.reduce((latest, current) =>
+                              current.created_at > latest.created_at ? current : latest,
+                            ).created_at,
+                            {
+                              format: 'long',
+                            },
+                          )}
+                        </span>
+                      </p>
+                    </div>
                   </div>
                 </div>
 
                 {itemLoading ? (
-                  <div className="flex items-center justify-center py-4">
-                    <div className="h-6 w-6 animate-spin rounded-full border-b-2 border-[#5865F2]" />
+                  <div className="flex items-center justify-center py-8">
+                    <div className="border-button-info h-6 w-6 animate-spin rounded-full border-b-2" />
                   </div>
                 ) : (
                   itemDetails.length > 0 && (
-                    <>
-                      <div className="grid max-h-[400px] grid-cols-2 gap-3 overflow-y-auto pr-2">
-                        {itemDetails.map((item, index) => (
-                          <Link
-                            key={`${item.id}-${index}`}
-                            href={`/item/${encodeURIComponent(item.type)}/${encodeURIComponent(item.name)}`}
-                            className="block rounded-lg border p-3 transition-colors hover:border-[#5865F2]"
-                          >
-                            <div className="flex flex-col items-center text-center">
-                              <div className="flex-shrink-0">
-                                <Image
-                                  src={getItemImagePath(item.type, item.name, true)}
-                                  alt={item.name}
-                                  width={150}
-                                  height={150}
-                                  className="object-contain"
-                                  onError={handleImageError}
-                                />
-                              </div>
-                              <div className="mt-2">
-                                <h3 className="text-sm font-medium text-[#FFFFFF]">{item.name}</h3>
-                                <span
-                                  className="mt-1 inline-block rounded-full px-2 py-0.5 text-xs"
-                                  style={{
-                                    backgroundColor: getItemTypeColor(item.type),
-                                  }}
+                    <div className="space-y-4">
+                      {/* Items List */}
+                      <div className="space-y-2">
+                        <h4 className="text-primary-text text-sm font-medium">Dupe Items:</h4>
+                        <div className="max-h-[300px] space-y-2 overflow-y-auto">
+                          {itemDetails
+                            .sort((a, b) => a.name.localeCompare(b.name))
+                            .map((item, index) => {
+                              // Find the corresponding dupe result for this item to get the date
+                              const dupeResult = results.find(
+                                (result) => result.item_id === item.id,
+                              );
+                              return (
+                                <Link
+                                  key={`${item.id}-${index}`}
+                                  href={`/item/${encodeURIComponent(item.type)}/${encodeURIComponent(item.name)}`}
+                                  className="border-stroke bg-secondary-bg/50 hover:border-button-info hover:bg-primary-bg flex items-center justify-between rounded-lg border p-3 transition-colors"
                                 >
-                                  {item.type}
-                                </span>
-                              </div>
-                            </div>
-                          </Link>
-                        ))}
+                                  <div className="flex items-center gap-3">
+                                    <div className="flex flex-col">
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-primary-text font-medium">
+                                          {item.name}
+                                        </span>
+                                        <span className="border-primary-text text-primary-text flex items-center rounded-full border bg-transparent px-2 py-0.5 text-xs">
+                                          {item.type}
+                                        </span>
+                                      </div>
+                                      {dupeResult && (
+                                        <span className="text-secondary-text text-xs">
+                                          Reported {formatRelativeDate(dupeResult.created_at)}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <div className="text-secondary-text text-xs">View Details</div>
+                                </Link>
+                              );
+                            })}
+                        </div>
                       </div>
-                      <div className="text-muted mt-4 text-center">
-                        Last recorded dupe:{' '}
-                        {formatTimestamp(results[0].created_at, {
-                          format: 'long',
-                        })}
-                      </div>
-                    </>
+                    </div>
                   )
                 )}
               </div>

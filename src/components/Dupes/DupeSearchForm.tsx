@@ -183,12 +183,12 @@ const DupeSearchForm: React.FC<DupeSearchFormProps> = ({
     <>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="relative">
-          <label htmlFor="ownerName" className="text-muted mb-1 block text-sm font-medium">
-            Owner Name <span className="text-red-500">*</span>
+          <label htmlFor="ownerName" className="text-secondary-text mb-1 block text-sm font-medium">
+            Owner Name <span className="text-button-danger">*</span>
           </label>
           <div className="relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <MagnifyingGlassIcon className="text-muted h-4 w-4" />
+            <div className="absolute top-1/2 left-3 -translate-y-1/2">
+              <MagnifyingGlassIcon className="text-primary-text h-5 w-5" />
             </div>
             <input
               type="text"
@@ -211,7 +211,7 @@ const DupeSearchForm: React.FC<DupeSearchFormProps> = ({
               required
               autoComplete="off"
               autoCorrect="off"
-              className="text-muted placeholder-muted/50 w-full rounded-lg border bg-[#37424D] py-2 pr-9 pl-9 focus:border-transparent focus:ring-2 focus:ring-[#5865F2] focus:outline-none"
+              className="text-secondary-text border-stroke bg-primary-bg placeholder-secondary-text focus:border-button-info w-full rounded-lg border px-4 py-2 pr-10 pl-10 focus:outline-none"
             />
             {ownerName && (
               <button
@@ -221,35 +221,37 @@ const DupeSearchForm: React.FC<DupeSearchFormProps> = ({
                   setOwnerSuggestions([]);
                   setShowOwnerSuggestions(false);
                 }}
-                className="text-muted absolute top-1/2 right-3 -translate-y-1/2 transition-colors hover:text-[#FFFFFF]"
+                className="hover:text-secondary-text text-primary-text absolute top-1/2 right-3 -translate-y-1/2"
               >
                 <XMarkIcon className="h-4 w-4" />
               </button>
             )}
           </div>
           {showOwnerSuggestions && ownerSuggestions.length > 0 && (
-            <div className="absolute z-10 mt-1 max-h-48 w-full overflow-y-auto rounded-lg border bg-[#1A1F24] shadow-lg">
-              {ownerSuggestions.map((suggestion, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  onClick={() => handleOwnerSuggestionClick(suggestion)}
-                  className="text-muted w-full px-4 py-2 text-left transition-colors first:rounded-t-lg last:rounded-b-lg hover:bg-[#37424D]"
-                >
-                  {suggestion}
-                </button>
-              ))}
+            <div className="border-tertiary-bg bg-secondary-bg absolute z-10 mt-1 w-full rounded-lg border shadow-lg">
+              <div className="max-h-[400px] overflow-y-auto">
+                {ownerSuggestions.map((suggestion, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => handleOwnerSuggestionClick(suggestion)}
+                    className="border-stroke hover:bg-primary-bg w-full cursor-pointer border-b px-4 py-3 text-left last:border-b-0 focus:outline-none"
+                  >
+                    <div className="text-primary-text font-medium">{suggestion}</div>
+                  </button>
+                ))}
+              </div>
             </div>
           )}
         </div>
 
         <div className="relative">
-          <label htmlFor="itemName" className="text-muted mb-1 block text-sm font-medium">
+          <label htmlFor="itemName" className="text-secondary-text mb-1 block text-sm font-medium">
             Item Name
           </label>
           <div className="relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <MagnifyingGlassIcon className="text-muted h-4 w-4" />
+            <div className="absolute top-1/2 left-3 -translate-y-1/2">
+              <MagnifyingGlassIcon className="text-primary-text h-5 w-5" />
             </div>
             <input
               type="text"
@@ -274,7 +276,7 @@ const DupeSearchForm: React.FC<DupeSearchFormProps> = ({
               placeholder="Enter item name..."
               autoComplete="off"
               autoCorrect="off"
-              className="text-muted placeholder-muted/50 w-full rounded-lg border bg-[#37424D] py-2 pr-9 pl-9 focus:border-transparent focus:ring-2 focus:ring-[#5865F2] focus:outline-none"
+              className="text-secondary-text border-stroke bg-primary-bg placeholder-secondary-text focus:border-button-info w-full rounded-lg border px-4 py-2 pr-10 pl-10 focus:outline-none"
             />
             {itemName && (
               <button
@@ -284,24 +286,28 @@ const DupeSearchForm: React.FC<DupeSearchFormProps> = ({
                   setItemSuggestions([]);
                   setShowItemSuggestions(false);
                 }}
-                className="text-muted absolute top-1/2 right-3 -translate-y-1/2 transition-colors hover:text-[#FFFFFF]"
+                className="hover:text-secondary-text text-primary-text absolute top-1/2 right-3 -translate-y-1/2"
               >
                 <XMarkIcon className="h-4 w-4" />
               </button>
             )}
           </div>
           {showItemSuggestions && itemSuggestions.length > 0 && (
-            <div className="absolute z-10 mt-1 max-h-48 w-full overflow-y-auto rounded-lg border bg-[#1A1F24] shadow-lg">
-              {itemSuggestions.map((suggestion, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  onClick={() => handleItemSuggestionClick(suggestion)}
-                  className="text-muted w-full px-4 py-2 text-left transition-colors first:rounded-t-lg last:rounded-b-lg hover:bg-[#37424D]"
-                >
-                  {suggestion.name} [{suggestion.type}]
-                </button>
-              ))}
+            <div className="border-tertiary-bg bg-secondary-bg absolute z-10 mt-1 w-full rounded-lg border shadow-lg">
+              <div className="max-h-[400px] overflow-y-auto">
+                {itemSuggestions.map((suggestion, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => handleItemSuggestionClick(suggestion)}
+                    className="border-stroke hover:bg-primary-bg w-full cursor-pointer border-b px-4 py-3 text-left last:border-b-0 focus:outline-none"
+                  >
+                    <div className="text-primary-text font-medium">
+                      {suggestion.name} [{suggestion.type}]
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
           )}
         </div>
@@ -310,14 +316,14 @@ const DupeSearchForm: React.FC<DupeSearchFormProps> = ({
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-[#5865F2] px-4 py-2 text-white transition-colors duration-200 hover:bg-[#4752C4] focus:ring-2 focus:ring-[#5865F2] focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+            className="bg-button-info hover:bg-button-info-hover active:bg-button-info-active text-form-button-text focus:ring-button-info w-full cursor-pointer rounded-lg px-4 py-2 transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {loading ? 'Checking...' : 'Check if Dupe'}
+            {loading ? 'Checking...' : 'Is it Duped?'}
           </button>
           <button
             type="button"
             disabled
-            className="w-full cursor-not-allowed rounded-lg bg-gray-600 px-4 py-2 text-gray-400"
+            className="bg-button-secondary text-secondary-text border-button-secondary w-full cursor-not-allowed rounded-lg border px-4 py-2"
           >
             Report a Dupe (Disabled)
           </button>
