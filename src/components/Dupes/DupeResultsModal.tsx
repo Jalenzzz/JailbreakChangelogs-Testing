@@ -3,10 +3,12 @@
 import React, { useEffect, useState } from 'react';
 import { XMarkIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
-import { PUBLIC_API_URL } from '@/utils/api';
 import Link from 'next/link';
 import { formatTimestamp, formatRelativeDate } from '@/utils/timestamp';
 import ReportDupeModal from './ReportDupeModal';
+import { ItemDetails } from '@/types';
+import { TradeAdTooltip } from '../trading/TradeAdTooltip';
+import { Tooltip } from '@mui/material';
 
 interface DupeResult {
   item_id: number;
@@ -14,47 +16,6 @@ interface DupeResult {
   user_id: number | null;
   proof: string | null;
   created_at: number;
-}
-
-interface ItemDetails {
-  id: number;
-  name: string;
-  type: string;
-  creator: string;
-  is_seasonal: number;
-  cash_value: string;
-  duped_value: string;
-  price: string;
-  is_limited: number;
-  notes: string;
-  demand: string;
-  description: string;
-  health: number;
-  tradable: number;
-  last_updated: number;
-  children?: Array<{
-    id: number;
-    parent: number;
-    sub_name: string;
-    created_at: number;
-    data: {
-      name: string;
-      type: string;
-      creator: string;
-      is_seasonal: number | null;
-      cash_value: string;
-      duped_value: string;
-      price: string;
-      is_limited: number | null;
-      duped_owners: string;
-      notes: string;
-      demand: string;
-      description: string;
-      health: number;
-      tradable: boolean;
-      last_updated: number;
-    };
-  }>;
 }
 
 interface Suggestion {
@@ -72,7 +33,8 @@ interface DupeResultsModalProps {
   suggestion: Suggestion | null;
   ownerName: string;
   itemName: string;
-  itemId: number;
+  itemDetails: ItemDetails | null;
+  allItemDetails: ItemDetails[];
 }
 
 const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
@@ -84,10 +46,9 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
   suggestion,
   ownerName,
   itemName,
-  itemId,
+  itemDetails,
+  allItemDetails,
 }) => {
-  const [itemDetails, setItemDetails] = useState<ItemDetails[]>([]);
-  const [itemLoading, setItemLoading] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const uniqueItemsCount = [...new Set(results.map((result) => result.item_id))].length;
 
@@ -101,30 +62,6 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
       document.body.style.overflow = 'unset';
     };
   }, [isOpen]);
-
-  useEffect(() => {
-    const fetchItemDetails = async () => {
-      if (results.length > 0) {
-        setItemLoading(true);
-        try {
-          // Get unique item IDs
-          const uniqueItemIds = [...new Set(results.map((result) => result.item_id))];
-
-          const itemPromises = uniqueItemIds.map((itemId) =>
-            fetch(`${PUBLIC_API_URL}/items/get?id=${itemId}`).then((res) => res.json()),
-          );
-          const items = await Promise.all(itemPromises);
-          setItemDetails(items);
-        } catch (err) {
-          console.error('Error fetching item details:', err);
-        } finally {
-          setItemLoading(false);
-        }
-      }
-    };
-
-    fetchItemDetails();
-  }, [results]);
 
   if (!isOpen) return null;
 
@@ -220,55 +157,114 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
                   </div>
                 </div>
 
-                {itemLoading ? (
-                  <div className="flex items-center justify-center py-8">
-                    <div className="border-button-info h-6 w-6 animate-spin rounded-full border-b-2" />
-                  </div>
-                ) : (
-                  itemDetails.length > 0 && (
-                    <div className="space-y-4">
-                      {/* Items List */}
-                      <div className="space-y-2">
-                        <h4 className="text-primary-text text-sm font-medium">Dupe Items:</h4>
-                        <div className="max-h-[300px] space-y-2 overflow-y-auto">
-                          {itemDetails
-                            .sort((a, b) => a.name.localeCompare(b.name))
-                            .map((item, index) => {
-                              // Find the corresponding dupe result for this item to get the date
-                              const dupeResult = results.find(
-                                (result) => result.item_id === item.id,
-                              );
-                              return (
-                                <Link
-                                  key={`${item.id}-${index}`}
-                                  href={`/item/${encodeURIComponent(item.type)}/${encodeURIComponent(item.name)}`}
-                                  className="border-stroke bg-secondary-bg/50 hover:border-button-info hover:bg-primary-bg flex items-center justify-between rounded-lg border p-3 transition-colors"
-                                >
-                                  <div className="flex items-center gap-3">
-                                    <div className="flex flex-col">
-                                      <div className="flex items-center gap-2">
-                                        <span className="text-primary-text font-medium">
+                {allItemDetails.length > 0 && (
+                  <div className="space-y-4">
+                    {/* Items List */}
+                    <div className="space-y-2">
+                      <h4 className="text-primary-text text-sm font-medium">Dupe Items:</h4>
+                      <div className="max-h-[300px] space-y-2 overflow-y-auto">
+                        {allItemDetails
+                          .sort((a, b) => a.name.localeCompare(b.name))
+                          .map((item, index) => {
+                            // Find the most recent dupe report for this item
+                            const itemDupes = results.filter(
+                              (result) => result.item_id === item.id,
+                            );
+                            const mostRecentDupe = itemDupes.reduce((latest, current) =>
+                              current.created_at > latest.created_at ? current : latest,
+                            );
+
+                            return (
+                              <Link
+                                key={`${item.id}-${index}`}
+                                href={`/item/${encodeURIComponent(item.type)}/${encodeURIComponent(item.name)}`}
+                                className="group border-stroke bg-secondary-bg/50 hover:border-button-info hover:bg-primary-bg flex items-center justify-between rounded-lg border p-3 transition-colors"
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className="flex flex-col">
+                                    <div className="flex items-center gap-2">
+                                      <Tooltip
+                                        title={
+                                          <TradeAdTooltip
+                                            item={{
+                                              id: item.id,
+                                              name: item.name,
+                                              type: item.type,
+                                              is_seasonal: item.is_seasonal || 0,
+                                              is_limited: item.is_limited || 0,
+                                              cash_value: item.cash_value,
+                                              duped_value: item.duped_value,
+                                              trend: item.trend,
+                                              tradable:
+                                                typeof item.tradable === 'boolean'
+                                                  ? item.tradable
+                                                    ? 1
+                                                    : 0
+                                                  : item.tradable,
+                                              base_name: item.name,
+                                              is_sub: false,
+                                              data: {
+                                                name: item.name,
+                                                type: item.type,
+                                                creator: item.creator,
+                                                is_seasonal: item.is_seasonal,
+                                                cash_value: item.cash_value,
+                                                duped_value: item.duped_value,
+                                                price: item.price,
+                                                is_limited: item.is_limited,
+                                                duped_owners: '',
+                                                notes: item.notes,
+                                                demand: item.demand,
+                                                trend: item.trend,
+                                                description: item.description,
+                                                health: item.health,
+                                                tradable:
+                                                  typeof item.tradable === 'boolean'
+                                                    ? item.tradable
+                                                    : Boolean(item.tradable),
+                                                last_updated: item.last_updated,
+                                              },
+                                            }}
+                                          />
+                                        }
+                                        arrow
+                                        placement="bottom"
+                                        disableTouchListener
+                                        slotProps={{
+                                          tooltip: {
+                                            sx: {
+                                              backgroundColor: 'var(--color-secondary-bg)',
+                                              color: 'var(--color-primary-text)',
+                                              maxWidth: '400px',
+                                              width: 'auto',
+                                              minWidth: '300px',
+                                              '& .MuiTooltip-arrow': {
+                                                color: 'var(--color-secondary-bg)',
+                                              },
+                                            },
+                                          },
+                                        }}
+                                      >
+                                        <span className="text-primary-text group-hover:text-link-hover cursor-help font-medium transition-colors">
                                           {item.name}
                                         </span>
-                                        <span className="border-primary-text text-primary-text flex items-center rounded-full border bg-transparent px-2 py-0.5 text-xs">
-                                          {item.type}
-                                        </span>
-                                      </div>
-                                      {dupeResult && (
-                                        <span className="text-secondary-text text-xs">
-                                          Reported {formatRelativeDate(dupeResult.created_at)}
-                                        </span>
-                                      )}
+                                      </Tooltip>
+                                      <span className="border-primary-text text-primary-text flex items-center rounded-full border bg-transparent px-2 py-0.5 text-xs">
+                                        {item.type}
+                                      </span>
                                     </div>
+                                    <span className="text-secondary-text text-xs">
+                                      Reported {formatRelativeDate(mostRecentDupe.created_at)}
+                                    </span>
                                   </div>
-                                  <div className="text-secondary-text text-xs">View Details</div>
-                                </Link>
-                              );
-                            })}
-                        </div>
+                                </div>
+                                <div className="text-secondary-text text-xs">View Details</div>
+                              </Link>
+                            );
+                          })}
                       </div>
                     </div>
-                  )
+                  </div>
                 )}
               </div>
             )}
@@ -283,7 +279,7 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
           itemName={itemName.split(' [')[0]}
           itemType={itemName.match(/\[(.*?)\]/)?.[1] || ''}
           ownerName={ownerName}
-          itemId={itemId}
+          itemId={itemDetails!.id}
           isOwnerNameReadOnly={true}
         />
       )}

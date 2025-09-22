@@ -74,6 +74,7 @@ async function DupeStatsWrapper() {
 async function DupeSearchFormWrapper() {
   const [items, dupes] = await Promise.all([fetchItems(), fetchDupes()]);
   const safeDupes = Array.isArray(dupes) ? (dupes as DupeResult[]) : [];
+  const safeItems = Array.isArray(items) ? (items as Item[]) : [];
 
-  return <DupeSearchForm initialItems={items as Item[]} initialDupes={safeDupes} />;
+  return <DupeSearchForm initialItems={safeItems} initialDupes={safeDupes} />;
 }

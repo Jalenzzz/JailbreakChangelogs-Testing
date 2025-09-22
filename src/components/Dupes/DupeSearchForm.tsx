@@ -8,7 +8,7 @@ import { findSimilarStrings, calculateSimilarity } from '@/utils/fuzzySearch';
 import ItemSelectionModal from './ItemSelectionModal';
 import ReportDupeModal from './ReportDupeModal';
 import LoginModalWrapper from '../Auth/LoginModalWrapper';
-import type { DupeResult, Item } from '@/types';
+import type { DupeResult, Item, ItemDetails } from '@/types';
 
 interface Suggestion {
   message: string;
@@ -17,7 +17,7 @@ interface Suggestion {
 }
 
 interface DupeSearchFormProps {
-  initialItems?: { id: number; name: string; type: string }[];
+  initialItems?: Item[];
   initialDupes?: DupeResult[];
 }
 
@@ -37,8 +37,20 @@ const DupeSearchForm: React.FC<DupeSearchFormProps> = ({
   const [showOwnerSuggestions, setShowOwnerSuggestions] = useState(false);
   const [showItemSuggestions, setShowItemSuggestions] = useState(false);
   const [allDupes] = useState<DupeResult[]>(initialDupes);
-  const [allItems] = useState<{ id: number; name: string; type: string }[]>(initialItems);
-  const [matchingItemId, setMatchingItemId] = useState<number>(0);
+  const [allItems] = useState<Item[]>(initialItems);
+  const findItemDetails = (itemId: number): ItemDetails | null => {
+    const item = allItems.find((item) => item.id === itemId);
+    if (!item) return null;
+    return {
+      ...item,
+      trend: item.trend || '',
+      is_seasonal: item.is_seasonal || null,
+      is_limited: item.is_limited || null,
+      tradable: Boolean(item.tradable),
+    } as ItemDetails;
+  };
+  const [itemDetails, setItemDetails] = useState<ItemDetails | null>(null);
+  const [allItemDetails, setAllItemDetails] = useState<ItemDetails[]>([]);
   const [isItemSelectionModalOpen, setIsItemSelectionModalOpen] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<{
@@ -151,10 +163,17 @@ const DupeSearchForm: React.FC<DupeSearchFormProps> = ({
           return;
         }
 
-        setMatchingItemId(matchingItem.id);
+        const details = findItemDetails(matchingItem.id);
+        setItemDetails(details);
 
         filteredResults = filteredResults.filter((dupe) => dupe.item_id === matchingItem.id);
       }
+
+      const uniqueItemIds = [...new Set(filteredResults.map((result) => result.item_id))];
+      const itemDetailsList = uniqueItemIds
+        .map((itemId) => findItemDetails(itemId))
+        .filter(Boolean) as ItemDetails[];
+      setAllItemDetails(itemDetailsList);
 
       setResults(filteredResults);
     } catch (err) {
@@ -339,7 +358,8 @@ const DupeSearchForm: React.FC<DupeSearchFormProps> = ({
         suggestion={suggestion}
         ownerName={ownerName}
         itemName={itemName}
-        itemId={matchingItemId}
+        itemDetails={itemDetails}
+        allItemDetails={allItemDetails}
       />
 
       <ItemSelectionModal
