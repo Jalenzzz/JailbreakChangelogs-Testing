@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { UserData } from '@/types/auth';
 import { RobloxIcon } from '@/components/Icons/RobloxIcon';
+import { DiscordIcon } from '@/components/Icons/DiscordIcon';
 import { formatRelativeDate } from '@/utils/timestamp';
 import { UserAvatar } from '@/utils/avatar';
 import { UserBadges } from '@/components/Profile/UserBadges';
@@ -83,15 +84,22 @@ export const UserDetailsTooltip: React.FC<UserDetailsTooltipProps> = ({ user }) 
           </div>
 
           <div className="space-y-1 text-sm">
-            {/* Roblox Connection */}
-            {user.roblox_id && (
-              <div className="flex items-center gap-2">
-                <span className="border-secondary-text text-primary-text inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs">
+            {/* Connection Badges */}
+            <div className="flex items-center gap-2">
+              {/* Discord Connection */}
+              <span className="text-primary-text border-primary-text inline-flex items-center gap-1 rounded-full border bg-transparent px-2 py-0.5 text-xs">
+                <DiscordIcon className="h-3 w-3" />
+                Discord
+              </span>
+
+              {/* Roblox Connection */}
+              {user.roblox_id && (
+                <span className="text-primary-text border-primary-text inline-flex items-center gap-1 rounded-full border bg-transparent px-2 py-0.5 text-xs">
                   <RobloxIcon className="h-3 w-3" />
-                  {user.roblox_username}
+                  Roblox
                 </span>
-              </div>
-            )}
+              )}
+            </div>
 
             {/* Additional Info */}
             <p className="text-secondary-text">Member #{user.usernumber}</p>

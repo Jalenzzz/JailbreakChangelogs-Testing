@@ -130,10 +130,10 @@ const StyledTabs = dynamic(
       const { styled } = await import('@mui/material/styles');
       return styled(TabsModule.default)(() => ({
         '& .MuiTabs-indicator': {
-          backgroundColor: '#5865F2',
+          backgroundColor: 'var(--color-button-info)',
         },
         '& .MuiTabs-scrollButtons': {
-          color: '#FFFFFF',
+          color: 'var(--color-primary-text)',
           '&.Mui-disabled': {
             opacity: 0.3,
           },
@@ -149,9 +149,9 @@ const StyledTab = dynamic(
       const { styled } = await import('@mui/material/styles');
       return styled(TabModule.default)(() => ({
         textTransform: 'none',
-        color: '#FFFFFF',
+        color: 'var(--color-primary-text)',
         '&.Mui-selected': {
-          color: '#D3D9D4',
+          color: 'var(--color-secondary-text)',
         },
       }));
     }),

@@ -26,9 +26,9 @@ export default function DiscordUserCard({ user, currentUserId }: DiscordUserCard
   if (isPrivate) {
     return (
       <div className="flex items-center space-x-3">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full border bg-[#1E2328]">
+        <div className="border-border-primary bg-tertiary-bg flex h-12 w-12 items-center justify-center rounded-full border">
           <svg
-            className="h-6 w-6 text-[#FFFFFF]"
+            className="text-primary-text h-6 w-6"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -42,10 +42,10 @@ export default function DiscordUserCard({ user, currentUserId }: DiscordUserCard
           </svg>
         </div>
         <div className="min-w-0 flex-1">
-          <h2 className="text-muted truncate text-base font-semibold transition-colors group-hover:text-[#5865F2]">
+          <h2 className="text-secondary-text group-hover:text-border-focus truncate text-base font-semibold transition-colors">
             Hidden User
           </h2>
-          <p className="truncate text-sm text-[#FFFFFF] transition-colors group-hover:text-[#5865F2]">
+          <p className="text-primary-text group-hover:text-border-focus truncate text-sm transition-colors">
             Private Profile
           </p>
         </div>
@@ -68,7 +68,7 @@ export default function DiscordUserCard({ user, currentUserId }: DiscordUserCard
       />
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1">
-          <h2 className="max-w-[180px] truncate text-base font-semibold text-[#FFFFFF] transition-colors group-hover:text-blue-300 sm:max-w-[250px]">
+          <h2 className="text-primary-text group-hover:text-border-focus max-w-[180px] truncate text-base font-semibold transition-colors sm:max-w-[250px]">
             {user.global_name && user.global_name !== 'None' ? user.global_name : user.username}
           </h2>
           {user.premiumtype ? (
@@ -79,15 +79,14 @@ export default function DiscordUserCard({ user, currentUserId }: DiscordUserCard
               slotProps={{
                 tooltip: {
                   sx: {
-                    backgroundColor: '#0F1419',
-                    color: '#D3D9D4',
+                    backgroundColor: 'var(--color-primary-bg)',
+                    color: 'var(--color-secondary-text)',
                     fontSize: '0.75rem',
                     padding: '8px 12px',
                     borderRadius: '8px',
-
                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                     '& .MuiTooltip-arrow': {
-                      color: '#0F1419',
+                      color: 'var(--color-primary-bg)',
                     },
                   },
                 },
@@ -102,7 +101,7 @@ export default function DiscordUserCard({ user, currentUserId }: DiscordUserCard
             </Tooltip>
           ) : null}
         </div>
-        <p className="max-w-[180px] truncate text-sm text-[#B9BBBE] transition-colors group-hover:text-blue-300 sm:max-w-[250px]">
+        <p className="text-secondary-text group-hover:text-border-focus max-w-[180px] truncate text-sm transition-colors sm:max-w-[250px]">
           @{user.username}
         </p>
       </div>

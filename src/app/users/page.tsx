@@ -17,10 +17,12 @@ export default async function UsersPage() {
         <Breadcrumb />
 
         <div className="mb-2 flex items-center gap-2">
-          <UserGroupIcon className="text-muted h-6 w-6" />
-          <h1 className="text-muted text-2xl font-bold">User Search</h1>
+          <UserGroupIcon className="text-secondary-text h-6 w-6" />
+          <h1 className="text-secondary-text text-2xl font-bold">User Search</h1>
         </div>
-        <p className="mb-6 text-sm text-[#FFFFFF]">Find users by their username or display name</p>
+        <p className="text-secondary-text mb-6 text-sm">
+          Find users by their username or display name
+        </p>
 
         <div className="mb-6">
           <OnlineUsers max={5} initial={online} />

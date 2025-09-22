@@ -111,16 +111,16 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
               setSearchQuery(e.target.value);
               setPage(1);
             }}
-            className="text-muted w-full rounded-lg border bg-[#37424D] px-4 py-2 pr-10 pl-10 placeholder-[#D3D9D4] focus:border-[#124E66] focus:outline-none"
+            className="text-primary-text border-stroke bg-secondary-bg placeholder-secondary-text focus:border-button-info w-full rounded-lg border px-4 py-2 pr-10 pl-10 transition-all duration-300 focus:outline-none"
           />
-          <MagnifyingGlassIcon className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]" />
+          <MagnifyingGlassIcon className="text-secondary-text absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
           {searchQuery && (
             <button
               onClick={() => {
                 setSearchQuery('');
                 setPage(1);
               }}
-              className="hover:text-muted absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]"
+              className="hover:text-primary-text text-secondary-text absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2"
               aria-label="Clear search"
             >
               <XMarkIcon />
@@ -136,7 +136,7 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
             setPage(1);
           }}
         />
-        <div className="text-muted flex items-center gap-2 text-sm">
+        <div className="text-secondary-text flex items-center gap-2 text-sm">
           <span>
             {(() => {
               const MAX_QUERY_DISPLAY = 32;
@@ -154,8 +154,8 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
       <div className="mb-2 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {currentUsers.length === 0 ? (
           <div className="col-span-full py-8 text-center">
-            <p className="text-muted text-lg">No users found</p>
-            <p className="mt-2 text-sm text-[#FFFFFF]">
+            <p className="text-secondary-text text-lg">No users found</p>
+            <p className="text-primary-text mt-2 text-sm">
               {(() => {
                 const MAX_QUERY_DISPLAY = 32;
                 const displayQuery =
@@ -193,10 +193,10 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
                     : `/users/${user.id}`
                 }
                 prefetch={false}
-                className={`block rounded-lg border p-4 shadow-md ${
+                className={`border-border-primary bg-secondary-bg block rounded-lg border p-4 shadow-md ${
                   user.settings?.profile_public === 0 && currentUserId !== user.id
                     ? 'cursor-not-allowed opacity-75'
-                    : 'group hover:border-blue-300'
+                    : 'group hover:border-border-focus'
                 } transition-colors`}
                 onClick={(e) => {
                   if (user.settings?.profile_public === 0 && currentUserId !== user.id) {
@@ -224,14 +224,20 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
             onChange={handlePageChange}
             sx={{
               '& .MuiPaginationItem-root': {
-                color: '#D3D9D4',
+                color: 'var(--color-primary-text)',
                 '&.Mui-selected': {
-                  backgroundColor: '#5865F2',
+                  backgroundColor: 'var(--color-button-info)',
+                  color: 'var(--color-form-button-text)',
                   '&:hover': {
-                    backgroundColor: '#4752C4',
+                    backgroundColor: 'var(--color-button-info-hover)',
                   },
                 },
-                '&:hover': {},
+                '&:hover': {
+                  backgroundColor: 'var(--color-quaternary-bg)',
+                },
+              },
+              '& .MuiPaginationItem-icon': {
+                color: 'var(--color-primary-text)',
               },
             }}
           />
