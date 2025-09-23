@@ -94,14 +94,14 @@ export default function UserProfileSection({
     }
 
     if (scanWebSocket.status === 'scanning' && !scanCompletedRef.current) {
-      if (scanWebSocket.message && scanWebSocket.message.includes('User found in game')) {
-        updateScanLoadingToast('User found in game - scan in progress!');
+      if (scanWebSocket.message && scanWebSocket.message.includes('User found')) {
+        updateScanLoadingToast('User found in game!');
       } else if (scanWebSocket.message && scanWebSocket.message.includes('Bot joined server')) {
         updateScanLoadingToast('Bot joined server, scanning...');
-      } else if (scanWebSocket.progress !== undefined) {
-        updateScanLoadingToast(`Scanning... ${scanWebSocket.progress}%`);
       } else if (scanWebSocket.message) {
         updateScanLoadingToast(`Scanning: ${scanWebSocket.message}`);
+      } else if (scanWebSocket.progress !== undefined) {
+        updateScanLoadingToast(`Scanning... ${scanWebSocket.progress}%`);
       }
     }
 
@@ -285,14 +285,10 @@ export default function UserProfileSection({
             <button
               onClick={scanWebSocket.startScan}
               disabled={
-                scanWebSocket.status === 'scanning' ||
-                scanWebSocket.status === 'connecting' ||
-                scanWebSocket.isSlowmode
+                scanWebSocket.status === 'scanning' || scanWebSocket.status === 'connecting'
               }
               className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                scanWebSocket.status === 'scanning' ||
-                scanWebSocket.status === 'connecting' ||
-                scanWebSocket.isSlowmode
+                scanWebSocket.status === 'scanning' || scanWebSocket.status === 'connecting'
                   ? 'bg-button-info-disabled text-form-button-text border-button-info-disabled cursor-progress'
                   : 'bg-button-info text-form-button-text hover:bg-button-info-hover cursor-pointer'
               }`}
@@ -315,18 +311,6 @@ export default function UserProfileSection({
                     />
                   </svg>
                   Connecting...
-                </>
-              ) : scanWebSocket.isSlowmode ? (
-                <>
-                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  Cooldown ({scanWebSocket.slowmodeTimeLeft}s)
                 </>
               ) : scanWebSocket.status === 'scanning' ? (
                 <>
