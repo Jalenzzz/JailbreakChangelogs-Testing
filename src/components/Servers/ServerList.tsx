@@ -231,44 +231,104 @@ const ServerList: React.FC = () => {
       <div>
         <div className="mb-4 flex items-center justify-between px-4 lg:px-0">
           <div className="flex items-center space-x-2">
-            <ShieldCheckIcon className="h-5 w-5 text-[#5865F2]" />
-            <Skeleton variant="text" width={120} height={24} sx={{ bgcolor: '#37424D' }} />
+            <ShieldCheckIcon className="text-button-info h-5 w-5" />
+            <Skeleton
+              variant="text"
+              width={120}
+              height={24}
+              sx={{ bgcolor: 'var(--color-secondary-bg)' }}
+            />
           </div>
-          <Skeleton variant="rounded" width={120} height={40} sx={{ bgcolor: '#37424D' }} />
+          <Skeleton
+            variant="rounded"
+            width={120}
+            height={40}
+            sx={{ bgcolor: 'var(--color-secondary-bg)' }}
+          />
         </div>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="rounded-lg border p-4 sm:p-6">
+            <div key={i} className="border-stroke bg-secondary-bg rounded-lg border p-4 sm:p-6">
               <div className="mb-4 flex flex-col gap-3">
                 <div className="flex items-center space-x-2">
-                  <ShieldCheckIcon className="h-5 w-5 text-[#5865F2]" />
-                  <Skeleton variant="text" width={80} height={24} sx={{ bgcolor: '#37424D' }} />
+                  <ShieldCheckIcon className="text-button-info h-5 w-5" />
+                  <Skeleton
+                    variant="text"
+                    width={80}
+                    height={24}
+                    sx={{ bgcolor: 'var(--color-secondary-bg)' }}
+                  />
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <Skeleton variant="rounded" width={32} height={32} sx={{ bgcolor: '#37424D' }} />
-                  <Skeleton variant="rounded" width={32} height={32} sx={{ bgcolor: '#37424D' }} />
-                  <Skeleton variant="rounded" width={80} height={32} sx={{ bgcolor: '#37424D' }} />
+                  <Skeleton
+                    variant="rounded"
+                    width={32}
+                    height={32}
+                    sx={{ bgcolor: 'var(--color-secondary-bg)' }}
+                  />
+                  <Skeleton
+                    variant="rounded"
+                    width={32}
+                    height={32}
+                    sx={{ bgcolor: 'var(--color-secondary-bg)' }}
+                  />
+                  <Skeleton
+                    variant="rounded"
+                    width={80}
+                    height={32}
+                    sx={{ bgcolor: 'var(--color-secondary-bg)' }}
+                  />
                 </div>
               </div>
 
               <div className="space-y-3 sm:space-y-4">
                 <div className="flex items-center space-x-2">
-                  <UserIcon className="h-5 w-5 text-[#FFFFFF]" />
-                  <Skeleton variant="text" width={160} height={20} sx={{ bgcolor: '#37424D' }} />
+                  <UserIcon className="text-secondary-text h-5 w-5" />
+                  <Skeleton
+                    variant="text"
+                    width={160}
+                    height={20}
+                    sx={{ bgcolor: 'var(--color-secondary-bg)' }}
+                  />
                 </div>
 
                 <div className="flex items-center space-x-2">
-                  <ClockIcon className="h-5 w-5 text-[#FFFFFF]" />
-                  <Skeleton variant="text" width={120} height={20} sx={{ bgcolor: '#37424D' }} />
+                  <ClockIcon className="text-secondary-text h-5 w-5" />
+                  <Skeleton
+                    variant="text"
+                    width={120}
+                    height={20}
+                    sx={{ bgcolor: 'var(--color-secondary-bg)' }}
+                  />
                 </div>
 
-                <div className="rounded-lg border bg-[#37424D] p-3 sm:p-4">
-                  <Skeleton variant="text" width={100} height={24} sx={{ bgcolor: '#1E2328' }} />
+                <div className="border-stroke bg-primary-bg rounded-lg border p-3 sm:p-4">
+                  <Skeleton
+                    variant="text"
+                    width={100}
+                    height={24}
+                    sx={{ bgcolor: 'var(--color-primary-bg)' }}
+                  />
                   <div className="mt-2 space-y-2">
-                    <Skeleton variant="text" width="100%" height={16} sx={{ bgcolor: '#1E2328' }} />
-                    <Skeleton variant="text" width="90%" height={16} sx={{ bgcolor: '#1E2328' }} />
-                    <Skeleton variant="text" width="80%" height={16} sx={{ bgcolor: '#1E2328' }} />
+                    <Skeleton
+                      variant="text"
+                      width="100%"
+                      height={16}
+                      sx={{ bgcolor: 'var(--color-primary-bg)' }}
+                    />
+                    <Skeleton
+                      variant="text"
+                      width="90%"
+                      height={16}
+                      sx={{ bgcolor: 'var(--color-primary-bg)' }}
+                    />
+                    <Skeleton
+                      variant="text"
+                      width="80%"
+                      height={16}
+                      sx={{ bgcolor: 'var(--color-primary-bg)' }}
+                    />
                   </div>
                 </div>
               </div>
@@ -281,7 +341,7 @@ const ServerList: React.FC = () => {
 
   if (error) {
     return (
-      <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-4 text-red-500">
+      <div className="border-button-danger bg-button-danger/10 text-button-danger rounded-lg border p-4">
         {error}
       </div>
     );
@@ -289,10 +349,10 @@ const ServerList: React.FC = () => {
 
   if (servers.length === 0) {
     return (
-      <div className="rounded-lg border p-8 text-center">
-        <ShieldCheckIcon className="mx-auto mb-4 h-12 w-12 text-[#5865F2]" />
-        <h3 className="text-muted mb-2 text-xl font-semibold">No servers available</h3>
-        <p className="text-[#FFFFFF]">You can add a server or check back later</p>
+      <div className="border-stroke bg-secondary-bg rounded-lg border p-8 text-center">
+        <ShieldCheckIcon className="text-button-info mx-auto mb-4 h-12 w-12" />
+        <h3 className="text-primary-text mb-2 text-xl font-semibold">No servers available</h3>
+        <p className="text-secondary-text">You can add a server or check back later</p>
       </div>
     );
   }
@@ -301,8 +361,8 @@ const ServerList: React.FC = () => {
     <div>
       <div className="mb-4 flex flex-col gap-2 px-4 sm:flex-row sm:items-center sm:justify-between lg:px-0">
         <div className="flex items-center space-x-2">
-          <ShieldCheckIcon className="h-5 w-5 text-[#5865F2]" />
-          <span className="text-muted">
+          <ShieldCheckIcon className="text-button-info h-5 w-5" />
+          <span className="text-secondary-text">
             {servers.length > 0
               ? `Showing ${Math.min(itemsPerPage, servers.length - startIndex)} of ${servers.length} servers`
               : 'Total Servers: 0'}
@@ -310,7 +370,7 @@ const ServerList: React.FC = () => {
         </div>
         <button
           onClick={handleAddServer}
-          className="text-muted inline-flex items-center rounded-lg border border-[#5865F2] bg-[#2B2F4C] px-4 py-2 transition-colors hover:bg-[#32365A]"
+          className="text-form-button-text border-button-info bg-button-info hover:bg-button-info-hover inline-flex cursor-pointer items-center rounded-lg border px-4 py-2 transition-colors"
         >
           <PlusCircleIcon className="mr-2 h-5 w-5" />
           Add Server
@@ -319,32 +379,35 @@ const ServerList: React.FC = () => {
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {currentServers.map((server, index) => (
-          <div key={server.id} className="rounded-lg border p-4 sm:p-6">
+          <div
+            key={server.id}
+            className="border-stroke bg-secondary-bg rounded-lg border p-4 sm:p-6"
+          >
             <div className="mb-4 flex flex-col gap-3">
               <div className="flex items-center space-x-2">
-                <ShieldCheckIcon className="h-5 w-5 text-[#5865F2]" />
-                <span className="text-muted">Server #{startIndex + index + 1}</span>
+                <ShieldCheckIcon className="text-button-info h-5 w-5" />
+                <span className="text-secondary-text">Server #{startIndex + index + 1}</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {loggedInUserId && loggedInUserId === server.owner ? (
                   <>
                     <button
                       onClick={() => handleCopyLink(server.link)}
-                      className="text-muted rounded-lg border border-[#5865F2] bg-[#2B2F4C] px-2 py-1 text-sm transition-colors hover:bg-[#32365A] sm:px-3"
+                      className="text-form-button-text border-button-info bg-button-info hover:bg-button-info-hover cursor-pointer rounded-lg border px-2 py-1 text-sm transition-colors sm:px-3"
                       aria-label="Copy Server Link"
                     >
                       <ClipboardIcon className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => handleEditServer(server)}
-                      className="rounded-lg border border-[#FFD93D] bg-[#3C392B] px-2 py-1 text-sm text-[#FFD93D] transition-colors hover:bg-[#4A4530] sm:px-3"
+                      className="border-button-warning bg-button-warning text-form-button-text hover:bg-button-warning-hover rounded-lg border px-2 py-1 text-sm transition-colors sm:px-3"
                       aria-label="Edit Server"
                     >
                       <PencilIcon className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => handleDeleteServer(server)}
-                      className="rounded-lg border border-[#FF6B6B] bg-[#3C2B2B] px-2 py-1 text-sm text-[#FF6B6B] transition-colors hover:bg-[#4A3030] sm:px-3"
+                      className="border-button-danger bg-button-danger text-form-button-text hover:bg-button-danger-hover rounded-lg border px-2 py-1 text-sm transition-colors sm:px-3"
                       aria-label="Delete Server"
                     >
                       <TrashIcon className="h-4 w-4" />
@@ -353,7 +416,7 @@ const ServerList: React.FC = () => {
                       href={server.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-muted rounded-lg border border-[#5865F2] bg-[#2B2F4C] px-2 py-1 text-sm transition-colors hover:bg-[#32365A] sm:px-3"
+                      className="text-form-button-text border-button-info bg-button-info hover:bg-button-info-hover cursor-pointer rounded-lg border px-2 py-1 text-sm transition-colors sm:px-3"
                     >
                       Join Server
                     </a>
@@ -362,7 +425,7 @@ const ServerList: React.FC = () => {
                   <>
                     <button
                       onClick={() => handleCopyLink(server.link)}
-                      className="text-muted rounded-lg border border-[#5865F2] bg-[#2B2F4C] px-2 py-1 text-sm transition-colors hover:bg-[#32365A] sm:px-3"
+                      className="text-form-button-text border-button-info bg-button-info hover:bg-button-info-hover cursor-pointer rounded-lg border px-2 py-1 text-sm transition-colors sm:px-3"
                       aria-label="Copy Server Link"
                     >
                       <ClipboardIcon className="h-4 w-4" />
@@ -371,7 +434,7 @@ const ServerList: React.FC = () => {
                       href={server.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-muted rounded-lg border border-[#5865F2] bg-[#2B2F4C] px-2 py-1 text-sm transition-colors hover:bg-[#32365A] sm:px-3"
+                      className="text-form-button-text border-button-info bg-button-info hover:bg-button-info-hover cursor-pointer rounded-lg border px-2 py-1 text-sm transition-colors sm:px-3"
                     >
                       Join Server
                     </a>
@@ -382,7 +445,7 @@ const ServerList: React.FC = () => {
 
             <div className="space-y-3 sm:space-y-4">
               <div className="flex items-center space-x-2">
-                <UserIcon className="h-5 w-5 flex-shrink-0 text-[#FFFFFF]" />
+                <UserIcon className="text-secondary-text h-5 w-5 flex-shrink-0" />
                 {userData[server.owner] && (
                   <UserAvatar
                     userId={userData[server.owner].id}
@@ -396,7 +459,7 @@ const ServerList: React.FC = () => {
                     premiumType={userData[server.owner].premiumtype}
                   />
                 )}
-                <span className="text-muted text-sm sm:text-base">
+                <span className="text-secondary-text text-sm sm:text-base">
                   Owner:{' '}
                   {userData[server.owner] ? (
                     <Tooltip
@@ -406,13 +469,13 @@ const ServerList: React.FC = () => {
                       slotProps={{
                         tooltip: {
                           sx: {
-                            bgcolor: '#1A2228',
+                            bgcolor: 'var(--color-secondary-bg)',
 
                             maxWidth: '400px',
                             width: 'auto',
                             minWidth: '300px',
                             '& .MuiTooltip-arrow': {
-                              color: '#1A2228',
+                              color: 'var(--color-secondary-bg)',
                             },
                           },
                         },
@@ -420,7 +483,7 @@ const ServerList: React.FC = () => {
                     >
                       <Link
                         href={`/users/${server.owner}`}
-                        className="text-blue-300 hover:text-blue-400 hover:underline"
+                        className="text-link hover:text-link-hover hover:underline"
                       >
                         @{userData[server.owner].username}
                       </Link>
@@ -432,16 +495,16 @@ const ServerList: React.FC = () => {
               </div>
 
               <div className="flex items-center space-x-2">
-                <ClockIcon className="h-5 w-5 text-[#FFFFFF]" />
-                <span className="text-muted text-sm sm:text-base">
+                <ClockIcon className="text-secondary-text h-5 w-5" />
+                <span className="text-secondary-text text-sm sm:text-base">
                   Created: {formatProfileDate(server.created_at)} • Expires:{' '}
                   {server.expires === 'Never' ? 'Never' : formatProfileDate(server.expires)}
                 </span>
               </div>
 
-              <div className="rounded-lg border bg-[#37424D] p-3 sm:p-4">
-                <h3 className="text-muted mb-2 text-sm font-semibold">Server Rules</h3>
-                <p className="text-xs break-words whitespace-pre-wrap text-[#FFFFFF] sm:text-sm">
+              <div className="border-stroke bg-primary-bg rounded-lg border p-3 sm:p-4">
+                <h3 className="text-primary-text mb-2 text-sm font-semibold">Server Rules</h3>
+                <p className="text-secondary-text text-xs break-words whitespace-pre-wrap sm:text-sm">
                   {server.rules === 'N/A' ? 'No Rules set by owner' : server.rules}
                 </p>
               </div>
@@ -458,14 +521,20 @@ const ServerList: React.FC = () => {
             onChange={handlePageChange}
             sx={{
               '& .MuiPaginationItem-root': {
-                color: '#D3D9D4',
+                color: 'var(--color-primary-text)',
                 '&.Mui-selected': {
-                  backgroundColor: '#5865F2',
+                  backgroundColor: 'var(--color-button-info)',
+                  color: 'var(--color-form-button-text)',
                   '&:hover': {
-                    backgroundColor: '#4752C4',
+                    backgroundColor: 'var(--color-button-info-hover)',
                   },
                 },
-                '&:hover': {},
+                '&:hover': {
+                  backgroundColor: 'var(--color-quaternary-bg)',
+                },
+              },
+              '& .MuiPaginationItem-icon': {
+                color: 'var(--color-primary-text)',
               },
             }}
           />

@@ -18,10 +18,10 @@ const StyledTabs = styled(Tabs)(() => ({
     justifyContent: 'center',
   },
   '& .MuiTabs-indicator': {
-    backgroundColor: '#5865F2',
+    backgroundColor: 'var(--color-button-info)',
   },
   '& .MuiTabs-scrollButtons': {
-    color: '#FFFFFF',
+    color: 'var(--color-primary-text)',
     '&.Mui-disabled': {
       opacity: 0.3,
     },
@@ -30,11 +30,11 @@ const StyledTabs = styled(Tabs)(() => ({
 
 const StyledTab = styled(Tab)(() => ({
   textTransform: 'none',
-  color: '#FFFFFF',
+  color: 'var(--color-secondary-text)',
   fontSize: '0.875rem',
   fontWeight: 500,
   '&.Mui-selected': {
-    color: '#D3D9D4',
+    color: 'var(--color-primary-text)',
   },
 }));
 
@@ -165,11 +165,11 @@ export default function ContributorsClient({ usersWithFlags }: ContributorsClien
       <div className="mt-4">
         <Link
           href={`/users/${user.id}`}
-          className="text-lg font-bold text-blue-300 hover:text-blue-200"
+          className="text-link hover:text-link-hover text-lg font-bold"
         >
           {user.global_name && user.global_name !== 'None' ? user.global_name : user.username}
         </Link>
-        <div className="mt-1 text-sm text-gray-300">{role}</div>
+        <div className="text-secondary-text mt-1 text-sm">{role}</div>
       </div>
     </div>
   );
@@ -178,7 +178,7 @@ export default function ContributorsClient({ usersWithFlags }: ContributorsClien
     <div key={contrib.key} className="mb-8 flex flex-col items-center text-center">
       <a href={contrib.link} target="_blank" rel="noopener noreferrer">
         <div
-          className="relative flex-shrink-0 overflow-hidden rounded-full border-4 border-[#124e66]"
+          className="border-button-info relative flex-shrink-0 overflow-hidden rounded-full border-4"
           style={{
             width: 128,
             height: 128,
@@ -200,11 +200,11 @@ export default function ContributorsClient({ usersWithFlags }: ContributorsClien
           href={contrib.link}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-lg font-bold text-blue-300 hover:text-blue-200"
+          className="text-link hover:text-link-hover text-lg font-bold"
         >
           {contrib.name}
         </a>
-        <div className="mt-1 text-sm text-gray-300">{contrib.role}</div>
+        <div className="text-secondary-text mt-1 text-sm">{contrib.role}</div>
       </div>
     </div>
   );
@@ -258,9 +258,9 @@ export default function ContributorsClient({ usersWithFlags }: ContributorsClien
   };
 
   return (
-    <div className="container mx-auto px-4 py-16">
-      <h1 className="mb-12 text-center text-4xl font-bold text-white">
-        Meet the <span className="text-blue-300 underline">team</span>
+    <div className="text-primary-text container mx-auto px-4 py-16">
+      <h1 className="text-primary-text mb-12 text-center text-4xl font-bold">
+        Meet the <span className="text-link underline">team</span>
       </h1>
 
       <Box sx={{ width: '100%' }}>
