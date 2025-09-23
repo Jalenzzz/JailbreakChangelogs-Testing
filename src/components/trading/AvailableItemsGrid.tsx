@@ -391,7 +391,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
                       isSelected
                         ? 'bg-button-info text-form-button-text'
                         : isFocused
-                          ? 'bg-primary-bg text-primary-text'
+                          ? 'bg-quaternary-bg text-primary-text'
                           : 'bg-secondary-bg text-secondary-text'
                     }`,
                   clearIndicator: () =>
@@ -514,7 +514,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
                       isSelected
                         ? 'bg-button-info text-form-button-text'
                         : isFocused
-                          ? 'bg-primary-bg text-primary-text'
+                          ? 'bg-quaternary-bg text-primary-text'
                           : 'bg-secondary-bg text-secondary-text'
                     }`,
                   clearIndicator: () =>

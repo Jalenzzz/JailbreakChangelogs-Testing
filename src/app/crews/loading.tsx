@@ -2,7 +2,7 @@ import Breadcrumb from '@/components/Layout/Breadcrumb';
 
 export default function Loading() {
   return (
-    <div className="min-h-screen text-white">
+    <div className="text-primary-text min-h-screen">
       <div className="container mx-auto px-4 py-8">
         <div className="mx-auto max-w-6xl">
           <Breadcrumb loading={true} />
@@ -19,7 +19,7 @@ export default function Loading() {
           {/* Crew Leaderboard skeleton */}
           <div className="mt-8">
             <div className="bg-secondary-bg mb-4 h-6 w-48 animate-pulse rounded"></div>
-            <div className="rounded-lg border p-4 shadow-sm">
+            <div className="border-stroke bg-secondary-bg rounded-lg border p-4 shadow-sm">
               <div className="max-h-[48rem] space-y-3 overflow-y-auto pr-2">
                 {Array.from({ length: 10 }).map((_, index) => (
                   <div
