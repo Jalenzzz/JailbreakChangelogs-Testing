@@ -14,12 +14,14 @@ export default async function MoneyLeaderboardPage() {
 
       <div className="mb-8">
         <div className="flex items-center gap-3">
-          <h1 className="text-3xl font-bold text-gray-200">Money Leaderboard</h1>
-          <span className="rounded bg-[#5865F2] px-2 py-1 text-xs font-semibold text-white uppercase">
+          <h1 className="text-primary-text text-3xl font-bold">Money Leaderboard</h1>
+          <span className="bg-button-info text-form-button-text rounded px-2 py-1 text-xs font-semibold uppercase">
             New
           </span>
         </div>
-        <p className="mt-2 text-gray-400">Top players ranked by their total money in Jailbreak</p>
+        <p className="text-secondary-text mt-2">
+          Top players ranked by their total money in Jailbreak
+        </p>
       </div>
 
       <MoneyLeaderboardClient initialLeaderboard={leaderboard} />

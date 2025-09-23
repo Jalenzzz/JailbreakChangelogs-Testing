@@ -9,7 +9,6 @@ import { RobloxUser, Item } from '@/types';
 import { InventoryData, InventoryItem, UserConnectionData } from './types';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { Season } from '@/types/seasons';
-import { useScanWebSocket } from '@/hooks/useScanWebSocket';
 import toast from 'react-hot-toast';
 import SearchForm from '@/components/Inventory/SearchForm';
 import UserStats from '@/components/Inventory/UserStats';
@@ -61,7 +60,6 @@ export default function InventoryCheckerClient({
 
   // Auth context and scan functionality
   const { user, isAuthenticated } = useAuthContext();
-  const scanWebSocket = useScanWebSocket(robloxId || '');
 
   // Check if current user is viewing their own inventory
   const isOwnInventory = isAuthenticated && user?.roblox_id === robloxId;
@@ -457,7 +455,7 @@ export default function InventoryCheckerClient({
         />
 
         {/* Loading Skeleton for User Data */}
-        <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6 shadow-sm">
+        <div className="rounded-lg border p-6 shadow-sm">
           <div className="animate-pulse space-y-4">
             <div className="flex items-center gap-4">
               <div className="h-16 w-16 rounded-full bg-gray-600"></div>
@@ -493,173 +491,25 @@ export default function InventoryCheckerClient({
 
       {/* Error Display */}
       {error && !initialData && (
-        <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6 shadow-sm">
+        <div className="border-border-primary bg-secondary-bg shadow-card-shadow rounded-lg border p-6">
           <div className="text-center">
             <div className="mb-4 flex justify-center">
-              <div className="rounded-full bg-red-500/10 p-3">
-                <ExclamationTriangleIcon className="h-8 w-8 text-red-400" />
+              <div className="bg-status-error/10 rounded-full p-3">
+                <ExclamationTriangleIcon className="text-status-error h-8 w-8" />
               </div>
             </div>
-            <h3 className="mb-2 text-lg font-semibold text-red-400">
+            <h3 className="text-status-error mb-2 text-lg font-semibold">
               Unable to Fetch Inventory Data
             </h3>
-            <p className="mb-4 break-words text-gray-300">{error}</p>
+            <p className="text-secondary-text mb-4 break-words">{error}</p>
 
-            {/* Show scan request button if it's the user's own inventory */}
-            {isOwnInventory ? (
-              <div className="mt-4">
-                <button
-                  onClick={() => scanWebSocket.startScan()}
-                  disabled={
-                    scanWebSocket.status === 'scanning' ||
-                    scanWebSocket.status === 'connecting' ||
-                    scanWebSocket.isSlowmode
-                  }
-                  className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                    scanWebSocket.status === 'scanning' ||
-                    scanWebSocket.status === 'connecting' ||
-                    scanWebSocket.isSlowmode
-                      ? 'cursor-progress bg-gray-600 text-gray-400'
-                      : 'bg-green-600 text-white hover:bg-green-700'
-                  }`}
-                >
-                  {scanWebSocket.status === 'connecting' ? (
-                    <>
-                      <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        />
-                      </svg>
-                      Connecting...
-                    </>
-                  ) : scanWebSocket.isSlowmode ? (
-                    <>
-                      <svg
-                        className="h-4 w-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                      Cooldown ({scanWebSocket.slowmodeTimeLeft}s)
-                    </>
-                  ) : scanWebSocket.status === 'scanning' ? (
-                    <>
-                      <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        />
-                      </svg>
-                      {scanWebSocket.message && scanWebSocket.message.includes('Bot joined server')
-                        ? 'Scanning...'
-                        : scanWebSocket.message && scanWebSocket.message.includes('Retrying')
-                          ? 'Retrying...'
-                          : scanWebSocket.message &&
-                              scanWebSocket.message.includes('You will be scanned when you join')
-                            ? 'Processing...'
-                            : scanWebSocket.message || 'Processing...'}
-                    </>
-                  ) : scanWebSocket.status === 'completed' ? (
-                    <>
-                      <svg
-                        className="h-4 w-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                      Scan Complete
-                    </>
-                  ) : (
-                    <>
-                      <svg
-                        className="h-4 w-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                      Scan Inventory
-                    </>
-                  )}
-                </button>
-
-                {/* Progress Bar - Only show when progress is defined and scanning */}
-                {scanWebSocket.progress !== undefined && scanWebSocket.status === 'scanning' && (
-                  <div className="mt-2">
-                    <div className="mb-1 flex justify-between text-xs text-gray-400">
-                      <span>Progress</span>
-                      <span>{scanWebSocket.progress}%</span>
-                    </div>
-                    <div className="h-2 w-full rounded-full bg-gray-700">
-                      <div
-                        className="h-2 rounded-full bg-green-600 transition-all duration-300"
-                        style={{ width: `${scanWebSocket.progress}%` }}
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {/* OR section with alternative option */}
-                <div className="mt-4 flex items-center">
-                  <div className="flex-1 border-t border-gray-600"></div>
-                  <span className="mx-4 text-sm text-gray-400">OR</span>
-                  <div className="flex-1 border-t border-gray-600"></div>
-                </div>
-
-                <div className="mt-4 text-center">
-                  <p className="text-sm font-medium text-white">Wait for an automatic scan</p>
-                  <p className="mt-1 text-xs text-gray-400">
-                    Join any trading server and our bots will automatically scan you when they join.
-                    No manual request needed.
-                  </p>
-                </div>
-              </div>
-            ) : (
-              /* Show login prompt for potential profile owner */
-              <div className="mt-4 rounded-lg bg-[#2E3944] p-4">
-                <p className="text-muted mb-1 text-sm font-medium">
+            {/* Show login prompt for potential profile owner */}
+            {!isOwnInventory && (
+              <div className="border-border-primary bg-secondary-bg shadow-card-shadow mt-4 rounded-lg border p-4">
+                <p className="text-primary-text mb-1 text-sm font-medium">
                   Are you the owner of this profile?
                 </p>
-                <p className="text-sm text-[#FFFFFF]">
+                <p className="text-secondary-text text-sm">
                   Login to request an inventory scan. Your inventory will be automatically scanned
                   when you join a trading server.
                 </p>

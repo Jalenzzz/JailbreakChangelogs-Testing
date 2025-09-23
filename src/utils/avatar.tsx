@@ -97,7 +97,7 @@ const BadgeWrapper = ({
               fontSize: '0.75rem',
               padding: '8px 12px',
               borderRadius: '8px',
-              border: '1px solid #2E3944',
+
               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
               '& .MuiTooltip-arrow': {
                 color: '#0F1419',
@@ -107,7 +107,7 @@ const BadgeWrapper = ({
         }}
       >
         <div
-          className={`absolute right-0 bottom-0 h-4 w-4 translate-x-1 translate-y-1 transform cursor-help rounded-full border-2 border-[#212A31] ${
+          className={`absolute right-0 bottom-0 h-4 w-4 translate-x-1 translate-y-1 transform cursor-help rounded-full border-2 ${
             isOnline ? 'bg-[#44b700]' : 'bg-[#bdbdbd]'
           }`}
         />
@@ -199,7 +199,7 @@ export const UserAvatar = ({
         isHidden={settings?.hide_presence === 1}
       >
         <div
-          className={`relative ${finalShape === 'circle' ? 'rounded-full' : finalShape === 'square' && premiumType === 3 ? 'rounded-sm' : finalShape === 'square' ? 'rounded-lg' : 'rounded-full'} flex-shrink-0 overflow-hidden`}
+          className={`relative ${finalShape === 'circle' ? 'rounded-full' : finalShape === 'square' && premiumType === 3 ? 'rounded-sm' : finalShape === 'square' ? 'rounded-lg' : 'rounded-full'} bg-primary-bg flex-shrink-0 overflow-hidden`}
           style={{
             ...borderStyle,
             width: size * 4,
@@ -208,7 +208,7 @@ export const UserAvatar = ({
             minHeight: size * 4,
           }}
         >
-          <div className="flex h-full w-full items-center justify-center bg-[#2E3944]">
+          <div className="flex h-full w-full items-center justify-center">
             <DefaultAvatar />
           </div>
         </div>
@@ -223,7 +223,7 @@ export const UserAvatar = ({
       isHidden={settings?.hide_presence === 1}
     >
       <div
-        className={`relative ${finalShape === 'circle' ? 'rounded-full' : finalShape === 'square' && premiumType === 3 ? 'rounded-sm' : finalShape === 'square' ? 'rounded-lg' : 'rounded-full'} flex-shrink-0 overflow-hidden`}
+        className={`relative ${finalShape === 'circle' ? 'rounded-full' : finalShape === 'square' && premiumType === 3 ? 'rounded-sm' : finalShape === 'square' ? 'rounded-lg' : 'rounded-full'} bg-primary-bg flex-shrink-0 overflow-hidden`}
         style={{
           ...borderStyle,
           width: size * 4,
@@ -233,11 +233,11 @@ export const UserAvatar = ({
         }}
       >
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-[#2E3944]">
+          <div className="absolute inset-0 flex items-center justify-center">
             <CircularProgress size={24} sx={{ color: '#5865F2' }} />
           </div>
         )}
-        <div className="absolute inset-0 bg-[#212A31]">
+        <div className="absolute inset-0">
           <Image
             src={avatarSource.src}
             alt={avatarSource.alt}

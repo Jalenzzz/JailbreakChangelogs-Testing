@@ -368,11 +368,11 @@ export default function DupeFinderResults({
         {currentUserPremiumType === 0 && (
           <div className="flex flex-col lg:col-span-1">
             <div
-              className="relative h-full overflow-hidden rounded-lg border border-[#2E3944] bg-[#1a2127] shadow transition-all duration-300"
+              className="border-border-primary bg-secondary-bg relative h-full overflow-hidden rounded-lg border shadow transition-all duration-300"
               style={{ minHeight: '250px' }}
             >
-              <span className="text-muted absolute top-2 left-2 z-10 rounded bg-[#212A31] px-2 py-0.5 text-xs">
-                Advertisement
+              <span className="text-secondary-text border-border-primary bg-primary-bg absolute top-2 left-2 z-10 rounded border px-2 py-0.5 text-xs">
+                Ad
               </span>
               <DisplayAd
                 adSlot="9566904102"
@@ -398,14 +398,14 @@ export default function DupeFinderResults({
       />
 
       {/* Items Grid */}
-      <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6 shadow-sm">
-        <h2 className="text-muted mb-4 text-xl font-semibold">Duplicate Items</h2>
+      <div className="border-border-primary bg-secondary-bg shadow-card-shadow rounded-lg border p-6">
+        <h2 className="text-primary-text mb-4 text-xl font-semibold">Duplicate Items</h2>
 
         {/* Pro Tip - Only show when there are results */}
         {sortedData.length > 0 && (
-          <div className="mb-4 rounded-lg border border-[#5865F2] bg-[#5865F2]/10 p-3">
-            <div className="flex items-center gap-2 text-sm text-[#FFFFFF]">
-              <span className="text-[#5865F2]">💡</span>
+          <div className="border-button-info bg-button-info/10 mb-4 rounded-lg border p-3">
+            <div className="text-primary-text flex items-center gap-2 text-sm">
+              <span className="text-button-info">💡</span>
               <span className="font-medium">Pro Tip:</span>
               <span>Click on any item card to view its trading history.</span>
             </div>

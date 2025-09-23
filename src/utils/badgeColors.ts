@@ -7,7 +7,7 @@ export const getItemTypeColor = (type: string): string => {
 
   switch (normalizedType) {
     case 'Vehicle':
-      return '#c82c2c';
+      return 'hsl(0, 64%, 48%)';
     case 'Spoiler':
       return '#8B5A00';
     case 'Rim':

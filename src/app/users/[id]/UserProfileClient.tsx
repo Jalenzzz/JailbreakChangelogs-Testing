@@ -25,7 +25,8 @@ const UserBadges = dynamic(
     loading: () => <div className="h-6 w-6" />, // Placeholder with same size as lg badge
   },
 );
-import { formatRelativeDate, formatShortDate, formatCustomDate } from '@/utils/timestamp';
+import { formatShortDate, formatCustomDate } from '@/utils/timestamp';
+import { useOptimizedRealTimeRelativeDate } from '@/hooks/useSharedTimer';
 import ProfileTabs from '@/components/Profile/ProfileTabs';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { DiscordIcon } from '@/components/Icons/DiscordIcon';
@@ -82,7 +83,7 @@ const LinSuperIdol = ({ userId }: { userId: string }) => {
     <div className="fixed right-4 bottom-4 z-50">
       <button
         onClick={handlePlayClick}
-        className="group rounded-full bg-white/10 p-3 text-white/80 shadow-lg backdrop-blur-sm transition-all duration-300 hover:bg-white/20 hover:text-white"
+        className="group bg-secondary-bg/80 text-primary-text/80 hover:bg-secondary-bg hover:text-primary-text rounded-full p-3 shadow-lg backdrop-blur-sm transition-all duration-300"
         title="Lin is a super idol"
       >
         <BsMusicNoteBeamed className="text-xl opacity-60 transition-opacity duration-300 group-hover:opacity-100" />
@@ -248,6 +249,12 @@ export default function UserProfileClient({
   );
   const [tradeAds] = useState<TradeAd[]>(initialData?.tradeAds || []);
 
+  // Use realtime relative date for last seen timestamp
+  const lastSeenTime = useOptimizedRealTimeRelativeDate(
+    user?.last_seen,
+    `user-last-seen-${user?.id || 'unknown'}`,
+  );
+
   const refreshBio = async (newBio: string) => {
     setBio(newBio);
     setBioLastUpdated(Date.now());
@@ -345,93 +352,48 @@ export default function UserProfileClient({
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[#2E3944]">
+      <main className="min-h-screen">
         <div className="container mx-auto mb-8 max-w-7xl">
           <Breadcrumb loading={true} />
-          <div className="overflow-hidden rounded-lg border border-[#2E3944] bg-[#212A31] shadow-md">
+          <div className="border-border-primary overflow-hidden rounded-lg border shadow-md">
             {/* Banner skeleton */}
-            <Skeleton variant="rectangular" height={256} sx={{ bgcolor: '#2E3944' }} />
+            <Skeleton variant="rectangular" height={256} />
 
             {/* Profile Content skeleton */}
             <div className="p-3 sm:p-4 md:p-6">
               <div className="flex flex-col items-center gap-3 md:flex-row md:items-start md:gap-6">
                 {/* Avatar skeleton */}
                 <div className="relative -mt-16 md:-mt-24">
-                  <Skeleton variant="circular" width={96} height={96} sx={{ bgcolor: '#2E3944' }} />
+                  <Skeleton variant="circular" width={96} height={96} />
                 </div>
 
                 <div className="w-full flex-1 text-center md:text-left">
                   <div className="flex flex-col items-center justify-between md:flex-row md:items-start">
                     <div>
                       {/* Username skeleton */}
-                      <Skeleton
-                        variant="text"
-                        width={160}
-                        height={28}
-                        sx={{ bgcolor: '#2E3944' }}
-                      />
+                      <Skeleton variant="text" width={160} height={28} />
                       {/* Handle skeleton */}
-                      <Skeleton
-                        variant="text"
-                        width={128}
-                        height={16}
-                        sx={{ bgcolor: '#2E3944' }}
-                      />
+                      <Skeleton variant="text" width={128} height={16} />
                       {/* Last seen skeleton */}
-                      <Skeleton
-                        variant="text"
-                        width={192}
-                        height={12}
-                        sx={{ bgcolor: '#2E3944' }}
-                      />
+                      <Skeleton variant="text" width={192} height={12} />
                       {/* Member since skeleton */}
-                      <Skeleton
-                        variant="text"
-                        width={224}
-                        height={12}
-                        sx={{ bgcolor: '#2E3944' }}
-                      />
+                      <Skeleton variant="text" width={224} height={12} />
 
                       {/* Follower/Following skeleton */}
                       <div className="mt-2 flex items-center justify-center space-x-4 md:justify-start">
-                        <Skeleton
-                          variant="text"
-                          width={80}
-                          height={16}
-                          sx={{ bgcolor: '#2E3944' }}
-                        />
-                        <Skeleton
-                          variant="text"
-                          width={80}
-                          height={16}
-                          sx={{ bgcolor: '#2E3944' }}
-                        />
+                        <Skeleton variant="text" width={80} height={16} />
+                        <Skeleton variant="text" width={80} height={16} />
                       </div>
 
                       {/* Connection icons skeleton */}
                       <div className="mt-2 flex items-center justify-center space-x-3 md:justify-start">
-                        <Skeleton
-                          variant="circular"
-                          width={20}
-                          height={20}
-                          sx={{ bgcolor: '#2E3944' }}
-                        />
-                        <Skeleton
-                          variant="circular"
-                          width={20}
-                          height={20}
-                          sx={{ bgcolor: '#2E3944' }}
-                        />
+                        <Skeleton variant="circular" width={20} height={20} />
+                        <Skeleton variant="circular" width={20} height={20} />
                       </div>
                     </div>
 
                     {/* Button skeleton */}
-                    <Skeleton
-                      variant="rounded"
-                      width={112}
-                      height={40}
-                      sx={{ bgcolor: '#2E3944' }}
-                    />
+                    <Skeleton variant="rounded" width={112} height={40} />
                   </div>
                 </div>
               </div>
@@ -439,20 +401,20 @@ export default function UserProfileClient({
 
             {/* Tabs skeleton */}
             <div className="mt-2 md:mt-6">
-              <div className="border-b border-[#2E3944]">
+              <div className="border-b">
                 <div className="flex gap-4 overflow-x-auto p-2">
-                  <Skeleton variant="rounded" width={80} height={32} sx={{ bgcolor: '#2E3944' }} />
-                  <Skeleton variant="rounded" width={80} height={32} sx={{ bgcolor: '#2E3944' }} />
-                  <Skeleton variant="rounded" width={80} height={32} sx={{ bgcolor: '#2E3944' }} />
-                  <Skeleton variant="rounded" width={80} height={32} sx={{ bgcolor: '#2E3944' }} />
+                  <Skeleton variant="rounded" width={80} height={32} />
+                  <Skeleton variant="rounded" width={80} height={32} />
+                  <Skeleton variant="rounded" width={80} height={32} />
+                  <Skeleton variant="rounded" width={80} height={32} />
                 </div>
               </div>
               <div className="p-3 sm:p-4">
                 {/* Tab content skeleton */}
                 <div className="space-y-4">
-                  <Skeleton variant="rounded" height={80} sx={{ bgcolor: '#2E3944' }} />
-                  <Skeleton variant="rounded" height={80} sx={{ bgcolor: '#2E3944' }} />
-                  <Skeleton variant="rounded" height={80} sx={{ bgcolor: '#2E3944' }} />
+                  <Skeleton variant="rounded" height={80} />
+                  <Skeleton variant="rounded" height={80} />
+                  <Skeleton variant="rounded" height={80} />
                 </div>
               </div>
             </div>
@@ -466,16 +428,17 @@ export default function UserProfileClient({
     // Special handling for banned users
     if (errorCode === 403) {
       return (
-        <main className="min-h-screen bg-[#2E3944] pb-8">
+        <main className="min-h-screen pb-8">
           <div className="container mx-auto">
             <Breadcrumb />
-            <div className="overflow-hidden rounded-lg border border-[#2E3944] bg-[#212A31] shadow-md">
+            <div className="border-border-primary overflow-hidden rounded-lg border shadow-md">
               <div className="p-8">
                 <div className="flex flex-col items-center justify-center space-y-6">
                   <div className="w-full max-w-md rounded-lg border border-red-500/20 bg-red-500/10 p-6 text-center">
                     <div className="mb-4 flex items-center justify-center space-x-3">
                       <svg
-                        className="h-6 w-6 text-red-500"
+                        className="h-6 w-6"
+                        style={{ color: 'var(--color-form-error)' }}
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -487,9 +450,14 @@ export default function UserProfileClient({
                           d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
                         />
                       </svg>
-                      <h2 className="text-lg font-semibold text-red-500">User Banned</h2>
+                      <h2
+                        className="text-lg font-semibold"
+                        style={{ color: 'var(--color-form-error)' }}
+                      >
+                        User Banned
+                      </h2>
                     </div>
-                    <p className="text-[#FFFFFF]">{errorState}</p>
+                    <p className="text-primary-text">{errorState}</p>
                   </div>
                 </div>
               </div>
@@ -508,10 +476,10 @@ export default function UserProfileClient({
 
   if (user.settings?.profile_public === 0 && currentUserId !== user.id) {
     return (
-      <main className="min-h-screen bg-[#2E3944] pb-8">
+      <main className="min-h-screen pb-8">
         <div className="container mx-auto">
           <Breadcrumb userData={user} />
-          <div className="overflow-hidden rounded-lg border border-[#2E3944] bg-[#212A31] shadow-md">
+          <div className="bg-secondary-bg border-border-primary overflow-hidden rounded-lg border shadow-md">
             <div className="p-8">
               <div className="flex flex-col items-center justify-center space-y-6">
                 <div className="relative -mt-6">
@@ -529,7 +497,7 @@ export default function UserProfileClient({
                 </div>
                 <div className="space-y-2 text-center">
                   <div className="flex flex-col items-center justify-center gap-2 md:flex-row md:flex-wrap">
-                    <h1 className="text-muted text-xl font-bold md:text-2xl">
+                    <h1 className="text-primary-text text-xl font-bold md:text-2xl">
                       {user.global_name && user.global_name !== 'None'
                         ? user.global_name
                         : user.username}
@@ -544,12 +512,12 @@ export default function UserProfileClient({
                       />
                     </div>
                   </div>
-                  <p className="text-[#FFFFFF]">@{user.username}</p>
+                  <p className="text-secondary-text">@{user.username}</p>
                 </div>
-                <div className="w-full max-w-md rounded-lg bg-[#2E3944] p-6 text-center">
+                <div className="w-full max-w-md rounded-lg p-6 text-center">
                   <div className="mb-4 flex items-center justify-center space-x-3">
                     <svg
-                      className="h-6 w-6 text-[#FFFFFF]"
+                      className="text-primary-text h-6 w-6"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -561,9 +529,9 @@ export default function UserProfileClient({
                         d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                       />
                     </svg>
-                    <h2 className="text-muted text-lg font-semibold">Private Profile</h2>
+                    <h2 className="text-primary-text text-lg font-semibold">Private Profile</h2>
                   </div>
-                  <p className="text-[#FFFFFF]">
+                  <p className="text-secondary-text">
                     This user has chosen to keep their profile private
                   </p>
                 </div>
@@ -576,11 +544,11 @@ export default function UserProfileClient({
   }
 
   return (
-    <main className="min-h-screen bg-[#2E3944] pb-8">
+    <main className="min-h-screen pb-8">
       <LinSuperIdol userId={userId} />
       <div className="container mx-auto max-w-7xl">
         <Breadcrumb userData={user} />
-        <div className="overflow-hidden rounded-lg border border-[#2E3944] bg-[#212A31] shadow-md">
+        <div className="bg-secondary-bg border-border-primary overflow-hidden rounded-lg border shadow-md">
           {/* Banner Section */}
           <Banner
             userId={user.id}
@@ -617,7 +585,7 @@ export default function UserProfileClient({
                 <div className="flex flex-col justify-between md:flex-row">
                   <div className="w-full text-center md:w-auto md:text-left">
                     <div className="flex max-w-full flex-col items-center justify-center gap-2 md:flex-row md:flex-wrap md:justify-start">
-                      <h1 className="text-muted mb-1 max-w-[280px] truncate text-2xl font-bold md:text-3xl lg:max-w-none">
+                      <h1 className="text-primary-text mb-1 max-w-[280px] truncate text-2xl font-bold md:text-3xl lg:max-w-none">
                         {user.global_name && user.global_name !== 'None'
                           ? user.global_name
                           : user.username}
@@ -632,34 +600,24 @@ export default function UserProfileClient({
                         />
                       </div>
                     </div>
-                    <p className="mx-auto mb-1 max-w-[280px] truncate text-lg text-[#D3D9D4] md:mx-0 lg:max-w-none">
+                    <p className="text-secondary-text mx-auto mb-1 max-w-[280px] truncate text-lg md:mx-0 lg:max-w-none">
                       @{user.username}
                     </p>
 
                     {isLoadingAdditionalData ? (
-                      <Skeleton
-                        variant="text"
-                        width="60%"
-                        height={16}
-                        sx={{ bgcolor: '#2E3944' }}
-                      />
+                      <Skeleton variant="text" width="60%" height={16} />
                     ) : (
                       <>
                         {user.settings?.hide_presence === 1 && currentUserId !== user.id ? (
-                          <p className="text-sm text-[#D3D9D4]">Last seen: Hidden</p>
+                          <p className="text-secondary-text text-sm">Last seen: Hidden</p>
                         ) : user.presence?.status === 'Online' ? (
-                          <p
-                            className="text-sm text-[#44b700]"
-                            aria-label="User is currently online"
-                          >
-                            Online
-                          </p>
+                          <p className="text-secondary-text text-sm">Online</p>
                         ) : user.last_seen === null ? (
-                          <div className="mt-2 mb-2 rounded-lg bg-[#2E3944] p-4">
-                            <p className="text-muted mb-1 text-sm font-medium">
+                          <div className="mt-2 mb-2 rounded-lg p-4">
+                            <p className="text-secondary-text mb-1 text-sm font-medium">
                               Are you the owner of this profile?
                             </p>
-                            <p className="text-sm text-[#FFFFFF]">
+                            <p className="text-primary-text text-sm">
                               Login to enable status indicators and last seen timestamps. Your
                               Discord avatar, banner, and username changes will automatically sync
                               with your profile.
@@ -674,25 +632,25 @@ export default function UserProfileClient({
                               slotProps={{
                                 tooltip: {
                                   sx: {
-                                    backgroundColor: '#0F1419',
-                                    color: '#D3D9D4',
+                                    backgroundColor: 'var(--color-primary-bg)',
+                                    color: 'var(--color-secondary-text)',
                                     fontSize: '0.75rem',
                                     padding: '8px 12px',
                                     borderRadius: '8px',
-                                    border: '1px solid #2E3944',
-                                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+
+                                    boxShadow: '0 4px 12px var(--color-card-shadow)',
                                     '& .MuiTooltip-arrow': {
-                                      color: '#0F1419',
+                                      color: 'var(--color-primary-bg)',
                                     },
                                   },
                                 },
                               }}
                             >
                               <p
-                                className="cursor-help text-sm text-[#D3D9D4]"
-                                aria-label={`User was last seen ${formatRelativeDate(user.last_seen)}`}
+                                className="text-secondary-text cursor-help text-sm"
+                                aria-label={`User was last seen ${lastSeenTime}`}
                               >
-                                Last seen: {formatRelativeDate(user.last_seen)}
+                                Last seen: {lastSeenTime}
                               </p>
                             </Tooltip>
                           )
@@ -701,16 +659,12 @@ export default function UserProfileClient({
                     )}
 
                     {isLoadingAdditionalData ? (
-                      <Skeleton
-                        variant="text"
-                        width="80%"
-                        height={20}
-                        sx={{ bgcolor: '#2E3944', mb: 1 }}
-                      />
+                      <Skeleton variant="text" width="80%" height={20} sx={{ mb: 1 }} />
                     ) : (
                       user.created_at && (
-                        <p className="mb-1 text-base text-[#D3D9D4]">
-                          Member #{user.usernumber} since{' '}
+                        <p className="text-secondary-text mb-1 text-base">
+                          <span className="text-primary-text">Member</span> #{user.usernumber}{' '}
+                          <span className="text-primary-text">since</span>{' '}
                           <Tooltip
                             title={formatCustomDate(parseInt(user.created_at) * 1000)}
                             placement="top"
@@ -718,15 +672,15 @@ export default function UserProfileClient({
                             slotProps={{
                               tooltip: {
                                 sx: {
-                                  backgroundColor: '#0F1419',
-                                  color: '#D3D9D4',
+                                  backgroundColor: 'var(--color-primary-bg)',
+                                  color: 'var(--color-secondary-text)',
                                   fontSize: '0.75rem',
                                   padding: '8px 12px',
                                   borderRadius: '8px',
-                                  border: '1px solid #2E3944',
-                                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+
+                                  boxShadow: '0 4px 12px var(--color-card-shadow)',
                                   '& .MuiTooltip-arrow': {
-                                    color: '#0F1419',
+                                    color: 'var(--color-primary-bg)',
                                   },
                                 },
                               },
@@ -742,31 +696,21 @@ export default function UserProfileClient({
                     <div className="mt-2 flex items-center justify-center space-x-4 md:justify-start">
                       {isLoadingAdditionalData ? (
                         <>
-                          <Skeleton
-                            variant="text"
-                            width={80}
-                            height={20}
-                            sx={{ bgcolor: '#2E3944' }}
-                          />
-                          <Skeleton
-                            variant="text"
-                            width={80}
-                            height={20}
-                            sx={{ bgcolor: '#2E3944' }}
-                          />
+                          <Skeleton variant="text" width={80} height={20} />
+                          <Skeleton variant="text" width={80} height={20} />
                         </>
                       ) : (
                         <>
                           <button
                             onClick={() => followerCount > 0 && setIsFollowersModalOpen(true)}
-                            className={`text-muted text-base ${followerCount > 0 ? 'transition-colors hover:text-[#5865F2]' : 'cursor-default'}`}
+                            className={`text-primary-text text-base ${followerCount > 0 ? 'hover:text-border-focus cursor-pointer transition-colors' : 'cursor-default'}`}
                           >
                             <span className="font-semibold">{followerCount}</span>{' '}
                             {followerCount === 1 ? 'follower' : 'followers'}
                           </button>
                           <button
                             onClick={() => followingCount > 0 && setIsFollowingModalOpen(true)}
-                            className={`text-muted text-base ${followingCount > 0 ? 'transition-colors hover:text-[#5865F2]' : 'cursor-default'}`}
+                            className={`text-primary-text text-base ${followingCount > 0 ? 'hover:text-border-focus cursor-pointer transition-colors' : 'cursor-default'}`}
                           >
                             <span className="font-semibold">{followingCount}</span> following
                           </button>
@@ -778,18 +722,8 @@ export default function UserProfileClient({
                     <div className="mt-2 mb-5 flex flex-wrap items-center justify-center gap-2 md:mb-0 md:justify-start">
                       {isLoadingAdditionalData ? (
                         <>
-                          <Skeleton
-                            variant="rounded"
-                            width={100}
-                            height={32}
-                            sx={{ bgcolor: '#2E3944' }}
-                          />
-                          <Skeleton
-                            variant="rounded"
-                            width={100}
-                            height={32}
-                            sx={{ bgcolor: '#2E3944' }}
-                          />
+                          <Skeleton variant="rounded" width={100} height={32} />
+                          <Skeleton variant="rounded" width={100} height={32} />
                         </>
                       ) : (
                         <>
@@ -800,15 +734,15 @@ export default function UserProfileClient({
                             slotProps={{
                               tooltip: {
                                 sx: {
-                                  backgroundColor: '#0F1419',
-                                  color: '#D3D9D4',
+                                  backgroundColor: 'var(--color-primary-bg)',
+                                  color: 'var(--color-secondary-text)',
                                   fontSize: '0.75rem',
                                   padding: '8px 12px',
                                   borderRadius: '8px',
-                                  border: '1px solid #2E3944',
-                                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+
+                                  boxShadow: '0 4px 12px var(--color-card-shadow)',
                                   '& .MuiTooltip-arrow': {
-                                    color: '#0F1419',
+                                    color: 'var(--color-primary-bg)',
                                   },
                                 },
                               },
@@ -818,9 +752,9 @@ export default function UserProfileClient({
                               href={`https://discord.com/users/${user.id}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-muted flex items-center gap-2 rounded-full bg-gray-600 px-3 py-1.5"
+                              className="text-primary-text border-primary-text inline-flex items-center gap-1 rounded-full border bg-transparent px-2 py-0.5 text-xs"
                             >
-                              <DiscordIcon className="h-4 w-4 flex-shrink-0 text-[#5865F2]" />
+                              <DiscordIcon className="text-border-focus h-4 w-4 flex-shrink-0" />
                               <span className="text-sm font-medium">Discord</span>
                             </Link>
                           </Tooltip>
@@ -833,15 +767,15 @@ export default function UserProfileClient({
                               slotProps={{
                                 tooltip: {
                                   sx: {
-                                    backgroundColor: '#0F1419',
-                                    color: '#D3D9D4',
+                                    backgroundColor: 'var(--color-primary-bg)',
+                                    color: 'var(--color-secondary-text)',
                                     fontSize: '0.75rem',
                                     padding: '8px 12px',
                                     borderRadius: '8px',
-                                    border: '1px solid #2E3944',
-                                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+
+                                    boxShadow: '0 4px 12px var(--color-card-shadow)',
                                     '& .MuiTooltip-arrow': {
-                                      color: '#0F1419',
+                                      color: 'var(--color-primary-bg)',
                                     },
                                   },
                                 },
@@ -851,7 +785,7 @@ export default function UserProfileClient({
                                 href={`https://www.roblox.com/users/${user.roblox_id}/profile`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-muted flex items-center gap-2 rounded-full bg-gray-600 px-3 py-1.5"
+                                className="text-primary-text border-primary-text inline-flex items-center gap-1 rounded-full border bg-transparent px-2 py-0.5 text-xs"
                               >
                                 <RobloxIcon className="h-4 w-4 flex-shrink-0" />
                                 <span className="text-sm font-medium">Roblox</span>
@@ -868,16 +802,9 @@ export default function UserProfileClient({
                     {currentUserId === user.id ? (
                       <Link href="/settings">
                         <Button
-                          variant="outlined"
+                          variant="contained"
                           startIcon={<SettingsIcon />}
-                          sx={{
-                            borderColor: '#5865F2',
-                            color: '#5865F2',
-                            '&:hover': {
-                              borderColor: '#4752C4',
-                              backgroundColor: 'rgba(88, 101, 242, 0.1)',
-                            },
-                          }}
+                          className="bg-button-info text-form-button-text hover:bg-button-info-hover"
                         >
                           Settings
                         </Button>
@@ -890,15 +817,15 @@ export default function UserProfileClient({
                         slotProps={{
                           tooltip: {
                             sx: {
-                              backgroundColor: '#0F1419',
-                              color: '#D3D9D4',
+                              backgroundColor: 'var(--color-primary-bg)',
+                              color: 'var(--color-secondary-text)',
                               fontSize: '0.75rem',
                               padding: '8px 12px',
                               borderRadius: '8px',
-                              border: '1px solid #2E3944',
-                              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+
+                              boxShadow: '0 4px 12px var(--color-card-shadow)',
                               '& .MuiTooltip-arrow': {
-                                color: '#0F1419',
+                                color: 'var(--color-primary-bg)',
                               },
                             },
                           },
@@ -906,47 +833,26 @@ export default function UserProfileClient({
                       >
                         <span>
                           <Button
-                            variant={isFollowing ? 'outlined' : 'contained'}
+                            variant="contained"
                             startIcon={<UserPlusIcon className="h-5 w-5" />}
                             onClick={handleFollow}
                             disabled={isLoadingFollow}
-                            sx={
-                              isFollowing
-                                ? {
-                                    backgroundColor: '#2E3944',
-                                    color: '#FF5C5C',
-                                    borderColor: '#FF5C5C',
-                                    '&:hover': {
-                                      backgroundColor: '#3a2323',
-                                      borderColor: '#FF5C5C',
-                                    },
-                                    '&.Mui-disabled': {
-                                      backgroundColor: 'rgba(255, 92, 92, 0.1)',
-                                      color: '#FFFFFF',
-                                      borderColor: '#2E3944',
-                                    },
-                                    '& .MuiButton-startIcon': {
-                                      color: '#FF5C5C',
-                                    },
-                                  }
-                                : {
-                                    backgroundColor: '#5865F2',
-                                    color: '#FFFFFF',
-                                    borderColor: '#5865F2',
-                                    '&:hover': {
-                                      backgroundColor: '#4752C4',
-                                      borderColor: '#4752C4',
-                                    },
-                                    '&.Mui-disabled': {
-                                      backgroundColor: 'rgba(88, 101, 242, 0.1)',
-                                      color: '#FFFFFF',
-                                      borderColor: '#2E3944',
-                                    },
-                                    '& .MuiButton-startIcon': {
-                                      color: '#FFFFFF',
-                                    },
-                                  }
-                            }
+                            sx={{
+                              backgroundColor: 'var(--color-button-info)',
+                              color: 'var(--color-form-button-text)',
+                              borderColor: 'var(--color-button-info)',
+                              '&:hover': {
+                                backgroundColor: 'var(--color-button-info-hover)',
+                                borderColor: 'var(--color-button-info-hover)',
+                              },
+                              '&.Mui-disabled': {
+                                backgroundColor: 'var(--color-quaternary-bg)',
+                                color: 'var(--color-tertiary-text)',
+                              },
+                              '& .MuiButton-startIcon': {
+                                color: 'var(--color-form-button-text)',
+                              },
+                            }}
                           >
                             {isFollowing ? 'Unfollow' : 'Follow'}
                           </Button>
@@ -960,15 +866,15 @@ export default function UserProfileClient({
                         slotProps={{
                           tooltip: {
                             sx: {
-                              backgroundColor: '#0F1419',
-                              color: '#D3D9D4',
+                              backgroundColor: 'var(--color-primary-bg)',
+                              color: 'var(--color-secondary-text)',
                               fontSize: '0.75rem',
                               padding: '8px 12px',
                               borderRadius: '8px',
-                              border: '1px solid #2E3944',
-                              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+
+                              boxShadow: '0 4px 12px var(--color-card-shadow)',
                               '& .MuiTooltip-arrow': {
-                                color: '#0F1419',
+                                color: 'var(--color-primary-bg)',
                               },
                             },
                           },
@@ -980,13 +886,15 @@ export default function UserProfileClient({
                             startIcon={<UserPlusIcon className="h-5 w-5" />}
                             onClick={() => toast.error('You need to be logged in to follow users')}
                             sx={{
-                              backgroundColor: '#5865F2',
-                              color: '#FFFFFF',
+                              backgroundColor: 'var(--color-button-info)',
+                              color: 'var(--color-form-button-text)',
+                              borderColor: 'var(--color-button-info)',
                               '&:hover': {
-                                backgroundColor: '#4752C4',
+                                backgroundColor: 'var(--color-button-info-hover)',
+                                borderColor: 'var(--color-button-info-hover)',
                               },
                               '& .MuiButton-startIcon': {
-                                color: '#FFFFFF',
+                                color: 'var(--color-form-button-text)',
                               },
                             }}
                           >

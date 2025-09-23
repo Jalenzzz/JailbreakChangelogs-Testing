@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 import XpCalculatorForm from './XpCalculatorForm';
-import XpCalculatorInfo from './XpCalculatorInfo';
 import XpResultsSummary from './XpResultsSummary';
 import { Season, CalculationResults, DoubleXpResult } from '@/types/seasons';
 import { useDebounce } from '@/hooks/useDebounce';
@@ -236,12 +235,12 @@ export default function XpCalculator({ season }: XpCalculatorProps) {
   // If season has ended, show a different UI
   if (seasonHasEnded) {
     return (
-      <div className="mb-8 rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
+      <div className="border-stroke bg-secondary-bg mb-8 rounded-lg border p-6">
         <div className="text-center">
           <div className="mb-4">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-[#FF6B6B] to-[#FF8E8E]">
+            <div className="from-button-danger to-button-danger/80 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br">
               <svg
-                className="h-8 w-8 text-white"
+                className="text-primary-text h-8 w-8"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -254,16 +253,16 @@ export default function XpCalculator({ season }: XpCalculatorProps) {
                 />
               </svg>
             </div>
-            <h2 className="mb-2 text-2xl font-bold text-white">This Season Has Ended</h2>
-            <p className="mb-6 text-gray-300">
+            <h2 className="text-primary-text mb-2 text-2xl font-bold">This Season Has Ended</h2>
+            <p className="text-secondary-text mb-6">
               The XP calculator is no longer available for this season.
             </p>
           </div>
 
-          <div className="rounded-lg border border-[#2E3944] bg-[#1E2328]/50 p-4">
+          <div className="border-stroke bg-secondary-bg/50 rounded-lg border p-4">
             <div className="mb-3 flex items-center justify-center gap-3">
               <svg
-                className="h-5 w-5 text-[#5865F2]"
+                className="text-button-info h-5 w-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -275,9 +274,9 @@ export default function XpCalculator({ season }: XpCalculatorProps) {
                   d="M13 10V3L4 14h7v7l9-11h-7z"
                 />
               </svg>
-              <span className="font-semibold text-[#5865F2]">Check Back Soon!</span>
+              <span className="text-button-info font-semibold">Check Back Soon!</span>
             </div>
-            <p className="text-sm text-gray-400">
+            <p className="text-secondary-text text-sm">
               The XP calculator will be available again when Season {season.season + 1} begins.
             </p>
           </div>
@@ -288,7 +287,6 @@ export default function XpCalculator({ season }: XpCalculatorProps) {
 
   return (
     <>
-      <XpCalculatorInfo />
       <XpCalculatorForm
         currentLevel={currentLevel}
         currentXp={currentXp}

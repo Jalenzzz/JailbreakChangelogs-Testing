@@ -52,7 +52,7 @@ const calculateSeed = (userId: string): number => {
  */
 function formatAccentColor(color: number | string | null | undefined): string {
   // Return default color if color is falsy, "None", or "0"
-  if (!color || color === 'None' || color === '0') return '#124e66';
+  if (!color || color === 'None' || color === '0') return '#2462cd';
 
   // If it's a string, pad with zeros to 6 chars, then use first 6 chars
   if (typeof color === 'string') {
@@ -68,7 +68,7 @@ function formatAccentColor(color: number | string | null | undefined): string {
   }
 
   // If all else fails, return the default color
-  return '#124e66';
+  return '#2462cd';
 }
 
 /**
@@ -165,7 +165,7 @@ export async function GET(request: Request) {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
+              background: 'linear-gradient(135deg, #16161a 0%, #242629 100%)',
               padding: '40px',
             }}
           >
@@ -179,8 +179,8 @@ export async function GET(request: Request) {
                 textAlign: 'center',
                 padding: '32px 48px',
                 borderRadius: '16px',
-                backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                border: '2px solid rgba(239, 68, 68, 0.3)',
+                backgroundColor: 'rgba(237, 79, 79, 0.1)',
+                border: '2px solid rgba(237, 79, 79, 0.3)',
                 maxWidth: '800px',
               }}
             >
@@ -191,7 +191,7 @@ export async function GET(request: Request) {
                   justifyContent: 'center',
                   fontSize: 64,
                   fontFamily: 'LuckiestGuy',
-                  color: '#ef4444',
+                  color: '#ed4f4f',
                   marginBottom: '16px',
                 }}
               >
@@ -203,7 +203,7 @@ export async function GET(request: Request) {
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: 24,
-                  color: '#d1d5db',
+                  color: '#94a1b2',
                   lineHeight: '1.5',
                 }}
               >
@@ -337,7 +337,7 @@ export async function GET(request: Request) {
             height: '250px',
             borderRadius: '50%',
             overflow: 'hidden',
-            backgroundColor: '#2E3944',
+            backgroundColor: '#242629',
             border: borderStyle,
           }}
         >
@@ -350,11 +350,11 @@ export async function GET(request: Request) {
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <circle cx="125" cy="125" r="125" fill="#2E3944" />
-              <circle cx="125" cy="100" r="37.5" fill="#d3d9d4" />
+              <circle cx="125" cy="125" r="125" fill="#242629" />
+              <circle cx="125" cy="100" r="37.5" fill="#fffffe" />
               <path
                 d="M125 150C162.5 150 193.75 181.25 193.75 218.75H56.25C56.25 181.25 87.5 150 125 150Z"
-                fill="#d3d9d4"
+                fill="#fffffe"
               />
             </svg>
           ) : (
@@ -383,7 +383,7 @@ export async function GET(request: Request) {
             textAlign: 'center',
             padding: '16px 24px',
             borderRadius: '12px',
-            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            backgroundColor: 'rgba(22, 22, 26, 0.8)',
             border: '1px solid rgba(255, 255, 255, 0.1)',
             minWidth: '400px',
             marginTop: '20px',
@@ -408,7 +408,7 @@ export async function GET(request: Request) {
               alignItems: 'center',
               justifyContent: 'center',
               fontSize: 36,
-              color: '#a0a0a0',
+              color: '#94a1b2',
             }}
           >
             @{user.username}
@@ -419,7 +419,7 @@ export async function GET(request: Request) {
               alignItems: 'center',
               justifyContent: 'center',
               fontSize: 24,
-              color: '#808080',
+              color: '#72757e',
             }}
           >
             User #{userNumber}
@@ -437,7 +437,7 @@ export async function GET(request: Request) {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            backgroundColor: 'rgba(22, 22, 26, 0.9)',
             backdropFilter: 'blur(10px)',
             padding: '20px',
             borderTop: '1px solid rgba(255, 255, 255, 0.1)',
@@ -466,13 +466,13 @@ export async function GET(request: Request) {
             <p
               style={{
                 fontSize: 18,
-                color: '#a0a0a0',
+                color: '#94a1b2',
                 margin: '0 0 16px 0',
                 textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
               }}
             >
               Visit{' '}
-              <span style={{ color: '#6366f1', fontWeight: 'bold' }}>jailbreakchangelogs.xyz</span>
+              <span style={{ color: '#2462cd', fontWeight: 'bold' }}>jailbreakchangelogs.xyz</span>
             </p>
           </div>
         </div>

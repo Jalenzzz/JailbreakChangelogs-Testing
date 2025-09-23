@@ -53,7 +53,7 @@ export default function MaintenanceBypass({ children }: MaintenanceBypassProps) 
   // Show loading state while checking
   if (!isClient || canBypass === null) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#2e3944]">
+      <div className="flex min-h-screen items-center justify-center">
         <div className="text-lg text-white">Loading...</div>
       </div>
     );

@@ -129,12 +129,11 @@ const StyledTabs = dynamic(
     import('@mui/material/Tabs').then(async (TabsModule) => {
       const { styled } = await import('@mui/material/styles');
       return styled(TabsModule.default)(() => ({
-        borderBottom: '1px solid #2E3944',
         '& .MuiTabs-indicator': {
-          backgroundColor: '#5865F2',
+          backgroundColor: 'var(--color-button-info)',
         },
         '& .MuiTabs-scrollButtons': {
-          color: '#FFFFFF',
+          color: 'var(--color-primary-text)',
           '&.Mui-disabled': {
             opacity: 0.3,
           },
@@ -150,9 +149,9 @@ const StyledTab = dynamic(
       const { styled } = await import('@mui/material/styles');
       return styled(TabModule.default)(() => ({
         textTransform: 'none',
-        color: '#FFFFFF',
+        color: 'var(--color-secondary-text)',
         '&.Mui-selected': {
-          color: '#D3D9D4',
+          color: 'var(--color-primary-text)',
         },
       }));
     }),
@@ -320,6 +319,7 @@ export default function ProfileTabs({
             user={user}
             tradeAds={tradeAds}
             isLoadingAdditionalData={isLoadingAdditionalData}
+            isOwnProfile={currentUserId === user.id}
           />
         </TabPanel>
       )}

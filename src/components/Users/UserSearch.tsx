@@ -111,16 +111,16 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
               setSearchQuery(e.target.value);
               setPage(1);
             }}
-            className="text-muted w-full rounded-lg border border-[#2E3944] bg-[#37424D] px-4 py-2 pr-10 pl-10 placeholder-[#D3D9D4] focus:border-[#124E66] focus:outline-none"
+            className="text-primary-text border-stroke bg-secondary-bg placeholder-secondary-text focus:border-button-info w-full rounded-lg border px-4 py-2 pr-10 pl-10 transition-all duration-300 focus:outline-none"
           />
-          <MagnifyingGlassIcon className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]" />
+          <MagnifyingGlassIcon className="text-secondary-text absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
           {searchQuery && (
             <button
               onClick={() => {
                 setSearchQuery('');
                 setPage(1);
               }}
-              className="hover:text-muted absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2 text-[#FFFFFF]"
+              className="hover:text-primary-text text-secondary-text absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2"
               aria-label="Clear search"
             >
               <XMarkIcon />
@@ -136,7 +136,7 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
             setPage(1);
           }}
         />
-        <div className="text-muted flex items-center gap-2 text-sm">
+        <div className="text-secondary-text flex items-center gap-2 text-sm">
           <span>
             {(() => {
               const MAX_QUERY_DISPLAY = 32;
@@ -154,8 +154,8 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
       <div className="mb-2 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {currentUsers.length === 0 ? (
           <div className="col-span-full py-8 text-center">
-            <p className="text-muted text-lg">No users found</p>
-            <p className="mt-2 text-sm text-[#FFFFFF]">
+            <p className="text-secondary-text text-lg">No users found</p>
+            <p className="text-primary-text mt-2 text-sm">
               {(() => {
                 const MAX_QUERY_DISPLAY = 32;
                 const displayQuery =
@@ -172,51 +172,26 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
           currentUsers.map((user) => (
             <Tooltip
               key={user.id}
-              title={
-                user.settings?.profile_public === 0 && currentUserId !== user.id ? null : (
-                  <UserDetailsTooltip user={user} />
-                )
-              }
+              title={<UserDetailsTooltip user={user} currentUserId={currentUserId} />}
               arrow
               disableTouchListener
               slotProps={{
                 tooltip: {
-                  sx: {
-                    bgcolor: '#1A2228',
-                    border: '1px solid #2E3944',
-                    maxWidth: '400px',
-                    width: 'auto',
-                    minWidth: '300px',
-                    '& .MuiTooltip-arrow': {
-                      color: '#1A2228',
-                    },
-                  },
+                  className:
+                    'bg-primary-bg border border-stroke max-w-sm w-auto min-w-[300px] [&_.MuiTooltip-arrow]:text-primary-bg',
                 },
               }}
             >
               <Link
-                href={
-                  user.settings?.profile_public === 0 && currentUserId !== user.id
-                    ? '#'
-                    : `/users/${user.id}`
-                }
+                href={`/users/${user.id}`}
                 prefetch={false}
-                className={`block rounded-lg border border-[#2E3944] bg-[#212A31] p-4 shadow-md ${
-                  user.settings?.profile_public === 0 && currentUserId !== user.id
-                    ? 'cursor-not-allowed opacity-75'
-                    : 'group hover:border-blue-300'
-                } transition-colors`}
-                onClick={(e) => {
-                  if (user.settings?.profile_public === 0 && currentUserId !== user.id) {
-                    e.preventDefault();
-                  }
-                }}
+                className="border-border-primary bg-secondary-bg group hover:border-border-focus block rounded-lg border p-4 shadow-md transition-colors"
               >
                 <div className="flex items-center space-x-3">
                   {userType === 'roblox' ? (
-                    <RobloxUserCard user={user} currentUserId={currentUserId} />
+                    <RobloxUserCard user={user} />
                   ) : (
-                    <DiscordUserCard user={user} currentUserId={currentUserId} />
+                    <DiscordUserCard user={user} />
                   )}
                 </div>
               </Link>
@@ -232,16 +207,20 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
             onChange={handlePageChange}
             sx={{
               '& .MuiPaginationItem-root': {
-                color: '#D3D9D4',
+                color: 'var(--color-primary-text)',
                 '&.Mui-selected': {
-                  backgroundColor: '#5865F2',
+                  backgroundColor: 'var(--color-button-info)',
+                  color: 'var(--color-form-button-text)',
                   '&:hover': {
-                    backgroundColor: '#4752C4',
+                    backgroundColor: 'var(--color-button-info-hover)',
                   },
                 },
                 '&:hover': {
-                  backgroundColor: '#2E3944',
+                  backgroundColor: 'var(--color-quaternary-bg)',
                 },
+              },
+              '& .MuiPaginationItem-icon': {
+                color: 'var(--color-primary-text)',
               },
             }}
           />

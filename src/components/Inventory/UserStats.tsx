@@ -209,8 +209,8 @@ export default function UserStats({
   }, [totalCashValue, totalDupedValue]);
 
   return (
-    <div className="rounded-lg border border-[#2E3944] bg-[#212A31] p-6">
-      <h2 className="text-muted mb-4 text-xl font-semibold">User Information</h2>
+    <div className="border-border-primary bg-secondary-bg shadow-card-shadow rounded-lg border p-6">
+      <h2 className="text-primary-text mb-4 text-xl font-semibold">User Information</h2>
 
       {/* User Profile Section */}
       {initialData?.user_id && (

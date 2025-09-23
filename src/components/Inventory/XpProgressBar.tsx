@@ -81,10 +81,10 @@ export default function XpProgressBar({ currentLevel, currentXp, season }: XpPro
   return (
     <div className="mt-3">
       {/* Game-style Progress Bar */}
-      <div className="relative h-8 w-full rounded-lg border-2 border-yellow-400 bg-black">
+      <div className="border-button-info bg-primary-bg relative h-8 w-full rounded-lg border-2">
         {/* Progress Fill */}
         <div
-          className="absolute top-0 left-0 h-full bg-yellow-400 transition-all duration-500"
+          className="bg-button-info absolute top-0 left-0 h-full transition-all duration-500"
           style={{
             width: `${progressPercentage}%`,
             borderRadius: progressPercentage === 100 ? '0.5rem' : '0.375rem 0 0 0.375rem',
@@ -93,19 +93,21 @@ export default function XpProgressBar({ currentLevel, currentXp, season }: XpPro
 
         {/* XP Text Overlay */}
         <div className="absolute top-1/2 left-2 -translate-y-1/2">
-          <span className="text-sm font-bold text-orange-600">
+          <span className="text-primary-text text-sm font-bold">
             {currentXpInLevel.toLocaleString()}/{xpRequiredForNextLevel.toLocaleString()}
           </span>
         </div>
 
         {/* Level Info - Centered */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-          <span className="text-sm font-bold text-white">LEVEL {currentLevel}</span>
+          <span className="text-primary-text text-sm font-bold">LEVEL {currentLevel}</span>
         </div>
 
         {/* Season Info - Right Side */}
         <div className="absolute top-1/2 right-2 -translate-y-1/2">
-          <span className="text-sm font-bold text-white">SEASON {season?.season || '?'}</span>
+          <span className="text-primary-text text-sm font-bold">
+            SEASON {season?.season || '?'}
+          </span>
         </div>
       </div>
     </div>

@@ -44,7 +44,7 @@ export default function SeasonContractsClient({ contracts, updatedAt }: SeasonCo
     <div className="space-y-12">
       {formatUpdatedAt && (
         <div className="text-center">
-          <span className="inline-flex items-center gap-2 rounded-full bg-gray-800/50 px-4 py-2 text-sm text-gray-300 backdrop-blur-sm">
+          <span className="bg-secondary-bg text-secondary-text inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm backdrop-blur-sm">
             Last updated: {formatUpdatedAt}
           </span>
         </div>
@@ -55,20 +55,16 @@ export default function SeasonContractsClient({ contracts, updatedAt }: SeasonCo
           {/* Team Header */}
           <div className="text-center">
             <div className="relative inline-block">
-              <div
-                className={`absolute inset-0 rounded-2xl opacity-30 blur-lg ${team === 'Criminal' ? 'bg-orange-500' : 'bg-blue-500'}`}
-              ></div>
-              <div
-                className={`relative rounded-2xl px-8 py-4 ${team === 'Criminal' ? 'bg-gradient-to-r from-orange-400 to-orange-500' : 'bg-gradient-to-r from-blue-500 to-blue-600'} shadow-2xl`}
-              >
+              <div className="bg-button-info absolute inset-0 rounded-2xl opacity-30 blur-lg"></div>
+              <div className="from-button-info to-button-info-hover relative rounded-2xl bg-gradient-to-r px-8 py-4 shadow-2xl">
                 <div className="flex items-center justify-center gap-4">
                   {/* Team Icon */}
                   {team === 'Criminal' ? (
-                    <RiCriminalFill className="h-8 w-8 text-white" />
+                    <RiCriminalFill className="text-form-button-text h-8 w-8" />
                   ) : (
-                    <GiPoliceOfficerHead className="h-8 w-8 text-white" />
+                    <GiPoliceOfficerHead className="text-form-button-text h-8 w-8" />
                   )}
-                  <span className="text-2xl font-bold tracking-wide text-white uppercase">
+                  <span className="text-form-button-text text-2xl font-bold tracking-wide uppercase">
                     {team} Contracts
                   </span>
                 </div>
@@ -81,14 +77,14 @@ export default function SeasonContractsClient({ contracts, updatedAt }: SeasonCo
             {grouped[team].map((c, idx) => (
               <div
                 key={`${team}-${c.name}-${idx}`}
-                className="group hover:shadow-3xl relative flex flex-col overflow-hidden rounded-2xl shadow-2xl transition-all duration-300 hover:scale-105"
+                className="group hover:shadow-3xl border-stroke relative flex flex-col overflow-hidden rounded-2xl border shadow-2xl transition-all duration-300 hover:scale-105"
               >
                 {/* Season Pass Corner Badge */}
                 {c.reqseasonpass && (
                   <div className="absolute top-3 right-3 z-10">
                     <div className="relative">
-                      <div className="absolute inset-0 rounded-full bg-[#5865F2] opacity-50 blur-sm"></div>
-                      <span className="relative rounded-full bg-[#5865F2] px-3 py-1 text-xs font-bold text-white shadow-lg">
+                      <div className="bg-button-info absolute inset-0 rounded-full opacity-50 blur-sm"></div>
+                      <span className="bg-button-info text-form-button-text relative rounded-full px-3 py-1 text-xs font-bold shadow-lg">
                         Season Pass
                       </span>
                     </div>
@@ -96,20 +92,18 @@ export default function SeasonContractsClient({ contracts, updatedAt }: SeasonCo
                 )}
 
                 {/* Contract Header */}
-                <div className="bg-black px-4 py-3">
-                  <div className={`text-2xl text-white uppercase ${bangers.className}`}>
+                <div className="bg-secondary-bg px-4 py-3">
+                  <div className={`text-primary-text text-2xl uppercase ${bangers.className}`}>
                     Contract {idx + 1}
                   </div>
                 </div>
 
                 {/* Contract Body */}
-                <div
-                  className={`relative flex flex-1 flex-col px-4 py-6 ${team === 'Criminal' ? 'bg-gradient-to-br from-orange-400 to-orange-500' : 'bg-gradient-to-br from-blue-500 to-blue-600'}`}
-                >
+                <div className="bg-secondary-bg relative flex flex-1 flex-col px-4 py-6">
                   <div className="relative z-10 flex h-full flex-col">
                     {/* Task Description */}
                     <div className="mb-4 flex flex-1 items-center justify-center">
-                      <div className="text-center text-xl leading-tight font-bold text-black">
+                      <div className="text-primary-text text-center text-xl leading-tight font-bold">
                         {c.description}
                       </div>
                     </div>
@@ -138,10 +132,10 @@ export default function SeasonContractsClient({ contracts, updatedAt }: SeasonCo
                     {/* Reward Section */}
                     <div className="mt-auto">
                       <div className="relative">
-                        <div className="absolute inset-0 rounded-xl bg-black opacity-50 blur-sm"></div>
-                        <div className="relative rounded-xl bg-black px-4 py-3 shadow-lg">
+                        <div className="bg-primary-bg absolute inset-0 rounded-xl opacity-50 blur-sm"></div>
+                        <div className="border-stroke bg-primary-bg relative rounded-xl border px-4 py-3 shadow-lg">
                           <div
-                            className={`text-2xl text-white uppercase ${bangers.className} text-center`}
+                            className={`text-primary-text text-2xl uppercase ${bangers.className} text-center`}
                           >
                             REWARD: {c.reward} XP
                           </div>

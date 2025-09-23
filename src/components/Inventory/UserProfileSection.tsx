@@ -125,7 +125,7 @@ export default function UserProfileSection({
       ) {
         showScanErrorToast('User not found in game. Please join a trade server and try again.');
       } else if (scanWebSocket.error) {
-        showScanErrorToast(`Scan error: ${scanWebSocket.error}`);
+        showScanErrorToast('No bots online at the moment. Please try again later.');
       }
     }
 
@@ -144,10 +144,10 @@ export default function UserProfileSection({
           alt="Roblox Avatar"
           width={64}
           height={64}
-          className="flex-shrink-0 rounded-full bg-[#2E3944]"
+          className="flex-shrink-0 rounded-full"
         />
       ) : (
-        <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-[#2E3944]">
+        <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full">
           <svg className="text-muted h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
@@ -161,8 +161,10 @@ export default function UserProfileSection({
 
       {/* User Info */}
       <div className="min-w-0 flex-1">
-        <h3 className="text-muted text-lg font-bold break-words">{getUserDisplay(userId)}</h3>
-        <p className="text-muted text-sm break-words opacity-75">@{getUsername(userId)}</p>
+        <h3 className="text-primary-text text-lg font-bold break-words">
+          {getUserDisplay(userId)}
+        </h3>
+        <p className="text-primary-text text-sm break-words">@{getUsername(userId)}</p>
 
         {/* Connection Icons */}
         <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -175,15 +177,15 @@ export default function UserProfileSection({
               slotProps={{
                 tooltip: {
                   sx: {
-                    backgroundColor: '#0F1419',
-                    color: '#D3D9D4',
+                    backgroundColor: 'var(--color-secondary-bg)',
+                    color: 'var(--color-primary-text)',
                     fontSize: '0.75rem',
                     padding: '8px 12px',
                     borderRadius: '8px',
-                    border: '1px solid #2E3944',
+
                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                     '& .MuiTooltip-arrow': {
-                      color: '#0F1419',
+                      color: 'var(--color-secondary-bg)',
                     },
                   },
                 },
@@ -193,10 +195,10 @@ export default function UserProfileSection({
                 href={`https://discord.com/users/${userConnectionData.id}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted flex items-center gap-2 rounded-full bg-gray-600 px-3 py-1.5"
+                className="text-primary-text border-primary-text hover:bg-quaternary-bg inline-flex items-center gap-1 rounded-full border bg-transparent px-2 py-0.5 text-xs transition-colors"
               >
-                <DiscordIcon className="h-4 w-4 flex-shrink-0 text-[#5865F2]" />
-                <span className="text-sm font-medium">Discord</span>
+                <DiscordIcon className="text-button-info h-3 w-3 flex-shrink-0" />
+                <span className="text-xs font-medium">Discord</span>
               </a>
             </Tooltip>
           )}
@@ -209,15 +211,15 @@ export default function UserProfileSection({
             slotProps={{
               tooltip: {
                 sx: {
-                  backgroundColor: '#0F1419',
-                  color: '#D3D9D4',
+                  backgroundColor: 'var(--color-secondary-bg)',
+                  color: 'var(--color-primary-text)',
                   fontSize: '0.75rem',
                   padding: '8px 12px',
                   borderRadius: '8px',
-                  border: '1px solid #2E3944',
+
                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                   '& .MuiTooltip-arrow': {
-                    color: '#0F1419',
+                    color: 'var(--color-secondary-bg)',
                   },
                 },
               },
@@ -227,10 +229,10 @@ export default function UserProfileSection({
               href={`https://www.roblox.com/users/${userId}/profile`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted flex items-center gap-2 rounded-full bg-gray-600 px-3 py-1.5"
+              className="text-primary-text border-primary-text hover:bg-quaternary-bg inline-flex items-center gap-1 rounded-full border bg-transparent px-2 py-0.5 text-xs transition-colors"
             >
-              <RobloxIcon className="h-4 w-4 flex-shrink-0 text-[#00A2FF]" />
-              <span className="text-sm font-medium">Roblox</span>
+              <RobloxIcon className="text-button-info h-3 w-3 flex-shrink-0" />
+              <span className="text-xs font-medium">Roblox</span>
             </a>
           </Tooltip>
 
@@ -243,15 +245,15 @@ export default function UserProfileSection({
               slotProps={{
                 tooltip: {
                   sx: {
-                    backgroundColor: '#0F1419',
-                    color: '#D3D9D4',
+                    backgroundColor: 'var(--color-secondary-bg)',
+                    color: 'var(--color-primary-text)',
                     fontSize: '0.75rem',
                     padding: '8px 12px',
                     borderRadius: '8px',
-                    border: '1px solid #2E3944',
+
                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                     '& .MuiTooltip-arrow': {
-                      color: '#0F1419',
+                      color: 'var(--color-secondary-bg)',
                     },
                   },
                 },
@@ -259,16 +261,16 @@ export default function UserProfileSection({
             >
               <Link
                 href={`/users/${userConnectionData.id}`}
-                className="text-muted flex items-center gap-2 rounded-full bg-gray-600 px-3 py-1.5"
+                className="text-primary-text border-primary-text hover:bg-quaternary-bg inline-flex items-center gap-1 rounded-full border bg-transparent px-2 py-0.5 text-xs transition-colors"
               >
                 <Image
                   src="https://assets.jailbreakchangelogs.xyz/assets/logos/JBCL_Short_Transparent.webp"
                   alt="JBCL Logo"
                   width={16}
                   height={16}
-                  className="h-4 w-4 flex-shrink-0"
+                  className="h-3 w-3 flex-shrink-0"
                 />
-                <span className="text-sm font-medium">Website Profile</span>
+                <span className="text-xs font-medium">Website</span>
               </Link>
             </Tooltip>
           )}
@@ -291,8 +293,8 @@ export default function UserProfileSection({
                 scanWebSocket.status === 'scanning' ||
                 scanWebSocket.status === 'connecting' ||
                 scanWebSocket.isSlowmode
-                  ? 'cursor-progress bg-gray-600 text-gray-400'
-                  : 'bg-green-600 text-white hover:bg-green-700'
+                  ? 'bg-button-info-disabled text-form-button-text border-button-info-disabled cursor-progress'
+                  : 'bg-button-info text-form-button-text hover:bg-button-info-hover cursor-pointer'
               }`}
             >
               {scanWebSocket.status === 'connecting' ? (
@@ -385,10 +387,10 @@ export default function UserProfileSection({
               disabled={isRefreshing || isDataFresh()}
               className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                 isRefreshing
-                  ? 'cursor-progress bg-[#37424D] text-gray-400'
+                  ? 'bg-button-info-disabled text-form-button-text border-button-info-disabled cursor-progress'
                   : isDataFresh()
-                    ? 'cursor-not-allowed bg-[#37424D] text-gray-400'
-                    : 'bg-[#5865F2] text-white hover:bg-[#4752C4]'
+                    ? 'bg-button-secondary text-secondary-text border-button-secondary cursor-not-allowed'
+                    : 'bg-button-info text-form-button-text hover:bg-button-info-hover cursor-pointer'
               }`}
             >
               {isRefreshing ? (
@@ -441,13 +443,13 @@ export default function UserProfileSection({
           {/* Progress Bar - Only show when progress is defined */}
           {scanWebSocket.progress !== undefined && scanWebSocket.status === 'scanning' && (
             <div className="mt-2">
-              <div className="mb-1 flex justify-between text-xs text-gray-400">
+              <div className="text-secondary-text mb-1 flex justify-between text-xs">
                 <span>Progress</span>
                 <span>{scanWebSocket.progress}%</span>
               </div>
-              <div className="h-2 w-full rounded-full bg-gray-700">
+              <div className="bg-surface-bg h-2 w-full rounded-full">
                 <div
-                  className="h-2 rounded-full bg-green-600 transition-all duration-300"
+                  className="bg-button-info h-2 rounded-full transition-all duration-300"
                   style={{ width: `${scanWebSocket.progress}%` }}
                 />
               </div>
@@ -457,11 +459,11 @@ export default function UserProfileSection({
       ) : (
         /* Show login prompt for potential profile owner */
         <div className="mt-4">
-          <div className="rounded-lg border border-[#37424D] bg-[#2E3944] p-4">
+          <div className="border-border-primary bg-secondary-bg shadow-card-shadow rounded-lg border p-4">
             <div className="flex items-start gap-3">
               <div className="flex-shrink-0">
                 <svg
-                  className="mt-0.5 h-5 w-5 text-blue-400"
+                  className="text-button-info mt-0.5 h-5 w-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -475,8 +477,10 @@ export default function UserProfileSection({
                 </svg>
               </div>
               <div className="min-w-0 flex-1">
-                <h4 className="mb-1 text-sm font-medium text-white">Want on-demand scans?</h4>
-                <p className="mb-3 text-sm text-gray-400">
+                <h4 className="text-primary-text mb-1 text-sm font-medium">
+                  Want on-demand scans?
+                </h4>
+                <p className="text-secondary-text mb-3 text-sm">
                   {!isAuthenticated
                     ? 'Login and connect your Roblox account to request instant inventory scans anytime.'
                     : user?.roblox_id
@@ -487,14 +491,14 @@ export default function UserProfileSection({
                   {!isAuthenticated ? (
                     <Link
                       href="/faq"
-                      className="inline-flex items-center gap-1.5 rounded-md bg-[#5865F2] px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-[#4752C4]"
+                      className="bg-button-info text-form-button-text hover:bg-button-info-hover inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors"
                     >
                       Learn More
                     </Link>
                   ) : user?.roblox_id ? (
                     <Link
                       href={`/inventories/${user.roblox_id}`}
-                      className="inline-flex items-center gap-1.5 rounded-md bg-[#5865F2] px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-[#4752C4]"
+                      className="bg-button-info text-form-button-text hover:bg-button-info-hover inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors"
                     >
                       View My Inventory
                     </Link>
@@ -505,7 +509,7 @@ export default function UserProfileSection({
                         const event = new CustomEvent('setLoginTab', { detail: 1 });
                         window.dispatchEvent(event);
                       }}
-                      className="inline-flex cursor-pointer items-center gap-1.5 rounded-md bg-[#FF5630] px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-[#E54B2C]"
+                      className="bg-button-info text-form-button-text hover:bg-button-info-hover inline-flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors"
                     >
                       Connect Roblox Account
                     </button>

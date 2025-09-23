@@ -91,13 +91,6 @@ export default function XpImportantDates({
     }
   };
 
-  const getStatusColor = (status: string): string => {
-    if (status.includes('Double XP')) return '#FFB636'; // Orange for Double XP
-    if (status.includes('Final Week')) return '#FF6B6B'; // Red for final week
-    if (status.includes('2 Weeks Left')) return '#FFD93D'; // Yellow for 2 weeks
-    return '#A8B3BC'; // Default gray
-  };
-
   const formatDate = (timestamp: number): string => {
     return new Date(timestamp * 1000).toLocaleDateString('en-US', {
       month: 'short',
@@ -110,10 +103,10 @@ export default function XpImportantDates({
     <div>
       {/* Season Info Header */}
       <div className="mb-6 text-center">
-        <h2 className="mb-2 text-3xl font-bold text-[#FFFFFF]">
+        <h2 className="text-secondary-text mb-2 text-3xl font-bold">
           Season {season} / {title}
         </h2>
-        <div className="text-muted space-y-1">
+        <div className="text-secondary-text space-y-1">
           <p className="text-lg">
             {formatDate(startDate)} - {formatDate(endDate)}
           </p>
@@ -126,19 +119,14 @@ export default function XpImportantDates({
       <div className="space-y-4">
         {/* Double XP Countdown - Only show when Double XP hasn't started yet */}
         {doubleXpStatus !== 'Double XP is now active!' && (
-          <div className="rounded-lg border border-[#2E3944] bg-[#37424D] p-4">
+          <div className="border-stroke bg-secondary-bg rounded-lg border p-4">
             <div className="flex flex-col gap-3">
               <div className="text-center">
-                <span className="text-muted text-lg font-semibold">{doubleXpStatus}</span>
+                <span className="text-secondary-text text-lg font-semibold">{doubleXpStatus}</span>
               </div>
               {doubleXpTimeLeft && (
                 <div className="text-center">
-                  <span
-                    className="font-mono text-3xl font-bold"
-                    style={{ color: getStatusColor(doubleXpStatus) }}
-                  >
-                    {doubleXpTimeLeft}
-                  </span>
+                  <span className="text-secondary-text text-3xl font-bold">{doubleXpTimeLeft}</span>
                 </div>
               )}
             </div>
@@ -146,19 +134,14 @@ export default function XpImportantDates({
         )}
 
         {/* Season End Countdown */}
-        <div className="rounded-lg border border-[#2E3944] bg-[#37424D] p-4">
+        <div className="border-stroke bg-secondary-bg rounded-lg border p-4">
           <div className="flex flex-col gap-3">
             <div className="text-center">
-              <span className="text-muted text-lg font-semibold">{seasonEndStatus}</span>
+              <span className="text-secondary-text text-lg font-semibold">{seasonEndStatus}</span>
             </div>
             {seasonEndTimeLeft && (
               <div className="text-center">
-                <span
-                  className="font-mono text-3xl font-bold"
-                  style={{ color: getStatusColor(seasonEndStatus) }}
-                >
-                  {seasonEndTimeLeft}
-                </span>
+                <span className="text-secondary-text text-3xl font-bold">{seasonEndTimeLeft}</span>
               </div>
             )}
           </div>

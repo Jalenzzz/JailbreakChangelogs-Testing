@@ -123,74 +123,57 @@ export default function SupportingClient({ supporters }: SupportingClientProps) 
     <div className="min-h-screen pb-8">
       <div className="container mx-auto mb-8 max-w-[1920px] px-4 py-8">
         <div className="mb-12 text-center">
-          <h1 className="mb-4 text-4xl font-bold text-white">Support Jailbreak Changelogs</h1>
+          <h1 className="text-primary-text mb-4 text-4xl font-bold">
+            Support Jailbreak Changelogs
+          </h1>
 
           <div className="mx-auto mb-8 flex max-w-4xl flex-col items-stretch justify-center gap-6 md:flex-row">
-            <div className="flex-1 rounded-lg border border-blue-500/50 bg-blue-900/30 p-4">
-              <div className="mb-2 flex items-center justify-center space-x-2">
-                <svg
-                  className="h-5 w-5 text-blue-400"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <p className="text-lg font-semibold text-blue-300">Important Information</p>
+            <div className="border-border-primary bg-button-info/10 flex-1 rounded-lg border p-4 shadow-sm">
+              <div className="mb-2 flex items-start gap-4">
+                <div className="relative z-10">
+                  <span className="text-primary-text text-base font-bold">
+                    Important Information
+                  </span>
+                  <div className="text-secondary-text mt-1">
+                    All supporter purchases are one-time only and non-refundable! Once you purchase,
+                    you keep the perks forever.
+                    <br />
+                    <strong>Ko-fi Supporters:</strong> If you&apos;re buying a supporter tier using{' '}
+                    <a
+                      href="https://ko-fi.com/jbchangelogs"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-button-info hover:text-button-info-hover font-semibold underline transition-colors"
+                    >
+                      Ko-fi
+                    </a>
+                    ,{' '}
+                    <span className="font-bold">
+                      ensure your Discord user ID is in parenthesis inside your message
+                    </span>{' '}
+                    (e.g., <code>Hello there! (1019539798383398946)</code>). This is required to
+                    receive your code!
+                    <br />
+                    <Link
+                      href="/redeem"
+                      className="text-button-info hover:text-button-info-hover underline transition-colors"
+                    >
+                      After purchase, redeem your code here
+                    </Link>
+                    .
+                  </div>
+                </div>
               </div>
-              <p className="mb-3 text-gray-300">
-                All supporter purchases are one-time only and non-refundable! Once you purchase, you
-                keep the perks forever.
-              </p>
-              <div className="mb-3 rounded border-l-4 border-yellow-400 bg-yellow-900/40 p-4">
-                <p className="text-base font-medium text-yellow-200">
-                  <strong>Ko-fi Supporters:</strong> If you&apos;re buying a supporter tier using{' '}
-                  <a
-                    href="https://ko-fi.com/jbchangelogs"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-yellow-100 underline"
-                  >
-                    Ko-fi
-                  </a>
-                  ,{' '}
-                  <span className="font-bold">
-                    ensure your Discord user ID is in parenthesis inside your message
-                  </span>{' '}
-                  (e.g., <code>Hello there! (1019539798383398946)</code>). This is required to
-                  receive your code!
-                </p>
-              </div>
-              <Link
-                href="/redeem"
-                className="inline-flex items-center text-blue-400 transition-colors hover:text-blue-300"
-              >
-                <span>After purchase, redeem your code here</span>
-                <svg
-                  className="ml-1 h-4 w-4"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path d="M9 5l7 7-7 7"></path>
-                </svg>
-              </Link>
             </div>
 
-            <div className="flex flex-1 flex-col justify-center rounded-lg border border-gray-700/50 bg-[#212a31] p-4">
-              <p className="text-gray-300">
+            <div className="border-border-primary bg-secondary-bg flex flex-1 flex-col justify-center rounded-lg border p-4">
+              <p className="text-secondary-text">
                 By supporting Jailbreak Changelogs, you&apos;re helping us maintain and improve this
                 open-source project, community made for Roblox Jailbreak. Your support enables us to
                 continue providing accurate, timely updates and new features to help the community
                 stay informed about their favorite game.
               </p>
-              <span className="mt-4 text-right text-sm text-gray-400 italic">
+              <span className="text-tertiary-text mt-4 text-right text-sm italic">
                 — Jakobiis and Jalenzz
               </span>
             </div>
@@ -202,24 +185,24 @@ export default function SupportingClient({ supporters }: SupportingClientProps) 
             {supporterTiers.map((tier) => (
               <div
                 key={tier.name}
-                className={`overflow-hidden rounded-lg shadow-lg transition-all duration-500 ${
+                className={`bg-secondary-bg overflow-hidden rounded-lg shadow-lg transition-all duration-500 ${
                   tier.recommended
-                    ? 'scale-105 transform border-2 border-blue-500'
-                    : 'border border-gray-700'
+                    ? 'border-button-info scale-105 transform border-2'
+                    : 'border-border-primary border'
                 } ${
                   highlightedTier === tier.tierNumber
-                    ? 'ring-opacity-75 scale-110 transform ring-4 ring-yellow-400'
+                    ? 'ring-opacity-75 ring-warning scale-110 transform ring-4'
                     : ''
-                } bg-[#212a31]`}
+                } `}
               >
                 {tier.recommended && (
-                  <div className="bg-[#1d7da3] py-2 text-center font-semibold text-white">
+                  <div className="bg-button-info text-form-button-text py-2 text-center font-semibold">
                     Recommended
                   </div>
                 )}
                 <div className="p-6">
                   <div className="mb-2 flex items-center gap-2">
-                    <h2 className="text-2xl font-bold text-white">{tier.name}</h2>
+                    <h2 className="text-primary-text text-2xl font-bold">{tier.name}</h2>
                     {tier.name !== 'Free' && (
                       <div
                         className={`inline-flex h-6 w-6 items-center justify-center rounded-full ${
@@ -236,15 +219,15 @@ export default function SupportingClient({ supporters }: SupportingClientProps) 
                   </div>
                   <div className="mb-4">
                     {tier.price === '$0' ? (
-                      <span className="text-3xl font-bold text-white">{tier.price}</span>
+                      <span className="text-primary-text text-3xl font-bold">{tier.price}</span>
                     ) : (
                       <div className="flex items-center">
-                        <span className="text-3xl font-bold text-white">{tier.price}</span>
+                        <span className="text-primary-text text-3xl font-bold">{tier.price}</span>
                       </div>
                     )}
                     {tier.priceAlt && (
                       <div className="flex items-center gap-1">
-                        <span className="text-sm text-gray-400">
+                        <span className="text-tertiary-text text-sm">
                           {tier.priceAlt.replace(' on Roblox', '').replace('R$', '')}
                         </span>
                         <Image
@@ -262,7 +245,7 @@ export default function SupportingClient({ supporters }: SupportingClientProps) 
                       <li key={featureIndex} className="flex items-center">
                         <CheckIcon className="mt-1 mr-2 h-5 w-5 flex-shrink-0 text-green-500" />
                         <span
-                          className={`${feature.startsWith('**') ? 'font-bold text-white' : 'text-gray-300'}`}
+                          className={`${feature.startsWith('**') ? 'text-primary-text font-bold' : 'text-secondary-text'}`}
                         >
                           {feature.replace(/\*\*/g, '')}
                         </span>
@@ -275,11 +258,13 @@ export default function SupportingClient({ supporters }: SupportingClientProps) 
           </div>
 
           <div className="flex-shrink-0 lg:w-80">
-            <div className="sticky top-8 rounded-lg bg-[#212a31] p-6 shadow-lg">
-              <h2 className="mb-6 text-center text-xl font-bold text-white">Ready to Support?</h2>
+            <div className="border-border-primary bg-secondary-bg sticky top-8 rounded-lg border p-6 shadow-lg">
+              <h2 className="text-primary-text mb-6 text-center text-xl font-bold">
+                Ready to Support?
+              </h2>
               <div className="space-y-8">
                 <div className="text-center">
-                  <h3 className="mb-3 text-lg font-semibold text-white">Ko-fi Donations</h3>
+                  <h3 className="text-primary-text mb-3 text-lg font-semibold">Ko-fi Donations</h3>
                   <Image
                     src="https://assets.jailbreakchangelogs.xyz/assets/images/kofi_assets/kofi_symbol.svg"
                     alt="Ko-fi Symbol"
@@ -298,13 +283,13 @@ export default function SupportingClient({ supporters }: SupportingClientProps) 
                     href="https://ko-fi.com/jailbreakchangelogs"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-2 inline-block text-sm text-blue-400 hover:text-blue-300"
+                    className="text-link hover:text-link-hover mt-2 inline-block text-sm"
                   >
                     Can&apos;t scan? Click here
                   </a>
                 </div>
                 <div className="text-center">
-                  <h3 className="mb-3 text-lg font-semibold text-white">Roblox Donations</h3>
+                  <h3 className="text-primary-text mb-3 text-lg font-semibold">Roblox Donations</h3>
                   <RobloxIcon className="mx-auto mb-2 h-10 w-10" />
                   <Image
                     src="https://assets.jailbreakchangelogs.xyz/assets/images/support/Roblox_Supporter_QR_Code.webp"
@@ -317,7 +302,7 @@ export default function SupportingClient({ supporters }: SupportingClientProps) 
                     href="https://www.roblox.com/games/104188650191561/Support-Us"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-2 inline-block text-sm text-blue-400 hover:text-blue-300"
+                    className="text-link hover:text-link-hover mt-2 inline-block text-sm"
                   >
                     Can&apos;t scan? Click here
                   </a>

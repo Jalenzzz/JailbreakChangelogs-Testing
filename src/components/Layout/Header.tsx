@@ -44,6 +44,7 @@ import { useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { isFeatureEnabled } from '@/utils/featureFlags';
 import { useAuthContext } from '@/contexts/AuthContext';
+import ThemeToggle from './ThemeToggle';
 
 export default function Header() {
   const pathname = usePathname();
@@ -241,10 +242,7 @@ export default function Header() {
             component={Link}
             href={`/users/${userData?.id}`}
             onClick={handleDrawerToggle}
-            sx={{
-              cursor: 'pointer',
-              '&:hover': { backgroundColor: '#2E3944' },
-            }}
+            className="cursor-pointer"
           >
             <ListItemIcon>
               <UserAvatar
@@ -270,12 +268,9 @@ export default function Header() {
                 const event = new CustomEvent('setLoginTab', { detail: 1 });
                 window.dispatchEvent(event);
               }}
-              sx={{
-                cursor: 'pointer',
-                '&:hover': { backgroundColor: '#2E3944' },
-              }}
+              className="cursor-pointer"
             >
-              <ListItemIcon>
+              <ListItemIcon sx={{ color: 'var(--color-primary-text) !important' }}>
                 <RobloxIcon className="h-5 w-5" />
               </ListItemIcon>
               <ListItemText primary="Connect Roblox" />
@@ -285,30 +280,24 @@ export default function Header() {
             component={Link}
             href="/settings"
             onClick={handleDrawerToggle}
-            sx={{
-              cursor: 'pointer',
-              '&:hover': { backgroundColor: '#2E3944' },
-            }}
+            className="cursor-pointer"
           >
-            <ListItemIcon>
-              <SettingsIcon sx={{ color: '#D3D9D4' }} />
+            <ListItemIcon sx={{ color: 'var(--color-primary-text) !important' }}>
+              <SettingsIcon />
             </ListItemIcon>
             <ListItemText primary="Settings" />
           </ListItem>
-          <ListItem
-            component="div"
-            onClick={handleLogout}
-            sx={{
-              cursor: 'pointer',
-              '&:hover': { backgroundColor: '#2E3944' },
-            }}
-          >
-            <ListItemIcon>
-              <LogoutIcon sx={{ color: '#D3D9D4' }} />
+          <ListItem component="div" onClick={handleLogout} className="cursor-pointer">
+            <ListItemIcon sx={{ color: 'var(--color-button-danger) !important' }}>
+              <LogoutIcon />
             </ListItemIcon>
-            <ListItemText primary="Logout" />
+            <ListItemText
+              primary="Logout"
+              primaryTypographyProps={{
+                sx: { color: 'var(--color-button-danger)' },
+              }}
+            />
           </ListItem>
-          <Divider sx={{ borderColor: '#2E3944' }} />
         </>
       ) : (
         <>
@@ -319,63 +308,58 @@ export default function Header() {
                 setShowLoginModal(true);
                 handleDrawerToggle();
               }}
-              sx={{
-                backgroundColor: '#5865F2',
-                '&:hover': {
-                  backgroundColor: '#4752C4',
-                },
-                width: '100%',
-              }}
+              className="bg-button-info text-form-button-text w-full"
             >
               Login
             </Button>
           </ListItem>
-          <Divider sx={{ borderColor: '#2E3944' }} />
         </>
       )}
 
-      <ListItem sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography
-          sx={{
-            color: '#D3D9D4',
-            fontSize: '0.875rem',
-            fontWeight: 600,
-            textTransform: 'uppercase',
-            letterSpacing: '0.05em',
-          }}
-        >
+      <ListItem className="flex items-center justify-between">
+        <Typography className="text-secondary-text text-sm font-semibold tracking-wider uppercase">
           Game & Updates
         </Typography>
-        <IconButton onClick={handleDrawerToggle} sx={{ color: '#D3D9D4' }}>
+        <IconButton
+          onClick={handleDrawerToggle}
+          sx={{
+            color: 'var(--color-primary-text) !important',
+            '& .MuiSvgIcon-root': {
+              color: 'var(--color-primary-text) !important',
+            },
+          }}
+        >
           <CloseIcon />
         </IconButton>
       </ListItem>
-      <Divider sx={{ borderColor: '#2E3944' }} />
 
-      <ListItem component={Link} href="/changelogs" onClick={handleDrawerToggle} sx={{ pl: 4 }}>
+      <ListItem
+        component={Link}
+        href="/changelogs"
+        onClick={handleDrawerToggle}
+        className="cursor-pointer pl-4"
+      >
         <ListItemText primary="Changelogs" />
       </ListItem>
-      <ListItem component={Link} href="/seasons" onClick={handleDrawerToggle} sx={{ pl: 4 }}>
+      <ListItem
+        component={Link}
+        href="/seasons"
+        onClick={handleDrawerToggle}
+        className="cursor-pointer pl-4"
+      >
         <ListItemText primary="Browse Seasons" />
       </ListItem>
       <ListItem
         component={Link}
         href="/seasons/will-i-make-it"
         onClick={handleDrawerToggle}
-        sx={{ pl: 4 }}
+        className="cursor-pointer pl-4"
       >
         <ListItemText
           primary={
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-                flexWrap: 'wrap',
-              }}
-            >
+            <Box className="flex flex-wrap items-center gap-1">
               <span>Will I Make It</span>
-              <span className="rounded bg-[#5865F2] px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase">
+              <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                 New
               </span>
             </Box>
@@ -386,20 +370,13 @@ export default function Header() {
         component={Link}
         href="/seasons/contracts"
         onClick={handleDrawerToggle}
-        sx={{ pl: 4 }}
+        className="cursor-pointer pl-4"
       >
         <ListItemText
           primary={
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-                flexWrap: 'wrap',
-              }}
-            >
+            <Box className="flex flex-wrap items-center gap-1">
               <span>Weekly Contracts</span>
-              <span className="rounded bg-[#5865F2] px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase">
+              <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                 New
               </span>
             </Box>
@@ -407,27 +384,23 @@ export default function Header() {
         />
       </ListItem>
       <ListItem>
-        <Typography
-          sx={{
-            color: '#D3D9D4',
-            fontSize: '0.875rem',
-            fontWeight: 600,
-            textTransform: 'uppercase',
-            letterSpacing: '0.05em',
-          }}
-        >
+        <Typography className="text-secondary-text text-sm font-semibold tracking-wider uppercase">
           Values
         </Typography>
       </ListItem>
-      <Divider sx={{ borderColor: '#2E3944' }} />
-      <ListItem component={Link} href="/values" onClick={handleDrawerToggle} sx={{ pl: 4 }}>
+      <ListItem
+        component={Link}
+        href="/values"
+        onClick={handleDrawerToggle}
+        className="cursor-pointer pl-4"
+      >
         <ListItemText primary="Value List" />
       </ListItem>
       <ListItem
         component={Link}
         href="/values/changelogs"
         onClick={handleDrawerToggle}
-        sx={{ pl: 4 }}
+        className="cursor-pointer pl-4"
       >
         <ListItemText primary="Value Changelogs" />
       </ListItem>
@@ -435,7 +408,7 @@ export default function Header() {
         component={Link}
         href="/values/calculator"
         onClick={handleDrawerToggle}
-        sx={{ pl: 4 }}
+        className="cursor-pointer pl-4"
       >
         <ListItemText primary="Value Calculator" />
       </ListItem>
@@ -443,31 +416,18 @@ export default function Header() {
         component={Link}
         href="/dupes"
         onClick={handleDrawerToggle}
-        sx={{
-          pl: 4,
-          cursor: 'pointer',
-          '&:hover': {
-            backgroundColor: '#2E3944',
-          },
-        }}
+        className="cursor-pointer pl-4"
       >
         <ListItemText
           primary={
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-                flexWrap: 'wrap',
-              }}
-            >
+            <Box className="flex flex-wrap items-center gap-1">
               <span>Dupe Finder</span>
               {isFeatureEnabled('DUPE_FINDER') ? (
-                <span className="rounded bg-[#5865F2] px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase">
+                <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                   New
                 </span>
               ) : (
-                <span className="rounded bg-[#5865F2] px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase">
+                <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                   Coming Soon
                 </span>
               )}
@@ -479,42 +439,34 @@ export default function Header() {
         component={Link}
         href="/dupes/calculator"
         onClick={handleDrawerToggle}
-        sx={{ pl: 4 }}
+        className="cursor-pointer pl-4"
       >
         <ListItemText primary="Dupe Calculator" />
       </ListItem>
-      <ListItem component={Link} href="/trading" onClick={handleDrawerToggle} sx={{ pl: 4 }}>
+      <ListItem
+        component={Link}
+        href="/trading"
+        onClick={handleDrawerToggle}
+        className="cursor-pointer pl-4"
+      >
         <ListItemText primary="Trade Ads" />
       </ListItem>
       <ListItem
         component={Link}
         href="/inventories"
         onClick={handleDrawerToggle}
-        sx={{
-          pl: 4,
-          cursor: 'pointer',
-          '&:hover': {
-            backgroundColor: '#2E3944',
-          },
-        }}
+        className="group cursor-pointer pl-4"
       >
         <ListItemText
           primary={
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-                flexWrap: 'wrap',
-              }}
-            >
+            <Box className="flex flex-wrap items-center gap-1">
               <span>Inventory Calculator</span>
               {isFeatureEnabled('INVENTORY_CALCULATOR') ? (
-                <span className="rounded border border-amber-400/30 bg-gradient-to-r from-amber-500/20 to-orange-500/20 px-1.5 py-0.5 text-[10px] font-semibold text-amber-200 uppercase">
+                <span className="border-primary-text text-primary-text group-hover:border-form-button-text group-hover:text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase transition-colors duration-200">
                   Beta
                 </span>
               ) : (
-                <span className="rounded bg-[#5865F2] px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase">
+                <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                   Coming Soon
                 </span>
               )}
@@ -526,31 +478,18 @@ export default function Header() {
         component={Link}
         href="/og"
         onClick={handleDrawerToggle}
-        sx={{
-          pl: 4,
-          cursor: 'pointer',
-          '&:hover': {
-            backgroundColor: '#2E3944',
-          },
-        }}
+        className="cursor-pointer pl-4"
       >
         <ListItemText
           primary={
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-                flexWrap: 'wrap',
-              }}
-            >
+            <Box className="flex flex-wrap items-center gap-1">
               <span>OG Finder</span>
               {isFeatureEnabled('OG_FINDER') ? (
-                <span className="rounded bg-[#5865F2] px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase">
+                <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                   New
                 </span>
               ) : (
-                <span className="rounded bg-[#5865F2] px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase">
+                <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                   Coming Soon
                 </span>
               )}
@@ -559,35 +498,29 @@ export default function Header() {
         />
       </ListItem>
       <ListItem>
-        <Typography
-          sx={{
-            color: '#D3D9D4',
-            fontSize: '0.875rem',
-            fontWeight: 600,
-            textTransform: 'uppercase',
-            letterSpacing: '0.05em',
-          }}
-        >
+        <Typography className="text-secondary-text text-sm font-semibold tracking-wider uppercase">
           Community
         </Typography>
       </ListItem>
-      <Divider sx={{ borderColor: '#2E3944' }} />
-      <ListItem component={Link} href="/users" onClick={handleDrawerToggle} sx={{ pl: 4 }}>
+      <ListItem
+        component={Link}
+        href="/users"
+        onClick={handleDrawerToggle}
+        className="cursor-pointer pl-4"
+      >
         <ListItemText primary="User Search" />
       </ListItem>
-      <ListItem component={Link} href="/crews" onClick={handleDrawerToggle} sx={{ pl: 4 }}>
+      <ListItem
+        component={Link}
+        href="/crews"
+        onClick={handleDrawerToggle}
+        className="cursor-pointer pl-4"
+      >
         <ListItemText
           primary={
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-                flexWrap: 'wrap',
-              }}
-            >
+            <Box className="flex flex-wrap items-center gap-1">
               <span>Crew Leaderboard</span>
-              <span className="rounded bg-[#5865F2] px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase">
+              <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                 New
               </span>
             </Box>
@@ -598,27 +531,49 @@ export default function Header() {
         component={Link}
         href="/leaderboard/money"
         onClick={handleDrawerToggle}
-        sx={{ pl: 4 }}
+        className="cursor-pointer pl-4"
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box className="flex items-center gap-1">
           <span>Money Leaderboard</span>
-          <span className="rounded bg-[#5865F2] px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase">
+          <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
             New
           </span>
         </Box>
       </ListItem>
-      <ListItem component={Link} href="/servers" onClick={handleDrawerToggle} sx={{ pl: 4 }}>
+      <ListItem
+        component={Link}
+        href="/servers"
+        onClick={handleDrawerToggle}
+        className="cursor-pointer pl-4"
+      >
         <ListItemText primary="Private Servers" />
       </ListItem>
-      <ListItem component={Link} href="/bot" onClick={handleDrawerToggle} sx={{ pl: 4 }}>
+      <ListItem
+        component={Link}
+        href="/bot"
+        onClick={handleDrawerToggle}
+        className="cursor-pointer pl-4"
+      >
         <ListItemText primary="Discord Bot" />
       </ListItem>
-      <ListItem component={Link} href="/faq" onClick={handleDrawerToggle} sx={{ pl: 4 }}>
+      <ListItem
+        component={Link}
+        href="/faq"
+        onClick={handleDrawerToggle}
+        className="cursor-pointer pl-4"
+      >
         <ListItemText primary="FAQ" />
       </ListItem>
-      <ListItem component={Link} href="/contributors" onClick={handleDrawerToggle} sx={{ pl: 4 }}>
+      <ListItem
+        component={Link}
+        href="/contributors"
+        onClick={handleDrawerToggle}
+        className="cursor-pointer pl-4"
+      >
         <ListItemText primary="Meet the team" />
       </ListItem>
+
+      <Divider className="my-4" />
     </List>
   );
 
@@ -626,13 +581,7 @@ export default function Header() {
     <>
       <AppBar
         position="sticky"
-        sx={{
-          backgroundColor: 'rgba(33, 42, 49, 0.75)',
-          backdropFilter: 'blur(8px)',
-          WebkitBackdropFilter: 'blur(8px)',
-          top: 0,
-          zIndex: 1200,
-        }}
+        className="bg-primary-bg/75 border-border-primary top-0 z-[1200] border-b backdrop-blur-lg"
       >
         <Toolbar className="flex items-center justify-between">
           <Box className="flex items-center">
@@ -661,47 +610,31 @@ export default function Header() {
                 <Button
                   component={Link}
                   href="/changelogs"
-                  sx={{
-                    color: '#D3D9D4',
-                    borderRadius: '8px',
-                    '&:hover': {
-                      color: '#FFFFFF',
-                      backgroundColor: '#5865F2',
-                      borderRadius: '8px',
-                    },
-                  }}
+                  className="text-primary-text hover:bg-button-info-hover active:bg-button-info-active active:text-form-button-text hover:text-form-button-text rounded-lg transition-colors duration-200"
                 >
-                  <Typography variant="button" sx={{ fontWeight: 700 }}>
+                  <Typography variant="button" className="font-bold">
                     Changelogs
                   </Typography>
                 </Button>
 
                 {/* Seasons Dropdown */}
                 <Box
-                  sx={{ position: 'relative', display: 'inline-block' }}
+                  className="relative inline-block"
                   onMouseEnter={handleSeasonsMenuOpen}
                   onMouseLeave={handleSeasonsMenuClose}
                   ref={seasonsMenuButtonRef}
                 >
                   <Button
                     type="button"
-                    sx={{
-                      color: seasonsMenuOpen ? '#FFFFFF' : '#D3D9D4',
-                      borderRadius: '8px',
-                      backgroundColor: seasonsMenuOpen ? '#5865F2' : 'transparent',
-                      '&:hover': {
-                        color: '#FFFFFF',
-                        backgroundColor: '#5865F2',
-                        borderRadius: '8px',
-                      },
-                    }}
+                    className={`rounded-lg transition-colors duration-200 ${
+                      seasonsMenuOpen
+                        ? 'bg-button-info text-form-button-text'
+                        : 'text-primary-text hover:bg-button-info-hover hover:text-form-button-text active:bg-button-info-active'
+                    }`}
                   >
                     <Typography
                       variant="button"
-                      sx={{
-                        fontWeight: 700,
-                        color: seasonsMenuOpen ? '#FFFFFF' : undefined,
-                      }}
+                      className={`font-bold ${seasonsMenuOpen ? 'text-form-button-text' : ''}`}
                     >
                       Seasons
                     </Typography>
@@ -710,11 +643,9 @@ export default function Header() {
                       transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
                     >
                       <KeyboardArrowDownIcon
-                        sx={{
-                          ml: 0.5,
-                          fontSize: '1.2rem',
-                          color: seasonsMenuOpen ? '#FFFFFF' : '#D3D9D4',
-                        }}
+                        className={`ml-0.5 text-xl ${
+                          seasonsMenuOpen ? 'text-form-button-text' : 'text-secondary-text'
+                        }`}
                       />
                     </motion.div>
                   </Button>
@@ -722,7 +653,7 @@ export default function Header() {
                   <AnimatePresence>
                     {seasonsMenuOpen && (
                       <motion.div
-                        className="absolute left-1/2 z-50 mt-0 min-w-[260px] -translate-x-1/2 rounded-2xl border border-white/[0.12] bg-[rgba(33,42,49,0.95)] shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] backdrop-blur-xl"
+                        className="bg-secondary-bg border-border-primary shadow-card-shadow absolute left-1/2 z-50 mt-0 min-w-[260px] -translate-x-1/2 rounded-2xl border shadow-lg"
                         style={{
                           top: '100%',
                         }}
@@ -754,7 +685,7 @@ export default function Header() {
                           >
                             <Link
                               href="/seasons"
-                              className="block rounded-lg px-4 py-2 text-base font-bold text-[#D3D9D4] transition-colors hover:bg-[#2E3944] hover:text-white"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleSeasonsMenuClose}
                             >
                               Browse Seasons
@@ -769,12 +700,12 @@ export default function Header() {
                           >
                             <Link
                               href="/seasons/will-i-make-it"
-                              className="block rounded-lg px-4 py-2 text-base font-bold text-[#D3D9D4] transition-colors hover:bg-[#2E3944] hover:text-white"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleSeasonsMenuClose}
                             >
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>Will I Make It</span>
-                                <span className="rounded bg-[#5865F2] px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase">
+                                <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                   New
                                 </span>
                               </div>
@@ -789,12 +720,12 @@ export default function Header() {
                           >
                             <Link
                               href="/seasons/contracts"
-                              className="block rounded-lg px-4 py-2 text-base font-bold text-[#D3D9D4] transition-colors hover:bg-[#2E3944] hover:text-white"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleSeasonsMenuClose}
                             >
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>Weekly Contracts</span>
-                                <span className="rounded bg-[#5865F2] px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase">
+                                <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                   New
                                 </span>
                               </div>
@@ -808,30 +739,22 @@ export default function Header() {
 
                 {/* Values Dropdown */}
                 <Box
-                  sx={{ position: 'relative', display: 'inline-block' }}
+                  className="relative inline-block"
                   onMouseEnter={handleNavMenuOpen}
                   onMouseLeave={handleNavMenuClose}
                   ref={navMenuButtonRef}
                 >
                   <Button
                     type="button"
-                    sx={{
-                      color: navMenuOpen ? '#FFFFFF' : '#D3D9D4',
-                      borderRadius: '8px',
-                      backgroundColor: navMenuOpen ? '#5865F2' : 'transparent',
-                      '&:hover': {
-                        color: '#FFFFFF',
-                        backgroundColor: '#5865F2',
-                        borderRadius: '8px',
-                      },
-                    }}
+                    className={`rounded-lg ${
+                      navMenuOpen
+                        ? 'bg-button-info text-white'
+                        : 'text-primary-text hover:bg-button-info-hover hover:text-form-button-text'
+                    }`}
                   >
                     <Typography
                       variant="button"
-                      sx={{
-                        fontWeight: 700,
-                        color: navMenuOpen ? '#FFFFFF' : undefined,
-                      }}
+                      className={`font-bold ${navMenuOpen ? 'text-white' : ''}`}
                     >
                       Values
                     </Typography>
@@ -840,11 +763,9 @@ export default function Header() {
                       transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
                     >
                       <KeyboardArrowDownIcon
-                        sx={{
-                          ml: 0.5,
-                          fontSize: '1.2rem',
-                          color: navMenuOpen ? '#FFFFFF' : '#D3D9D4',
-                        }}
+                        className={`ml-0.5 text-xl ${
+                          navMenuOpen ? 'text-white' : 'text-secondary-text'
+                        }`}
                       />
                     </motion.div>
                   </Button>
@@ -852,7 +773,7 @@ export default function Header() {
                   <AnimatePresence>
                     {navMenuOpen && (
                       <motion.div
-                        className="absolute left-1/2 z-50 mt-0 min-w-[260px] -translate-x-1/2 rounded-2xl border border-white/[0.12] bg-[rgba(33,42,49,0.95)] shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] backdrop-blur-xl"
+                        className="bg-secondary-bg absolute left-1/2 z-50 mt-0 min-w-[260px] -translate-x-1/2 rounded-2xl shadow-2xl"
                         style={{
                           top: '100%',
                         }}
@@ -884,7 +805,7 @@ export default function Header() {
                           >
                             <Link
                               href="/values"
-                              className="block rounded-lg px-4 py-2 text-base font-bold text-[#D3D9D4] transition-colors hover:bg-[#2E3944] hover:text-white"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleNavMenuClose}
                             >
                               Value List
@@ -899,7 +820,7 @@ export default function Header() {
                           >
                             <Link
                               href="/values/changelogs"
-                              className="block rounded-lg px-4 py-2 text-base font-bold text-[#D3D9D4] transition-colors hover:bg-[#2E3944] hover:text-white"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleNavMenuClose}
                             >
                               Value Changelogs
@@ -914,7 +835,7 @@ export default function Header() {
                           >
                             <Link
                               href="/values/calculator"
-                              className="block rounded-lg px-4 py-2 text-base font-bold text-[#D3D9D4] transition-colors hover:bg-[#2E3944] hover:text-white"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleNavMenuClose}
                             >
                               Value Calculator
@@ -929,17 +850,17 @@ export default function Header() {
                           >
                             <Link
                               href="/dupes"
-                              className="block rounded-lg px-4 py-2 text-base font-bold text-[#D3D9D4] transition-colors hover:bg-[#2E3944] hover:text-white"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleNavMenuClose}
                             >
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>Dupe Finder</span>
                                 {isFeatureEnabled('DUPE_FINDER') ? (
-                                  <span className="rounded bg-[#5865F2] px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase">
+                                  <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                     New
                                   </span>
                                 ) : (
-                                  <span className="rounded bg-[#5865F2] px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase">
+                                  <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                     Coming Soon
                                   </span>
                                 )}
@@ -955,7 +876,7 @@ export default function Header() {
                           >
                             <Link
                               href="/dupes/calculator"
-                              className="block rounded-lg px-4 py-2 text-base font-bold text-[#D3D9D4] transition-colors hover:bg-[#2E3944] hover:text-white"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleNavMenuClose}
                             >
                               Dupe Calculator
@@ -970,7 +891,7 @@ export default function Header() {
                           >
                             <Link
                               href="/trading"
-                              className="block rounded-lg px-4 py-2 text-base font-bold text-[#D3D9D4] transition-colors hover:bg-[#2E3944] hover:text-white"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleNavMenuClose}
                             >
                               Trade Ads
@@ -985,17 +906,17 @@ export default function Header() {
                           >
                             <Link
                               href="/inventories"
-                              className="block rounded-lg px-4 py-2 text-base font-bold text-[#D3D9D4] transition-colors hover:bg-[#2E3944] hover:text-white"
+                              className="group text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleNavMenuClose}
                             >
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>Inventory Calculator</span>
                                 {isFeatureEnabled('INVENTORY_CALCULATOR') ? (
-                                  <span className="rounded border border-amber-400/30 bg-gradient-to-r from-amber-500/20 to-orange-500/20 px-1.5 py-0.5 text-[10px] font-semibold text-amber-200 uppercase">
+                                  <span className="border-primary-text text-primary-text group-hover:border-form-button-text group-hover:text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase transition-colors duration-200">
                                     Beta
                                   </span>
                                 ) : (
-                                  <span className="rounded bg-[#5865F2] px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase">
+                                  <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                     Coming Soon
                                   </span>
                                 )}
@@ -1011,17 +932,17 @@ export default function Header() {
                           >
                             <Link
                               href="/og"
-                              className="block rounded-lg px-4 py-2 text-base font-bold text-[#D3D9D4] transition-colors hover:bg-[#2E3944] hover:text-white"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleNavMenuClose}
                             >
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>OG Finder</span>
                                 {isFeatureEnabled('OG_FINDER') ? (
-                                  <span className="rounded bg-[#5865F2] px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase">
+                                  <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                     New
                                   </span>
                                 ) : (
-                                  <span className="rounded bg-[#5865F2] px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase">
+                                  <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                     Coming Soon
                                   </span>
                                 )}
@@ -1036,30 +957,22 @@ export default function Header() {
 
                 {/* Community Dropdown */}
                 <Box
-                  sx={{ position: 'relative', display: 'inline-block' }}
+                  className="relative inline-block"
                   onMouseEnter={handleCommunityMenuOpen}
                   onMouseLeave={handleCommunityMenuClose}
                   ref={communityMenuButtonRef}
                 >
                   <Button
                     type="button"
-                    sx={{
-                      color: communityMenuOpen ? '#FFFFFF' : '#D3D9D4',
-                      borderRadius: '8px',
-                      backgroundColor: communityMenuOpen ? '#5865F2' : 'transparent',
-                      '&:hover': {
-                        color: '#FFFFFF',
-                        backgroundColor: '#5865F2',
-                        borderRadius: '8px',
-                      },
-                    }}
+                    className={`rounded-lg ${
+                      communityMenuOpen
+                        ? 'bg-button-info text-white'
+                        : 'text-primary-text hover:bg-button-info-hover hover:text-form-button-text'
+                    }`}
                   >
                     <Typography
                       variant="button"
-                      sx={{
-                        fontWeight: 700,
-                        color: communityMenuOpen ? '#FFFFFF' : undefined,
-                      }}
+                      className={`font-bold ${communityMenuOpen ? 'text-white' : ''}`}
                     >
                       Community
                     </Typography>
@@ -1068,11 +981,9 @@ export default function Header() {
                       transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
                     >
                       <KeyboardArrowDownIcon
-                        sx={{
-                          ml: 0.5,
-                          fontSize: '1.2rem',
-                          color: communityMenuOpen ? '#FFFFFF' : '#D3D9D4',
-                        }}
+                        className={`ml-0.5 text-xl ${
+                          communityMenuOpen ? 'text-white' : 'text-secondary-text'
+                        }`}
                       />
                     </motion.div>
                   </Button>
@@ -1080,7 +991,7 @@ export default function Header() {
                   <AnimatePresence>
                     {communityMenuOpen && (
                       <motion.div
-                        className="absolute left-1/2 z-50 mt-0 min-w-[260px] -translate-x-1/2 rounded-2xl border border-white/[0.12] bg-[rgba(33,42,49,0.95)] shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] backdrop-blur-xl"
+                        className="bg-secondary-bg absolute left-1/2 z-50 mt-0 min-w-[260px] -translate-x-1/2 rounded-2xl shadow-2xl"
                         style={{
                           top: '100%',
                         }}
@@ -1112,7 +1023,7 @@ export default function Header() {
                           >
                             <Link
                               href="/users"
-                              className="block rounded-lg px-4 py-2 text-base font-bold text-[#D3D9D4] transition-colors hover:bg-[#2E3944] hover:text-white"
+                              className="text-primary-text hover:bg-button-info-hover active:bg-button-info-active hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold transition-colors duration-200"
                               onClick={handleCommunityMenuClose}
                             >
                               User Search
@@ -1127,12 +1038,12 @@ export default function Header() {
                           >
                             <Link
                               href="/crews"
-                              className="block rounded-lg px-4 py-2 text-base font-bold text-[#D3D9D4] transition-colors hover:bg-[#2E3944] hover:text-white"
+                              className="text-primary-text hover:bg-button-info-hover active:bg-button-info-active hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold transition-colors duration-200"
                               onClick={handleCommunityMenuClose}
                             >
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>Crew Leaderboard</span>
-                                <span className="rounded bg-[#5865F2] px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase">
+                                <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                   New
                                 </span>
                               </div>
@@ -1147,12 +1058,12 @@ export default function Header() {
                           >
                             <Link
                               href="/leaderboard/money"
-                              className="block rounded-lg px-4 py-2 text-base font-bold text-[#D3D9D4] transition-colors hover:bg-[#2E3944] hover:text-white"
+                              className="text-primary-text hover:bg-button-info-hover active:bg-button-info-active hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold transition-colors duration-200"
                               onClick={handleCommunityMenuClose}
                             >
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>Money Leaderboard</span>
-                                <span className="rounded bg-[#5865F2] px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase">
+                                <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                   New
                                 </span>
                               </div>
@@ -1167,7 +1078,7 @@ export default function Header() {
                           >
                             <Link
                               href="/servers"
-                              className="block rounded-lg px-4 py-2 text-base font-bold text-[#D3D9D4] transition-colors hover:bg-[#2E3944] hover:text-white"
+                              className="text-primary-text hover:bg-button-info-hover active:bg-button-info-active hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold transition-colors duration-200"
                               onClick={handleCommunityMenuClose}
                             >
                               Private Servers
@@ -1182,7 +1093,7 @@ export default function Header() {
                           >
                             <Link
                               href="/bot"
-                              className="block rounded-lg px-4 py-2 text-base font-bold text-[#D3D9D4] transition-colors hover:bg-[#2E3944] hover:text-white"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleCommunityMenuClose}
                             >
                               Discord Bot
@@ -1197,7 +1108,7 @@ export default function Header() {
                           >
                             <Link
                               href="/faq"
-                              className="block rounded-lg px-4 py-2 text-base font-bold text-[#D3D9D4] transition-colors hover:bg-[#2E3944] hover:text-white"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleCommunityMenuClose}
                             >
                               FAQ
@@ -1212,7 +1123,7 @@ export default function Header() {
                           >
                             <Link
                               href="/contributors"
-                              className="block rounded-lg px-4 py-2 text-base font-bold text-[#D3D9D4] transition-colors hover:bg-[#2E3944] hover:text-white"
+                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
                               onClick={handleCommunityMenuClose}
                             >
                               Meet the team
@@ -1228,12 +1139,7 @@ export default function Header() {
               <Box className="ml-auto flex items-center gap-2">
                 <Link href="/supporting">
                   <IconButton
-                    sx={{
-                      color: '#FFFFFF',
-                      '&:hover': {
-                        backgroundColor: 'rgba(29, 125, 163, 0.1)',
-                      },
-                    }}
+                    className="hover:bg-quaternary-bg text-tertiary-text transition-colors duration-200"
                     aria-label="Support us"
                   >
                     <Image
@@ -1245,16 +1151,25 @@ export default function Header() {
                     />
                   </IconButton>
                 </Link>
-                <Tooltip title="Join our Discord">
+                <Tooltip
+                  title="Join our Discord"
+                  arrow
+                  placement="bottom"
+                  slotProps={{
+                    tooltip: {
+                      sx: {
+                        backgroundColor: 'var(--color-secondary-bg)',
+                        color: 'var(--color-primary-text)',
+                        '& .MuiTooltip-arrow': {
+                          color: 'var(--color-secondary-bg)',
+                        },
+                      },
+                    },
+                  }}
+                >
                   <IconButton
                     onClick={() => setIsDiscordModalOpen(true)}
-                    sx={{
-                      color: '#5865F2',
-                      '&:hover': {
-                        color: '#4752C4',
-                        backgroundColor: 'rgba(88, 101, 242, 0.1)',
-                      },
-                    }}
+                    className="text-button-info hover:bg-quaternary-bg transition-colors duration-200"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -1268,71 +1183,31 @@ export default function Header() {
                   </IconButton>
                 </Tooltip>
 
+                <ThemeToggle />
+
                 {userData ? (
                   <>
                     <Box
-                      sx={{
-                        position: 'relative',
-                        display: 'inline-block',
-                      }}
+                      className="relative inline-block"
                       onMouseEnter={handleMenuOpen}
                       onMouseLeave={handleMenuClose}
                     >
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 1,
-                          ml: 2,
-                          cursor: 'pointer',
-                          backgroundColor: Boolean(anchorEl) ? '#5865F2' : '#192025',
-                          padding: '6px 12px',
-                          borderRadius: '20px',
-                          transition: 'background-color 0.2s',
-                          '&:hover': {
-                            backgroundColor: '#5865F2',
-                          },
-                        }}
-                      >
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <Typography
-                            variant="body1"
-                            sx={{
-                              color: Boolean(anchorEl) ? '#FFFFFF' : '#D3D9D4',
-                              fontWeight: 600,
-                              transition: 'color 0.2s',
-                            }}
-                          >
-                            {userData.username}
-                          </Typography>
-                          <IconButton
-                            size="small"
-                            sx={{
-                              padding: 0,
-                              '&:hover': {
-                                backgroundColor: 'transparent',
-                              },
-                            }}
-                          >
-                            <UserAvatar
-                              userId={userData.id}
-                              avatarHash={userData.avatar}
-                              username={userData.username}
-                              size={10}
-                              accent_color={userData.accent_color}
-                              custom_avatar={userData.custom_avatar}
-                              showBadge={false}
-                              settings={userData.settings}
-                              premiumType={userData.premiumtype}
-                            />
-                          </IconButton>
-                        </Box>
-                      </Box>
+                      <UserAvatar
+                        userId={userData.id}
+                        avatarHash={userData.avatar}
+                        username={userData.username}
+                        size={10}
+                        accent_color={userData.accent_color}
+                        custom_avatar={userData.custom_avatar}
+                        showBadge={false}
+                        settings={userData.settings}
+                        premiumType={userData.premiumtype}
+                      />
 
                       <AnimatePresence>
                         {Boolean(anchorEl) && (
                           <motion.div
-                            className="absolute right-0 z-50 mt-0 min-w-[280px] rounded-2xl border border-white/[0.12] bg-[rgba(33,42,49,0.95)] shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] backdrop-blur-xl"
+                            className="bg-secondary-bg absolute right-0 z-50 mt-0 min-w-[280px] rounded-2xl border border-white/[0.12] shadow-2xl"
                             style={{
                               top: '100%',
                             }}
@@ -1364,7 +1239,7 @@ export default function Header() {
                               >
                                 <Link
                                   href={`/users/${String(userData?.id).replace(/\D/g, '')}`}
-                                  className="flex items-center rounded-lg px-4 py-3 text-base font-bold text-[#D3D9D4] transition-colors hover:bg-[#2E3944] hover:text-white"
+                                  className="group text-primary-text hover:bg-button-info-hover hover:text-form-button-text flex items-center rounded-lg px-4 py-3 text-base font-bold transition-colors"
                                   onClick={handleMenuClose}
                                 >
                                   <UserAvatar
@@ -1378,11 +1253,16 @@ export default function Header() {
                                     settings={userData.settings}
                                     premiumType={userData.premiumtype}
                                   />
-                                  <span className="ml-3">My account</span>
+                                  <div className="ml-3">
+                                    <div className="font-bold">{userData.username}</div>
+                                    <div className="text-secondary-text group-hover:text-form-button-text text-sm">
+                                      @{userData.username}
+                                    </div>
+                                  </div>
                                 </Link>
                               </motion.div>
 
-                              <div className="my-1 border-t border-[#2E3944]"></div>
+                              <div className="border-secondary-text my-1 border-t"></div>
 
                               {!userData.roblox_id && (
                                 <motion.div
@@ -1393,7 +1273,7 @@ export default function Header() {
                                   transition={{ duration: 0.2, delay: 0.05 }}
                                 >
                                   <button
-                                    className="flex w-full items-center rounded-lg px-4 py-2 text-base font-bold text-[#D3D9D4] transition-colors hover:bg-[#2E3944] hover:text-white"
+                                    className="group text-primary-text hover:bg-button-info-hover hover:text-form-button-text flex w-full items-center rounded-lg px-4 py-2 text-base font-bold transition-colors"
                                     onClick={() => {
                                       handleMenuClose();
                                       setShowLoginModal(true);
@@ -1401,7 +1281,7 @@ export default function Header() {
                                       window.dispatchEvent(event);
                                     }}
                                   >
-                                    <RobloxIcon className="mr-3 h-5 w-5" />
+                                    <RobloxIcon className="group-hover:text-form-button-text mr-3 h-5 w-5" />
                                     Connect Roblox
                                   </button>
                                 </motion.div>
@@ -1416,16 +1296,10 @@ export default function Header() {
                               >
                                 <Link
                                   href="/settings"
-                                  className="flex items-center rounded-lg px-4 py-2 text-base font-bold text-[#D3D9D4] transition-colors hover:bg-[#2E3944] hover:text-white"
+                                  className="group text-primary-text hover:bg-button-info-hover hover:text-form-button-text flex items-center rounded-lg px-4 py-2 text-base font-bold transition-colors"
                                   onClick={handleMenuClose}
                                 >
-                                  <SettingsIcon
-                                    sx={{
-                                      fontSize: '1.25rem',
-                                      mr: 3,
-                                      color: '#D3D9D4',
-                                    }}
-                                  />
+                                  <SettingsIcon className="text-primary-text group-hover:text-form-button-text mr-3 text-xl" />
                                   Settings
                                 </Link>
                               </motion.div>
@@ -1438,16 +1312,10 @@ export default function Header() {
                                 transition={{ duration: 0.2, delay: 0.15 }}
                               >
                                 <button
-                                  className="flex w-full items-center rounded-lg px-4 py-2 text-base font-bold text-[#D3D9D4] transition-colors hover:bg-[#2E3944] hover:text-white"
+                                  className="text-button-danger hover:bg-button-danger/10 hover:text-button-danger flex w-full cursor-pointer items-center rounded-lg px-4 py-2 text-base font-bold transition-colors"
                                   onClick={handleLogout}
                                 >
-                                  <LogoutIcon
-                                    sx={{
-                                      fontSize: '1.25rem',
-                                      mr: 3,
-                                      color: '#D3D9D4',
-                                    }}
-                                  />
+                                  <LogoutIcon className="text-button-danger mr-3 text-xl" />
                                   Logout
                                 </button>
                               </motion.div>
@@ -1461,12 +1329,7 @@ export default function Header() {
                   <Button
                     variant="contained"
                     onClick={() => setShowLoginModal(true)}
-                    sx={{
-                      backgroundColor: '#5865F2',
-                      '&:hover': {
-                        backgroundColor: '#4752C4',
-                      },
-                    }}
+                    className="bg-button-info active:bg-button-info-active text-form-button-text transition-colors duration-200"
                   >
                     <Typography variant="button">Login</Typography>
                   </Button>
@@ -1475,15 +1338,10 @@ export default function Header() {
             </>
           )}
           {mounted && isMobile && (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box className="flex items-center gap-1">
               <Link href="/supporting">
                 <IconButton
-                  sx={{
-                    color: '#FFFFFF',
-                    '&:hover': {
-                      backgroundColor: 'rgba(29, 125, 163, 0.1)',
-                    },
-                  }}
+                  className="text-tertiary-text hover:bg-quaternary-bg transition-colors duration-200"
                   aria-label="Support us"
                 >
                   <Image
@@ -1495,16 +1353,25 @@ export default function Header() {
                   />
                 </IconButton>
               </Link>
-              <Tooltip title="Join our Discord">
+              <Tooltip
+                title="Join our Discord"
+                arrow
+                placement="bottom"
+                slotProps={{
+                  tooltip: {
+                    sx: {
+                      backgroundColor: 'var(--color-secondary-bg)',
+                      color: 'var(--color-primary-text)',
+                      '& .MuiTooltip-arrow': {
+                        color: 'var(--color-secondary-bg)',
+                      },
+                    },
+                  },
+                }}
+              >
                 <IconButton
                   onClick={() => setIsDiscordModalOpen(true)}
-                  sx={{
-                    color: '#5865F2',
-                    '&:hover': {
-                      color: '#4752C4',
-                      backgroundColor: 'rgba(88, 101, 242, 0.1)',
-                    },
-                  }}
+                  className="text-button-info hover:bg-quaternary-bg transition-colors duration-200"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -1517,11 +1384,17 @@ export default function Header() {
                   </svg>
                 </IconButton>
               </Tooltip>
+              <ThemeToggle />
               <IconButton
-                color="inherit"
                 aria-label="open drawer"
                 edge="end"
                 onClick={handleDrawerToggle}
+                sx={{
+                  color: 'var(--color-primary-text) !important',
+                  '& .MuiSvgIcon-root': {
+                    color: 'var(--color-primary-text) !important',
+                  },
+                }}
               >
                 <MenuIcon />
               </IconButton>
@@ -1537,14 +1410,7 @@ export default function Header() {
         ModalProps={{
           keepMounted: true,
         }}
-        sx={{
-          '& .MuiDrawer-paper': {
-            boxSizing: 'border-box',
-            width: 240,
-            backgroundColor: '#212A31',
-            color: '#D3D9D4',
-          },
-        }}
+        className="[&_.MuiDrawer-paper]:bg-secondary-bg [&_.MuiDrawer-paper]:border-border-primary [&_.MuiDrawer-paper]:text-primary-text [&_.MuiDrawer-paper]:box-border [&_.MuiDrawer-paper]:w-60 [&_.MuiDrawer-paper]:border-l"
       >
         {drawer}
       </Drawer>

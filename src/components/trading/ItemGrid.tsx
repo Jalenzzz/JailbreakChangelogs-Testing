@@ -6,7 +6,6 @@ const Tooltip = dynamic(() => import('@mui/material/Tooltip'), { ssr: false });
 import { TradeItem } from '@/types/trading';
 import { getItemImagePath, handleImageError, isVideoItem, getVideoPath } from '@/utils/images';
 import { TradeAdTooltip } from './TradeAdTooltip';
-import { TrashIcon } from '@heroicons/react/24/outline';
 
 interface ItemGridProps {
   items: TradeItem[];
@@ -75,16 +74,16 @@ const groupItems = (items: TradeItem[]) => {
   return Object.values(grouped);
 };
 
-export const ItemGrid: React.FC<ItemGridProps> = ({ items, title, onRemove }) => {
+export const ItemGrid: React.FC<ItemGridProps> = ({ items, title }) => {
   if (items.length === 0) {
     const isOffering = title.toLowerCase() === 'offering';
     const borderColor = isOffering
-      ? 'border-[#047857]/30 hover:border-[#047857]/60'
-      : 'border-[#B91C1C]/30 hover:border-[#B91C1C]/60';
+      ? 'border-status-success/30 hover:border-status-success/60'
+      : 'border-status-error/30 hover:border-status-error/60';
 
     return (
       <div
-        className={`cursor-pointer rounded-lg border-2 border-dashed bg-[#2E3944] p-6 text-center transition-colors hover:bg-[#37424D] ${borderColor}`}
+        className={`hover:bg-secondary-bg cursor-pointer rounded-lg border-2 border-dashed p-6 text-center transition-colors ${borderColor}`}
         onClick={() => {
           // Scroll to items grid after a short delay to ensure tab switch completes
           setTimeout(() => {
@@ -114,7 +113,7 @@ export const ItemGrid: React.FC<ItemGridProps> = ({ items, title, onRemove }) =>
       >
         <div className="mb-2">
           <svg
-            className="text-muted/50 mx-auto h-8 w-8"
+            className="text-secondary-text/50 mx-auto h-8 w-8"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -127,15 +126,15 @@ export const ItemGrid: React.FC<ItemGridProps> = ({ items, title, onRemove }) =>
             />
           </svg>
         </div>
-        <p className="text-muted text-sm font-medium">No items selected</p>
-        <p className="text-muted/60 mt-1 text-xs">Click to browse items</p>
+        <p className="text-secondary-text text-sm font-medium">No items selected</p>
+        <p className="text-secondary-text/70 mt-1 text-xs">Click to browse items</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-lg bg-[#2E3944] p-4">
-      <h4 className="text-muted mb-2 text-sm">{title}</h4>
+    <div className="rounded-lg p-4">
+      <h4 className="text-primary-text mb-2 text-sm">{title}</h4>
       <div className="max-h-[480px] overflow-y-auto pr-1" aria-label="Selected items list">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
           {groupItems(items).map((item) => {
@@ -147,7 +146,10 @@ export const ItemGrid: React.FC<ItemGridProps> = ({ items, title, onRemove }) =>
             const displayName = originalItem ? getDisplayName(originalItem) : item.name;
 
             return (
-              <div key={`${item.id}-${item.sub_name || 'base'}`} className="group relative">
+              <div
+                key={`${item.id}-${item.sub_name || 'base'}`}
+                className="group relative cursor-help"
+              >
                 <Tooltip
                   title={
                     <TradeAdTooltip
@@ -164,20 +166,20 @@ export const ItemGrid: React.FC<ItemGridProps> = ({ items, title, onRemove }) =>
                   slotProps={{
                     tooltip: {
                       sx: {
-                        bgcolor: '#1A2228',
-                        border: '1px solid #2E3944',
+                        backgroundColor: 'var(--color-secondary-bg)',
+                        color: 'var(--color-primary-text)',
                         maxWidth: '400px',
                         width: 'auto',
                         minWidth: '300px',
                         '& .MuiTooltip-arrow': {
-                          color: '#1A2228',
+                          color: 'var(--color-secondary-bg)',
                         },
                       },
                     },
                   }}
                 >
                   <div className="relative aspect-square">
-                    <div className="relative h-full w-full overflow-hidden rounded-lg bg-[#2E3944]">
+                    <div className="relative h-full w-full overflow-hidden rounded-lg">
                       {isVideoItem(item.name) ? (
                         <video
                           src={getVideoPath(item.type, item.name)}
@@ -197,17 +199,9 @@ export const ItemGrid: React.FC<ItemGridProps> = ({ items, title, onRemove }) =>
                         />
                       )}
                       {item.count > 1 && (
-                        <div className="absolute top-1 right-1 rounded-full border border-[#5865F2] bg-[#5865F2]/90 px-1.5 py-0.5 text-xs text-white">
+                        <div className="border-button-info bg-button-info/90 text-form-button-text absolute top-1 right-1 rounded-full border px-1.5 py-0.5 text-xs">
                           ×{item.count}
                         </div>
-                      )}
-                      {onRemove && (
-                        <button
-                          onClick={() => onRemove(item.id, item.sub_name)}
-                          className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100"
-                        >
-                          <TrashIcon className="h-6 w-6 text-white" />
-                        </button>
                       )}
                     </div>
                   </div>
