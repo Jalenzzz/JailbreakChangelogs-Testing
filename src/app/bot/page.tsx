@@ -29,24 +29,31 @@ export default function BotPage() {
       <section className="relative py-20">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
-          <div className="bg-overlay-medium absolute inset-0"></div>
           {backgroundImage && (
             <Image
               src={backgroundImage}
               alt="Jailbreak Background"
               fill
-              className="object-cover opacity-40"
+              className="object-cover"
+              style={{ objectPosition: 'center 70%' }}
               priority
             />
           )}
+          <div className="absolute inset-0 z-10 bg-black/70"></div>
         </div>
 
         <div className="relative z-10 container mx-auto px-4">
           <div className="text-center">
-            <h1 className="text-primary-text mb-6 text-3xl font-bold md:text-5xl">
+            <h1
+              className="mb-6 text-3xl font-bold md:text-5xl"
+              style={{ color: 'var(--color-form-button-text)' }}
+            >
               Welcome to our Discord Bot Page
             </h1>
-            <p className="text-primary-text mx-auto mb-8 max-w-2xl text-base md:text-lg">
+            <p
+              className="mx-auto mb-8 max-w-2xl text-base md:text-lg"
+              style={{ color: 'var(--color-form-button-text)' }}
+            >
               Your go-to resource for information and updates about our Discord bot!
             </p>
 

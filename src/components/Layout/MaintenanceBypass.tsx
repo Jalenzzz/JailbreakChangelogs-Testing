@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Maintenance from './Maintenance';
+import Maintenance from '@/theme/Maintenance';
 import Header from './Header';
 import { canBypassMaintenance } from '@/utils/maintenance';
 import { AuthProvider } from '@/contexts/AuthContext';
