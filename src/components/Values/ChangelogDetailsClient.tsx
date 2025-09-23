@@ -10,7 +10,7 @@ import Image from 'next/image';
 import { DefaultAvatar } from '@/utils/avatar';
 import Link from 'next/link';
 import { getItemImagePath, handleImageError, isVideoItem, getVideoPath } from '@/utils/images';
-import { getItemTypeColor } from '@/utils/badgeColors';
+import { getCategoryColor } from '@/utils/categoryIcons';
 import { formatMessageDate } from '@/utils/timestamp';
 import { formatFullValue } from '@/utils/values';
 import ReactMarkdown from 'react-markdown';
@@ -357,13 +357,13 @@ export default function ChangelogDetailsClient({
           {/* Ad - Takes up 1/3 of the space, only show for non-premium users */}
           {premiumStatusLoaded && currentUserPremiumType === 0 && (
             <div className="flex flex-col lg:col-span-1">
+              <span className="text-secondary-text mb-2 block text-center text-xs">
+                ADVERTISEMENT
+              </span>
               <div
                 className="border-stroke bg-secondary-bg relative h-full overflow-hidden rounded-lg border shadow transition-all duration-300"
                 style={{ minHeight: '250px' }}
               >
-                <span className="text-secondary-text border-stroke bg-primary-bg absolute top-2 left-2 z-10 rounded border px-2 py-0.5 text-xs">
-                  Ad
-                </span>
                 <DisplayAd
                   adSlot="8162235433"
                   adFormat="auto"
@@ -415,10 +415,18 @@ export default function ChangelogDetailsClient({
                     ? 'var(--color-form-button-text)'
                     : 'var(--color-primary-text)',
                 '&:hover': {
+                  backgroundColor:
+                    selectedType === ''
+                      ? 'var(--color-button-info-hover)'
+                      : 'var(--color-button-info)',
                   borderColor:
                     selectedType === ''
                       ? 'var(--color-button-info-hover)'
                       : 'var(--color-button-info)',
+                  color:
+                    selectedType === ''
+                      ? 'var(--color-form-button-text)'
+                      : 'var(--color-primary-text)',
                 },
               }}
             />
@@ -440,10 +448,18 @@ export default function ChangelogDetailsClient({
                       ? 'var(--color-form-button-text)'
                       : 'var(--color-primary-text)',
                   '&:hover': {
+                    backgroundColor:
+                      selectedType === type
+                        ? 'var(--color-button-info-hover)'
+                        : 'var(--color-button-info)',
                     borderColor:
                       selectedType === type
                         ? 'var(--color-button-info-hover)'
                         : 'var(--color-button-info)',
+                    color:
+                      selectedType === type
+                        ? 'var(--color-form-button-text)'
+                        : 'var(--color-primary-text)',
                   },
                 }}
               />
@@ -626,7 +642,7 @@ export default function ChangelogDetailsClient({
             {paginatedChanges.map((change) => (
               <div
                 key={change.change_id}
-                className="border-stroke hover:border-button-info bg-secondary-bg overflow-hidden rounded-lg border p-4 transition-colors"
+                className="border-border-primary hover:border-button-info bg-secondary-bg overflow-hidden rounded-lg border p-4 transition-colors"
               >
                 {/* Suggestion # Pill */}
                 {change.suggestion && (
@@ -672,11 +688,18 @@ export default function ChangelogDetailsClient({
                       <Chip
                         label={change.item.type}
                         size="small"
+                        variant="outlined"
                         sx={{
-                          backgroundColor: getItemTypeColor(change.item.type),
-                          color: 'white',
+                          backgroundColor: getCategoryColor(change.item.type) + '20', // Add 20% opacity
+                          borderColor: getCategoryColor(change.item.type),
+                          color: 'var(--color-primary-text)',
                           fontSize: '0.75rem',
                           marginTop: '4px',
+                          fontWeight: 'medium',
+                          '&:hover': {
+                            borderColor: getCategoryColor(change.item.type),
+                            backgroundColor: getCategoryColor(change.item.type) + '30', // Slightly more opacity on hover
+                          },
                         }}
                       />
                     </div>

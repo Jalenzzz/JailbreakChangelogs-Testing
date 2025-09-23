@@ -8,6 +8,7 @@ import { formatTimestamp, formatRelativeDate } from '@/utils/timestamp';
 import ReportDupeModal from './ReportDupeModal';
 import { ItemDetails } from '@/types';
 import { TradeAdTooltip } from '../trading/TradeAdTooltip';
+import { getCategoryColor } from '@/utils/categoryIcons';
 import { Tooltip } from '@mui/material';
 
 interface DupeResult {
@@ -249,7 +250,13 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
                                           {item.name}
                                         </span>
                                       </Tooltip>
-                                      <span className="border-primary-text text-primary-text flex items-center rounded-full border bg-transparent px-2 py-0.5 text-xs">
+                                      <span
+                                        className="text-primary-text flex items-center rounded-full border px-2 py-0.5 text-xs font-medium"
+                                        style={{
+                                          borderColor: getCategoryColor(item.type),
+                                          backgroundColor: getCategoryColor(item.type) + '20', // Add 20% opacity
+                                        }}
+                                      >
                                         {item.type}
                                       </span>
                                     </div>

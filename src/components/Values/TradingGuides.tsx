@@ -7,7 +7,7 @@ import dynamic from 'next/dynamic';
 const Tooltip = dynamic(() => import('@mui/material/Tooltip'), { ssr: false });
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 import { demandOrder, trendOrder } from '@/utils/values';
-import { getTrendColor } from '@/utils/badgeColors';
+import { getDemandColor, getTrendColor } from '@/utils/badgeColors';
 import { ValueSort } from '@/types';
 
 interface TradingGuidesProps {
@@ -131,7 +131,7 @@ export default function TradingGuides({
       {/* Collapsible Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="hover:bg-primary-bg border-stroke bg-secondary-bg mb-4 flex w-full items-center justify-between rounded-lg border p-4 transition-colors"
+        className="hover:bg-primary-bg border-stroke bg-secondary-bg mb-4 flex w-full cursor-pointer items-center justify-between rounded-lg border p-4 transition-colors"
       >
         <div className="flex items-center gap-3">
           <h3 className="text-primary-text text-xl font-semibold">Trading Guides & Information</h3>
@@ -172,6 +172,9 @@ export default function TradingGuides({
                     valueSort === getDemandValue(demand) ? 'ring-border-focus ring-2' : ''
                   }`}
                 >
+                  <span
+                    className={`inline-block h-2 w-2 rounded-full ${getDemandColor(demand)}`}
+                  ></span>
                   <span className="text-primary-text text-sm font-semibold">{demand}</span>
                 </button>
               ))}
@@ -214,6 +217,9 @@ export default function TradingGuides({
                       valueSort === getTrendValue(trend) ? 'ring-border-focus ring-2' : ''
                     }`}
                   >
+                    <span
+                      className={`inline-block h-2 w-2 rounded-full ${getTrendColor(trend)}`}
+                    ></span>
                     <span className="text-primary-text text-sm font-semibold">{trend}</span>
                   </button>
                 </Tooltip>

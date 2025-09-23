@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { getItemImagePath, isVideoItem, handleImageError, getVideoPath } from '@/utils/images';
+import { getCategoryColor } from '@/utils/categoryIcons';
 import { ItemDetails } from '@/types';
 import { convertUrlsToLinks } from '@/utils/urlConverter';
 
@@ -279,13 +280,15 @@ export default function Comment({
                 size="small"
                 variant="outlined"
                 sx={{
-                  backgroundColor: 'transparent',
-                  borderColor: 'var(--color-secondary-text)',
+                  backgroundColor: getCategoryColor(item_type) + '20', // Add 20% opacity
+                  borderColor: getCategoryColor(item_type),
                   color: 'var(--color-primary-text)',
                   fontSize: '0.65rem',
                   height: '20px',
+                  fontWeight: 'medium',
                   '&:hover': {
-                    borderColor: 'var(--color-button-info)',
+                    borderColor: getCategoryColor(item_type),
+                    backgroundColor: getCategoryColor(item_type) + '30', // Slightly more opacity on hover
                   },
                 }}
               />

@@ -9,6 +9,7 @@ import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import Link from 'next/link';
 import { handleImageError, getItemImagePath, isVideoItem, getVideoPath } from '@/utils/images';
+import { getCategoryColor } from '@/utils/categoryIcons';
 import { formatRelativeDate, formatCustomDate } from '@/utils/timestamp';
 import { ItemDetails, FavoriteItem } from '@/types';
 
@@ -207,13 +208,15 @@ export default function FavoritesTab({
                         size="small"
                         variant="outlined"
                         sx={{
-                          backgroundColor: 'transparent',
-                          borderColor: 'var(--color-secondary-text)',
+                          backgroundColor: getCategoryColor(itemType) + '20', // Add 20% opacity
+                          borderColor: getCategoryColor(itemType),
                           color: 'var(--color-primary-text)',
                           fontSize: '0.65rem',
                           height: '20px',
+                          fontWeight: 'medium',
                           '&:hover': {
-                            borderColor: 'var(--color-button-info)',
+                            borderColor: getCategoryColor(itemType),
+                            backgroundColor: getCategoryColor(itemType) + '30', // Slightly more opacity on hover
                           },
                         }}
                       />

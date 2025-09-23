@@ -73,7 +73,7 @@ export default function ItemActionModal({
               {/* View Item Page */}
               <button
                 onClick={handleViewItemPage}
-                className="bg-quaternary-bg hover:bg-tertiary-bg text-primary-text border-stroke flex w-full cursor-pointer items-center gap-3 rounded-lg border p-3 text-left transition-colors sm:p-4"
+                className="bg-quaternary-bg hover:bg-tertiary-bg text-primary-text border-border-primary flex w-full cursor-pointer items-center gap-3 rounded-lg border p-3 text-left transition-colors sm:p-4"
               >
                 <div>
                   <div className="text-sm font-medium sm:text-base">View Item Page</div>
@@ -87,21 +87,21 @@ export default function ItemActionModal({
               {hasTradeHistory ? (
                 <button
                   onClick={handleViewTradeHistory}
-                  className="bg-quaternary-bg hover:bg-tertiary-bg text-primary-text border-stroke flex w-full cursor-pointer items-center gap-3 rounded-lg border p-3 text-left transition-colors sm:p-4"
+                  className="bg-quaternary-bg hover:bg-tertiary-bg text-primary-text border-border-primary flex w-full cursor-pointer items-center gap-3 rounded-lg border p-3 text-left transition-colors sm:p-4"
                 >
                   <div>
-                    <div className="font-medium">View Trade History</div>
+                    <div className="font-medium">View Ownership History</div>
                     <div className="text-secondary-text text-sm">
-                      View trade history for this item
+                      View ownership history for this item
                     </div>
                   </div>
                 </button>
               ) : (
-                <div className="bg-quaternary-bg text-tertiary-text border-stroke flex w-full items-center gap-3 rounded-lg border p-3 text-left sm:p-4">
+                <div className="bg-quaternary-bg text-tertiary-text border-border-primary flex w-full items-center gap-3 rounded-lg border p-3 text-left sm:p-4">
                   <div>
-                    <div className="font-medium">No Trade History</div>
+                    <div className="font-medium">No Ownership History</div>
                     <div className="text-quaternary-text text-sm">
-                      This item has no trade history
+                      This item has no ownership history
                     </div>
                   </div>
                 </div>

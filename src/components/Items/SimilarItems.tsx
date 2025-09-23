@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { SparklesIcon } from '@heroicons/react/24/outline';
 import dynamic from 'next/dynamic';
 import { formatFullValue } from '@/utils/values';
+import { getCategoryColor } from '@/utils/categoryIcons';
 
 const Select = dynamic(() => import('react-select'), { ssr: false });
 
@@ -404,7 +405,13 @@ const SimilarItems = ({ currentItem, similarItemsPromise }: SimilarItemsProps) =
 
                   {/* Type Badge */}
                   <div className="flex flex-wrap gap-1">
-                    <span className="border-primary-text text-primary-text flex items-center rounded-full border bg-transparent px-1.5 py-0.5 text-[10px]">
+                    <span
+                      className="text-primary-text flex items-center rounded-full border px-1.5 py-0.5 text-[10px] font-medium"
+                      style={{
+                        borderColor: getCategoryColor(item.type),
+                        backgroundColor: getCategoryColor(item.type) + '20', // Add 20% opacity
+                      }}
+                    >
                       {item.type}
                     </span>
                     {(item.tradable === 0 || item.tradable === false) && (

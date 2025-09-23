@@ -5,7 +5,7 @@
 @theme {
   /* DARK THEME - Default (current theme) */
   /* Background Colors - Comprehensive Gray Scale */
-  --color-primary-bg: hsl(240, 8%, 9%); /* Main page background */
+  --color-primary-bg: hsl(228, 13%, 8%); /* Main page background */
   --color-secondary-bg: hsl(216, 6%, 15%); /* Card background - Cards, modals */
   --color-tertiary-bg: hsl(220, 5%, 20%); /* Elevated surfaces - Dropdowns, tooltips */
   --color-quaternary-bg: hsl(225, 4%, 25%); /* Subtle backgrounds - Hover states */
@@ -25,24 +25,24 @@
   --color-border-primary: hsl(214, 8%, 20%); /* Primary borders - Card outlines */
   --color-border-secondary: hsl(214, 6%, 15%); /* Secondary borders - Subtle separators */
   --color-border-tertiary: hsl(214, 4%, 12%); /* Tertiary borders - Very subtle lines */
-  --color-border-focus: hsl(218, 70%, 47%); /* Focus borders - Active states */
+  --color-border-focus: hsl(210, 99%, 50%); /* Focus borders - Active states */
   --color-border-error: hsl(0, 81%, 62%); /* Error borders - Validation states */
 
   /* Card Elements */
-  --color-card-tag-bg: hsl(218, 70%, 47%); /* Tag/chip backgrounds */
+  --color-card-tag-bg: hsl(210, 99%, 50%); /* Tag/chip backgrounds */
   --color-card-tag-text: hsl(60, 100%, 100%); /* Text on tags/chips */
   --color-card-highlight: hsl(60, 100%, 100%); /* Highlighted elements in cards */
   --color-card-shadow: hsl(0, 0%, 0%, 0.1); /* Card shadows */
 
   /* Interactive Elements */
-  --color-link: hsl(214, 16%, 64%); /* Primary links */
-  --color-link-hover: hsl(218, 70%, 47%); /* Link hover states */
-  --color-link-active: hsl(218, 65%, 39%); /* Link active states */
+  --color-link: hsl(210, 99%, 50%); /* Primary links */
+  --color-link-hover: hsl(210, 99%, 40%); /* Link hover states */
+  --color-link-active: hsl(210, 99%, 40%); /* Link active states */
   --color-link-visited: hsl(214, 12%, 45%); /* Visited links */
 
   /* Button Colors */
-  --color-button-info: hsl(218, 70%, 47%); /* Primary buttons */
-  --color-button-info-hover: hsl(218, 65%, 39%); /* Button hover states */
+  --color-button-info: hsl(210, 99%, 50%); /* Primary buttons */
+  --color-button-info-hover: hsl(210, 99%, 40%); /* Button hover states */
   --color-button-info-active: hsl(218, 60%, 32%); /* Button active states */
   --color-button-info-disabled: hsl(214, 8%, 25%); /* Disabled buttons */
   --color-button-success: hsl(155, 61%, 44%); /* Success actions */
@@ -51,7 +51,7 @@
   --color-button-danger-hover: hsl(0, 75%, 55%); /* Danger hover */
   --color-button-secondary: hsl(214, 8%, 25%); /* Secondary buttons */
   --color-button-secondary-hover: hsl(214, 6%, 20%); /* Secondary hover */
-  --color-form-button: hsl(218, 70%, 47%); /* Form submit buttons */
+  --color-form-button: hsl(210, 99%, 50%); /* Form submit buttons */
   --color-form-button-text: hsl(60, 100%, 100%); /* Text on form buttons */
 
   /* Form Elements */
@@ -67,11 +67,11 @@
   --color-status-success: hsl(155, 61%, 44%); /* Success states */
   --color-status-warning: hsl(38, 100%, 61%); /* Warning states */
   --color-status-error: hsl(0, 81%, 62%); /* Error states */
-  --color-status-info: hsl(218, 70%, 47%); /* Info states */
+  --color-status-info: hsl(210, 99%, 50%); /* Info states */
   --color-status-neutral: hsl(214, 8%, 35%); /* Neutral states */
 
   /* Additional Utility Colors */
-  --color-highlight: hsl(218, 70%, 47%); /* Accent color for highlights */
+  --color-highlight: hsl(210, 99%, 50%); /* Accent color for highlights */
   --color-secondary: hsl(225, 5%, 47%); /* Secondary accent color */
   --color-tertiary: hsl(155, 61%, 44%); /* Tertiary accent color */
   --color-stroke: hsl(0, 0%, 0%); /* Primary stroke color */
@@ -139,7 +139,7 @@
 .light {
   /* Background Colors - Light theme */
   --color-primary-bg: hsl(0, 0%, 100%); /* Main page background - White */
-  --color-secondary-bg: hsl(0, 0%, 98%); /* Card background - Very light gray */
+  --color-secondary-bg: hsl(240, 4%, 95%); /* Card background - Very light gray */
   --color-tertiary-bg: hsl(0, 0%, 96%); /* Elevated surfaces - Light gray */
   --color-quaternary-bg: hsl(0, 0%, 94%); /* Subtle backgrounds - Slightly darker gray */
   --color-surface-bg: hsl(0, 0%, 100%); /* Surface backgrounds - White */
@@ -158,24 +158,24 @@
   --color-border-primary: hsl(214, 8%, 80%); /* Primary borders - Light gray */
   --color-border-secondary: hsl(214, 6%, 85%); /* Secondary borders - Very light gray */
   --color-border-tertiary: hsl(214, 4%, 88%); /* Tertiary borders - Almost white */
-  --color-border-focus: hsl(218, 70%, 47%); /* Focus borders - Same blue */
+  --color-border-focus: hsl(210, 99%, 50%); /* Focus borders - Same blue */
   --color-border-error: hsl(0, 81%, 62%); /* Error borders - Same red */
 
   /* Card Elements - Light theme */
-  --color-card-tag-bg: hsl(218, 70%, 47%); /* Tag/chip backgrounds - Same blue */
+  --color-card-tag-bg: hsl(210, 99%, 50%); /* Tag/chip backgrounds - Same blue */
   --color-card-tag-text: hsl(60, 100%, 100%); /* Text on tags/chips - White */
   --color-card-highlight: hsl(240, 8%, 9%); /* Highlighted elements - Dark */
   --color-card-shadow: hsl(0, 0%, 0%, 0.05); /* Card shadows - Very light */
 
   /* Interactive Elements - Light theme */
-  --color-link: hsl(218, 70%, 47%); /* Primary links - Blue */
-  --color-link-hover: hsl(218, 65%, 39%); /* Link hover states - Darker blue */
+  --color-link: hsl(210, 99%, 50%); /* Primary links - Blue */
+  --color-link-hover: hsl(210, 99%, 40%); /* Link hover states - Darker blue */
   --color-link-active: hsl(218, 60%, 32%); /* Link active states - Even darker */
   --color-link-visited: hsl(214, 12%, 55%); /* Visited links - Gray */
 
   /* Button Colors - Light theme (same as dark) */
-  --color-button-info: hsl(218, 70%, 47%); /* Primary buttons */
-  --color-button-info-hover: hsl(218, 65%, 39%); /* Button hover states */
+  --color-button-info: hsl(210, 99%, 50%); /* Primary buttons */
+  --color-button-info-hover: hsl(210, 99%, 40%); /* Button hover states */
   --color-button-info-active: hsl(218, 60%, 32%); /* Button active states */
   --color-button-info-disabled: hsl(214, 8%, 75%); /* Disabled buttons - Light gray */
   --color-button-success: hsl(155, 61%, 44%); /* Success actions */
@@ -184,7 +184,7 @@
   --color-button-danger-hover: hsl(0, 75%, 55%); /* Danger hover */
   --color-button-secondary: hsl(214, 8%, 75%); /* Secondary buttons - Light gray */
   --color-button-secondary-hover: hsl(214, 6%, 80%); /* Secondary hover - Lighter */
-  --color-form-button: hsl(218, 70%, 47%); /* Form submit buttons */
+  --color-form-button: hsl(210, 99%, 50%); /* Form submit buttons */
   --color-form-button-text: hsl(60, 100%, 100%); /* Text on form buttons */
 
   /* Form Elements - Light theme */
@@ -200,11 +200,11 @@
   --color-status-success: hsl(155, 61%, 44%); /* Success states */
   --color-status-warning: hsl(38, 100%, 61%); /* Warning states */
   --color-status-error: hsl(0, 81%, 62%); /* Error states */
-  --color-status-info: hsl(218, 70%, 47%); /* Info states */
+  --color-status-info: hsl(210, 99%, 50%); /* Info states */
   --color-status-neutral: hsl(214, 8%, 65%); /* Neutral states - Light gray */
 
   /* Additional Utility Colors - Light theme */
-  --color-highlight: hsl(218, 70%, 47%); /* Accent color for highlights - Same blue */
+  --color-highlight: hsl(210, 99%, 50%); /* Accent color for highlights - Same blue */
   --color-secondary: hsl(225, 5%, 47%); /* Secondary accent color - Same */
   --color-tertiary: hsl(155, 61%, 44%); /* Tertiary accent color - Same */
   --color-stroke: hsl(214, 8%, 80%); /* Primary stroke color - Light gray */

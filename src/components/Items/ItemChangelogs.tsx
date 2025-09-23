@@ -479,7 +479,7 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
           return (
             <div
               key={change.change_id}
-              className="border-stroke hover:border-button-info bg-secondary-bg overflow-hidden rounded-lg border p-4 transition-colors"
+              className="border-border-primary hover:border-button-info bg-secondary-bg overflow-hidden rounded-lg border p-4 transition-colors"
             >
               <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
                 <div className="flex items-center gap-2">

@@ -28,6 +28,7 @@ import CreatorLink from '@/components/Items/CreatorLink';
 import ItemValues from '@/components/Items/ItemValues';
 import ItemVariantDropdown from '@/components/Items/ItemVariantDropdown';
 import { Change as ItemChange } from '@/components/Items/ItemChangelogs';
+import { getCategoryColor } from '@/utils/categoryIcons';
 
 const ItemValueChart = dynamic(() => import('@/components/Items/ItemValueChart'), {
   loading: () => <div className="bg-secondary-bg h-[350px] animate-pulse rounded" />,
@@ -369,25 +370,27 @@ export default function ItemDetailsClient({
 
               {/* Ad above the 'Don't agree with the value?' card */}
               {premiumStatusLoaded && currentUserPremiumType === 0 && (
-                <div className="my-6 flex flex-col items-center">
-                  <div
-                    className="border-stroke bg-secondary-bg relative w-full max-w-[700px] overflow-hidden rounded-lg border shadow transition-all duration-300"
-                    style={{ minHeight: '250px' }}
-                  >
-                    <span className="text-secondary-text bg-primary-bg absolute top-2 left-2 z-10 rounded px-2 py-0.5 text-xs">
-                      Advertisement
+                <div className="my-6 flex w-full justify-center">
+                  <div className="flex w-full max-w-[480px] flex-col items-center lg:w-[480px]">
+                    <span className="text-secondary-text mb-2 block text-center text-xs">
+                      ADVERTISEMENT
                     </span>
-                    <DisplayAd
-                      adSlot="7368028510"
-                      adFormat="auto"
-                      style={{
-                        display: 'block',
-                        width: '100%',
-                        height: '100%',
-                      }}
-                    />
+                    <div
+                      className="border-stroke bg-secondary-bg relative w-full overflow-hidden rounded-lg border shadow transition-all duration-300"
+                      style={{ minHeight: '250px' }}
+                    >
+                      <DisplayAd
+                        adSlot="7368028510"
+                        adFormat="auto"
+                        style={{
+                          display: 'block',
+                          width: '100%',
+                          height: '100%',
+                        }}
+                      />
+                    </div>
+                    <AdRemovalNotice className="mt-2" />
                   </div>
-                  <AdRemovalNotice className="mt-2" />
                 </div>
               )}
 
@@ -427,7 +430,13 @@ export default function ItemDetailsClient({
                   Created by <CreatorLink creator={currentItem.creator} />
                 </p>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  <span className="border-primary-text text-primary-text flex items-center rounded-full border bg-transparent px-2 py-1 text-xs">
+                  <span
+                    className="text-primary-text flex items-center rounded-full border px-2 py-1 text-xs font-medium"
+                    style={{
+                      borderColor: getCategoryColor(currentItem.type),
+                      backgroundColor: getCategoryColor(currentItem.type) + '20', // Add 20% opacity
+                    }}
+                  >
                     {currentItem.type}
                   </span>
                   {currentItem.is_limited === 1 && (

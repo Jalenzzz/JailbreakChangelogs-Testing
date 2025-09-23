@@ -16,7 +16,7 @@ import toast from 'react-hot-toast';
 import { getItemImagePath, handleImageError, isVideoItem, getVideoPath } from '@/utils/images';
 import { sortByCashValue, sortByDemand, formatFullValue } from '@/utils/values';
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { CategoryIconBadge } from '@/utils/categoryIcons';
+import { CategoryIconBadge, getCategoryColor } from '@/utils/categoryIcons';
 import { TradeAdErrorModal } from './TradeAdErrorModal';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
@@ -257,13 +257,13 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
         {/* Ad Placement: Above the grid, only for non-premium users */}
         {premiumStatusLoaded && currentUserPremiumType === 0 && (
           <div className="mb-6 flex w-full flex-col items-center">
+            <span className="text-secondary-text mb-2 block text-center text-xs">
+              ADVERTISEMENT
+            </span>
             <div
               className="border-stroke bg-secondary-bg relative w-full max-w-[700px] overflow-hidden rounded-lg border shadow transition-all duration-300"
               style={{ minHeight: '250px' }}
             >
-              <span className="text-secondary-text border-stroke bg-primary-bg absolute top-2 left-2 z-10 rounded border px-2 py-0.5 text-xs">
-                Ad
-              </span>
               <DisplayAd
                 adSlot="4222990422"
                 adFormat="auto"
@@ -639,7 +639,13 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
                       {item.name}
                     </span>
                     <div className="flex flex-wrap items-center gap-1.5">
-                      <span className="border-primary-text text-primary-text flex items-center rounded-full border bg-transparent px-2 py-0.5 text-xs">
+                      <span
+                        className="text-primary-text flex items-center rounded-full border px-2 py-0.5 text-xs font-medium"
+                        style={{
+                          borderColor: getCategoryColor(item.type),
+                          backgroundColor: getCategoryColor(item.type) + '20', // Add 20% opacity
+                        }}
+                      >
                         {item.type}
                       </span>
                       {item.is_limited === 1 && (

@@ -81,7 +81,7 @@ export default function Home() {
             {/* Feature 1 - Combined Changelogs & Seasonal */}
             <div className="bg-secondary-bg border-border-primary hover:border-border-focus hover:shadow-card-shadow rounded-lg border p-6 transition-colors duration-200 hover:shadow-lg">
               <div className="mb-4 flex items-center gap-2">
-                <DocumentTextIcon className="text-tertiary-text h-6 w-6" />
+                <DocumentTextIcon className="text-link h-6 w-6" />
                 <h3 className="text-card-headline text-xl font-semibold">Changelogs & Seasons</h3>
               </div>
               <p className="text-card-paragraph">
@@ -93,7 +93,7 @@ export default function Home() {
             {/* Feature 2 - Private Servers */}
             <div className="bg-secondary-bg border-border-primary hover:border-border-focus hover:shadow-card-shadow rounded-lg border p-6 transition-colors duration-200 hover:shadow-lg">
               <div className="mb-4 flex items-center gap-2">
-                <CalendarIcon className="text-tertiary-text h-6 w-6" />
+                <CalendarIcon className="text-link h-6 w-6" />
                 <h3 className="text-card-headline text-xl font-semibold">Private Servers</h3>
               </div>
               <p className="text-card-paragraph">
@@ -105,7 +105,7 @@ export default function Home() {
             {/* Feature 3 */}
             <div className="bg-secondary-bg border-border-primary hover:border-border-focus hover:shadow-card-shadow rounded-lg border p-6 transition-colors duration-200 hover:shadow-lg">
               <div className="mb-4 flex items-center gap-2">
-                <ChatBubbleLeftRightIcon className="text-tertiary-text h-6 w-6" />
+                <ChatBubbleLeftRightIcon className="text-link h-6 w-6" />
                 <h3 className="text-card-headline text-xl font-semibold">Community Engagement</h3>
               </div>
               <p className="text-card-paragraph">
@@ -117,7 +117,7 @@ export default function Home() {
             {/* Feature 4 - Values Database */}
             <div className="bg-secondary-bg border-border-primary hover:border-border-focus hover:shadow-card-shadow rounded-lg border p-6 transition-colors duration-200 hover:shadow-lg">
               <div className="mb-4 flex items-center gap-2">
-                <CurrencyDollarIcon className="text-tertiary-text h-6 w-6" />
+                <CurrencyDollarIcon className="text-link h-6 w-6" />
                 <h3 className="text-card-headline text-xl font-semibold">Values Database</h3>
               </div>
               <p className="text-card-paragraph">
@@ -129,7 +129,7 @@ export default function Home() {
             {/* Feature 5 */}
             <div className="bg-secondary-bg border-border-primary hover:border-border-focus hover:shadow-card-shadow rounded-lg border p-6 transition-colors duration-200 hover:shadow-lg">
               <div className="mb-4 flex items-center gap-2">
-                <ArrowsRightLeftIcon className="text-tertiary-text h-6 w-6" />
+                <ArrowsRightLeftIcon className="text-link h-6 w-6" />
                 <h3 className="text-card-headline text-xl font-semibold">Trading Hub</h3>
               </div>
               <p className="text-card-paragraph">
@@ -142,7 +142,7 @@ export default function Home() {
             {/* Feature 6 */}
             <div className="bg-secondary-bg border-border-primary hover:border-border-focus hover:shadow-card-shadow rounded-lg border p-6 transition-colors duration-200 hover:shadow-lg">
               <div className="mb-4 flex items-center gap-2">
-                <ShieldCheckIcon className="text-tertiary-text h-6 w-6" />
+                <ShieldCheckIcon className="text-link h-6 w-6" />
                 <h3 className="text-card-headline text-xl font-semibold">Dupe Detection System</h3>
               </div>
               <p className="text-card-paragraph">

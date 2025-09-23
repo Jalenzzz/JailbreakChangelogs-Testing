@@ -367,13 +367,13 @@ export default function DupeFinderResults({
         {/* Ad - Takes up 1/3 of the space, only show for non-premium users */}
         {currentUserPremiumType === 0 && (
           <div className="flex flex-col lg:col-span-1">
+            <span className="text-secondary-text mb-2 block text-center text-xs">
+              ADVERTISEMENT
+            </span>
             <div
               className="border-border-primary bg-secondary-bg relative h-full overflow-hidden rounded-lg border shadow transition-all duration-300"
               style={{ minHeight: '250px' }}
             >
-              <span className="text-secondary-text border-border-primary bg-primary-bg absolute top-2 left-2 z-10 rounded border px-2 py-0.5 text-xs">
-                Ad
-              </span>
               <DisplayAd
                 adSlot="9566904102"
                 adFormat="auto"

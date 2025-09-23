@@ -112,7 +112,7 @@ export default function BotPage() {
             {/* Feature 1 */}
             <div className="bg-secondary-bg border-border-primary hover:border-border-focus hover:shadow-card-shadow rounded-lg border p-6 transition-colors duration-200 hover:shadow-lg">
               <div className="mb-4 flex items-center gap-2">
-                <CalendarIcon className="text-tertiary-text h-6 w-6" />
+                <CalendarIcon className="text-link h-6 w-6" />
                 <h3 className="text-card-headline text-xl font-semibold">Season Tracking</h3>
               </div>
               <p className="text-card-paragraph">
@@ -124,7 +124,7 @@ export default function BotPage() {
             {/* Feature 2 */}
             <div className="bg-secondary-bg border-border-primary hover:border-border-focus hover:shadow-card-shadow rounded-lg border p-6 transition-colors duration-200 hover:shadow-lg">
               <div className="mb-4 flex items-center gap-2">
-                <DocumentTextIcon className="text-tertiary-text h-6 w-6" />
+                <DocumentTextIcon className="text-link h-6 w-6" />
                 <h3 className="text-card-headline text-xl font-semibold">Changelog Tracking</h3>
               </div>
               <p className="text-card-paragraph">
@@ -136,7 +136,7 @@ export default function BotPage() {
             {/* Feature 3 */}
             <div className="bg-secondary-bg border-border-primary hover:border-border-focus hover:shadow-card-shadow rounded-lg border p-6 transition-colors duration-200 hover:shadow-lg">
               <div className="mb-4 flex items-center gap-2">
-                <ArrowsRightLeftIcon className="text-tertiary-text h-6 w-6" />
+                <ArrowsRightLeftIcon className="text-link h-6 w-6" />
                 <h3 className="text-card-headline text-xl font-semibold">Item Tracking</h3>
               </div>
               <p className="text-card-paragraph">
@@ -148,7 +148,7 @@ export default function BotPage() {
             {/* Feature 4 */}
             <div className="bg-secondary-bg border-border-primary hover:border-border-focus hover:shadow-card-shadow rounded-lg border p-6 transition-colors duration-200 hover:shadow-lg">
               <div className="mb-4 flex items-center gap-2">
-                <BoltIcon className="text-tertiary-text h-6 w-6" />
+                <BoltIcon className="text-link h-6 w-6" />
                 <h3 className="text-card-headline text-xl font-semibold">Fast & Efficient</h3>
               </div>
               <p className="text-card-paragraph">
@@ -160,7 +160,7 @@ export default function BotPage() {
             {/* Feature 5 */}
             <div className="bg-secondary-bg border-border-primary hover:border-border-focus hover:shadow-card-shadow rounded-lg border p-6 transition-colors duration-200 hover:shadow-lg">
               <div className="mb-4 flex items-center gap-2">
-                <CommandLineIcon className="text-tertiary-text h-6 w-6" />
+                <CommandLineIcon className="text-link h-6 w-6" />
                 <h3 className="text-card-headline text-xl font-semibold">Easy Commands</h3>
               </div>
               <p className="text-card-paragraph">
@@ -172,7 +172,7 @@ export default function BotPage() {
             {/* Feature 6 */}
             <div className="bg-secondary-bg border-border-primary hover:border-border-focus hover:shadow-card-shadow rounded-lg border p-6 transition-colors duration-200 hover:shadow-lg">
               <div className="mb-4 flex items-center gap-2">
-                <ChatBubbleLeftRightIcon className="text-tertiary-text h-6 w-6" />
+                <ChatBubbleLeftRightIcon className="text-link h-6 w-6" />
                 <h3 className="text-card-headline text-xl font-semibold">Trade Notifications</h3>
               </div>
               <p className="text-card-paragraph">

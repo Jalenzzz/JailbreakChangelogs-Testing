@@ -279,13 +279,13 @@ export default function SeasonDetailsClient({
             <ImageGallery rewards={season.rewards} />
             {premiumStatusLoaded && currentUserPremiumType === 0 && (
               <div className="my-8 flex flex-col items-center">
+                <span className="text-secondary-text mb-2 block text-center text-xs">
+                  ADVERTISEMENT
+                </span>
                 <div
                   className="border-stroke bg-secondary-bg relative w-full max-w-[700px] overflow-hidden rounded-lg border shadow transition-all duration-300"
                   style={{ minHeight: '250px' }}
                 >
-                  <span className="text-secondary-text border-stroke bg-primary-bg absolute top-2 left-2 z-10 rounded border px-2 py-0.5 text-xs">
-                    Ad
-                  </span>
                   <DisplayAd
                     adSlot="2909908750"
                     adFormat="auto"

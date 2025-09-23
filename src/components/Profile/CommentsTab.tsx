@@ -241,10 +241,18 @@ export default function CommentsTab({
                         ? 'var(--color-form-button-text)'
                         : 'var(--color-primary-text)',
                     '&:hover': {
+                      backgroundColor:
+                        activeFilter === type
+                          ? 'var(--color-button-info-hover)'
+                          : 'var(--color-button-info)',
                       borderColor:
                         activeFilter === type
                           ? 'var(--color-button-info-hover)'
                           : 'var(--color-button-info)',
+                      color:
+                        activeFilter === type
+                          ? 'var(--color-form-button-text)'
+                          : 'var(--color-primary-text)',
                     },
                   }}
                 />
@@ -268,10 +276,18 @@ export default function CommentsTab({
                       ? 'var(--color-form-button-text)'
                       : 'var(--color-primary-text)',
                   '&:hover': {
+                    backgroundColor:
+                      activeFilter === 'item'
+                        ? 'var(--color-button-info-hover)'
+                        : 'var(--color-button-info)',
                     borderColor:
                       activeFilter === 'item'
                         ? 'var(--color-button-info-hover)'
                         : 'var(--color-button-info)',
+                    color:
+                      activeFilter === 'item'
+                        ? 'var(--color-form-button-text)'
+                        : 'var(--color-primary-text)',
                   },
                 }}
               />

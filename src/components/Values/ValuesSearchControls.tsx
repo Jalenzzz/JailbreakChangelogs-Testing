@@ -603,13 +603,13 @@ export default function ValuesSearchControls({
         {/* Right: Ad */}
         {premiumStatusLoaded && currentUserPremiumType === 0 && (
           <div className="flex w-full max-w-[480px] flex-col lg:w-[480px] lg:flex-shrink-0">
+            <span className="text-secondary-text mb-2 block text-center text-xs">
+              ADVERTISEMENT
+            </span>
             <div
               className="border-stroke bg-secondary-bg relative w-full max-w-[700px] overflow-hidden rounded-lg border shadow transition-all duration-300"
               style={{ minHeight: '250px' }}
             >
-              <span className="text-secondary-text border-stroke bg-primary-bg absolute top-2 left-2 z-10 rounded border px-2 py-0.5 text-xs">
-                Ad
-              </span>
               <DisplayAd
                 adSlot="8162235433"
                 adFormat="auto"

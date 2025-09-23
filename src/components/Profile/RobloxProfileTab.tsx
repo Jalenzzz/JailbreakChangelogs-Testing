@@ -166,7 +166,6 @@ export default function RobloxProfileTab({
                     rel="noopener noreferrer"
                     className="bg-button-info text-form-button-text hover:bg-button-info-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 transition-colors"
                   >
-                    <RobloxIcon className="h-5 w-5" />
                     <span>View Roblox Profile</span>
                   </Link>
                 </div>

@@ -26,7 +26,7 @@ import SubItemsDropdown from './SubItemsDropdown';
 import toast from 'react-hot-toast';
 import { useIsAuthenticated } from '@/contexts/AuthContext';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { CategoryIconBadge } from '@/utils/categoryIcons';
+import { CategoryIconBadge, getCategoryColor } from '@/utils/categoryIcons';
 
 interface ItemCardProps {
   item: Item;
@@ -381,7 +381,13 @@ export default function ItemCard({ item, isFavorited, onFavoriteChange }: ItemCa
             </div>
 
             <div className="flex flex-wrap gap-1 pb-2 sm:gap-2">
-              <span className="border-primary-text text-primary-text flex items-center rounded-full border bg-transparent px-1.5 py-0.5 text-[10px] sm:px-2 sm:py-1 sm:text-xs">
+              <span
+                className="text-primary-text flex items-center rounded-full border px-1.5 py-0.5 text-[10px] font-medium sm:px-2 sm:py-1 sm:text-xs"
+                style={{
+                  borderColor: getCategoryColor(item.type),
+                  backgroundColor: getCategoryColor(item.type) + '20', // Add 20% opacity
+                }}
+              >
                 {item.type}
               </span>
               {(currentItemData.tradable === 0 || currentItemData.tradable === false) && (

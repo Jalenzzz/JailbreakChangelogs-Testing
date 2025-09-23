@@ -7,6 +7,7 @@ import { formatCustomDate } from '@/utils/timestamp';
 import Image from 'next/image';
 import Link from 'next/link';
 import { handleImageError, getItemImagePath, isVideoItem, getVideoPath } from '@/utils/images';
+import { getCategoryColor } from '@/utils/categoryIcons';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 
 interface TradeItem {
@@ -133,13 +134,15 @@ export default function TradeAdsTab({
                     size="small"
                     variant="outlined"
                     sx={{
-                      backgroundColor: 'transparent',
-                      borderColor: 'var(--color-secondary-text)',
+                      backgroundColor: getCategoryColor(itemData.type) + '20', // Add 20% opacity
+                      borderColor: getCategoryColor(itemData.type),
                       color: 'var(--color-primary-text)',
                       fontSize: '0.65rem',
                       height: '20px',
+                      fontWeight: 'medium',
                       '&:hover': {
-                        borderColor: 'var(--color-button-info)',
+                        borderColor: getCategoryColor(itemData.type),
+                        backgroundColor: getCategoryColor(itemData.type) + '30', // Slightly more opacity on hover
                       },
                     }}
                   />

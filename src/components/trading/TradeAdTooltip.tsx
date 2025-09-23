@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { TradeItem } from '@/types/trading';
-import { CategoryIconBadge } from '@/utils/categoryIcons';
+import { CategoryIconBadge, getCategoryColor } from '@/utils/categoryIcons';
 import { formatFullValue } from '@/utils/values';
 
 interface TradeAdTooltipProps {
@@ -37,7 +37,13 @@ export const TradeAdTooltip: React.FC<TradeAdTooltipProps> = ({ item }) => {
         </div>
         <div className="space-y-2 text-sm">
           <div className="flex items-center gap-2">
-            <span className="border-primary-text text-primary-text flex items-center rounded-full border bg-transparent px-2 py-0.5 text-xs">
+            <span
+              className="text-primary-text flex items-center rounded-full border px-2 py-0.5 text-xs font-medium"
+              style={{
+                borderColor: getCategoryColor(item.type),
+                backgroundColor: getCategoryColor(item.type) + '20', // Add 20% opacity
+              }}
+            >
               {item.type}
             </span>
             {item.is_limited === 1 && (

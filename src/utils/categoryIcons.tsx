@@ -63,6 +63,49 @@ export const getCategoryIcon = (type: string): CategoryIcon | null => {
   }
 };
 
+export const getCategoryColor = (type: string): string => {
+  const normalizedType = type.toLowerCase().trim();
+  switch (normalizedType) {
+    case 'vehicles':
+    case 'vehicle':
+      return '#c82c2c';
+    case 'hyperchromes':
+    case 'hyperchrome':
+      return '#e91e63';
+    case 'rims':
+    case 'rim':
+      return '#6335b1';
+    case 'spoilers':
+    case 'spoiler':
+      return '#c18800';
+    case 'body colors':
+    case 'body color':
+      return '#8a2be2';
+    case 'textures':
+    case 'texture':
+      return '#708090';
+    case 'tire stickers':
+    case 'tire sticker':
+      return '#1ca1bd';
+    case 'tire styles':
+    case 'tire style':
+      return '#4caf50';
+    case 'drifts':
+    case 'drift':
+      return '#ff4500';
+    case 'furniture':
+      return '#9c6644';
+    case 'horns':
+    case 'horn':
+      return '#4a90e2';
+    case 'weapon skins':
+    case 'weapon skin':
+      return '#4a6741';
+    default:
+      return '#708090'; // Default gray
+  }
+};
+
 export const CategoryIconBadge = ({
   type,
   isLimited,
@@ -87,7 +130,10 @@ export const CategoryIconBadge = ({
       if (categoryIcon) {
         return (
           <div className="bg-primary-bg/50 rounded-full p-1.5">
-            <categoryIcon.Icon className={`${className} text-secondary-text`} />
+            <categoryIcon.Icon
+              className={`${className}`}
+              style={{ color: getCategoryColor(type) }}
+            />
           </div>
         );
       }
@@ -97,7 +143,7 @@ export const CategoryIconBadge = ({
     if (isSeasonal) {
       return (
         <div className="bg-primary-bg/50 rounded-full p-1.5">
-          <FaRegSnowflake className={`${className} text-secondary-text`} />
+          <FaRegSnowflake className={`${className}`} style={{ color: '#40c0e7' }} />
         </div>
       );
     }
@@ -105,7 +151,7 @@ export const CategoryIconBadge = ({
     if (isLimited) {
       return (
         <div className="bg-primary-bg/50 rounded-full p-1.5">
-          <FaClock className={`${className} text-secondary-text`} />
+          <FaClock className={`${className}`} style={{ color: '#ffd700' }} />
         </div>
       );
     }
@@ -114,7 +160,7 @@ export const CategoryIconBadge = ({
     if (isSeasonal) {
       return (
         <div className="bg-primary-bg/50 rounded-full p-1.5">
-          <FaRegSnowflake className={`${className} text-secondary-text`} />
+          <FaRegSnowflake className={`${className}`} style={{ color: '#40c0e7' }} />
         </div>
       );
     }
@@ -122,7 +168,7 @@ export const CategoryIconBadge = ({
     if (isLimited) {
       return (
         <div className="bg-primary-bg/50 rounded-full p-1.5">
-          <FaClock className={`${className} text-secondary-text`} />
+          <FaClock className={`${className}`} style={{ color: '#ffd700' }} />
         </div>
       );
     }
@@ -133,7 +179,10 @@ export const CategoryIconBadge = ({
       if (categoryIcon) {
         return (
           <div className="bg-primary-bg/50 rounded-full p-1.5">
-            <categoryIcon.Icon className={`${className} text-secondary-text`} />
+            <categoryIcon.Icon
+              className={`${className}`}
+              style={{ color: getCategoryColor(type) }}
+            />
           </div>
         );
       }

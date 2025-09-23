@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import { getItemImagePath, handleImageError } from '@/utils/images';
-import { getItemTypeColor } from '@/utils/badgeColors';
+import { getCategoryColor } from '@/utils/categoryIcons';
 import toast from 'react-hot-toast';
 
 interface ReportDupeModalProps {
@@ -158,8 +158,13 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
               <div className="text-center">
                 <h4 className="text-primary-text text-lg font-medium">{itemName}</h4>
                 <span
-                  className="mt-1 inline-block rounded-full px-2 py-0.5 text-xs"
-                  style={{ backgroundColor: getItemTypeColor(itemType) }}
+                  className="mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-medium"
+                  style={{
+                    backgroundColor: getCategoryColor(itemType) + '20',
+                    borderColor: getCategoryColor(itemType),
+                    color: 'var(--color-primary-text)',
+                    border: '1px solid',
+                  }}
                 >
                   {itemType}
                 </span>

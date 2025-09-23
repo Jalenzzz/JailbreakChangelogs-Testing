@@ -14,6 +14,7 @@ import { getItemImagePath, handleImageError } from '@/utils/images';
 import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
 import { CiBoxList } from 'react-icons/ci';
 import { TradeAdTooltip } from '../../trading/TradeAdTooltip';
+import { getCategoryColor } from '@/utils/categoryIcons';
 import TotalSimilarItems from './TotalSimilarItems';
 import { useLockBodyScroll } from '@/hooks/useLockBodyScroll';
 
@@ -311,7 +312,13 @@ const CalculatorItemGrid: React.FC<{
               {actionItem && (
                 <div className="space-y-4">
                   <div className="flex items-center gap-2">
-                    <span className="border-primary-text text-primary-text flex items-center rounded-full border bg-transparent px-2 py-0.5 text-xs">
+                    <span
+                      className="text-primary-text flex items-center rounded-full border px-2 py-0.5 text-xs font-medium"
+                      style={{
+                        borderColor: getCategoryColor(actionItem.type),
+                        backgroundColor: getCategoryColor(actionItem.type) + '20', // Add 20% opacity
+                      }}
+                    >
                       {actionItem.type}
                     </span>
                     {actionItem.count && actionItem.count > 1 && (

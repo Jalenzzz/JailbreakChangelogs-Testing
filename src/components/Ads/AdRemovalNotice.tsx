@@ -19,13 +19,11 @@ const AdRemovalNotice: React.FC<AdRemovalNoticeProps> = ({ className = '' }) => 
   return (
     <div className={`mt-2 text-center ${className}`}>
       <p className="text-secondary-text text-xs">
-        <span className="text-button-info">Become a supporter</span> to remove ads and unlock
-        premium features!{' '}
         <Link
           href="/supporting"
           className="text-link hover:text-link-hover underline transition-colors"
         >
-          Learn more
+          REMOVE ADS
         </Link>
       </p>
     </div>

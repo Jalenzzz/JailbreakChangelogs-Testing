@@ -225,26 +225,28 @@ export default function ValuesItemsGrid({
                 currentUserPremiumType === 0 &&
                 (index + 1) % 12 === 0 &&
                 index + 1 < displayedItems.length && (
-                  <div className="col-span-full my-4">
-                    <div
-                      className="border-stroke bg-secondary-bg relative overflow-hidden rounded-lg border shadow transition-all duration-300"
-                      style={{ minHeight: '450px', maxHeight: '500px' }}
-                    >
-                      <span className="text-secondary-text border-stroke bg-primary-bg absolute top-2 left-2 z-10 rounded border px-2 py-0.5 text-xs">
-                        Ad
+                  <div className="col-span-full my-4 flex justify-center">
+                    <div className="w-full max-w-[700px]">
+                      <span className="text-secondary-text mb-2 block text-center text-xs">
+                        ADVERTISEMENT
                       </span>
-                      <DisplayAd
-                        adSlot="4358721799"
-                        adFormat="fluid"
-                        layoutKey="-62+ck+1k-2e+cb"
-                        style={{
-                          display: 'block',
-                          width: '100%',
-                          height: '100%',
-                        }}
-                      />
+                      <div
+                        className="border-stroke bg-secondary-bg relative overflow-hidden rounded-lg border shadow transition-all duration-300"
+                        style={{ minHeight: '450px', maxHeight: '500px' }}
+                      >
+                        <DisplayAd
+                          adSlot="4358721799"
+                          adFormat="fluid"
+                          layoutKey="-62+ck+1k-2e+cb"
+                          style={{
+                            display: 'block',
+                            width: '100%',
+                            height: '100%',
+                          }}
+                        />
+                      </div>
+                      <AdRemovalNotice />
                     </div>
-                    <AdRemovalNotice />
                   </div>
                 )}
             </React.Fragment>

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { XMarkIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-import { getItemTypeColor } from '@/utils/badgeColors';
+import { getCategoryColor } from '@/utils/categoryIcons';
 
 interface Item {
   id: number;
@@ -112,8 +112,13 @@ const ItemSelectionModal: React.FC<ItemSelectionModalProps> = ({
                       {item.name}
                     </span>
                     <span
-                      className="ml-2 flex-shrink-0 rounded-full px-2 py-0.5 text-xs text-white"
-                      style={{ backgroundColor: getItemTypeColor(item.type) }}
+                      className="ml-2 flex-shrink-0 rounded-full px-2 py-0.5 text-xs font-medium"
+                      style={{
+                        backgroundColor: getCategoryColor(item.type) + '20',
+                        borderColor: getCategoryColor(item.type),
+                        color: 'var(--color-primary-text)',
+                        border: '1px solid',
+                      }}
                     >
                       {item.type}
                     </span>

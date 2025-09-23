@@ -4,7 +4,7 @@ export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: 'hsl(218, 70%, 47%)', // --color-button-info
+      main: 'hsl(210, 99%, 50%)', // --color-button-info
     },
     secondary: {
       main: 'hsl(155, 61%, 44%)', // --color-tertiary
@@ -30,10 +30,10 @@ export const darkTheme = createTheme({
             borderColor: 'hsl(0, 0%, 0%)', // --color-stroke
           },
           '&:hover fieldset': {
-            borderColor: 'hsl(218, 70%, 47%)', // --color-button-info
+            borderColor: 'hsl(210, 99%, 50%)', // --color-button-info
           },
           '&.Mui-focused fieldset': {
-            borderColor: 'hsl(218, 70%, 47%)', // --color-button-info
+            borderColor: 'hsl(210, 99%, 50%)', // --color-button-info
           },
         },
       },
@@ -43,7 +43,7 @@ export const darkTheme = createTheme({
         root: {
           color: 'hsl(60, 100%, 100%)', // --color-primary-text
           '&.Mui-focused': {
-            color: 'hsl(218, 70%, 47%)', // --color-button-info
+            color: 'hsl(210, 99%, 50%)', // --color-button-info
           },
         },
       },
