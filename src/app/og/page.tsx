@@ -1,7 +1,6 @@
 import OGFinderClient from '@/components/OG/OGFinderClient';
 import OGFinderDescription from '@/components/OG/OGFinderDescription';
 import OGFinderFAQ from '@/components/OG/OGFinderFAQ';
-import OGConfetti from '@/components/OG/OGConfetti';
 import Breadcrumb from '@/components/Layout/Breadcrumb';
 import ExperimentalFeatureBanner from '@/components/UI/ExperimentalFeatureBanner';
 import ComingSoon from '@/components/UI/ComingSoon';
@@ -19,9 +18,7 @@ export default function OGFinderPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <OGConfetti />
-
+    <div className="container mx-auto px-4">
       <Breadcrumb />
 
       <ExperimentalFeatureBanner className="mb-6" />

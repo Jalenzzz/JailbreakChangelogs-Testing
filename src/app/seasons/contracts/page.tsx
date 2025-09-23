@@ -28,17 +28,15 @@ export default async function SeasonContractsPage() {
 
   return (
     <div className="min-h-screen">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4">
         <Breadcrumb />
 
-        <div className="mt-8">
-          {/* Countdown Section */}
-          {!seasonEnded && (
-            <div className="mb-12">
-              <WeeklyContractsCountdown season={latestSeason} />
-            </div>
-          )}
-        </div>
+        {/* Countdown Section */}
+        {!seasonEnded && (
+          <div className="mb-12">
+            <WeeklyContractsCountdown season={latestSeason} />
+          </div>
+        )}
         {!seasonEnded && (
           <SeasonContractsClient
             contracts={contractsData.data}

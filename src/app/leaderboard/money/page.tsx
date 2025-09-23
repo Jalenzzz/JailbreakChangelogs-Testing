@@ -9,7 +9,7 @@ export default async function MoneyLeaderboardPage() {
   const leaderboard = await fetchMoneyLeaderboard();
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4">
       <Breadcrumb />
 
       <div className="mb-8">

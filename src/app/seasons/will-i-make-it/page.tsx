@@ -32,20 +32,18 @@ export default async function WillIMakeItPage() {
 
   return (
     <div className="min-h-screen">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4">
         <Breadcrumb />
 
-        <div className="mt-8">
-          <div className="mb-4 flex items-center gap-3">
-            <h1 className="text-primary-text text-4xl font-bold">Will I Make It to Level 10?</h1>
-            <span className="bg-button-info text-form-button-text rounded px-2 py-1 text-[12px] font-semibold uppercase">
-              New
-            </span>
-          </div>
-          <p className="text-secondary-text mb-8 text-lg">
-            Calculate your chances of reaching level 10 in Season {season.season}: {season.title}
-          </p>
+        <div className="mb-4 flex items-center gap-3">
+          <h1 className="text-primary-text text-4xl font-bold">Will I Make It to Level 10?</h1>
+          <span className="bg-button-info text-form-button-text rounded px-2 py-1 text-[12px] font-semibold uppercase">
+            New
+          </span>
         </div>
+        <p className="text-secondary-text mb-8 text-lg">
+          Calculate your chances of reaching level 10 in Season {season.season}: {season.title}
+        </p>
 
         {/* Season Info & Calculator Info Side by Side */}
         <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2">

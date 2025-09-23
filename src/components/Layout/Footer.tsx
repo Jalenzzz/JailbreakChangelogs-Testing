@@ -49,7 +49,7 @@ export default function Footer() {
                   href="https://x.com/JBChangelogs"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-tertiary-text hover:text-link-hover hover:bg-quaternary-bg rounded-full p-3 transition-colors duration-200"
+                  className="text-link hover:text-link-hover hover:bg-quaternary-bg rounded-full p-3 transition-colors duration-200"
                   aria-label="Twitter/X"
                 >
                   <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
@@ -77,7 +77,7 @@ export default function Footer() {
                   href="https://discord.jailbreakchangelogs.xyz"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-tertiary-text hover:text-link-hover hover:bg-quaternary-bg rounded-full p-3 transition-colors duration-200"
+                  className="text-link hover:text-link-hover hover:bg-quaternary-bg rounded-full p-3 transition-colors duration-200"
                   aria-label="Discord"
                 >
                   <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
@@ -105,7 +105,7 @@ export default function Footer() {
                   href="https://www.roblox.com/communities/35348206/Jailbreak-Changelogs#!/about"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-tertiary-text hover:text-link-hover hover:bg-quaternary-bg rounded-full p-3 transition-colors duration-200"
+                  className="text-link hover:text-link-hover hover:bg-quaternary-bg rounded-full p-3 transition-colors duration-200"
                   aria-label="Roblox Group"
                 >
                   <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
@@ -133,7 +133,7 @@ export default function Footer() {
                   href="https://bsky.app/profile/jbchangelogs.bsky.social"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-tertiary-text hover:text-link-hover hover:bg-quaternary-bg rounded-full p-3 transition-colors duration-200"
+                  className="text-link hover:text-link-hover hover:bg-quaternary-bg rounded-full p-3 transition-colors duration-200"
                   aria-label="Bluesky"
                 >
                   <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 256 226">
@@ -291,7 +291,7 @@ export default function Footer() {
 
         <div className="mt-12 pt-8">
           <div className="flex flex-col gap-6">
-            <p className="text-tertiary-text text-sm leading-relaxed">
+            <p className="text-primary-text text-sm leading-relaxed">
               &copy; {new Date().getFullYear()} Jailbreak Changelogs LLC. Jailbreak Changelogs,
               JBCL, and any associated logos are trademarks, service marks, and/or registered
               trademarks of Jailbreak Changelogs LLC.

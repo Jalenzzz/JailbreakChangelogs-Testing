@@ -690,8 +690,8 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                               <div className="flex flex-wrap items-center gap-2">
                                 {loadingUserData[comment.user_id] ? (
                                   <>
-                                    <div className="bg-primary-bg h-5 w-30 animate-pulse rounded" />
-                                    <div className="bg-primary-bg h-4 w-20 animate-pulse rounded" />
+                                    <div className="bg-button-secondary h-5 w-30 animate-pulse rounded" />
+                                    <div className="bg-button-secondary h-4 w-20 animate-pulse rounded" />
                                   </>
                                 ) : hideRecent ? (
                                   <div className="flex items-center gap-2">
@@ -844,9 +844,9 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                             <div>
                               {loadingUserData[comment.user_id] ? (
                                 <div className="space-y-2">
-                                  <div className="bg-primary-bg h-5 w-full animate-pulse rounded" />
-                                  <div className="bg-primary-bg h-5 w-[90%] animate-pulse rounded" />
-                                  <div className="bg-primary-bg h-5 w-[80%] animate-pulse rounded" />
+                                  <div className="bg-button-secondary h-5 w-full animate-pulse rounded" />
+                                  <div className="bg-button-secondary h-5 w-[90%] animate-pulse rounded" />
+                                  <div className="bg-button-secondary h-5 w-[80%] animate-pulse rounded" />
                                 </div>
                               ) : (
                                 <>

@@ -11,22 +11,22 @@ export default function InventoryCheckerLoading() {
 
       {/* Stats Cards Skeleton */}
       <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div className="animate-pulse rounded-lg border p-4 shadow-sm">
-          <div className="mb-2 h-8 w-24 rounded bg-gray-600"></div>
-          <div className="h-4 w-32 rounded bg-gray-600"></div>
+        <div className="border-border-primary animate-pulse rounded-lg border p-4 shadow-sm">
+          <div className="bg-button-secondary mb-2 h-8 w-24 rounded"></div>
+          <div className="bg-button-secondary h-4 w-32 rounded"></div>
         </div>
-        <div className="animate-pulse rounded-lg border p-4 shadow-sm">
-          <div className="mb-2 h-8 w-24 rounded bg-gray-600"></div>
-          <div className="h-4 w-32 rounded bg-gray-600"></div>
+        <div className="border-border-primary animate-pulse rounded-lg border p-4 shadow-sm">
+          <div className="bg-button-secondary mb-2 h-8 w-24 rounded"></div>
+          <div className="bg-button-secondary h-4 w-32 rounded"></div>
         </div>
       </div>
 
       {/* Inventory Checker Form Skeleton */}
-      <div className="mb-8 animate-pulse rounded-lg border p-6 shadow-sm">
-        <div className="mb-4 h-6 w-48 rounded bg-gray-600"></div>
+      <div className="border-border-primary mb-8 animate-pulse rounded-lg border p-6 shadow-sm">
+        <div className="bg-button-secondary mb-4 h-6 w-48 rounded"></div>
         <div className="flex flex-col gap-4 sm:flex-row">
-          <div className="h-12 flex-1 rounded bg-gray-600"></div>
-          <div className="h-12 w-full rounded bg-gray-600 sm:w-32"></div>
+          <div className="bg-button-secondary h-12 flex-1 rounded"></div>
+          <div className="bg-button-secondary h-12 w-full rounded sm:w-32"></div>
         </div>
       </div>
 

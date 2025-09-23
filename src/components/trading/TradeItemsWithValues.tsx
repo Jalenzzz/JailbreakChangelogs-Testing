@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { TradeItem } from '@/types/trading';
 import Link from 'next/link';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { getCategoryColor } from '@/utils/categoryIcons';
 
 interface TradeItemsWithValuesProps {
   offering: TradeItem[];
@@ -118,7 +119,13 @@ const ItemRow: React.FC<ItemRowProps> = ({ item, side, isFirst = false }) => {
               )}
             </div>
             <div className="mt-1 flex flex-wrap items-center gap-2">
-              <span className="bg-primary/10 border-primary/30 text-primary-text rounded-lg border px-2 py-1 text-xs font-medium">
+              <span
+                className="text-primary-text flex items-center rounded-lg border px-2 py-1 text-xs font-medium"
+                style={{
+                  borderColor: getCategoryColor(item.type),
+                  backgroundColor: getCategoryColor(item.type) + '20', // Add 20% opacity
+                }}
+              >
                 {item.type}
               </span>
               {(item.is_limited === 1 || item.data?.is_limited === 1) && (

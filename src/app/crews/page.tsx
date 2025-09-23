@@ -22,7 +22,7 @@ export default async function CrewsPage({ searchParams }: CrewsPageProps) {
 
   return (
     <div className="text-primary-text min-h-screen">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4">
         <div className="mx-auto max-w-6xl">
           <Breadcrumb />
           <div className="mb-8">
@@ -56,7 +56,7 @@ function CrewLeaderboardSkeleton() {
           {Array.from({ length: 10 }).map((_, index) => (
             <div
               key={index}
-              className="border-stroke flex animate-pulse items-center gap-3 rounded-lg border p-3"
+              className="border-border-primary flex animate-pulse items-center gap-3 rounded-lg border p-3"
             >
               <div className="bg-secondary-bg h-8 w-8 rounded-full"></div>
               <div className="flex-1">

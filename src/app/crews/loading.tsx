@@ -24,7 +24,7 @@ export default function Loading() {
                 {Array.from({ length: 10 }).map((_, index) => (
                   <div
                     key={index}
-                    className="border-stroke flex animate-pulse items-center gap-3 rounded-lg border p-3"
+                    className="border-border-primary flex animate-pulse items-center gap-3 rounded-lg border p-3"
                   >
                     <div className="bg-secondary-bg h-8 w-8 rounded-full"></div>
                     <div className="flex-1">

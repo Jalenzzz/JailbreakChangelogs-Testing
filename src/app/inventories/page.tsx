@@ -30,24 +30,23 @@ interface BotAvatarData {
 export const dynamic = 'force-dynamic';
 
 export default function InventoriesPage() {
-  // Check if Inventory Calculator feature is enabled
   if (!isFeatureEnabled('INVENTORY_CALCULATOR')) {
     return <ComingSoon />;
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4">
       <Breadcrumb />
       <div className="mb-6 flex items-center gap-3">
-        <h1 className="text-3xl font-bold text-white">Inventory Calculator</h1>
-        <span className="rounded bg-[#5865F2] px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase">
+        <h1 className="text-primary-text text-3xl font-bold">Inventory Calculator</h1>
+        <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
           New
         </span>
       </div>
 
       <ExperimentalFeatureBanner className="mb-6" />
 
-      <p className="mb-4 text-white">
+      <p className="text-primary-text mb-4">
         Enter a username or Roblox ID to check their Jailbreak inventory, or use the option below to
         view your own inventory.
       </p>
@@ -393,7 +392,7 @@ async function LeaderboardUser({ user, index }: { user: UserScan; index: number 
       <div className="flex items-center gap-3">
         <div
           className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${
-            index <= 2 ? 'text-gray-800' : 'bg-button-secondary text-form-button-text'
+            index <= 2 ? 'text-primary-text' : 'bg-button-secondary text-form-button-text'
           }`}
           style={{
             ...(index === 0 && {
@@ -479,7 +478,7 @@ function BasicLeaderboardUser({ user, index }: { user: UserScan; index: number }
       <div className="flex items-center gap-3">
         <div
           className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${
-            index <= 2 ? 'text-gray-800' : 'bg-button-secondary text-form-button-text'
+            index <= 2 ? 'text-primary-text' : 'bg-button-secondary text-form-button-text'
           }`}
           style={{
             ...(index === 0 && {

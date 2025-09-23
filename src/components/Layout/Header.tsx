@@ -1410,7 +1410,7 @@ export default function Header() {
         ModalProps={{
           keepMounted: true,
         }}
-        className="[&_.MuiDrawer-paper]:bg-secondary-bg [&_.MuiDrawer-paper]:border-border-primary [&_.MuiDrawer-paper]:text-primary-text [&_.MuiDrawer-paper]:box-border [&_.MuiDrawer-paper]:w-60 [&_.MuiDrawer-paper]:border-l"
+        className="[&_.MuiDrawer-paper]:bg-primary-bg [&_.MuiDrawer-paper]:border-border-primary [&_.MuiDrawer-paper]:text-primary-text [&_.MuiDrawer-paper]:box-border [&_.MuiDrawer-paper]:w-60 [&_.MuiDrawer-paper]:border-l"
       >
         {drawer}
       </Drawer>

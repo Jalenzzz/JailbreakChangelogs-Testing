@@ -154,7 +154,7 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
         <SearchParamsHandler setFilterSort={setFilterSort} setValueSort={setValueSort} />
       </Suspense>
 
-      <div className="border-stroke bg-secondary-bg mb-8 rounded-lg border p-6">
+      <div className="bg-secondary-bg border-border-primary mb-8 rounded-lg border p-6">
         <div className="mb-4 flex items-center justify-between">
           <h1 className="text-primary-text text-3xl font-bold">Roblox Jailbreak Value List</h1>
         </div>

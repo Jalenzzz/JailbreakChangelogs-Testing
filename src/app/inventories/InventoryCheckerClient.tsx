@@ -455,22 +455,14 @@ export default function InventoryCheckerClient({
         />
 
         {/* Loading Skeleton for User Data */}
-        <div className="rounded-lg border p-6 shadow-sm">
+        <div className="border-border-primary bg-secondary-bg min-h-[200px] rounded-lg border p-6 shadow-sm">
           <div className="animate-pulse space-y-4">
             <div className="flex items-center gap-4">
-              <div className="h-16 w-16 rounded-full bg-gray-600"></div>
+              <div className="bg-button-secondary h-16 w-16 rounded-full"></div>
               <div className="flex-1">
-                <div className="mb-2 h-6 w-32 rounded bg-gray-600"></div>
-                <div className="h-4 w-24 rounded bg-gray-600"></div>
+                <div className="bg-button-secondary mb-2 h-6 w-32 rounded"></div>
+                <div className="bg-button-secondary h-4 w-24 rounded"></div>
               </div>
-            </div>
-            <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="text-center">
-                  <div className="mb-2 h-8 animate-pulse rounded bg-gray-600"></div>
-                  <div className="mx-auto h-4 w-16 animate-pulse rounded bg-gray-600"></div>
-                </div>
-              ))}
             </div>
           </div>
         </div>

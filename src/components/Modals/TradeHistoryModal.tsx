@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Dialog } from '@headlessui/react';
 import { XMarkIcon, ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/24/outline';
 import { DefaultAvatar } from '@/utils/avatar';
+import { getCategoryColor } from '@/utils/categoryIcons';
 
 interface TradeHistoryEntry {
   UserId: number;
@@ -57,9 +58,20 @@ export default function TradeHistoryModal({
                 <Dialog.Title className="text-primary-text text-lg font-semibold sm:text-xl">
                   Ownership History
                 </Dialog.Title>
-                <p className="text-secondary-text truncate text-sm">
-                  {item.title} {item.categoryTitle && `(${item.categoryTitle})`}
-                </p>
+                <div className="flex items-center gap-2">
+                  <p className="text-secondary-text truncate text-sm">{item.title}</p>
+                  {item.categoryTitle && (
+                    <span
+                      className="text-primary-text flex items-center rounded-full border px-2 py-0.5 text-xs font-medium"
+                      style={{
+                        borderColor: getCategoryColor(item.categoryTitle),
+                        backgroundColor: getCategoryColor(item.categoryTitle) + '20', // Add 20% opacity
+                      }}
+                    >
+                      {item.categoryTitle}
+                    </span>
+                  )}
+                </div>
                 {item.history && Array.isArray(item.history) && item.history.length > 1 && (
                   <p className="text-secondary-text mt-1 text-xs">
                     Total Ownership Changes: {item.history.length - 1}

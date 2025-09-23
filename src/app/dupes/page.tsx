@@ -1,5 +1,4 @@
 import DupeFinderClient from '@/components/Dupes/DupeFinderClient';
-import DupeConfetti from '@/components/Dupes/DupeConfetti';
 import DupeFinderFAQ from '@/components/Dupes/DupeFinderFAQ';
 import Breadcrumb from '@/components/Layout/Breadcrumb';
 import ExperimentalFeatureBanner from '@/components/UI/ExperimentalFeatureBanner';
@@ -18,8 +17,7 @@ export default function DupeFinderPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <DupeConfetti />
+    <div className="container mx-auto px-4">
       <Breadcrumb />
       <div className="mb-6 flex items-center gap-3">
         <h1 className="text-primary-text text-3xl font-bold">Dupe Finder</h1>

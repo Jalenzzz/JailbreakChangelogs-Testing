@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function DupeCalculatorPage() {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4">
       <Breadcrumb />
       <DupeReportHeader />
 

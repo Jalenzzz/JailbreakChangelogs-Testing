@@ -122,11 +122,11 @@ export default function XpImportantDates({
           <div className="border-stroke bg-secondary-bg rounded-lg border p-4">
             <div className="flex flex-col gap-3">
               <div className="text-center">
-                <span className="text-secondary-text text-lg font-semibold">{doubleXpStatus}</span>
+                <span className="text-primary-text text-lg font-semibold">{doubleXpStatus}</span>
               </div>
               {doubleXpTimeLeft && (
                 <div className="text-center">
-                  <span className="text-secondary-text text-3xl font-bold">{doubleXpTimeLeft}</span>
+                  <span className="text-primary-text text-3xl font-bold">{doubleXpTimeLeft}</span>
                 </div>
               )}
             </div>
@@ -137,11 +137,11 @@ export default function XpImportantDates({
         <div className="border-stroke bg-secondary-bg rounded-lg border p-4">
           <div className="flex flex-col gap-3">
             <div className="text-center">
-              <span className="text-secondary-text text-lg font-semibold">{seasonEndStatus}</span>
+              <span className="text-primary-text text-lg font-semibold">{seasonEndStatus}</span>
             </div>
             {seasonEndTimeLeft && (
               <div className="text-center">
-                <span className="text-secondary-text text-3xl font-bold">{seasonEndTimeLeft}</span>
+                <span className="text-primary-text text-3xl font-bold">{seasonEndTimeLeft}</span>
               </div>
             )}
           </div>

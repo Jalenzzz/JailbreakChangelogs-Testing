@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
 export default function NewsTicker() {
@@ -9,12 +8,12 @@ export default function NewsTicker() {
   const handleDismiss = () => {
     setIsVisible(false);
     // Store dismissal in localStorage to remember user's choice
-    localStorage.setItem('og-finder-announcement-dismissed', 'true');
+    localStorage.setItem('theme-toggle-announcement-dismissed', 'true');
   };
 
   useEffect(() => {
     // Check if user has previously dismissed this announcement
-    const dismissed = localStorage.getItem('og-finder-announcement-dismissed');
+    const dismissed = localStorage.getItem('theme-toggle-announcement-dismissed');
     if (dismissed === 'true') {
       setIsVisible(false);
     }
@@ -47,39 +46,9 @@ export default function NewsTicker() {
 
           <div className="flex flex-col items-center gap-2 lg:flex-row lg:gap-3">
             <span className="text-primary-text text-center text-xs lg:text-sm">
-              Introducing our <strong>OG Finder</strong> & <strong>Dupe Finder</strong> - Track down
-              your original items and detect dupes accurately!
+              <strong>New Theme Toggle!</strong> Find it in the header to cycle between light, dark,
+              and system themes
             </span>
-            <div className="flex gap-2">
-              <Link
-                href="/og"
-                className="bg-button-info text-form-button-text hover:bg-button-info-hover inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-colors lg:px-3"
-              >
-                OG Finder
-                <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </Link>
-              <Link
-                href="/dupes"
-                className="bg-button-info text-form-button-text hover:bg-button-info-hover inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-colors lg:px-3"
-              >
-                Dupe Finder
-                <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </Link>
-            </div>
           </div>
 
           <button

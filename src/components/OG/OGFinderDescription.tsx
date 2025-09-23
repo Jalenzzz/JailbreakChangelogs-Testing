@@ -2,7 +2,7 @@ import React from 'react';
 
 const OGFinderDescription: React.FC = () => {
   return (
-    <div className="border-stroke bg-secondary-bg mb-8 rounded-lg border p-6">
+    <div className="bg-secondary-bg border-border-primary mb-8 rounded-lg border p-6">
       <div className="mb-4">
         <div className="mb-4 flex items-center gap-3">
           <h2 className="text-primary-text text-2xl font-semibold">

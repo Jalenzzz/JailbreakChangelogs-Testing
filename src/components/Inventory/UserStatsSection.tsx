@@ -350,7 +350,7 @@ export default function UserStatsSection({
                 if (!gamepassInfo) return null;
 
                 const GamepassContent = () => (
-                  <div className="text-form-button-text border-button-info bg-button-info hover:bg-button-info-hover flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors">
+                  <div className="text-primary-text border-button-info hover:bg-button-info/10 flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors">
                     <div className="relative h-6 w-6">
                       <Image
                         src={`/assets/images/gamepasses/${gamepassInfo.image}.webp`}

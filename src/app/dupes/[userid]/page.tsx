@@ -1,7 +1,6 @@
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import DupeFinderDataStreamer from '@/components/Dupes/DupeFinderDataStreamer';
-import DupeConfetti from '@/components/Dupes/DupeConfetti';
 import DupeFinderFAQ from '@/components/Dupes/DupeFinderFAQ';
 import Breadcrumb from '@/components/Layout/Breadcrumb';
 import ExperimentalFeatureBanner from '@/components/UI/ExperimentalFeatureBanner';
@@ -36,7 +35,6 @@ export default async function DupeFinderPage({ params }: DupeFinderPageProps) {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <DupeConfetti />
       <Breadcrumb />
       <div className="mb-6 flex items-center gap-3">
         <h1 className="text-primary-text text-3xl font-bold">Dupe Finder</h1>

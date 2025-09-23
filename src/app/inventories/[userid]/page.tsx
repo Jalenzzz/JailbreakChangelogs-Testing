@@ -34,11 +34,11 @@ export default async function InventoryCheckerPage({ params }: InventoryCheckerP
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4">
       <Breadcrumb />
       <div className="mb-6 flex items-center gap-3">
-        <h1 className="text-3xl font-bold text-white">Inventory Checker</h1>
-        <span className="rounded bg-[#5865F2] px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase">
+        <h1 className="text-primary-text text-3xl font-bold">Inventory Checker</h1>
+        <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
           New
         </span>
       </div>
