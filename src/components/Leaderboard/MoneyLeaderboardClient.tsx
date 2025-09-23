@@ -171,7 +171,7 @@ export default function MoneyLeaderboardClient({
                         <div className="flex items-center space-x-2 sm:space-x-3">
                           <div
                             className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold sm:h-8 sm:w-8 ${
-                              originalRank <= 3 ? 'text-gray-800' : 'text-primary-text'
+                              originalRank <= 3 ? 'text-black' : 'text-primary-text'
                             }`}
                             style={{
                               ...(originalRank === 1 && {

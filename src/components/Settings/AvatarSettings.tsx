@@ -193,7 +193,11 @@ export const AvatarSettings = ({ userData, onAvatarUpdate }: AvatarSettingsProps
     <>
       <Box sx={{ mt: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-          <Typography variant="subtitle1" component="div" sx={{ color: '#D3D9D4' }}>
+          <Typography
+            variant="subtitle1"
+            component="div"
+            sx={{ color: 'var(--color-primary-text)' }}
+          >
             Custom Avatar URL
           </Typography>
           <Tooltip
@@ -203,28 +207,31 @@ export const AvatarSettings = ({ userData, onAvatarUpdate }: AvatarSettingsProps
             slotProps={{
               tooltip: {
                 sx: {
-                  backgroundColor: '#0F1419',
-                  color: '#D3D9D4',
+                  backgroundColor: 'var(--color-tertiary-bg)',
+                  color: 'var(--color-primary-text)',
                   fontSize: '0.75rem',
                   padding: '8px 12px',
                   borderRadius: '8px',
-
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                  boxShadow: 'var(--color-card-shadow)',
                   '& .MuiTooltip-arrow': {
-                    color: '#0F1419',
+                    color: 'var(--color-tertiary-bg)',
                   },
                 },
               },
             }}
           >
             <Chip
-              icon={<TrophyIcon className="h-4 w-4" style={{ color: '#C0C0C0' }} />}
+              icon={
+                <TrophyIcon className="h-4 w-4" style={{ color: 'var(--color-primary-text)' }} />
+              }
               label="Supporter Tier 2"
               size="small"
+              variant="outlined"
               sx={{
-                backgroundColor: 'rgba(192, 192, 192, 0.1)',
-                border: '1px solid rgba(192, 192, 192, 0.3)',
-                color: '#C0C0C0',
+                borderColor: 'var(--color-primary-text)',
+                color: 'var(--color-primary-text)',
+                fontSize: '0.75rem',
+                backgroundColor: 'transparent',
                 '& .MuiChip-label': {
                   fontWeight: 600,
                 },
@@ -236,7 +243,10 @@ export const AvatarSettings = ({ userData, onAvatarUpdate }: AvatarSettingsProps
           variant="body2"
           sx={{
             mb: 1,
-            color: userData?.premiumtype && userData.premiumtype >= 2 ? '#FFFFFF' : '#FF6B6B',
+            color:
+              userData?.premiumtype && userData.premiumtype >= 2
+                ? 'var(--color-primary-text)'
+                : 'var(--color-button-danger)',
             fontWeight: userData?.premiumtype && userData.premiumtype >= 2 ? 'normal' : 500,
           }}
         >
@@ -271,25 +281,25 @@ export const AvatarSettings = ({ userData, onAvatarUpdate }: AvatarSettingsProps
                 '& .MuiOutlinedInput-root': {
                   '& fieldset': {},
                   '&:hover fieldset': {
-                    borderColor: '#124E66',
+                    borderColor: 'var(--color-button-info)',
                   },
                   '&.Mui-focused fieldset': {
-                    borderColor: '#124E66',
+                    borderColor: 'var(--color-button-info)',
                   },
-                  backgroundColor: 'rgba(46, 57, 68, 0.5)',
+                  backgroundColor: 'var(--color-secondary-bg)',
                   height: '40px',
                 },
                 '& .MuiInputBase-input': {
-                  color: '#D3D9D4',
+                  color: 'var(--color-primary-text)',
                 },
                 '& .MuiInputBase-input.Mui-disabled': {
-                  color: '#D3D9D4 !important',
-                  WebkitTextFillColor: '#D3D9D4 !important',
+                  color: 'var(--color-primary-text) !important',
+                  WebkitTextFillColor: 'var(--color-primary-text) !important',
                   cursor: 'not-allowed',
                 },
                 '& .MuiFormHelperText-root': {
                   marginTop: '4px',
-                  color: '#ff6b6b !important',
+                  color: 'var(--color-button-danger) !important',
                 },
               }}
             />
@@ -310,13 +320,13 @@ export const AvatarSettings = ({ userData, onAvatarUpdate }: AvatarSettingsProps
               disabled={!userData?.premiumtype || userData.premiumtype < 2 || isUploading}
               className={isUploading ? 'cursor-progress' : 'cursor-pointer'}
               sx={{
-                backgroundColor: '#124E66',
-                color: '#FFFFFF',
+                backgroundColor: 'var(--color-button-info)',
+                color: 'var(--color-form-button-text)',
                 '&:hover': {
-                  backgroundColor: '#0D3A4D',
+                  backgroundColor: 'var(--color-button-info-hover)',
                 },
                 '&.Mui-disabled': {
-                  color: '#FFFFFF',
+                  color: 'var(--color-form-button-text)',
                 },
                 height: '40px',
                 minWidth: { xs: '100%', sm: '120px' },
@@ -338,12 +348,13 @@ export const AvatarSettings = ({ userData, onAvatarUpdate }: AvatarSettingsProps
               onClick={handleUpdateAvatar}
               disabled={!isValidAvatar || !userData?.premiumtype || userData.premiumtype < 2}
               sx={{
-                backgroundColor: '#124E66',
+                backgroundColor: 'var(--color-button-info)',
+                color: 'var(--color-form-button-text)',
                 '&:hover': {
-                  backgroundColor: '#0D3A4D',
+                  backgroundColor: 'var(--color-button-info-hover)',
                 },
                 '&.Mui-disabled': {
-                  color: '#FFFFFF',
+                  color: 'var(--color-form-button-text)',
                 },
                 height: '40px',
                 minWidth: { xs: '100%', sm: '100px' },

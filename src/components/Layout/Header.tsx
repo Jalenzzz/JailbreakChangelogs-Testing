@@ -242,7 +242,7 @@ export default function Header() {
             component={Link}
             href={`/users/${userData?.id}`}
             onClick={handleDrawerToggle}
-            className="hover:bg-primary-bg cursor-pointer"
+            className="cursor-pointer"
           >
             <ListItemIcon>
               <UserAvatar
@@ -268,9 +268,9 @@ export default function Header() {
                 const event = new CustomEvent('setLoginTab', { detail: 1 });
                 window.dispatchEvent(event);
               }}
-              className="hover:bg-primary-bg cursor-pointer"
+              className="cursor-pointer"
             >
-              <ListItemIcon>
+              <ListItemIcon sx={{ color: 'var(--color-primary-text) !important' }}>
                 <RobloxIcon className="h-5 w-5" />
               </ListItemIcon>
               <ListItemText primary="Connect Roblox" />
@@ -280,22 +280,23 @@ export default function Header() {
             component={Link}
             href="/settings"
             onClick={handleDrawerToggle}
-            className="hover:bg-primary-bg cursor-pointer"
+            className="cursor-pointer"
           >
-            <ListItemIcon>
-              <SettingsIcon className="text-primary-text" />
+            <ListItemIcon sx={{ color: 'var(--color-primary-text) !important' }}>
+              <SettingsIcon />
             </ListItemIcon>
             <ListItemText primary="Settings" />
           </ListItem>
-          <ListItem
-            component="div"
-            onClick={handleLogout}
-            className="hover:bg-primary-bg cursor-pointer"
-          >
-            <ListItemIcon>
-              <LogoutIcon className="text-primary-text" />
+          <ListItem component="div" onClick={handleLogout} className="cursor-pointer">
+            <ListItemIcon sx={{ color: 'var(--color-button-danger) !important' }}>
+              <LogoutIcon />
             </ListItemIcon>
-            <ListItemText primary="Logout" />
+            <ListItemText
+              primary="Logout"
+              primaryTypographyProps={{
+                sx: { color: 'var(--color-button-danger)' },
+              }}
+            />
           </ListItem>
         </>
       ) : (
@@ -307,7 +308,7 @@ export default function Header() {
                 setShowLoginModal(true);
                 handleDrawerToggle();
               }}
-              className="bg-button-info hover:bg-button-info-hover text-form-button-text w-full"
+              className="bg-button-info text-form-button-text w-full"
             >
               Login
             </Button>
@@ -319,7 +320,15 @@ export default function Header() {
         <Typography className="text-secondary-text text-sm font-semibold tracking-wider uppercase">
           Game & Updates
         </Typography>
-        <IconButton onClick={handleDrawerToggle} className="text-secondary-text">
+        <IconButton
+          onClick={handleDrawerToggle}
+          sx={{
+            color: 'var(--color-primary-text) !important',
+            '& .MuiSvgIcon-root': {
+              color: 'var(--color-primary-text) !important',
+            },
+          }}
+        >
           <CloseIcon />
         </IconButton>
       </ListItem>
@@ -328,7 +337,7 @@ export default function Header() {
         component={Link}
         href="/changelogs"
         onClick={handleDrawerToggle}
-        className="hover:bg-primary-bg cursor-pointer pl-4"
+        className="cursor-pointer pl-4"
       >
         <ListItemText primary="Changelogs" />
       </ListItem>
@@ -336,7 +345,7 @@ export default function Header() {
         component={Link}
         href="/seasons"
         onClick={handleDrawerToggle}
-        className="hover:bg-primary-bg cursor-pointer pl-4"
+        className="cursor-pointer pl-4"
       >
         <ListItemText primary="Browse Seasons" />
       </ListItem>
@@ -344,7 +353,7 @@ export default function Header() {
         component={Link}
         href="/seasons/will-i-make-it"
         onClick={handleDrawerToggle}
-        className="hover:bg-primary-bg cursor-pointer pl-4"
+        className="cursor-pointer pl-4"
       >
         <ListItemText
           primary={
@@ -361,7 +370,7 @@ export default function Header() {
         component={Link}
         href="/seasons/contracts"
         onClick={handleDrawerToggle}
-        className="hover:bg-primary-bg cursor-pointer pl-4"
+        className="cursor-pointer pl-4"
       >
         <ListItemText
           primary={
@@ -383,7 +392,7 @@ export default function Header() {
         component={Link}
         href="/values"
         onClick={handleDrawerToggle}
-        className="hover:bg-primary-bg cursor-pointer pl-4"
+        className="cursor-pointer pl-4"
       >
         <ListItemText primary="Value List" />
       </ListItem>
@@ -391,7 +400,7 @@ export default function Header() {
         component={Link}
         href="/values/changelogs"
         onClick={handleDrawerToggle}
-        className="hover:bg-primary-bg cursor-pointer pl-4"
+        className="cursor-pointer pl-4"
       >
         <ListItemText primary="Value Changelogs" />
       </ListItem>
@@ -399,7 +408,7 @@ export default function Header() {
         component={Link}
         href="/values/calculator"
         onClick={handleDrawerToggle}
-        className="hover:bg-primary-bg cursor-pointer pl-4"
+        className="cursor-pointer pl-4"
       >
         <ListItemText primary="Value Calculator" />
       </ListItem>
@@ -407,7 +416,7 @@ export default function Header() {
         component={Link}
         href="/dupes"
         onClick={handleDrawerToggle}
-        className="hover:bg-primary-bg cursor-pointer pl-4"
+        className="cursor-pointer pl-4"
       >
         <ListItemText
           primary={
@@ -430,7 +439,7 @@ export default function Header() {
         component={Link}
         href="/dupes/calculator"
         onClick={handleDrawerToggle}
-        className="hover:bg-primary-bg cursor-pointer pl-4"
+        className="cursor-pointer pl-4"
       >
         <ListItemText primary="Dupe Calculator" />
       </ListItem>
@@ -438,7 +447,7 @@ export default function Header() {
         component={Link}
         href="/trading"
         onClick={handleDrawerToggle}
-        className="hover:bg-primary-bg cursor-pointer pl-4"
+        className="cursor-pointer pl-4"
       >
         <ListItemText primary="Trade Ads" />
       </ListItem>
@@ -446,7 +455,7 @@ export default function Header() {
         component={Link}
         href="/inventories"
         onClick={handleDrawerToggle}
-        className="group hover:bg-primary-bg cursor-pointer pl-4"
+        className="group cursor-pointer pl-4"
       >
         <ListItemText
           primary={
@@ -469,7 +478,7 @@ export default function Header() {
         component={Link}
         href="/og"
         onClick={handleDrawerToggle}
-        className="hover:bg-primary-bg cursor-pointer pl-4"
+        className="cursor-pointer pl-4"
       >
         <ListItemText
           primary={
@@ -497,7 +506,7 @@ export default function Header() {
         component={Link}
         href="/users"
         onClick={handleDrawerToggle}
-        className="hover:bg-primary-bg cursor-pointer pl-4"
+        className="cursor-pointer pl-4"
       >
         <ListItemText primary="User Search" />
       </ListItem>
@@ -505,7 +514,7 @@ export default function Header() {
         component={Link}
         href="/crews"
         onClick={handleDrawerToggle}
-        className="hover:bg-primary-bg cursor-pointer pl-4"
+        className="cursor-pointer pl-4"
       >
         <ListItemText
           primary={
@@ -522,7 +531,7 @@ export default function Header() {
         component={Link}
         href="/leaderboard/money"
         onClick={handleDrawerToggle}
-        className="hover:bg-primary-bg cursor-pointer pl-4"
+        className="cursor-pointer pl-4"
       >
         <Box className="flex items-center gap-1">
           <span>Money Leaderboard</span>
@@ -535,7 +544,7 @@ export default function Header() {
         component={Link}
         href="/servers"
         onClick={handleDrawerToggle}
-        className="hover:bg-primary-bg cursor-pointer pl-4"
+        className="cursor-pointer pl-4"
       >
         <ListItemText primary="Private Servers" />
       </ListItem>
@@ -543,7 +552,7 @@ export default function Header() {
         component={Link}
         href="/bot"
         onClick={handleDrawerToggle}
-        className="hover:bg-primary-bg cursor-pointer pl-4"
+        className="cursor-pointer pl-4"
       >
         <ListItemText primary="Discord Bot" />
       </ListItem>
@@ -551,7 +560,7 @@ export default function Header() {
         component={Link}
         href="/faq"
         onClick={handleDrawerToggle}
-        className="hover:bg-primary-bg cursor-pointer pl-4"
+        className="cursor-pointer pl-4"
       >
         <ListItemText primary="FAQ" />
       </ListItem>
@@ -559,7 +568,7 @@ export default function Header() {
         component={Link}
         href="/contributors"
         onClick={handleDrawerToggle}
-        className="hover:bg-primary-bg cursor-pointer pl-4"
+        className="cursor-pointer pl-4"
       >
         <ListItemText primary="Meet the team" />
       </ListItem>
@@ -1189,37 +1198,17 @@ export default function Header() {
                       onMouseEnter={handleMenuOpen}
                       onMouseLeave={handleMenuClose}
                     >
-                      <Box
-                        className={`ml-2 flex cursor-pointer items-center gap-1 rounded-lg px-3 py-1.5 transition-colors duration-200 ${
-                          Boolean(anchorEl)
-                            ? 'bg-button-info'
-                            : 'bg-secondary-bg hover:bg-button-info active:bg-button-info-active'
-                        }`}
-                      >
-                        <Box className="flex items-center gap-1">
-                          <Typography
-                            variant="body1"
-                            className={`font-semibold transition-colors duration-200 ${
-                              Boolean(anchorEl) ? 'text-primary-text' : 'text-primary-text'
-                            }`}
-                          >
-                            {userData.username}
-                          </Typography>
-                          <IconButton size="small" className="p-0 hover:bg-transparent">
-                            <UserAvatar
-                              userId={userData.id}
-                              avatarHash={userData.avatar}
-                              username={userData.username}
-                              size={10}
-                              accent_color={userData.accent_color}
-                              custom_avatar={userData.custom_avatar}
-                              showBadge={false}
-                              settings={userData.settings}
-                              premiumType={userData.premiumtype}
-                            />
-                          </IconButton>
-                        </Box>
-                      </Box>
+                      <UserAvatar
+                        userId={userData.id}
+                        avatarHash={userData.avatar}
+                        username={userData.username}
+                        size={10}
+                        accent_color={userData.accent_color}
+                        custom_avatar={userData.custom_avatar}
+                        showBadge={false}
+                        settings={userData.settings}
+                        premiumType={userData.premiumtype}
+                      />
 
                       <AnimatePresence>
                         {Boolean(anchorEl) && (
@@ -1256,7 +1245,7 @@ export default function Header() {
                               >
                                 <Link
                                   href={`/users/${String(userData?.id).replace(/\D/g, '')}`}
-                                  className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text flex items-center rounded-lg px-4 py-3 text-base font-bold transition-colors"
+                                  className="group text-primary-text hover:bg-button-info-hover hover:text-form-button-text flex items-center rounded-lg px-4 py-3 text-base font-bold transition-colors"
                                   onClick={handleMenuClose}
                                 >
                                   <UserAvatar
@@ -1270,7 +1259,12 @@ export default function Header() {
                                     settings={userData.settings}
                                     premiumType={userData.premiumtype}
                                   />
-                                  <span className="ml-3">My account</span>
+                                  <div className="ml-3">
+                                    <div className="font-bold">{userData.username}</div>
+                                    <div className="text-secondary-text group-hover:text-form-button-text text-sm">
+                                      @{userData.username}
+                                    </div>
+                                  </div>
                                 </Link>
                               </motion.div>
 
@@ -1285,7 +1279,7 @@ export default function Header() {
                                   transition={{ duration: 0.2, delay: 0.05 }}
                                 >
                                   <button
-                                    className="text-primary-text hover:bg-primary-bg hover:text-form-button-text flex w-full items-center rounded-lg px-4 py-2 text-base font-bold transition-colors"
+                                    className="group text-primary-text hover:bg-button-info-hover hover:text-form-button-text flex w-full items-center rounded-lg px-4 py-2 text-base font-bold transition-colors"
                                     onClick={() => {
                                       handleMenuClose();
                                       setShowLoginModal(true);
@@ -1293,7 +1287,7 @@ export default function Header() {
                                       window.dispatchEvent(event);
                                     }}
                                   >
-                                    <RobloxIcon className="mr-3 h-5 w-5" />
+                                    <RobloxIcon className="group-hover:text-form-button-text mr-3 h-5 w-5" />
                                     Connect Roblox
                                   </button>
                                 </motion.div>
@@ -1308,10 +1302,10 @@ export default function Header() {
                               >
                                 <Link
                                   href="/settings"
-                                  className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text flex items-center rounded-lg px-4 py-2 text-base font-bold transition-colors"
+                                  className="group text-primary-text hover:bg-button-info-hover hover:text-form-button-text flex items-center rounded-lg px-4 py-2 text-base font-bold transition-colors"
                                   onClick={handleMenuClose}
                                 >
-                                  <SettingsIcon className="text-primary-text mr-3 text-xl" />
+                                  <SettingsIcon className="text-primary-text group-hover:text-form-button-text mr-3 text-xl" />
                                   Settings
                                 </Link>
                               </motion.div>
@@ -1324,7 +1318,7 @@ export default function Header() {
                                 transition={{ duration: 0.2, delay: 0.15 }}
                               >
                                 <button
-                                  className="text-button-danger hover:bg-button-danger/10 hover:text-button-danger flex w-full items-center rounded-lg px-4 py-2 text-base font-bold transition-colors"
+                                  className="text-button-danger hover:bg-button-danger/10 hover:text-button-danger flex w-full cursor-pointer items-center rounded-lg px-4 py-2 text-base font-bold transition-colors"
                                   onClick={handleLogout}
                                 >
                                   <LogoutIcon className="text-button-danger mr-3 text-xl" />
@@ -1341,7 +1335,7 @@ export default function Header() {
                   <Button
                     variant="contained"
                     onClick={() => setShowLoginModal(true)}
-                    className="bg-button-info hover:bg-button-info-hover active:bg-button-info-active text-form-button-text transition-colors duration-200"
+                    className="bg-button-info active:bg-button-info-active text-form-button-text transition-colors duration-200"
                   >
                     <Typography variant="button">Login</Typography>
                   </Button>
@@ -1397,10 +1391,15 @@ export default function Header() {
                 </IconButton>
               </Tooltip>
               <IconButton
-                color="inherit"
                 aria-label="open drawer"
                 edge="end"
                 onClick={handleDrawerToggle}
+                sx={{
+                  color: 'var(--color-primary-text) !important',
+                  '& .MuiSvgIcon-root': {
+                    color: 'var(--color-primary-text) !important',
+                  },
+                }}
               >
                 <MenuIcon />
               </IconButton>

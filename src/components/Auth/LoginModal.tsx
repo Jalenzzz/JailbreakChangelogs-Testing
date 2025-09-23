@@ -330,7 +330,7 @@ function LoginModalInner({ open, onClose }: LoginModalProps) {
                         </a>
                         .
                       </p>
-                      <div className="mb-4">
+                      <div className="mb-4 flex justify-center">
                         <label className="flex cursor-pointer items-center space-x-2">
                           <input
                             type="checkbox"
@@ -340,9 +340,6 @@ function LoginModalInner({ open, onClose }: LoginModalProps) {
                           />
                           <span className="text-primary-text text-sm">Join our Discord server</span>
                         </label>
-                        <p className="text-secondary-text mt-1 text-sm">
-                          Join our Discord community to stay updated and connect with other users
-                        </p>
                       </div>
                       <motion.button
                         onClick={() => {
@@ -463,7 +460,7 @@ function LoginModalInner({ open, onClose }: LoginModalProps) {
                               setIsRedirecting(false);
                             }
                           }}
-                          className={`bg-button-danger text-form-button-text hover:bg-button-danger-hover hover:shadow-button-danger/25 flex w-full cursor-pointer items-center justify-center gap-2 rounded-md px-4 py-3 font-medium shadow-lg transition-all duration-200`}
+                          className={`bg-button-info text-form-button-text hover:bg-button-info-hover hover:shadow-button-info/25 flex w-full cursor-pointer items-center justify-center gap-2 rounded-md px-4 py-3 font-medium shadow-lg transition-all duration-200`}
                         >
                           Continue with Roblox
                         </motion.button>

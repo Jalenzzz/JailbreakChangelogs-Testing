@@ -25,13 +25,17 @@ export const SettingToggle = ({ name, value, config, onChange, disabled }: Setti
             disabled={disabled}
             sx={{
               '& .MuiSwitch-switchBase.Mui-checked': {
-                color: '#1d7da3',
+                color: 'var(--color-button-info)',
               },
               '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                backgroundColor: '#1d7da3',
+                backgroundColor: 'var(--color-button-info)',
+              },
+              '& .MuiSwitch-track': {
+                backgroundColor: 'var(--color-primary-bg)',
+                border: '1px solid var(--color-border-primary)',
               },
               '&.Mui-disabled': {
-                color: '#FFFFFF',
+                color: 'var(--color-primary-text)',
                 '& + .MuiSwitch-track': {},
               },
             }}
@@ -39,10 +43,14 @@ export const SettingToggle = ({ name, value, config, onChange, disabled }: Setti
         }
         label={
           <Box>
-            <Typography variant="subtitle1" component="div" sx={{ color: '#D3D9D4' }}>
+            <Typography
+              variant="subtitle1"
+              component="div"
+              sx={{ color: 'var(--color-primary-text)' }}
+            >
               {config.displayName}
             </Typography>
-            <Typography variant="body2" sx={{ color: '#FFFFFF' }}>
+            <Typography variant="body2" sx={{ color: 'var(--color-secondary-text)' }}>
               {config.description}
             </Typography>
           </Box>
