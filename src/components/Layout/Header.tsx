@@ -574,12 +574,6 @@ export default function Header() {
       </ListItem>
 
       <Divider className="my-4" />
-
-      <ListItem>
-        <Box className="w-full px-4">
-          <ThemeToggle />
-        </Box>
-      </ListItem>
     </List>
   );
 
@@ -1390,6 +1384,7 @@ export default function Header() {
                   </svg>
                 </IconButton>
               </Tooltip>
+              <ThemeToggle />
               <IconButton
                 aria-label="open drawer"
                 edge="end"
