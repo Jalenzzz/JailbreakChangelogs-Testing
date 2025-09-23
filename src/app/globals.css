@@ -130,6 +130,9 @@
   --color-overlay-light: hsl(240, 8%, 9%, 0.5); /* Light overlay */
   --color-overlay-medium: hsl(240, 8%, 9%, 0.7); /* Medium overlay */
   --color-overlay-dark: hsl(240, 8%, 9%, 0.9); /* Dark overlay */
+
+  /* Hero Overlays */
+  --color-hero-overlay: hsl(0, 0%, 0%, 0.7); /* Hero overlay - Dark mode */
 }
 
 /* LIGHT THEME - Applied when .light class is present */
@@ -260,6 +263,9 @@
   --color-overlay-light: hsl(0, 0%, 100%, 0.5); /* Light overlay - White */
   --color-overlay-medium: hsl(0, 0%, 100%, 0.7); /* Medium overlay - White */
   --color-overlay-dark: hsl(0, 0%, 100%, 0.9); /* Dark overlay - White */
+
+  /* Hero Overlays - Light theme */
+  --color-hero-overlay: hsl(0, 0%, 0%, 0.5); /* Hero overlay - Light mode (lighter) */
 }
 
 @layer base {

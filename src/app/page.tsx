@@ -39,7 +39,10 @@ export default function Home() {
               priority
             />
           )}
-          <div className="absolute inset-0 z-10 bg-black/70"></div>
+          <div
+            className="absolute inset-0 z-10"
+            style={{ backgroundColor: 'var(--color-hero-overlay)' }}
+          ></div>
         </div>
 
         <div className="relative z-10 container mx-auto px-4">
