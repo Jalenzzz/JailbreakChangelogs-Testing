@@ -45,17 +45,17 @@ export default function OGFinderPage() {
 function StatsSkeleton() {
   return (
     <div className="mb-6 grid grid-cols-1 gap-4 pt-6 md:grid-cols-3">
-      <div className="rounded-lg border p-4 shadow-sm">
-        <div className="mb-2 h-8 animate-pulse rounded bg-[#37424D]"></div>
-        <div className="h-4 w-24 animate-pulse rounded bg-[#37424D]"></div>
+      <div className="border-border-primary bg-secondary-bg shadow-card-shadow rounded-lg border p-4">
+        <div className="bg-button-secondary mb-2 h-8 animate-pulse rounded"></div>
+        <div className="bg-button-secondary h-4 w-24 animate-pulse rounded"></div>
       </div>
-      <div className="rounded-lg border p-4 shadow-sm">
-        <div className="mb-2 h-8 animate-pulse rounded bg-[#37424D]"></div>
-        <div className="h-4 w-24 animate-pulse rounded bg-[#37424D]"></div>
+      <div className="border-border-primary bg-secondary-bg shadow-card-shadow rounded-lg border p-4">
+        <div className="bg-button-secondary mb-2 h-8 animate-pulse rounded"></div>
+        <div className="bg-button-secondary h-4 w-24 animate-pulse rounded"></div>
       </div>
-      <div className="rounded-lg border p-4 shadow-sm">
-        <div className="mb-2 h-8 animate-pulse rounded bg-[#37424D]"></div>
-        <div className="h-4 w-24 animate-pulse rounded bg-[#37424D]"></div>
+      <div className="border-border-primary bg-secondary-bg shadow-card-shadow rounded-lg border p-4">
+        <div className="bg-button-secondary mb-2 h-8 animate-pulse rounded"></div>
+        <div className="bg-button-secondary h-4 w-24 animate-pulse rounded"></div>
       </div>
     </div>
   );
@@ -72,19 +72,19 @@ async function StatsSection() {
 
   return (
     <div className="mb-6 grid grid-cols-1 gap-4 pt-6 md:grid-cols-3">
-      <div className="rounded-lg border p-4 shadow-sm">
-        <div className="text-2xl font-bold text-blue-400">{stats.item_count_str}</div>
-        <div className="text-sm text-gray-400">Items Tracked</div>
+      <div className="border-border-primary bg-secondary-bg shadow-card-shadow rounded-lg border p-4">
+        <div className="text-primary-text text-2xl font-bold">{stats.item_count_str}</div>
+        <div className="text-secondary-text text-sm">Items Tracked</div>
       </div>
-      <div className="rounded-lg border p-4 shadow-sm">
-        <div className="text-2xl font-bold text-green-400">{stats.user_count_str}</div>
-        <div className="text-sm text-gray-400">Users Scanned</div>
+      <div className="border-border-primary bg-secondary-bg shadow-card-shadow rounded-lg border p-4">
+        <div className="text-primary-text text-2xl font-bold">{stats.user_count_str}</div>
+        <div className="text-secondary-text text-sm">Users Scanned</div>
       </div>
-      <div className="rounded-lg border p-4 shadow-sm">
-        <div className="text-2xl font-bold text-[#ef4444]">
+      <div className="border-border-primary bg-secondary-bg shadow-card-shadow rounded-lg border p-4">
+        <div className="text-primary-text text-2xl font-bold">
           {duplicatesStats.total_duplicates_str}
         </div>
-        <div className="text-sm text-gray-400">Total Duplicates</div>
+        <div className="text-secondary-text text-sm">Total Duplicates</div>
       </div>
     </div>
   );

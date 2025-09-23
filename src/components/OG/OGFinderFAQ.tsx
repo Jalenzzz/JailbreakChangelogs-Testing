@@ -44,8 +44,8 @@ const faqs = [
 
 const OGFinderFAQ: React.FC = () => {
   return (
-    <div className="mt-8 rounded-lg border p-6">
-      <h3 className="text-muted mb-4 text-xl font-semibold">Frequently Asked Questions</h3>
+    <div className="border-stroke bg-secondary-bg mt-8 rounded-lg border p-6">
+      <h3 className="text-primary-text mb-4 text-xl font-semibold">Frequently Asked Questions</h3>
 
       <div className="space-y-4">
         {faqs.map((faq, index) => (
@@ -53,35 +53,33 @@ const OGFinderFAQ: React.FC = () => {
             key={index}
             defaultExpanded={index === 0}
             sx={{
-              color: '#D3D9D4',
+              color: 'var(--color-primary-text)',
+              backgroundColor: 'var(--color-tertiary-bg)',
+              border: '1px solid var(--color-border-primary)',
+              borderRadius: '8px',
               '&:before': {
                 display: 'none',
               },
-
               '& .MuiAccordionSummary-root': {
-                backgroundColor: '#1A2025',
+                backgroundColor: 'var(--color-tertiary-bg)',
                 '&:hover': {
-                  backgroundColor: '#1A2025',
+                  backgroundColor: 'var(--color-quaternary-bg)',
                 },
               },
-              '&:hover': {
-                borderColor: '#5865F2',
-              },
-              transition: 'border-color 0.2s ease-in-out',
             }}
           >
             <AccordionSummary
-              expandIcon={<ExpandMoreIcon sx={{ color: '#D3D9D4' }} />}
+              expandIcon={<ExpandMoreIcon sx={{ color: 'var(--color-secondary-text)' }} />}
               sx={{
                 '& .MuiAccordionSummary-content': {
                   margin: '12px 0',
                 },
               }}
             >
-              <Typography className="font-semibold">{faq.question}</Typography>
+              <Typography className="text-primary-text font-semibold">{faq.question}</Typography>
             </AccordionSummary>
-            <AccordionDetails sx={{ backgroundColor: '#2E3944' }}>
-              <Typography className="text-muted">{faq.answer}</Typography>
+            <AccordionDetails sx={{ backgroundColor: 'var(--color-secondary-bg)' }}>
+              <Typography className="text-secondary-text">{faq.answer}</Typography>
             </AccordionDetails>
           </Accordion>
         ))}

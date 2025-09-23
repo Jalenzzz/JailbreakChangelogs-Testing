@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react';
 import { Metadata } from 'next';
+import Breadcrumb from '@/components/Layout/Breadcrumb';
 import DupeReportHeader from '@/components/Dupes/DupeReportHeader';
 import DupeSearchForm from '@/components/Dupes/DupeSearchForm';
 import { fetchItems, fetchDupes } from '@/utils/api';
@@ -17,6 +18,7 @@ export const metadata: Metadata = {
 export default function DupeCalculatorPage() {
   return (
     <div className="container mx-auto px-4 py-8">
+      <Breadcrumb />
       <DupeReportHeader />
 
       <div className="border-stroke bg-secondary-bg rounded-lg border p-6">

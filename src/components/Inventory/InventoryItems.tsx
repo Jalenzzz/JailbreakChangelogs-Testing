@@ -362,8 +362,8 @@ export default function InventoryItems({
   };
 
   return (
-    <div className="rounded-lg border p-6">
-      <h2 className="text-muted mb-4 text-xl font-semibold">Inventory Items</h2>
+    <div className="border-border-primary bg-secondary-bg shadow-card-shadow rounded-lg border p-6">
+      <h2 className="text-primary-text mb-4 text-xl font-semibold">Inventory Items</h2>
 
       {/* Filters */}
       <InventoryFilters
@@ -383,9 +383,9 @@ export default function InventoryItems({
       {/* Items Grid */}
       {/* Pro Tip - Only show when there are results and not filtering */}
       {!isFiltering && filteredAndSortedItems.length > 0 && (
-        <div className="mb-4 rounded-lg border border-[#5865F2] bg-[#5865F2]/10 p-3">
-          <div className="flex items-center gap-2 text-sm text-[#FFFFFF]">
-            <span className="text-[#5865F2]">💡</span>
+        <div className="border-button-info bg-button-info/10 mb-4 rounded-lg border p-3">
+          <div className="text-primary-text flex items-center gap-2 text-sm">
+            <span className="text-button-info">💡</span>
             <span className="font-medium">Pro Tip:</span>
             <span>Click on any item card to view its trading history.</span>
           </div>

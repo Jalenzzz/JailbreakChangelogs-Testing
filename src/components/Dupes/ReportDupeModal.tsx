@@ -170,7 +170,7 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="text-muted mb-1 block text-sm font-medium">
-                Duper&apos;s Username <span className="text-red-500">*</span>
+                Duper&apos;s Username <span className="text-status-danger">*</span>
               </label>
               <input
                 type="text"
@@ -184,14 +184,14 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
 
             <div>
               <label className="text-muted mb-1 block text-sm font-medium">
-                Proof URLs (Imgur or Postimg, max 5) <span className="text-red-500">*</span>
+                Proof URLs (Imgur or Postimg, max 5) <span className="text-status-danger">*</span>
               </label>
-              <span className="mb-2 block text-xs text-blue-300">
+              <span className="text-link mb-2 block text-xs">
                 <a
                   href="https://imgur.com/upload"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline hover:text-blue-400"
+                  className="hover:text-link-hover underline"
                 >
                   Upload to Imgur
                 </a>
@@ -200,7 +200,7 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
                   href="https://postimages.org/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline hover:text-blue-400"
+                  className="hover:text-link-hover underline"
                 >
                   Upload to Postimg
                 </a>
@@ -218,7 +218,7 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
                     <button
                       type="button"
                       onClick={() => removeProofUrl(index)}
-                      className="absolute top-1/2 right-3 -translate-y-1/2 text-red-500 hover:text-red-400"
+                      className="text-status-danger hover:text-status-danger-hover absolute top-1/2 right-3 -translate-y-1/2"
                     >
                       <XMarkIcon className="h-5 w-5" />
                     </button>
@@ -229,7 +229,7 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
                 <button
                   type="button"
                   onClick={addProofUrl}
-                  className="text-sm text-blue-400 hover:text-blue-300"
+                  className="text-link hover:text-link-hover text-sm"
                 >
                   + Add more proof
                 </button>

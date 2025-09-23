@@ -230,7 +230,7 @@ const DupeSearchForm: React.FC<DupeSearchFormProps> = ({
               required
               autoComplete="off"
               autoCorrect="off"
-              className="text-secondary-text border-stroke bg-primary-bg placeholder-secondary-text focus:border-button-info w-full rounded-lg border px-4 py-2 pr-10 pl-10 focus:outline-none"
+              className="text-secondary-text border-border-primary bg-primary-bg placeholder-secondary-text focus:border-button-info w-full rounded-lg border px-4 py-2 pr-10 pl-10 focus:outline-none"
             />
             {ownerName && (
               <button
@@ -254,7 +254,7 @@ const DupeSearchForm: React.FC<DupeSearchFormProps> = ({
                     key={index}
                     type="button"
                     onClick={() => handleOwnerSuggestionClick(suggestion)}
-                    className="border-stroke hover:bg-primary-bg w-full cursor-pointer border-b px-4 py-3 text-left last:border-b-0 focus:outline-none"
+                    className="border-border-primary hover:bg-primary-bg w-full cursor-pointer border-b px-4 py-3 text-left last:border-b-0 focus:outline-none"
                   >
                     <div className="text-primary-text font-medium">{suggestion}</div>
                   </button>
@@ -295,7 +295,7 @@ const DupeSearchForm: React.FC<DupeSearchFormProps> = ({
               placeholder="Enter item name..."
               autoComplete="off"
               autoCorrect="off"
-              className="text-secondary-text border-stroke bg-primary-bg placeholder-secondary-text focus:border-button-info w-full rounded-lg border px-4 py-2 pr-10 pl-10 focus:outline-none"
+              className="text-secondary-text border-border-primary bg-primary-bg placeholder-secondary-text focus:border-button-info w-full rounded-lg border px-4 py-2 pr-10 pl-10 focus:outline-none"
             />
             {itemName && (
               <button
@@ -319,7 +319,7 @@ const DupeSearchForm: React.FC<DupeSearchFormProps> = ({
                     key={index}
                     type="button"
                     onClick={() => handleItemSuggestionClick(suggestion)}
-                    className="border-stroke hover:bg-primary-bg w-full cursor-pointer border-b px-4 py-3 text-left last:border-b-0 focus:outline-none"
+                    className="border-border-primary hover:bg-primary-bg w-full cursor-pointer border-b px-4 py-3 text-left last:border-b-0 focus:outline-none"
                   >
                     <div className="text-primary-text font-medium">
                       {suggestion.name} [{suggestion.type}]

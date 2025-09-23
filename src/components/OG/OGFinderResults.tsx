@@ -372,15 +372,15 @@ export default function OGFinderResults({
 
       {/* Error Display */}
       {error && (
-        <div className="rounded-lg border p-6 shadow-sm">
+        <div className="border-border-primary bg-secondary-bg shadow-card-shadow rounded-lg border p-6">
           <div className="text-center">
             <div className="mb-4 flex justify-center">
-              <div className="rounded-full bg-red-500/10 p-3">
-                <ExclamationTriangleIcon className="h-8 w-8 text-red-400" />
+              <div className="bg-status-error/10 rounded-full p-3">
+                <ExclamationTriangleIcon className="text-status-error h-8 w-8" />
               </div>
             </div>
-            <h3 className="mb-2 text-lg font-semibold text-red-400">Search Error</h3>
-            <p className="text-gray-300">{error}</p>
+            <h3 className="text-status-error mb-2 text-lg font-semibold">Search Error</h3>
+            <p className="text-secondary-text">{error}</p>
           </div>
         </div>
       )}
@@ -388,15 +388,15 @@ export default function OGFinderResults({
       {/* No Items Found Display */}
       {!error && (!initialData?.results || initialData.results.length === 0) && (
         <>
-          <div className="rounded-lg border p-6 shadow-sm">
+          <div className="border-border-primary bg-secondary-bg shadow-card-shadow rounded-lg border p-6">
             <div className="text-center">
               <div className="mb-4 flex justify-center">
-                <div className="rounded-full bg-red-500/10 p-3">
-                  <ExclamationTriangleIcon className="h-8 w-8 text-red-400" />
+                <div className="bg-status-error/10 rounded-full p-3">
+                  <ExclamationTriangleIcon className="text-status-error h-8 w-8" />
                 </div>
               </div>
-              <h3 className="mb-2 text-lg font-semibold text-red-400">No OG Items Found</h3>
-              <p className="text-gray-300">
+              <h3 className="text-status-error mb-2 text-lg font-semibold">No OG Items Found</h3>
+              <p className="text-secondary-text">
                 No original items found for this user. Their items may not yet have been logged by
                 our bots.
               </p>
@@ -458,14 +458,14 @@ export default function OGFinderResults({
           />
 
           {/* Items Grid */}
-          <div className="rounded-lg border p-6 shadow-sm">
-            <h2 className="text-muted mb-4 text-xl font-semibold">OG Items</h2>
+          <div className="border-border-primary bg-secondary-bg shadow-card-shadow rounded-lg border p-6">
+            <h2 className="text-primary-text mb-4 text-xl font-semibold">OG Items</h2>
 
             {/* Pro Tip - Only show when there are results */}
             {sortedData.length > 0 && (
-              <div className="mb-4 rounded-lg border border-[#5865F2] bg-[#5865F2]/10 p-3">
-                <div className="flex items-center gap-2 text-sm text-[#FFFFFF]">
-                  <span className="text-[#5865F2]">💡</span>
+              <div className="border-button-info bg-button-info/10 mb-4 rounded-lg border p-3">
+                <div className="text-primary-text flex items-center gap-2 text-sm">
+                  <span className="text-button-info">💡</span>
                   <span className="font-medium">Pro Tip:</span>
                   <span>Click on any item card to view its trading history.</span>
                 </div>

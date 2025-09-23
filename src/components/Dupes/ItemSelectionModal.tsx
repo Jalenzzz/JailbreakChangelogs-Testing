@@ -71,8 +71,11 @@ const ItemSelectionModal: React.FC<ItemSelectionModalProps> = ({
       <div className="absolute inset-0 bg-black/75" onClick={onClose} />
       <div className="relative mx-4 w-full max-w-md rounded-lg shadow-xl">
         <div className="flex items-center justify-between border-b p-4">
-          <h2 className="text-xl font-semibold text-[#FFFFFF]">Select Item</h2>
-          <button onClick={onClose} className="text-muted transition-colors hover:text-[#FFFFFF]">
+          <h2 className="text-primary-text text-xl font-semibold">Select Item</h2>
+          <button
+            onClick={onClose}
+            className="text-muted hover:text-primary-text transition-colors"
+          >
             <XMarkIcon className="h-6 w-6" />
           </button>
         </div>
@@ -85,7 +88,7 @@ const ItemSelectionModal: React.FC<ItemSelectionModalProps> = ({
               placeholder="Search items..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="text-muted placeholder-muted/50 w-full rounded-lg border bg-[#37424D] py-2 pr-4 pl-10 focus:border-[#5865F2] focus:outline-none"
+              className="text-primary-text border-border-primary bg-secondary-bg placeholder-secondary-text focus:border-button-info w-full rounded-lg border py-2 pr-4 pl-10 focus:outline-none"
             />
           </div>
 
@@ -103,9 +106,9 @@ const ItemSelectionModal: React.FC<ItemSelectionModalProps> = ({
                       onItemSelect(item);
                       onClose();
                     }}
-                    className="group hover: flex w-full items-center justify-between rounded-lg border bg-[#37424D] p-2 text-left transition-colors"
+                    className="group hover:bg-quaternary-bg border-border-primary bg-tertiary-bg flex w-full items-center justify-between rounded-lg border p-2 text-left transition-colors"
                   >
-                    <span className="text-muted truncate transition-colors group-hover:text-[#FFFFFF]">
+                    <span className="text-secondary-text group-hover:text-primary-text truncate transition-colors">
                       {item.name}
                     </span>
                     <span
