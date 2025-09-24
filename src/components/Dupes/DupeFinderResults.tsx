@@ -272,22 +272,25 @@ export default function DupeFinderResults({
     }
   }, [sortOrder, hasDuplicates]);
 
-  // Create maps for duplicate tracking
-  const itemCounts = useMemo(() => {
+  // Pre-calculate duplicate counts from FULL inventory (not paginated) for consistent numbering
+  const duplicateCounts = useMemo(() => {
     const counts = new Map<string, number>();
-    paginatedData.forEach((item) => {
+    initialData.forEach((item) => {
       const key = `${item.categoryTitle}-${item.title}`;
       counts.set(key, (counts.get(key) || 0) + 1);
     });
     return counts;
-  }, [paginatedData]);
+  }, [initialData]);
+
+  // Use the pre-calculated duplicate counts
+  const itemCounts = duplicateCounts;
 
   const duplicateOrders = useMemo(() => {
     const orders = new Map<string, number>();
     const itemGroups = new Map<string, DupeFinderItem[]>();
 
-    // Group items by name
-    paginatedData.forEach((item) => {
+    // Group items by name using ALL items from full inventory
+    initialData.forEach((item) => {
       const key = `${item.categoryTitle}-${item.title}`;
       if (!itemGroups.has(key)) {
         itemGroups.set(key, []);
@@ -295,26 +298,22 @@ export default function DupeFinderResults({
       itemGroups.get(key)!.push(item);
     });
 
-    // Sort each group by creation date and assign order numbers
+    // Sort each group by ID for consistent ordering and assign order numbers
     itemGroups.forEach((items) => {
       if (items.length > 1) {
-        items.sort((a, b) => {
-          const aCreated = a.info.find((info) => info.title === 'Created At')?.value;
-          const bCreated = b.info.find((info) => info.title === 'Created At')?.value;
-          if (aCreated && bCreated) {
-            return new Date(aCreated).getTime() - new Date(bCreated).getTime();
-          }
-          return 0;
+        // Sort by ID for consistent ordering (each item has unique ID)
+        const sortedItems = items.sort((a, b) => {
+          return a.id.localeCompare(b.id);
         });
 
-        items.forEach((item, index) => {
-          orders.set(item.id, index);
+        sortedItems.forEach((item, index) => {
+          orders.set(item.id, index + 1);
         });
       }
     });
 
     return orders;
-  }, [paginatedData]);
+  }, [initialData]);
 
   // Event handlers
   const handleCardClick = (item: DupeFinderItem) => {

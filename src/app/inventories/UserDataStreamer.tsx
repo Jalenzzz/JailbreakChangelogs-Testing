@@ -44,6 +44,9 @@ async function UserDataFetcher({ robloxId, inventoryData, currentSeason }: UserD
     'INVENTORY',
   );
 
+  // Get the remaining user IDs that weren't included in the initial fetch
+  const remainingUserIds = userIds.filter((id) => !finalUserIds.includes(id));
+
   // Fetch user data using the shared service (without connection data)
   const userDataResult = await UserDataService.fetchUserData(finalUserIds, {
     maxUsers: MAX_ORIGINAL_OWNERS_TO_FETCH,
@@ -70,6 +73,7 @@ async function UserDataFetcher({ robloxId, inventoryData, currentSeason }: UserD
       userConnectionData={userConnectionData}
       initialDupeData={userDataResult.dupeData}
       currentSeason={currentSeason}
+      remainingUserIds={remainingUserIds.length > 0 ? remainingUserIds : undefined}
     />
   );
 }

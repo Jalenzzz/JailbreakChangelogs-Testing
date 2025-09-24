@@ -212,8 +212,8 @@ export default function OGFinderResults({
           const itemNameCompare = a.title.localeCompare(b.title);
           if (itemNameCompare !== 0) return itemNameCompare;
 
-          // If same item name, sort by logged date (oldest first) to match duplicate numbering
-          return a.logged_at - b.logged_at;
+          // If same item name, sort by ID to match duplicate numbering
+          return a.id.localeCompare(b.id);
         case 'alpha-asc':
           return a.title.localeCompare(b.title);
         case 'alpha-desc':
@@ -314,36 +314,43 @@ export default function OGFinderResults({
     setPage(newPage);
   };
 
-  // Create a map to track duplicate items
-  const itemCounts = useMemo(() => {
+  // Pre-calculate duplicate counts from FULL inventory (not filtered) for consistent numbering
+  const duplicateCounts = useMemo(() => {
     const counts = new Map<string, number>();
-    paginatedData.forEach((item: OGItem) => {
-      const key = `${item.categoryTitle}-${item.title}`;
-      counts.set(key, (counts.get(key) || 0) + 1);
-    });
+    if (initialData?.results) {
+      initialData.results.forEach((item: OGItem) => {
+        const key = `${item.categoryTitle}-${item.title}`;
+        counts.set(key, (counts.get(key) || 0) + 1);
+      });
+    }
     return counts;
-  }, [paginatedData]);
+  }, [initialData?.results]);
 
-  // Create a map to track the order of duplicates based on logged date
+  // Use the pre-calculated duplicate counts
+  const itemCounts = duplicateCounts;
+
+  // Create a map to track the order of duplicates (using ALL items from full inventory)
   const duplicateOrders = useMemo(() => {
     const orders = new Map<string, number>();
 
-    // Group items by name
+    // Group items by name using ALL items from full inventory
     const itemGroups = new Map<string, OGItem[]>();
-    paginatedData.forEach((item: OGItem) => {
-      const key = `${item.categoryTitle}-${item.title}`;
-      if (!itemGroups.has(key)) {
-        itemGroups.set(key, []);
-      }
-      itemGroups.get(key)!.push(item);
-    });
+    if (initialData?.results) {
+      initialData.results.forEach((item: OGItem) => {
+        const key = `${item.categoryTitle}-${item.title}`;
+        if (!itemGroups.has(key)) {
+          itemGroups.set(key, []);
+        }
+        itemGroups.get(key)!.push(item);
+      });
+    }
 
-    // Sort each group by logged date (oldest first) and assign numbers
+    // Sort each group by ID for consistent ordering and assign numbers
     itemGroups.forEach((items) => {
       if (items.length > 1) {
-        // Sort by logged date (oldest first)
+        // Sort by ID for consistent ordering (each item has unique ID)
         const sortedItems = items.sort((a, b) => {
-          return a.logged_at - b.logged_at;
+          return a.id.localeCompare(b.id);
         });
 
         // Assign numbers starting from 1
@@ -355,7 +362,7 @@ export default function OGFinderResults({
     });
 
     return orders;
-  }, [paginatedData]);
+  }, [initialData?.results]);
 
   return (
     <div className="space-y-6">

@@ -1,11 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import dynamic from 'next/dynamic';
 import localFont from 'next/font/local';
-import { Item } from '@/types';
 import { InventoryItem } from '@/app/inventories/types';
-import { formatCurrencyValue, parseCurrencyValue } from '@/utils/currency';
 import { DefaultAvatar } from '@/utils/avatar';
 import {
   getItemImagePath,
@@ -15,8 +12,6 @@ import {
   getVideoPath,
   handleImageError,
 } from '@/utils/images';
-
-const Tooltip = dynamic(() => import('@mui/material/Tooltip'), { ssr: false });
 
 const bangers = localFont({
   src: '../../../public/fonts/Bangers.ttf',
@@ -29,7 +24,6 @@ const formatNumber = (num: number) => {
 
 interface InventoryItemCardProps {
   item: InventoryItem;
-  itemData: Item;
   getUserDisplay: (userId: string) => string;
   getUserAvatar: (userId: string) => string;
   onCardClick: (item: InventoryItem) => void;
@@ -40,7 +34,6 @@ interface InventoryItemCardProps {
 
 export default function InventoryItemCard({
   item,
-  itemData,
   getUserDisplay,
   getUserAvatar,
   onCardClick,
@@ -182,120 +175,6 @@ export default function InventoryItemCard({
               <span className="text-secondary-text text-sm">Unknown</span>
             )}
           </div>
-        </div>
-        <div>
-          <div className="text-secondary-text text-sm">CASH VALUE</div>
-          <Tooltip
-            title={
-              itemData.cash_value === null || itemData.cash_value === 'N/A'
-                ? 'N/A'
-                : `$${parseCurrencyValue(itemData.cash_value).toLocaleString()}`
-            }
-            placement="top"
-            arrow
-            slotProps={{
-              tooltip: {
-                sx: {
-                  backgroundColor: 'var(--color-secondary-bg)',
-                  color: 'var(--color-primary-text)',
-                  '& .MuiTooltip-arrow': {
-                    color: 'var(--color-secondary-bg)',
-                  },
-                },
-              },
-            }}
-          >
-            <div className="text-primary-text cursor-help text-xl font-bold">
-              {itemData.cash_value === null || itemData.cash_value === 'N/A'
-                ? 'N/A'
-                : formatCurrencyValue(parseCurrencyValue(itemData.cash_value))}
-            </div>
-          </Tooltip>
-        </div>
-        <div>
-          <div className="text-secondary-text text-sm">DUPED VALUE</div>
-          <Tooltip
-            title={(() => {
-              let dupedValue = itemData.duped_value;
-
-              // If main item doesn't have duped value, check children/variants based on created date
-              if ((dupedValue === null || dupedValue === 'N/A') && itemData.children) {
-                // Get the year from the created date (from item info)
-                const createdAtInfo = item.info.find((info) => info.title === 'Created At');
-                const createdYear = createdAtInfo
-                  ? new Date(createdAtInfo.value).getFullYear().toString()
-                  : null;
-
-                // Find the child variant that matches the created year
-                const matchingChild = createdYear
-                  ? itemData.children.find(
-                      (child) =>
-                        child.sub_name === createdYear &&
-                        child.data &&
-                        child.data.duped_value &&
-                        child.data.duped_value !== 'N/A' &&
-                        child.data.duped_value !== null,
-                    )
-                  : null;
-
-                if (matchingChild) {
-                  dupedValue = matchingChild.data.duped_value;
-                }
-              }
-
-              return dupedValue === null || dupedValue === 'N/A'
-                ? 'N/A'
-                : `$${parseCurrencyValue(dupedValue).toLocaleString()}`;
-            })()}
-            placement="top"
-            arrow
-            slotProps={{
-              tooltip: {
-                sx: {
-                  backgroundColor: 'var(--color-secondary-bg)',
-                  color: 'var(--color-primary-text)',
-                  '& .MuiTooltip-arrow': {
-                    color: 'var(--color-secondary-bg)',
-                  },
-                },
-              },
-            }}
-          >
-            <div className="text-primary-text cursor-help text-xl font-bold">
-              {(() => {
-                let dupedValue = itemData.duped_value;
-
-                // If main item doesn't have duped value, check children/variants based on created date
-                if ((dupedValue === null || dupedValue === 'N/A') && itemData.children) {
-                  // Get the year from the created date (from item info)
-                  const createdAtInfo = item.info.find((info) => info.title === 'Created At');
-                  const createdYear = createdAtInfo
-                    ? new Date(createdAtInfo.value).getFullYear().toString()
-                    : null;
-
-                  // Find the child variant that matches the created year
-                  const matchingChild = createdYear
-                    ? itemData.children.find(
-                        (child) =>
-                          child.sub_name === createdYear &&
-                          child.data &&
-                          child.data.duped_value &&
-                          child.data.duped_value !== 'N/A' &&
-                          child.data.duped_value !== null,
-                      )
-                    : null;
-
-                  if (matchingChild) {
-                    dupedValue = matchingChild.data.duped_value;
-                  }
-                }
-
-                return dupedValue === null || dupedValue === 'N/A'
-                  ? 'N/A'
-                  : formatCurrencyValue(parseCurrencyValue(dupedValue));
-              })()}
-            </div>
-          </Tooltip>
         </div>
         <div>
           <div className="text-secondary-text text-sm">CREATED ON</div>

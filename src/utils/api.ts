@@ -949,158 +949,220 @@ export async function fetchComments(type: string, id: string, itemType?: string)
   }
 }
 
-export async function fetchInventoryData(robloxId: string) {
-  try {
-    const wsResult = await (async () => {
-      try {
-        // Dynamically import ws to avoid bundling on the client
-        const wsModule = await import('ws');
-        const WS: typeof WebSocket =
-          (wsModule as { default?: typeof WebSocket }).default ||
-          (wsModule as { WebSocket?: typeof WebSocket }).WebSocket ||
-          (wsModule as unknown as typeof WebSocket);
-        return await new Promise((resolve) => {
-          const socket = new WS(`${INVENTORY_WS_URL}/socket`, {
-            headers: {
-              'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0',
-            },
-          });
+export async function fetchInventoryData(
+  robloxId: string,
+  timeoutMs: number = 30000,
+  maxRetries: number = 3,
+) {
+  let lastError: Error | null = null;
 
-          let settled = false;
-          const timeout = setTimeout(() => {
-            if (settled) return;
-            settled = true;
-            try {
-              socket.close();
-            } catch {}
-            console.warn(`[WS] Timeout after 10s waiting for data for user ${robloxId}`);
-            resolve({
-              error: 'timeout',
-              message: 'WebSocket request timed out. Please try again.',
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const wsResult = await (async () => {
+        try {
+          // Dynamically import ws to avoid bundling on the client
+          const wsModule = await import('ws');
+          const WS: typeof WebSocket =
+            (wsModule as { default?: typeof WebSocket }).default ||
+            (wsModule as { WebSocket?: typeof WebSocket }).WebSocket ||
+            (wsModule as unknown as typeof WebSocket);
+          return await new Promise((resolve) => {
+            const socket = new WS(`${INVENTORY_WS_URL}/socket`, {
+              headers: {
+                'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0',
+              },
             });
-          }, 10000);
 
-          socket.on('open', () => {
-            try {
-              socket.send(JSON.stringify({ action: 'get_data', user_id: robloxId }));
-            } catch (e) {
-              // If send fails, resolve with error and close
-              if (!settled) {
-                settled = true;
-                clearTimeout(timeout);
-                try {
-                  socket.close();
-                } catch {}
-                console.error(`[WS] Send failed for user ${robloxId}:`, e);
-                resolve({
-                  error: 'ws_send_error',
-                  message: 'Failed to send WebSocket request.',
-                });
-              }
-            }
-          });
-
-          socket.on('message', (data: string) => {
-            if (settled) return;
-            settled = true;
-            clearTimeout(timeout);
-            try {
-              const parsed = JSON.parse(data);
-              resolve(parsed);
-            } catch (e) {
-              console.error(`[WS] Parse error for user ${robloxId}:`, e);
-              resolve({
-                error: 'ws_parse_error',
-                message: 'Invalid response from WebSocket server.',
-              });
-            } finally {
+            let settled = false;
+            const timeout = setTimeout(() => {
+              if (settled) return;
+              settled = true;
               try {
                 socket.close();
               } catch {}
-            }
-          });
+              console.warn(
+                `[WS] Timeout after ${timeoutMs / 1000}s waiting for data for user ${robloxId}`,
+              );
+              resolve({
+                error: 'timeout',
+                message: `WebSocket request timed out after ${timeoutMs / 1000} seconds. Please try again.`,
+              });
+            }, timeoutMs);
 
-          socket.on('error', (err: unknown) => {
-            if (settled) return;
-            settled = true;
-            clearTimeout(timeout);
-            try {
-              socket.close();
-            } catch {}
-            console.error(`[WS] Connection error for user ${robloxId}:`, err);
-            resolve({
-              error: 'ws_error',
-              message: 'WebSocket connection error.',
+            socket.on('open', () => {
+              try {
+                socket.send(JSON.stringify({ action: 'get_data', user_id: robloxId }));
+              } catch (e) {
+                // If send fails, resolve with error and close
+                if (!settled) {
+                  settled = true;
+                  clearTimeout(timeout);
+                  try {
+                    socket.close();
+                  } catch {}
+                  console.error(`[WS] Send failed for user ${robloxId}:`, e);
+                  resolve({
+                    error: 'ws_send_error',
+                    message: 'Failed to send WebSocket request.',
+                  });
+                }
+              }
             });
-          });
 
-          socket.on('close', () => {
-            // If closed before message and not settled, treat as error
-            if (!settled) {
+            socket.on('message', (data: string) => {
+              if (settled) return;
               settled = true;
               clearTimeout(timeout);
+              try {
+                const parsed = JSON.parse(data);
+                resolve(parsed);
+              } catch (e) {
+                console.error(`[WS] Parse error for user ${robloxId}:`, e);
+                resolve({
+                  error: 'ws_parse_error',
+                  message: 'Invalid response from WebSocket server.',
+                });
+              } finally {
+                try {
+                  socket.close();
+                } catch {}
+              }
+            });
+
+            socket.on('error', (err: unknown) => {
+              if (settled) return;
+              settled = true;
+              clearTimeout(timeout);
+              try {
+                socket.close();
+              } catch {}
+              console.error(`[WS] Connection error for user ${robloxId}:`, err);
               resolve({
-                error: 'ws_closed',
-                message: 'WebSocket closed before receiving data.',
+                error: 'ws_error',
+                message: 'WebSocket connection error.',
               });
-            }
+            });
+
+            socket.on('close', () => {
+              // If closed before message and not settled, treat as error
+              if (!settled) {
+                settled = true;
+                clearTimeout(timeout);
+                resolve({
+                  error: 'ws_closed',
+                  message: 'WebSocket closed before receiving data.',
+                });
+              }
+            });
           });
-        });
-      } catch (err) {
-        console.error('[WS] Failed to initialize WebSocket client:', err);
-        return {
-          error: 'ws_init_error',
-          message: 'Failed to initialize WebSocket client.',
-        };
-      }
-    })();
-
-    if (wsResult && typeof wsResult === 'object' && 'action' in wsResult && 'data' in wsResult) {
-      const envelope = wsResult as { action?: string; data?: unknown };
-      const payload = envelope.data;
-
-      // Some responses come back as ["Inventory not found.", 404]
-      if (Array.isArray(payload)) {
-        const [errorMessage, statusCode] = payload as unknown[];
-        const isErrorTuple = typeof errorMessage === 'string' && typeof statusCode === 'number';
-        if (isErrorTuple) {
-          return { error: 'not_found', message: errorMessage } as const;
+        } catch (err) {
+          console.error('[WS] Failed to initialize WebSocket client:', err);
+          return {
+            error: 'ws_init_error',
+            message: 'Failed to initialize WebSocket client.',
+          };
         }
-        return payload[0] ?? null;
+      })();
+
+      if (wsResult && typeof wsResult === 'object' && 'action' in wsResult && 'data' in wsResult) {
+        const envelope = wsResult as { action?: string; data?: unknown };
+        const payload = envelope.data;
+
+        // Some responses come back as ["Inventory not found.", 404]
+        if (Array.isArray(payload)) {
+          const [errorMessage, statusCode] = payload as unknown[];
+          const isErrorTuple = typeof errorMessage === 'string' && typeof statusCode === 'number';
+          if (isErrorTuple) {
+            // Don't retry on 404 - user not found
+            return { error: 'not_found', message: errorMessage } as const;
+          }
+          return payload[0] ?? null;
+        }
+
+        // If payload is a string error message, normalize it
+        if (typeof payload === 'string') {
+          return { error: 'ws_error', message: payload };
+        }
+
+        return payload ?? null;
       }
 
-      // If payload is a string error message, normalize it
-      if (typeof payload === 'string') {
-        return { error: 'ws_error', message: payload };
+      // Check if the result indicates a retryable error
+      if (wsResult && typeof wsResult === 'object' && 'error' in wsResult) {
+        const errorResult = wsResult as { error: string; message: string };
+
+        // Don't retry on certain error types
+        if (
+          errorResult.error === 'not_found' ||
+          errorResult.error === 'ws_parse_error' ||
+          errorResult.error === 'ws_closed'
+        ) {
+          return errorResult;
+        }
+
+        // For retryable errors, throw to trigger retry
+        if (
+          errorResult.error === 'timeout' ||
+          errorResult.error === 'ws_error' ||
+          errorResult.error === 'ws_init_error' ||
+          errorResult.error === 'ws_send_error'
+        ) {
+          throw new Error(`WebSocket error: ${errorResult.error} - ${errorResult.message}`);
+        }
+
+        return errorResult;
       }
 
-      return payload ?? null;
+      return wsResult;
+    } catch (err) {
+      lastError = err as Error;
+
+      // Don't retry on the last attempt
+      if (attempt === maxRetries) {
+        break;
+      }
+
+      // Check if it's a retryable error
+      if (
+        err instanceof Error &&
+        (err.message.includes('WebSocket error') ||
+          err.message.includes('timeout') ||
+          err.message.includes('connection') ||
+          err.message.includes('network'))
+      ) {
+        console.warn(
+          `[SERVER] Inventory data request failed (attempt ${attempt + 1}/${maxRetries + 1}):`,
+          err.message,
+        );
+
+        // Exponential backoff: wait 1s, 2s, 4s between retries
+        const delayMs = Math.pow(2, attempt) * 1000;
+        console.log(`[SERVER] Retrying inventory data fetch in ${delayMs}ms...`);
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+        continue;
+      }
+
+      // For other errors, don't retry
+      console.error('[SERVER] Non-retryable error fetching inventory data:', err);
+      break;
     }
+  }
 
-    return wsResult;
-  } catch (err) {
-    console.error('[SERVER] Error fetching inventory data:', err);
+  // All retries failed
+  console.error('[SERVER] All retry attempts failed for inventory data:', lastError);
 
-    // Handle specific error types
-    if (err instanceof TypeError && err.message.includes('fetch')) {
-      return {
-        error: 'network_error',
-        message: 'Network error. Please check your connection and try again.',
-      };
-    }
-
-    if (err instanceof Error) {
-      return {
-        error: 'fetch_error',
-        message: `Failed to fetch inventory data: ${err.message}`,
-      };
-    }
-
+  if (lastError instanceof Error && lastError.message.includes('timeout')) {
     return {
-      error: 'fetch_error',
-      message: 'Failed to fetch inventory data. Please try again.',
+      error: 'timeout',
+      message: `Request timed out after ${timeoutMs}ms and ${maxRetries} retries. The user's data may be too large to process quickly.`,
     };
   }
+
+  return {
+    error: 'network_error',
+    message:
+      'Failed to fetch inventory data after multiple attempts. Please check your connection and try again.',
+  };
 }
 
 export async function fetchRobloxUsersBatch(userIds: string[]) {

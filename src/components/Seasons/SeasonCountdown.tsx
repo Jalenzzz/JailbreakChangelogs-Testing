@@ -167,7 +167,7 @@ const SeasonCountdown: React.FC<SeasonCountdownProps> = ({ currentSeason, nextSe
             {nextSeasonStatus.includes('Submissions') && (
               <div className="mt-2">
                 <a
-                  href="https://www.reddit.com/r/JailbreakCreations/comments/1mf3t32/season_28_entries_cyberpunk/?sort=new"
+                  href="https://www.reddit.com/r/JailbreakCreations/comments/1npjm5s/season_29_entries_ogroblox/?sort=new"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-button-info text-form-button-text hover:bg-button-info-hover inline-block rounded-lg px-4 py-2 transition-colors"

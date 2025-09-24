@@ -26,6 +26,7 @@ interface InventoryCheckerClientProps {
   currentSeason?: Season | null;
   error?: string;
   isLoading?: boolean;
+  remainingUserIds?: string[];
 }
 
 export default function InventoryCheckerClient({
@@ -39,6 +40,7 @@ export default function InventoryCheckerClient({
   currentSeason = null,
   error,
   isLoading: externalIsLoading,
+  remainingUserIds = [],
 }: InventoryCheckerClientProps) {
   const [searchId, setSearchId] = useState(originalSearchTerm || robloxId || '');
   const [isLoading, setIsLoading] = useState(false);
@@ -201,6 +203,61 @@ export default function InventoryCheckerClient({
     },
     [robloxAvatars, initialRobloxAvatars, setRobloxAvatars],
   );
+
+  // Background loading for remaining original owners (after initial 1000)
+  useEffect(() => {
+    if (remainingUserIds.length === 0) return;
+
+    const loadRemainingUsers = async () => {
+      const BATCH_SIZE = 100; // Load 100 users at a time
+      const DELAY_BETWEEN_BATCHES = 2000; // 2 second delay between batches
+
+      console.log(
+        `[INVENTORY] Starting background load of ${remainingUserIds.length} remaining users`,
+      );
+
+      for (let i = 0; i < remainingUserIds.length; i += BATCH_SIZE) {
+        const batch = remainingUserIds.slice(i, i + BATCH_SIZE);
+
+        try {
+          console.log(
+            `[INVENTORY] Loading batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(remainingUserIds.length / BATCH_SIZE)}: ${batch.length} users`,
+          );
+
+          const result = await fetchMissingRobloxData(batch);
+
+          // Update state with new user data
+          if (result.userData && typeof result.userData === 'object') {
+            setRobloxUsers((prev) => ({ ...prev, ...result.userData }));
+          }
+
+          // Update state with new avatar data
+          if (result.avatarData && typeof result.avatarData === 'object') {
+            setRobloxAvatars((prev) => ({ ...prev, ...result.avatarData }));
+          }
+
+          console.log(`[INVENTORY] Successfully loaded batch ${Math.floor(i / BATCH_SIZE) + 1}`);
+        } catch (error) {
+          console.error(
+            `[INVENTORY] Failed to load batch ${Math.floor(i / BATCH_SIZE) + 1}:`,
+            error,
+          );
+        }
+
+        // Add delay between batches to avoid overwhelming the API
+        if (i + BATCH_SIZE < remainingUserIds.length) {
+          await new Promise((resolve) => setTimeout(resolve, DELAY_BETWEEN_BATCHES));
+        }
+      }
+
+      console.log(`[INVENTORY] Completed background loading of all remaining users`);
+    };
+
+    // Start loading after a short delay to let the initial page load
+    const timeoutId = setTimeout(loadRemainingUsers, 3000);
+
+    return () => clearTimeout(timeoutId);
+  }, [remainingUserIds, setRobloxUsers, setRobloxAvatars]);
 
   // Fetch items data for value calculations
   useEffect(() => {
