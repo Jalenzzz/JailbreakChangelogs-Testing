@@ -215,23 +215,6 @@ export default function XpCalculator({ season }: XpCalculatorProps) {
     }
   }, [currentLevel, debouncedXp, calculateXp, season.xp_data.targetLevel]);
 
-  useEffect(() => {
-    if (results) {
-      const el = document.getElementById('season-progress-summary');
-      if (el) {
-        const yOffset = -80; // adjust offset for fixed header
-        const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
-        window.scrollTo({ top: y, behavior: 'smooth' });
-      } else if (resultsRef.current) {
-        // fallback
-        resultsRef.current.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-        });
-      }
-    }
-  }, [results]);
-
   // If season has ended, show a different UI
   if (seasonHasEnded) {
     return (

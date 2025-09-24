@@ -77,7 +77,7 @@ const ChangelogFilter: React.FC<ChangelogFilterProps> = ({
             unstyled
             classNames={{
               control: () =>
-                'text-secondary-text flex items-center justify-between rounded-lg border border-button-info bg-secondary-bg p-3 min-h-[56px] hover:cursor-pointer hover:bg-primary-bg',
+                'text-secondary-text flex items-center justify-between rounded-lg border border-button-info bg-secondary-bg p-3 min-h-[56px] hover:cursor-pointer',
               singleValue: () => 'text-secondary-text',
               placeholder: () => 'text-secondary-text',
               menu: () =>
@@ -116,7 +116,7 @@ const ChangelogFilter: React.FC<ChangelogFilterProps> = ({
             className={`text-secondary-text border-button-info bg-secondary-bg flex items-center justify-between rounded-lg border p-3 focus:outline-none ${
               Math.max(...changelogList.map((item) => item.id)).toString() === selectedId
                 ? 'cursor-not-allowed opacity-50'
-                : 'hover:bg-primary-bg cursor-pointer'
+                : 'cursor-pointer'
             }`}
             aria-disabled={
               Math.max(...changelogList.map((item) => item.id)).toString() === selectedId
@@ -130,7 +130,7 @@ const ChangelogFilter: React.FC<ChangelogFilterProps> = ({
         {/* View Timeline Button */}
         <Link
           href="/changelogs/timeline"
-          className="text-secondary-text border-button-info bg-secondary-bg hover:bg-primary-bg flex items-center justify-between rounded-lg border p-3 focus:outline-none"
+          className="text-secondary-text border-button-info bg-secondary-bg flex items-center justify-between rounded-lg border p-3 focus:outline-none"
         >
           <span>View Timeline</span>
           <ClockIconSolid className="text-button-info h-5 w-5" />
@@ -144,7 +144,7 @@ const ChangelogFilter: React.FC<ChangelogFilterProps> = ({
             onChangelogSelect(randomChangelog.id.toString());
             toast.success(`Navigated to random changelog: ${randomChangelog.title}`);
           }}
-          className="text-secondary-text border-button-info bg-secondary-bg hover:bg-primary-bg flex cursor-pointer items-center justify-between rounded-lg border p-3 focus:outline-none"
+          className="text-secondary-text border-button-info bg-secondary-bg flex cursor-pointer items-center justify-between rounded-lg border p-3 focus:outline-none"
         >
           <span>Random Changelog</span>
           <FaDiceSix className="text-button-info h-5 w-5" />

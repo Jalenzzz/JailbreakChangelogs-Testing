@@ -178,7 +178,7 @@ export default function XpResultsSummary({ results, season }: XpResultsSummaryPr
 
         {/* Time Estimates */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="border-stroke rounded-lg border p-4">
+          <div className="border-stroke bg-primary-bg rounded-lg border p-4">
             <div className="mb-3 flex items-center justify-between">
               <h4 className="text-primary-text flex items-center gap-2 font-semibold">
                 <IoTime className="text-blue-400" />
@@ -207,7 +207,7 @@ export default function XpResultsSummary({ results, season }: XpResultsSummaryPr
             </div>
           </div>
 
-          <div className="border-stroke rounded-lg border p-4">
+          <div className="border-stroke bg-primary-bg rounded-lg border p-4">
             <div className="mb-3 flex items-center justify-between">
               <h4 className="text-primary-text flex items-center gap-2 font-semibold">
                 <IoTime className="text-green-400" />
@@ -251,27 +251,29 @@ export default function XpResultsSummary({ results, season }: XpResultsSummaryPr
 
         <div className="space-y-4">
           {/* Without Season Pass Analysis */}
-          <div className="border-stroke rounded-lg border p-4">
+          <div className="border-stroke bg-primary-bg rounded-lg border p-4">
             <h4 className="text-primary-text mb-3 font-semibold">Without Season Pass</h4>
             <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <span className="text-lg">
-                  {results.achievableNoPass ? (
-                    <FaCheck className="text-green-400" />
-                  ) : (
-                    <FaTimes className="text-red-400" />
-                  )}
-                </span>
-                <span className="text-primary-text">
-                  Normal XP:{' '}
-                  {results.achievableNoPass ? (
-                    'Achievable'
-                  ) : (
-                    <span className="text-button-danger">Not achievable</span>
-                  )}
-                </span>
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                <div className="flex items-center gap-2">
+                  <span className="flex-shrink-0 text-lg">
+                    {results.achievableNoPass ? (
+                      <FaCheck className="text-green-400" />
+                    ) : (
+                      <FaTimes className="text-red-400" />
+                    )}
+                  </span>
+                  <span className="text-primary-text text-sm sm:text-base">
+                    Normal XP:{' '}
+                    {results.achievableNoPass ? (
+                      'Achievable'
+                    ) : (
+                      <span className="text-button-danger">Not achievable</span>
+                    )}
+                  </span>
+                </div>
                 {results.achievableNoPass && (
-                  <span className="text-sm text-green-400">
+                  <span className="text-xs text-green-400 sm:text-sm">
                     ({results.timeNoPass.days} {results.timeNoPass.days === 1 ? 'day' : 'days'} -
                     Complete by: {results.timeNoPass.completionDate})
                   </span>
@@ -318,27 +320,29 @@ export default function XpResultsSummary({ results, season }: XpResultsSummaryPr
           </div>
 
           {/* With Season Pass Analysis */}
-          <div className="border-stroke rounded-lg border p-4">
+          <div className="border-stroke bg-primary-bg rounded-lg border p-4">
             <h4 className="text-primary-text mb-3 font-semibold">With Season Pass</h4>
             <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <span className="text-lg">
-                  {results.achievableWithPass ? (
-                    <FaCheck className="text-green-400" />
-                  ) : (
-                    <FaTimes className="text-red-400" />
-                  )}
-                </span>
-                <span className="text-primary-text">
-                  Normal XP:{' '}
-                  {results.achievableWithPass ? (
-                    'Achievable'
-                  ) : (
-                    <span className="text-button-danger">Not achievable</span>
-                  )}
-                </span>
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                <div className="flex items-center gap-2">
+                  <span className="flex-shrink-0 text-lg">
+                    {results.achievableWithPass ? (
+                      <FaCheck className="text-green-400" />
+                    ) : (
+                      <FaTimes className="text-red-400" />
+                    )}
+                  </span>
+                  <span className="text-primary-text text-sm sm:text-base">
+                    Normal XP:{' '}
+                    {results.achievableWithPass ? (
+                      'Achievable'
+                    ) : (
+                      <span className="text-button-danger">Not achievable</span>
+                    )}
+                  </span>
+                </div>
                 {results.achievableWithPass && (
-                  <span className="text-sm text-green-400">
+                  <span className="text-xs text-green-400 sm:text-sm">
                     ({results.timeWithPass.days} {results.timeWithPass.days === 1 ? 'day' : 'days'}{' '}
                     - Complete by: {results.timeWithPass.completionDate})
                   </span>
@@ -390,7 +394,7 @@ export default function XpResultsSummary({ results, season }: XpResultsSummaryPr
       <div className="border-stroke bg-secondary-bg rounded-lg border p-6">
         <h3 className="text-primary-text mb-4 text-xl font-semibold">Important Season Dates</h3>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="border-stroke rounded-lg border p-4">
+          <div className="border-stroke bg-primary-bg rounded-lg border p-4">
             <div className="text-center">
               <div className="text-primary-text text-lg font-semibold">Double XP Starts</div>
               <div className="text-primary-text text-2xl font-bold">
@@ -401,7 +405,7 @@ export default function XpResultsSummary({ results, season }: XpResultsSummaryPr
               </div>
             </div>
           </div>
-          <div className="border-stroke rounded-lg border p-4">
+          <div className="border-stroke bg-primary-bg rounded-lg border p-4">
             <div className="text-center">
               <div className="text-primary-text text-lg font-semibold">Season Ends</div>
               <div className="text-primary-text text-2xl font-bold">

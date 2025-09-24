@@ -131,7 +131,7 @@ export default function XpCalculatorForm({
               unstyled
               classNames={{
                 control: () =>
-                  'text-secondary-text flex items-center justify-between rounded-lg border border-button-info bg-primary-bg px-3 py-3 h-[56px] hover:cursor-pointer',
+                  'text-secondary-text flex items-center justify-between rounded-lg border border-button-info bg-primary-bg px-3 py-3 h-[56px] hover:cursor-pointer min-h-[56px]',
                 singleValue: () => 'text-secondary-text',
                 placeholder: () => 'text-secondary-text',
                 menu: () =>
@@ -172,7 +172,7 @@ export default function XpCalculatorForm({
               const clampedValue = Math.min(value, maxXpForCurrentLevel);
               onXpChange(clampedValue);
             }}
-            className="border-button-info bg-form-input text-primary-text h-[56px] w-full rounded-lg border px-3 py-3 focus:outline-none"
+            className="border-button-info bg-form-input text-primary-text h-[56px] min-h-[56px] w-full rounded-lg border px-3 py-3 focus:outline-none"
             placeholder={`0-${maxXpForCurrentLevel}`}
           />
           <div className="text-secondary-text mt-1 text-xs">

@@ -61,7 +61,7 @@ const SeasonNavigation: React.FC<SeasonNavigationProps> = ({
             unstyled
             classNames={{
               control: () =>
-                'text-secondary-text flex items-center justify-between rounded-lg border border-button-info bg-secondary-bg p-3 min-h-[56px] hover:cursor-pointer hover:bg-primary-bg',
+                'text-secondary-text flex items-center justify-between rounded-lg border border-button-info bg-secondary-bg p-3 min-h-[56px] hover:cursor-pointer',
               singleValue: () => 'text-secondary-text',
               placeholder: () => 'text-secondary-text',
               menu: () =>
@@ -89,7 +89,7 @@ const SeasonNavigation: React.FC<SeasonNavigationProps> = ({
         })() ? (
           <button
             onClick={onGoToLatestSeason}
-            className="text-secondary-text border-button-info bg-secondary-bg hover:bg-primary-bg flex items-center justify-between rounded-lg border p-3 hover:cursor-pointer focus:outline-none"
+            className="text-secondary-text border-button-info bg-secondary-bg flex items-center justify-between rounded-lg border p-3 hover:cursor-pointer focus:outline-none"
           >
             <span>Go to Current Season</span>
             <ClockIcon className="text-button-info h-5 w-5" />
@@ -112,7 +112,7 @@ const SeasonNavigation: React.FC<SeasonNavigationProps> = ({
             onSeasonSelect(randomSeason.season.toString());
             toast.success(`Navigated to random season: ${randomSeason.title}`);
           }}
-          className="text-secondary-text border-button-info bg-secondary-bg hover:bg-primary-bg flex items-center justify-between rounded-lg border p-3 hover:cursor-pointer focus:outline-none"
+          className="text-secondary-text border-button-info bg-secondary-bg flex items-center justify-between rounded-lg border p-3 hover:cursor-pointer focus:outline-none"
         >
           <span>Random Season</span>
           <FaDiceSix className="text-button-info h-5 w-5" />
