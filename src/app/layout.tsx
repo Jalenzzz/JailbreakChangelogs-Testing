@@ -88,6 +88,25 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           />
         </head>
         <body className={`${inter.className} bg-primary-bg`}>
+          <noscript>
+            <div className="bg-primary-bg fixed inset-0 z-50 flex items-center justify-center">
+              <div className="mx-auto max-w-md p-8 text-center">
+                <img
+                  src="/assets/images/JBCL_Logo_Short_Transparent.webp"
+                  alt="Jailbreak Changelogs"
+                  className="mx-auto mb-6 h-24 w-24"
+                />
+                <h1 className="text-primary-text mb-4 text-2xl font-bold">JavaScript Required</h1>
+                <p className="text-secondary-text mb-6">
+                  This application requires JavaScript to function properly. Please enable
+                  JavaScript in your browser settings and refresh the page.
+                </p>
+                <p className="text-secondary-text text-sm">
+                  After enabling JavaScript, please refresh this page.
+                </p>
+              </div>
+            </div>
+          </noscript>
           <AppRouterCacheProvider options={{ enableCssLayer: true }}>
             <CustomThemeProvider>
               <ThemeProvider>
@@ -154,6 +173,25 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body className={`${inter.className} bg-primary-bg`}>
+        <noscript>
+          <div className="bg-primary-bg fixed inset-0 z-50 flex items-center justify-center">
+            <div className="mx-auto max-w-md p-8 text-center">
+              <img
+                src="/assets/images/JBCL_Logo_Short_Transparent.webp"
+                alt="Jailbreak Changelogs"
+                className="mx-auto mb-6 h-24 w-24"
+              />
+              <h1 className="text-primary-text mb-4 text-2xl font-bold">JavaScript Required</h1>
+              <p className="text-secondary-text mb-6">
+                This application requires JavaScript to function properly. Please enable JavaScript
+                in your browser settings and refresh the page.
+              </p>
+              <p className="text-secondary-text text-sm">
+                After enabling JavaScript, please refresh this page.
+              </p>
+            </div>
+          </div>
+        </noscript>
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
           <CustomThemeProvider>
             <ThemeProvider>

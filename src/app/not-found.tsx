@@ -1,37 +1,48 @@
-import Link from 'next/link';
-import { HomeIcon } from '@heroicons/react/24/outline';
-import { Inter } from 'next/font/google';
+'use client';
 
-const inter = Inter({ subsets: ['latin'], display: 'swap' });
+import Link from 'next/link';
+import { ArrowLeftIcon, HomeIcon } from '@heroicons/react/24/outline';
 
 export default function NotFound() {
   return (
-    <div className="bg-primary-bg text-secondary-text relative flex min-h-screen items-center justify-center bg-[url('https://assets.jailbreakchangelogs.xyz/assets/backgrounds/background16.webp')] bg-cover bg-center bg-no-repeat">
-      {/* Dark overlay for better text readability */}
-      <div className="absolute inset-0 z-[1] bg-black/50" />
-      {/* Vignette overlay */}
-      <div className="absolute inset-0 z-[1] bg-[url('https://assets.jailbreakchangelogs.xyz/assets/backgrounds/vignette.png')] bg-cover bg-center bg-no-repeat" />
+    <section className="bg-primary-bg">
+      <div className="container mx-auto min-h-screen px-6 py-12 lg:flex lg:items-center lg:gap-12">
+        <div className="w-full lg:w-1/2">
+          <p className="text-secondary-text text-sm font-medium">404 error</p>
+          <h1 className="text-primary-text mt-3 text-2xl font-semibold md:text-3xl">
+            Page not found
+          </h1>
+          <p className="text-secondary-text mt-4">
+            Sorry, the page you are looking for doesn&apos;t exist. Here are some helpful links:
+          </p>
 
-      <div className="relative z-[2] mx-auto max-w-md px-4 text-center">
-        <div className="border-border-primary bg-secondary-bg/90 shadow-card-shadow rounded-2xl border px-8 py-8 backdrop-blur-xl">
-          <div className="mb-8">
-            <div className={`${inter.className} text-button-info text-9xl font-bold`}>404</div>
-            <h1 className="text-primary-text mb-2 text-2xl font-bold">Page Not Found</h1>
-            <p className="text-secondary-text">
-              The page you&apos;re looking for doesn&apos;t exist or may have been removed.
-            </p>
-          </div>
-          <div className="space-y-3">
+          <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row">
+            <button
+              onClick={() => window.history.back()}
+              className="text-primary-text bg-primary-bg hover:bg-secondary-bg flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg px-6 py-3 transition-colors sm:w-auto"
+            >
+              <ArrowLeftIcon className="h-5 w-5" />
+              <span>Go back</span>
+            </button>
+
             <Link
               href="/"
-              className="bg-button-info text-form-button-text hover:bg-button-info-hover flex w-full items-center justify-center gap-2 rounded-lg px-6 py-3 font-medium transition-colors"
+              className="bg-button-info text-form-button-text hover:bg-button-info-hover flex w-full items-center justify-center gap-2 rounded-lg px-6 py-3 font-medium transition-colors sm:w-auto"
             >
               <HomeIcon className="h-5 w-5" />
-              Go Home
+              Take me home
             </Link>
           </div>
         </div>
+
+        <div className="relative mt-12 w-full lg:mt-0 lg:w-1/2">
+          <img
+            className="w-full max-w-lg lg:mx-auto"
+            src="/assets/images/404.svg"
+            alt="404 Error Illustration"
+          />
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
