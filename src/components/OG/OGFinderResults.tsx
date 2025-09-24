@@ -475,7 +475,7 @@ export default function OGFinderResults({
                 <div className="text-primary-text flex items-center gap-2 text-sm">
                   <span className="text-button-info">💡</span>
                   <span className="font-medium">Pro Tip:</span>
-                  <span>Click on any item card to view its trading history.</span>
+                  <span>Click on any item card to view its ownership history.</span>
                 </div>
               </div>
             )}
