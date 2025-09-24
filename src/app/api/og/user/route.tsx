@@ -13,6 +13,17 @@ import type { UserData } from '@/types/auth';
  */
 async function isImageAccessible(url: string): Promise<boolean> {
   try {
+    // For GIF URLs (like Tenor), try a GET request instead of HEAD
+    if (url.includes('.gif') || url.includes('tenor.com')) {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (compatible; JailbreakChangelogs-OG/1.0)',
+        },
+      });
+      return response.ok;
+    }
+
     const response = await fetch(url, { method: 'HEAD' });
     const contentType = response.headers.get('content-type');
     return response.ok && contentType ? contentType.startsWith('image/') : false;
@@ -253,6 +264,25 @@ export async function GET(request: Request) {
 
   const userNumber = user.usernumber || 'Unknown';
 
+  // Determine avatar shape: square for premiumType 3, circle otherwise
+  const avatarShape = user.premiumtype === 3 ? 'square' : 'circle';
+
+  // Get premium tier display info
+  const getPremiumTierInfo = (premiumType: number) => {
+    switch (premiumType) {
+      case 1:
+        return { name: 'Supporter 1', color: '#cd7f32' };
+      case 2:
+        return { name: 'Supporter 2', color: '#c0c0c0' };
+      case 3:
+        return { name: 'Supporter 3', color: '#ffd700' };
+      default:
+        return null;
+    }
+  };
+
+  const premiumTier = getPremiumTierInfo(user.premiumtype);
+
   // Determine avatar image: user's Discord avatar, custom avatar, or default
   let avatarUrl: string = '';
   let useDefaultAvatar = false;
@@ -294,10 +324,6 @@ export async function GET(request: Request) {
     }
   }
 
-  // Apply user's accent color as avatar border for personalization
-  const formattedAccentColor = formatAccentColor(user.accent_color);
-  const borderStyle = `3px solid ${formattedAccentColor}`;
-
   return new ImageResponse(
     (
       <div
@@ -335,10 +361,9 @@ export async function GET(request: Request) {
             justifyContent: 'center',
             width: '250px',
             height: '250px',
-            borderRadius: '50%',
+            borderRadius: avatarShape === 'square' ? '4px' : '50%',
             overflow: 'hidden',
-            backgroundColor: '#242629',
-            border: borderStyle,
+            backgroundColor: '#0f1012',
           }}
         >
           {useDefaultAvatar ? (
@@ -350,7 +375,7 @@ export async function GET(request: Request) {
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <circle cx="125" cy="125" r="125" fill="#242629" />
+              <circle cx="125" cy="125" r="125" fill="#0f1012" />
               <circle cx="125" cy="100" r="37.5" fill="#fffffe" />
               <path
                 d="M125 150C162.5 150 193.75 181.25 193.75 218.75H56.25C56.25 181.25 87.5 150 125 150Z"
@@ -365,7 +390,7 @@ export async function GET(request: Request) {
               style={{
                 width: '100%',
                 height: '100%',
-                borderRadius: '50%',
+                borderRadius: avatarShape === 'square' ? '4px' : '50%',
                 objectFit: 'cover',
               }}
             />
@@ -383,7 +408,7 @@ export async function GET(request: Request) {
             textAlign: 'center',
             padding: '16px 24px',
             borderRadius: '12px',
-            backgroundColor: 'rgba(22, 22, 26, 0.8)',
+            backgroundColor: 'rgba(15, 16, 18, 0.8)',
             border: '1px solid rgba(255, 255, 255, 0.1)',
             minWidth: '400px',
             marginTop: '20px',
@@ -424,6 +449,27 @@ export async function GET(request: Request) {
           >
             User #{userNumber}
           </div>
+          {premiumTier && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: '8px',
+                padding: '4px 12px',
+                borderRadius: '20px',
+                backgroundColor: premiumTier.color,
+                color: premiumTier.name === 'Supporter 3' ? '#000000' : '#ffffff',
+                fontSize: 18,
+                fontFamily: 'LuckiestGuy',
+                fontWeight: 'bold',
+                textShadow:
+                  premiumTier.name === 'Supporter 3' ? 'none' : '1px 1px 2px rgba(0, 0, 0, 0.8)',
+              }}
+            >
+              {premiumTier.name}
+            </div>
+          )}
         </div>
 
         {/* Call-to-Action Section - Promotes the website */}
@@ -437,7 +483,7 @@ export async function GET(request: Request) {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: 'rgba(22, 22, 26, 0.9)',
+            backgroundColor: 'rgba(15, 16, 18, 0.9)',
             backdropFilter: 'blur(10px)',
             padding: '20px',
             borderTop: '1px solid rgba(255, 255, 255, 0.1)',

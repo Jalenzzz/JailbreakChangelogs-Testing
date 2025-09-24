@@ -11,6 +11,7 @@ import DisplayAd from '@/components/Ads/DisplayAd';
 import AdRemovalNotice from '@/components/Ads/AdRemovalNotice';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { logError } from '@/services/logger';
+import { formatMessageDate } from '@/utils/timestamp';
 import DupeUserInfo from './DupeUserInfo';
 import DupeFilters from './DupeFilters';
 import DupeItemsGrid from './DupeItemsGrid';
@@ -444,7 +445,7 @@ export default function DupeFinderResults({
           item={selectedItem}
           getUserDisplay={getUserDisplay}
           getUserAvatar={getUserAvatar}
-          formatDate={(timestamp) => new Date(timestamp * 1000).toLocaleString()}
+          formatDate={(timestamp) => formatMessageDate(timestamp)}
         />
       )}
     </div>

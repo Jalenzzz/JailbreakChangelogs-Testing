@@ -76,7 +76,11 @@ const FollowingModal: React.FC<FollowingModalProps> = ({
           return;
         }
 
-        const response = await fetch(`${PUBLIC_API_URL}/users/following/get?user=${userId}`);
+        const response = await fetch(`${PUBLIC_API_URL}/users/following/get?user=${userId}`, {
+          headers: {
+            'User-Agent': 'JailbreakChangelogs-Following/1.0',
+          },
+        });
 
         if (response.status === 404) {
           setFollowing([]);
@@ -119,6 +123,11 @@ const FollowingModal: React.FC<FollowingModalProps> = ({
           if (idsToFetch.length > 0) {
             const userResponse = await fetch(
               `${PUBLIC_API_URL}/users/get/batch?ids=${idsToFetch.join(',')}&nocache=true`,
+              {
+                headers: {
+                  'User-Agent': 'JailbreakChangelogs-Following/1.0',
+                },
+              },
             );
             if (userResponse.ok) {
               const userDataArray = await userResponse.json();

@@ -60,7 +60,7 @@ export default function DupeItemCard({
 
   return (
     <div
-      className="border-border-primary bg-secondary-bg text-primary-text hover:border-border-focus hover:shadow-card-shadow relative flex min-h-[400px] cursor-pointer flex-col rounded-lg border p-3 transition-all duration-200"
+      className="border-border-primary bg-primary-bg text-primary-text hover:border-border-focus hover:shadow-card-shadow relative flex min-h-[400px] cursor-pointer flex-col rounded-lg border p-3 transition-all duration-200"
       onClick={() => onCardClick(item)}
     >
       {/* Duplicate Indicator */}

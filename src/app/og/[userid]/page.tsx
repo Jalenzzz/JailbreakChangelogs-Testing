@@ -25,7 +25,7 @@ export default async function OGFinderUserPage({ params }: OGFinderUserPageProps
 
   return (
     <OGAuthWrapper>
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 pb-8">
         <Breadcrumb />
 
         <ExperimentalFeatureBanner className="mb-6" />

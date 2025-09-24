@@ -4,6 +4,7 @@ import React from 'react';
 import { Season } from '@/types/seasons';
 import { InventoryData } from '@/app/inventories/types';
 import { useRealTimeRelativeDate } from '@/hooks/useRealTimeRelativeDate';
+import { formatMessageDate } from '@/utils/timestamp';
 import XpProgressBar from './XpProgressBar';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
@@ -101,13 +102,7 @@ const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
 };
 
 const formatDate = (timestamp: number) => {
-  return new Date(timestamp * 1000).toLocaleString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  return formatMessageDate(timestamp);
 };
 
 export default function UserStatsSection({

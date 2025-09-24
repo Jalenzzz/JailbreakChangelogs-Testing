@@ -65,14 +65,22 @@ export interface OnlineUser {
 }
 
 export const fetchUsers = async () => {
-  const response = await fetch(`${BASE_API_URL}/users/list`);
+  const response = await fetch(`${BASE_API_URL}/users/list`, {
+    headers: {
+      'User-Agent': 'JailbreakChangelogs-UserSearch/1.0',
+    },
+  });
   const data = await response.json();
   return data.sort((a: User, b: User) => a.usernumber - b.usernumber);
 };
 
 export async function fetchUserById(id: string) {
   try {
-    const response = await fetch(`${BASE_API_URL}/users/get?id=${id}&nocache=true`);
+    const response = await fetch(`${BASE_API_URL}/users/get?id=${id}&nocache=true`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-UserProfile/1.0',
+      },
+    });
     const data = await response.json();
 
     if (!response.ok) {
@@ -129,9 +137,14 @@ export async function fetchUserByIdForOG(id: string) {
       'custom_avatar',
       'custom_banner',
       'settings',
+      'premiumtype',
     ].join(',');
 
-    const response = await fetch(`${BASE_API_URL}/users/get?id=${id}&fields=${fields}`);
+    const response = await fetch(`${BASE_API_URL}/users/get?id=${id}&fields=${fields}`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-UserProfile/1.0',
+      },
+    });
     const data = await response.json();
 
     if (!response.ok) {
@@ -179,7 +192,11 @@ export async function fetchUserByIdForMetadata(id: string) {
   try {
     const fields = ['accent_color', 'global_name', 'username'].join(',');
 
-    const response = await fetch(`${BASE_API_URL}/users/get?id=${id}&fields=${fields}`);
+    const response = await fetch(`${BASE_API_URL}/users/get?id=${id}&fields=${fields}`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-Metadata/1.0',
+      },
+    });
     const data = await response.json();
 
     if (!response.ok) {
@@ -225,7 +242,11 @@ export async function fetchUserByIdForMetadata(id: string) {
 
 export async function fetchUserByRobloxId(robloxId: string) {
   try {
-    const response = await fetch(`${BASE_API_URL}/users/get/roblox?id=${robloxId}&nocache=true`);
+    const response = await fetch(`${BASE_API_URL}/users/get/roblox?id=${robloxId}&nocache=true`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-UserProfile/1.0',
+      },
+    });
     const data = await response.json();
 
     if (!response.ok) {
@@ -293,14 +314,22 @@ export const fetchUsersForList = async () => {
     'roblox_join_date',
   ].join(',');
 
-  const response = await fetch(`${BASE_API_URL}/users/list?fields=${fields}&nocache=true`);
+  const response = await fetch(`${BASE_API_URL}/users/list?fields=${fields}&nocache=true`, {
+    headers: {
+      'User-Agent': 'JailbreakChangelogs-UserSearch/1.0',
+    },
+  });
   const data = await response.json();
   return data.sort((a: User, b: User) => a.usernumber - b.usernumber);
 };
 
 export async function fetchItems() {
   try {
-    const response = await fetch(`${BASE_API_URL}/items/list`);
+    const response = await fetch(`${BASE_API_URL}/items/list`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-ItemCatalog/1.0',
+      },
+    });
     if (!response.ok) throw new Error('Failed to fetch items');
     const data = await response.json();
     return data as Item[];
@@ -360,6 +389,11 @@ export async function fetchItem(type: string, name: string): Promise<ItemDetails
 
     const response = await fetch(
       `${BASE_API_URL}/items/get?name=${encodeURIComponent(itemName)}&type=${encodeURIComponent(itemType)}`,
+      {
+        headers: {
+          'User-Agent': 'JailbreakChangelogs-ItemDetails/1.0',
+        },
+      },
     );
 
     if (!response.ok) {
@@ -380,7 +414,11 @@ export async function fetchItem(type: string, name: string): Promise<ItemDetails
 
 export async function fetchItemById(id: string): Promise<ItemDetails | null> {
   try {
-    const response = await fetch(`${BASE_API_URL}/items/get?id=${id}`);
+    const response = await fetch(`${BASE_API_URL}/items/get?id=${id}`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-ItemDetails/1.0',
+      },
+    });
 
     if (!response.ok) {
       return null;
@@ -395,26 +433,42 @@ export async function fetchItemById(id: string): Promise<ItemDetails | null> {
 }
 
 export async function fetchChangelogList(): Promise<Changelog[]> {
-  const response = await fetch(`${BASE_API_URL}/changelogs/list`);
+  const response = await fetch(`${BASE_API_URL}/changelogs/list`, {
+    headers: {
+      'User-Agent': 'JailbreakChangelogs-Changelogs/1.0',
+    },
+  });
   if (!response.ok) throw new Error('Failed to fetch changelog list');
   return response.json();
 }
 
 export async function fetchChangelog(id: string): Promise<Changelog> {
-  const response = await fetch(`${BASE_API_URL}/changelogs/get?id=${id}`);
+  const response = await fetch(`${BASE_API_URL}/changelogs/get?id=${id}`, {
+    headers: {
+      'User-Agent': 'JailbreakChangelogs-Changelogs/1.0',
+    },
+  });
   if (!response.ok) throw new Error('Failed to fetch changelog');
   return response.json();
 }
 
 export async function fetchLatestChangelog(): Promise<Changelog> {
-  const response = await fetch(`${BASE_API_URL}/changelogs/latest`);
+  const response = await fetch(`${BASE_API_URL}/changelogs/latest`, {
+    headers: {
+      'User-Agent': 'JailbreakChangelogs-Changelogs/1.0',
+    },
+  });
   if (!response.ok) throw new Error('Failed to fetch latest changelog');
   return response.json();
 }
 
 export async function fetchItemsChangelog(id: string) {
   try {
-    const response = await fetch(`${BASE_API_URL}/items/changelogs/get?id=${id}`);
+    const response = await fetch(`${BASE_API_URL}/items/changelogs/get?id=${id}`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-Changelogs/1.0',
+      },
+    });
 
     if (response.status === 404) {
       console.log(`[SERVER] Items changelog ${id} not found`);
@@ -435,7 +489,11 @@ export async function fetchItemsChangelog(id: string) {
 
 export async function fetchItemChanges(id: string) {
   try {
-    const response = await fetch(`${BASE_API_URL}/item/changes?id=${id}`);
+    const response = await fetch(`${BASE_API_URL}/item/changes?id=${id}`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-Changelogs/1.0',
+      },
+    });
     if (response.status === 404) {
       return [] as unknown[];
     }
@@ -452,7 +510,11 @@ export async function fetchItemChanges(id: string) {
 
 export async function fetchTradeAds() {
   try {
-    const response = await fetch(`${BASE_API_URL}/trades/list?nocache=true`);
+    const response = await fetch(`${BASE_API_URL}/trades/list?nocache=true`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-Trading/1.0',
+      },
+    });
 
     if (response.status === 404) {
       // 404 means no trade ads found (all expired)
@@ -473,7 +535,11 @@ export async function fetchTradeAds() {
 
 export async function fetchTradeAd(id: string) {
   try {
-    const response = await fetch(`${BASE_API_URL}/trades/get?id=${id}`);
+    const response = await fetch(`${BASE_API_URL}/trades/get?id=${id}`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-Trading/1.0',
+      },
+    });
 
     if (response.status === 404) {
       console.log(`[SERVER] Trade ad ${id} not found`);
@@ -498,7 +564,11 @@ export async function fetchUsersBatch(userIds: string[]) {
       return {};
     }
 
-    const response = await fetch(`${BASE_API_URL}/users/get/batch?ids=${userIds.join(',')}`);
+    const response = await fetch(`${BASE_API_URL}/users/get/batch?ids=${userIds.join(',')}`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-UserBatch/1.0',
+      },
+    });
 
     if (!response.ok) {
       throw new Error('Failed to fetch users batch');
@@ -519,7 +589,11 @@ export async function fetchUsersBatch(userIds: string[]) {
 
 export async function fetchDupes() {
   try {
-    const response = await fetch(`${BASE_API_URL}/dupes/list`);
+    const response = await fetch(`${BASE_API_URL}/dupes/list`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-DupeFinder/1.0',
+      },
+    });
 
     if (!response.ok) {
       throw new Error('Failed to fetch dupes');
@@ -536,7 +610,11 @@ export async function fetchDupes() {
 export async function fetchDupeFinderData(userId: string) {
   try {
     const url = `${INVENTORY_API_URL}/users/dupes?id=${userId}`;
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-Inventory/1.0',
+      },
+    });
     if (!response.ok) {
       if (response.status === 404) {
         return { error: 'No recorded dupes found for this user.' };
@@ -555,7 +633,11 @@ export async function fetchDupeFinderData(userId: string) {
 export async function fetchDuplicatesCount() {
   try {
     const url = `${INVENTORY_API_URL}/items/duplicates/count`;
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-Inventory/1.0',
+      },
+    });
     if (!response.ok) {
       throw new Error('Failed to fetch duplicates count');
     }
@@ -570,7 +652,11 @@ export async function fetchDuplicatesCount() {
 
 export async function fetchLatestSeason() {
   try {
-    const response = await fetch(`${BASE_API_URL}/seasons/latest`);
+    const response = await fetch(`${BASE_API_URL}/seasons/latest`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-Seasons/1.0',
+      },
+    });
 
     if (!response.ok) {
       throw new Error('Failed to fetch latest season');
@@ -600,7 +686,11 @@ export interface SeasonContractsResponse {
 
 export async function fetchSeasonContracts(): Promise<SeasonContractsResponse | null> {
   try {
-    const response = await fetch(`${INVENTORY_API_URL}/seasons/contract`);
+    const response = await fetch(`${INVENTORY_API_URL}/seasons/contract`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-Inventory/1.0',
+      },
+    });
 
     if (!response.ok) {
       if (response.status === 404) {
@@ -619,7 +709,11 @@ export async function fetchSeasonContracts(): Promise<SeasonContractsResponse | 
 
 export async function fetchSeasonsList() {
   try {
-    const response = await fetch(`${BASE_API_URL}/seasons/list`);
+    const response = await fetch(`${BASE_API_URL}/seasons/list`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-Seasons/1.0',
+      },
+    });
 
     if (!response.ok) {
       throw new Error('Failed to fetch seasons list');
@@ -635,7 +729,11 @@ export async function fetchSeasonsList() {
 
 export async function fetchSeason(id: string) {
   try {
-    const response = await fetch(`${BASE_API_URL}/seasons/get?id=${id}`);
+    const response = await fetch(`${BASE_API_URL}/seasons/get?id=${id}`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-Seasons/1.0',
+      },
+    });
 
     if (!response.ok) {
       console.log('[SERVER] Season not found:', { id });
@@ -652,7 +750,11 @@ export async function fetchSeason(id: string) {
 
 export async function fetchOnlineUsers(): Promise<OnlineUser[]> {
   try {
-    const response = await fetch(`${BASE_API_URL}/users/list/online`);
+    const response = await fetch(`${BASE_API_URL}/users/list/online`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-Presence/1.0',
+      },
+    });
     if (!response.ok) {
       throw new Error('Failed to fetch online users');
     }
@@ -667,7 +769,11 @@ export async function fetchOnlineUsers(): Promise<OnlineUser[]> {
 
 export async function fetchItemFavorites(id: string) {
   try {
-    const response = await fetch(`${BASE_API_URL}/item/favorites?id=${id}`);
+    const response = await fetch(`${BASE_API_URL}/item/favorites?id=${id}`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-Favorites/1.0',
+      },
+    });
 
     if (response.status === 404) {
       console.log(`[SERVER] Item favorites ${id} not found`);
@@ -688,7 +794,11 @@ export async function fetchItemFavorites(id: string) {
 
 export async function fetchUserFavorites(userId: string) {
   try {
-    const response = await fetch(`${PUBLIC_API_URL}/favorites/get?user=${userId}`);
+    const response = await fetch(`${PUBLIC_API_URL}/favorites/get?user=${userId}`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-Favorites/1.0',
+      },
+    });
 
     if (response.status === 404) {
       console.log(`[CLIENT] User favorites ${userId} not found`);
@@ -709,7 +819,11 @@ export async function fetchUserFavorites(userId: string) {
 
 export async function fetchRandomItem() {
   try {
-    const response = await fetch(`${BASE_API_URL}/items/random`);
+    const response = await fetch(`${BASE_API_URL}/items/random`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-ItemCatalog/1.0',
+      },
+    });
 
     if (!response.ok) {
       throw new Error('Failed to fetch random item');
@@ -725,7 +839,11 @@ export async function fetchRandomItem() {
 
 export async function fetchItemHistory(id: string) {
   try {
-    const response = await fetch(`${PUBLIC_API_URL}/item/history?id=${id}`);
+    const response = await fetch(`${PUBLIC_API_URL}/item/history?id=${id}`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-ValueHistory/1.0',
+      },
+    });
 
     if (response.status === 404) {
       console.log(`[CLIENT] Value history for Item ${id} not found`);
@@ -746,7 +864,11 @@ export async function fetchItemHistory(id: string) {
 
 export async function fetchItemsByType(type: string) {
   try {
-    const response = await fetch(`${BASE_API_URL}/items/get?type=${encodeURIComponent(type)}`);
+    const response = await fetch(`${BASE_API_URL}/items/get?type=${encodeURIComponent(type)}`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-ItemCatalog/1.0',
+      },
+    });
 
     if (response.status === 404) {
       console.log(`[SERVER] Items with type ${type} not found`);
@@ -793,6 +915,11 @@ export async function fetchComments(type: string, id: string, itemType?: string)
     const commentType = type === 'item' ? itemType : type;
     const response = await fetch(
       `${BASE_API_URL}/comments/get?type=${commentType}&id=${id}&nocache=true`,
+      {
+        headers: {
+          'User-Agent': 'JailbreakChangelogs-Comments/1.0',
+        },
+      },
     );
 
     if (response.status === 404) {
@@ -1210,7 +1337,11 @@ export interface MoneyLeaderboardEntry {
 
 export async function fetchItemCountStats(): Promise<ItemCountStats | null> {
   try {
-    const response = await fetch(`${INVENTORY_API_URL}/items/count`);
+    const response = await fetch(`${INVENTORY_API_URL}/items/count`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-Inventory/1.0',
+      },
+    });
 
     if (!response.ok) {
       throw new Error('Failed to fetch item count stats');
@@ -1226,7 +1357,11 @@ export async function fetchItemCountStats(): Promise<ItemCountStats | null> {
 
 export async function fetchUserScansLeaderboard(): Promise<UserScan[]> {
   try {
-    const response = await fetch(`${INVENTORY_API_URL}/users/scans`);
+    const response = await fetch(`${INVENTORY_API_URL}/users/scans`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-Inventory/1.0',
+      },
+    });
 
     if (!response.ok) {
       throw new Error('Failed to fetch user scans leaderboard');
@@ -1242,7 +1377,11 @@ export async function fetchUserScansLeaderboard(): Promise<UserScan[]> {
 
 export async function fetchMoneyLeaderboard(): Promise<MoneyLeaderboardEntry[]> {
   try {
-    const response = await fetch(`${INVENTORY_API_URL}/money/leaderboard`);
+    const response = await fetch(`${INVENTORY_API_URL}/money/leaderboard`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-Inventory/1.0',
+      },
+    });
 
     if (!response.ok) {
       throw new Error('Failed to fetch money leaderboard');
@@ -1258,7 +1397,11 @@ export async function fetchMoneyLeaderboard(): Promise<MoneyLeaderboardEntry[]> 
 
 export async function fetchUserMoneyRank(robloxId: string) {
   try {
-    const response = await fetch(`${INVENTORY_API_URL}/money/rank?user_id=${robloxId}`);
+    const response = await fetch(`${INVENTORY_API_URL}/money/rank?user_id=${robloxId}`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-Inventory/1.0',
+      },
+    });
 
     if (!response.ok) {
       throw new Error('Failed to fetch user money rank');
@@ -1452,7 +1595,11 @@ export async function fetchCrewLeaderboard(season?: number): Promise<CrewLeaderb
     }
 
     const url = CREW_LEADERBOARD_URLS[targetSeason as keyof typeof CREW_LEADERBOARD_URLS];
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-Crew/1.0',
+      },
+    });
 
     if (!response.ok) {
       throw new Error(`Failed to fetch crew leaderboard for season ${targetSeason}`);
@@ -1550,7 +1697,11 @@ export interface UserWithFlags extends UserData {
 
 export async function fetchUsersWithFlags(): Promise<UserWithFlags[]> {
   try {
-    const response = await fetch(`${BASE_API_URL}/users/list/flags`);
+    const response = await fetch(`${BASE_API_URL}/users/list/flags`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-UserFlags/1.0',
+      },
+    });
 
     if (!response.ok) {
       throw new Error('Failed to fetch users with flags');
@@ -1564,49 +1715,98 @@ export async function fetchUsersWithFlags(): Promise<UserWithFlags[]> {
   }
 }
 
-export async function fetchOGSearchData(robloxId: string, timeoutMs: number = 30000) {
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+export async function fetchOGSearchData(
+  robloxId: string,
+  timeoutMs: number = 30000,
+  maxRetries: number = 3,
+) {
+  let lastError: Error | null = null;
 
-    const response = await fetch(`${INVENTORY_API_URL}/search?username=${robloxId}`, {
-      headers: {
-        'User-Agent': 'JailbreakChangelogs-OGFinder/1.0',
-      },
-      signal: controller.signal,
-    });
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
-    clearTimeout(timeoutId);
+      const response = await fetch(`${INVENTORY_API_URL}/search?username=${robloxId}`, {
+        headers: {
+          'User-Agent': 'JailbreakChangelogs-OGFinder/1.0',
+        },
+        signal: controller.signal,
+      });
 
-    if (!response.ok) {
-      console.error(`[SERVER] OG Search API returned ${response.status} for ID: ${robloxId}`);
-      if (response.status === 404) {
-        return {
-          error: 'not_found',
-          message:
-            'This user has not been scanned by our bots yet. Their OG item data is not available.',
-        };
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        console.error(
+          `[SERVER] OG Search API returned ${response.status} for ID: ${robloxId} (attempt ${attempt + 1})`,
+        );
+
+        // Don't retry on 404 - user not found
+        if (response.status === 404) {
+          return {
+            error: 'not_found',
+            message:
+              'This user has not been scanned by our bots yet. Their OG item data is not available.',
+          };
+        }
+
+        // Don't retry on client errors (4xx) except 429 (rate limit)
+        if (response.status >= 400 && response.status < 500 && response.status !== 429) {
+          return {
+            error: 'api_error',
+            message: `API returned ${response.status}. Please try again later.`,
+          };
+        }
+
+        // For server errors (5xx) and rate limits (429), throw to trigger retry
+        throw new Error(`API returned ${response.status}`);
       }
-      throw new Error(`Failed to fetch OG search data: ${response.status}`);
+
+      const data = await response.json();
+      return data;
+    } catch (err) {
+      lastError = err as Error;
+
+      // Don't retry on the last attempt
+      if (attempt === maxRetries) {
+        break;
+      }
+
+      // Check if it's an abort error (timeout) or network error
+      if (err instanceof Error && (err.name === 'AbortError' || err.message.includes('fetch'))) {
+        console.warn(
+          `[SERVER] OG Search request failed (attempt ${attempt + 1}/${maxRetries + 1}):`,
+          err.message,
+        );
+
+        // Exponential backoff: wait 1s, 2s, 4s between retries
+        const delayMs = Math.pow(2, attempt) * 1000;
+        console.log(`[SERVER] Retrying OG search in ${delayMs}ms...`);
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+        continue;
+      }
+
+      // For other errors, don't retry
+      console.error('[SERVER] Non-retryable error fetching OG search data:', err);
+      break;
     }
+  }
 
-    const data = await response.json();
-    return data;
-  } catch (err) {
-    console.error('[SERVER] Error fetching OG search data:', err);
+  // All retries failed
+  console.error('[SERVER] All retry attempts failed for OG search data:', lastError);
 
-    if (err instanceof Error && err.name === 'AbortError') {
-      return {
-        error: 'timeout',
-        message: `Request timed out after ${timeoutMs}ms. The user's data may be too large to process quickly.`,
-      };
-    }
-
+  if (lastError instanceof Error && lastError.name === 'AbortError') {
     return {
-      error: 'fetch_error',
-      message: 'Failed to fetch OG search data. Please try again.',
+      error: 'timeout',
+      message: `Request timed out after ${timeoutMs}ms and ${maxRetries} retries. The user's data may be too large to process quickly.`,
     };
   }
+
+  return {
+    error: 'network_error',
+    message:
+      'Failed to fetch data after multiple attempts. Please check your connection and try again.',
+  };
 }
 
 export async function fetchInventoryDataRefresh(robloxId: string) {
@@ -1664,7 +1864,11 @@ export interface Supporter {
 
 export async function fetchSupporters(): Promise<Supporter[]> {
   try {
-    const response = await fetch(`${BASE_API_URL}/users/list/supporters`);
+    const response = await fetch(`${BASE_API_URL}/users/list/supporters`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-Supporters/1.0',
+      },
+    });
 
     if (!response.ok) {
       throw new Error('Failed to fetch supporters');

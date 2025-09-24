@@ -14,6 +14,7 @@ import ItemActionModal from '@/components/Modals/ItemActionModal';
 import TradeHistoryModal from '@/components/Modals/TradeHistoryModal';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { logError } from '@/services/logger';
+import { formatMessageDate } from '@/utils/timestamp';
 import OGUserInfo from './OGUserInfo';
 import OGFilters from './OGFilters';
 import OGItemsGrid from './OGItemsGrid';
@@ -504,7 +505,7 @@ export default function OGFinderResults({
           item={selectedItem}
           getUserDisplay={getUserDisplay}
           getUserAvatar={getUserAvatar}
-          formatDate={(timestamp) => new Date(timestamp * 1000).toLocaleString()}
+          formatDate={(timestamp) => formatMessageDate(timestamp)}
         />
       )}
     </div>

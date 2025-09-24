@@ -18,7 +18,7 @@ export default function OGFinderPage() {
   }
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="container mx-auto px-4 pb-8">
       <Breadcrumb />
 
       <ExperimentalFeatureBanner className="mb-6" />

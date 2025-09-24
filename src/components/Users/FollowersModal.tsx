@@ -82,7 +82,11 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
           return;
         }
 
-        const response = await fetch(`${PUBLIC_API_URL}/users/followers/get?user=${userId}`);
+        const response = await fetch(`${PUBLIC_API_URL}/users/followers/get?user=${userId}`, {
+          headers: {
+            'User-Agent': 'JailbreakChangelogs-Followers/1.0',
+          },
+        });
 
         if (response.status === 404) {
           setFollowers([]);
@@ -115,6 +119,11 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
           if (idsToFetch.length > 0) {
             const userResponse = await fetch(
               `${PUBLIC_API_URL}/users/get/batch?ids=${idsToFetch.join(',')}&nocache=true`,
+              {
+                headers: {
+                  'User-Agent': 'JailbreakChangelogs-Followers/1.0',
+                },
+              },
             );
             if (userResponse.ok) {
               const userDataArray = await userResponse.json();
@@ -162,7 +171,14 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
       if (!isOpen || !currentUserId) return;
 
       try {
-        const response = await fetch(`${PUBLIC_API_URL}/users/following/get?user=${currentUserId}`);
+        const response = await fetch(
+          `${PUBLIC_API_URL}/users/following/get?user=${currentUserId}`,
+          {
+            headers: {
+              'User-Agent': 'JailbreakChangelogs-Followers/1.0',
+            },
+          },
+        );
         if (!response.ok) return;
 
         const followingData = await response.json();

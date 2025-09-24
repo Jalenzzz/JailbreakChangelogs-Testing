@@ -277,6 +277,11 @@ export default function UserProfileClient({
         try {
           const response = await fetch(
             `${PUBLIC_API_URL}/users/following/get?user=${currentUserId}`,
+            {
+              headers: {
+                'User-Agent': 'JailbreakChangelogs-UserProfile/1.0',
+              },
+            },
           );
           const followingData: FollowingData[] | string = await response.json();
 

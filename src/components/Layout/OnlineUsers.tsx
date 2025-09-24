@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { PUBLIC_API_URL } from '@/utils/api';
+import React from 'react';
+import { useOnlineUsersPolling } from '@/hooks/useOnlineUsersPolling';
 import Image from 'next/image';
 import { Skeleton } from '@mui/material';
 import Link from 'next/link';
@@ -20,49 +20,16 @@ interface OnlineUser {
 interface OnlineUsersProps {
   max?: number;
   className?: string;
+  initial?: OnlineUser[];
 }
 
-export default function OnlineUsers({
-  max = 4,
-  className = '',
-  initial,
-}: OnlineUsersProps & { initial?: OnlineUser[] }) {
-  const [onlineUsers, setOnlineUsers] = useState<OnlineUser[]>(initial || []);
-  const [loading, setLoading] = useState(!(initial && initial.length > 0));
-  const [error, setError] = useState<string | null>(null);
+export default function OnlineUsers({ max = 4, className = '', initial }: OnlineUsersProps) {
+  const { onlineUsers, isLoading, error } = useOnlineUsersPolling(30000);
 
-  useEffect(() => {
-    const fetchOnlineUsers = async () => {
-      try {
-        setLoading(false);
-        setError(null);
+  // Use polling data if available, otherwise fall back to initial data
+  const users = onlineUsers || initial || [];
 
-        const response = await fetch(`${PUBLIC_API_URL}/users/list/online`);
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch online users');
-        }
-
-        const data = await response.json();
-        setOnlineUsers(data);
-      } catch (err) {
-        console.error('Error fetching online users:', err);
-        setError('Failed to load online users');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (!initial || initial.length === 0) {
-      fetchOnlineUsers();
-    }
-
-    // Refresh every 30 seconds
-    const interval = setInterval(fetchOnlineUsers, 30000);
-    return () => clearInterval(interval);
-  }, [initial]);
-
-  if (loading) {
+  if (isLoading && !users.length) {
     return (
       <div className={`flex items-center space-x-2 ${className}`}>
         <div className="flex -space-x-2">
@@ -75,12 +42,12 @@ export default function OnlineUsers({
     );
   }
 
-  if (error || onlineUsers.length === 0) {
+  if (error || users.length === 0) {
     return null; // Don't show anything if there's an error or no users
   }
 
-  const visibleUsers = onlineUsers.slice(0, max);
-  const totalUsers = onlineUsers.length;
+  const visibleUsers = users.slice(0, max);
+  const totalUsers = users.length;
   const hiddenCount = totalUsers - max;
 
   return (

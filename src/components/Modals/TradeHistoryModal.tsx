@@ -59,7 +59,7 @@ export default function TradeHistoryModal({
                   Ownership History
                 </Dialog.Title>
                 <div className="flex items-center gap-2">
-                  <p className="text-secondary-text truncate text-sm">{item.title}</p>
+                  <p className="text-primary-text truncate text-sm">{item.title}</p>
                   {item.categoryTitle && (
                     <span
                       className="text-primary-text flex items-center rounded-full border px-2 py-0.5 text-xs font-medium"
@@ -72,11 +72,6 @@ export default function TradeHistoryModal({
                     </span>
                   )}
                 </div>
-                {item.history && Array.isArray(item.history) && item.history.length > 1 && (
-                  <p className="text-secondary-text mt-1 text-xs">
-                    Total Ownership Changes: {item.history.length - 1}
-                  </p>
-                )}
                 {/* Loading indicator in header */}
                 {loadingUserIds.size > 0 && (
                   <div className="text-button-info mt-2 flex items-center gap-2">

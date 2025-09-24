@@ -62,7 +62,11 @@ const ServerList: React.FC = () => {
       setLoggedInUserId(userId);
 
       try {
-        const serversResponse = await fetch(`${PUBLIC_API_URL}/servers/list?nocache=true`);
+        const serversResponse = await fetch(`${PUBLIC_API_URL}/servers/list?nocache=true`, {
+          headers: {
+            'User-Agent': 'JailbreakChangelogs-Servers/1.0',
+          },
+        });
         if (!serversResponse.ok) {
           throw new Error('Failed to fetch servers');
         }
@@ -77,6 +81,11 @@ const ServerList: React.FC = () => {
           try {
             const userResponse = await fetch(
               `${PUBLIC_API_URL}/users/get/batch?ids=${uniqueOwnerIds.join(',')}&nocache=true`,
+              {
+                headers: {
+                  'User-Agent': 'JailbreakChangelogs-Servers/1.0',
+                },
+              },
             );
             if (userResponse.ok) {
               const userDataArray = (await userResponse.json()) as UserData[];
@@ -126,7 +135,11 @@ const ServerList: React.FC = () => {
   const handleServerAdded = async () => {
     // Fetch updated server list
     try {
-      const serversResponse = await fetch(`${PUBLIC_API_URL}/servers/list?nocache=true`);
+      const serversResponse = await fetch(`${PUBLIC_API_URL}/servers/list?nocache=true`, {
+        headers: {
+          'User-Agent': 'JailbreakChangelogs-Servers/1.0',
+        },
+      });
       if (!serversResponse.ok) {
         throw new Error('Failed to fetch servers');
       }
@@ -141,6 +154,11 @@ const ServerList: React.FC = () => {
         try {
           const userResponse = await fetch(
             `${PUBLIC_API_URL}/users/get/batch?ids=${newOwnerIds.join(',')}&nocache=true`,
+            {
+              headers: {
+                'User-Agent': 'JailbreakChangelogs-Servers/1.0',
+              },
+            },
           );
           if (userResponse.ok) {
             const userDataArray = (await userResponse.json()) as UserData[];

@@ -63,7 +63,11 @@ export default function ValuesChangelogPage() {
   useEffect(() => {
     const fetchChangelogs = async () => {
       try {
-        const response = await fetch(`${PUBLIC_API_URL}/items/changelogs/list`);
+        const response = await fetch(`${PUBLIC_API_URL}/items/changelogs/list`, {
+          headers: {
+            'User-Agent': 'JailbreakChangelogs-ValueHistory/1.0',
+          },
+        });
         if (!response.ok) {
           throw new Error('Failed to fetch changelogs');
         }

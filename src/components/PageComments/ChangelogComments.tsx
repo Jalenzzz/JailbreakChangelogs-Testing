@@ -187,6 +187,11 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
 
         const response = await fetch(
           `${PUBLIC_API_URL}/users/get/batch?ids=${usersToFetch.join(',')}&nocache=true`,
+          {
+            headers: {
+              'User-Agent': 'JailbreakChangelogs-Comments/1.0',
+            },
+          },
         );
         if (!response.ok) throw new Error('Failed to fetch user data');
         const data = await response.json();
@@ -224,7 +229,11 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
   const refreshComments = useCallback(async () => {
     try {
       const endpoint = `${PUBLIC_API_URL}/comments/get?type=${type === 'item' ? itemType : type}&id=${changelogId}&nocache=true`;
-      const response = await fetch(endpoint);
+      const response = await fetch(endpoint, {
+        headers: {
+          'User-Agent': 'JailbreakChangelogs-Comments/1.0',
+        },
+      });
 
       if (response.status === 404) {
         setComments([]);

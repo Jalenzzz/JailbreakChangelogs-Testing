@@ -78,7 +78,7 @@ export default function OGItemCard({
       className={`border-border-primary text-primary-text hover:shadow-card-shadow relative flex min-h-[400px] cursor-pointer flex-col rounded-lg border p-3 transition-all duration-200 ${
         isOriginalOwner
           ? 'border-status-success bg-status-success/10 hover:border-status-success'
-          : 'bg-secondary-bg hover:border-border-focus'
+          : 'bg-primary-bg hover:border-border-focus'
       }`}
       onClick={() => onCardClick(item)}
     >

@@ -57,7 +57,7 @@ export default function InventoryItemCard({
       className={`text-primary-text hover:shadow-card-shadow relative flex min-h-[400px] cursor-pointer flex-col rounded-lg p-3 transition-all duration-200 ${
         isOriginalOwner
           ? 'border border-[#FFD700] bg-[#FFD700]/10 hover:border-[#FFD700]'
-          : 'border-border-primary bg-secondary-bg hover:border-border-focus border'
+          : 'border-border-primary bg-primary-bg hover:border-border-focus border'
       }`}
       onClick={() => onCardClick(item)}
     >
