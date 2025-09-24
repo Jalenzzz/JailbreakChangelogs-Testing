@@ -1037,10 +1037,23 @@ export async function fetchInventoryData(
                 socket.close();
               } catch {}
               console.error(`[WS] Connection error for user ${robloxId}:`, err);
-              resolve({
-                error: 'ws_error',
-                message: 'WebSocket connection error.',
-              });
+
+              // Check if it's a 404 error (service unavailable)
+              const errorMessage = err instanceof Error ? err.message : String(err);
+              if (
+                errorMessage.includes('404') ||
+                errorMessage.includes('Unexpected server response: 404')
+              ) {
+                resolve({
+                  error: 'service_unavailable',
+                  message: 'Inventory service is currently unavailable. Please try again later.',
+                });
+              } else {
+                resolve({
+                  error: 'ws_error',
+                  message: 'WebSocket connection error.',
+                });
+              }
             });
 
             socket.on('close', () => {
@@ -1095,7 +1108,8 @@ export async function fetchInventoryData(
         if (
           errorResult.error === 'not_found' ||
           errorResult.error === 'ws_parse_error' ||
-          errorResult.error === 'ws_closed'
+          errorResult.error === 'ws_closed' ||
+          errorResult.error === 'service_unavailable'
         ) {
           return errorResult;
         }
@@ -1155,6 +1169,14 @@ export async function fetchInventoryData(
     return {
       error: 'timeout',
       message: `Request timed out after ${timeoutMs}ms and ${maxRetries} retries. The user's data may be too large to process quickly.`,
+    };
+  }
+
+  // Check if it's a WebSocket service error (404, service unavailable)
+  if (lastError instanceof Error && lastError.message.includes('WebSocket error: ws_error')) {
+    return {
+      error: 'service_unavailable',
+      message: 'Inventory service is currently unavailable. Please try again later.',
     };
   }
 

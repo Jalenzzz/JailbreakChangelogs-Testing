@@ -628,34 +628,37 @@ export default function UserProfileClient({
                           </div>
                         ) : (
                           user.last_seen && (
-                            <Tooltip
-                              title={formatCustomDate(user.last_seen)}
-                              placement="top"
-                              arrow
-                              slotProps={{
-                                tooltip: {
-                                  sx: {
-                                    backgroundColor: 'var(--color-primary-bg)',
-                                    color: 'var(--color-secondary-text)',
-                                    fontSize: '0.75rem',
-                                    padding: '8px 12px',
-                                    borderRadius: '8px',
+                            <p className="text-secondary-text text-sm">
+                              Last seen:{' '}
+                              <Tooltip
+                                title={formatCustomDate(user.last_seen)}
+                                placement="top"
+                                arrow
+                                slotProps={{
+                                  tooltip: {
+                                    sx: {
+                                      backgroundColor: 'var(--color-primary-bg)',
+                                      color: 'var(--color-secondary-text)',
+                                      fontSize: '0.75rem',
+                                      padding: '8px 12px',
+                                      borderRadius: '8px',
 
-                                    boxShadow: '0 4px 12px var(--color-card-shadow)',
-                                    '& .MuiTooltip-arrow': {
-                                      color: 'var(--color-primary-bg)',
+                                      boxShadow: '0 4px 12px var(--color-card-shadow)',
+                                      '& .MuiTooltip-arrow': {
+                                        color: 'var(--color-primary-bg)',
+                                      },
                                     },
                                   },
-                                },
-                              }}
-                            >
-                              <p
-                                className="text-secondary-text cursor-help text-sm"
-                                aria-label={`User was last seen ${lastSeenTime}`}
+                                }}
                               >
-                                Last seen: {lastSeenTime}
-                              </p>
-                            </Tooltip>
+                                <span
+                                  className="cursor-help"
+                                  aria-label={`User was last seen ${lastSeenTime}`}
+                                >
+                                  {lastSeenTime}
+                                </span>
+                              </Tooltip>
+                            </p>
                           )
                         )}
                       </>

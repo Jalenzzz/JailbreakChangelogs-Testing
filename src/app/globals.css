@@ -35,9 +35,9 @@
   --color-card-shadow: hsl(0, 0%, 0%, 0.1); /* Card shadows */
 
   /* Interactive Elements */
-  --color-link: hsl(210, 99%, 50%); /* Primary links */
-  --color-link-hover: hsl(210, 99%, 40%); /* Link hover states */
-  --color-link-active: hsl(210, 99%, 40%); /* Link active states */
+  --color-link: hsl(210, 77%, 50%); /* Primary links */
+  --color-link-hover: hsl(210, 77%, 40%); /* Link hover states */
+  --color-link-active: hsl(210, 77%, 40%); /* Link active states */
   --color-link-visited: hsl(214, 12%, 45%); /* Visited links */
 
   /* Button Colors */

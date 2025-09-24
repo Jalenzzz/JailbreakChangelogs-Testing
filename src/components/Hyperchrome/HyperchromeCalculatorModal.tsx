@@ -99,11 +99,12 @@ export default function HyperchromeCalculatorModal({
                     isClearable={false}
                     isSearchable={false}
                     styles={{
-                      control: (base) => ({
+                      control: (base, state) => ({
                         ...base,
                         backgroundColor: 'var(--color-form-input)',
                         borderColor: 'var(--color-stroke)',
                         color: 'var(--color-primary-text)',
+                        cursor: state.isFocused ? 'pointer' : 'pointer',
                       }),
                       singleValue: (base) => ({ ...base, color: 'var(--color-primary-text)' }),
                       menu: (base) => ({

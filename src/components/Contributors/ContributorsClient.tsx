@@ -21,10 +21,27 @@ const StyledTabs = styled(Tabs)(() => ({
     backgroundColor: 'var(--color-button-info)',
   },
   '& .MuiTabs-scrollButtons': {
-    color: 'var(--color-primary-text)',
+    color: 'var(--color-primary-text) !important',
+    '&:hover': {
+      backgroundColor: 'var(--color-quaternary-bg)',
+    },
     '&.Mui-disabled': {
       opacity: 0.3,
+      color: 'var(--color-primary-text) !important',
     },
+  },
+  '& .MuiTabScrollButton-root': {
+    color: 'var(--color-primary-text) !important',
+    '&:hover': {
+      backgroundColor: 'var(--color-quaternary-bg)',
+    },
+    '&.Mui-disabled': {
+      opacity: 0.3,
+      color: 'var(--color-primary-text) !important',
+    },
+  },
+  '& .MuiSvgIcon-root': {
+    color: 'var(--color-primary-text) !important',
   },
 }));
 

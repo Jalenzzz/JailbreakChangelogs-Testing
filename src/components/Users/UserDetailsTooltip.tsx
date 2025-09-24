@@ -14,7 +14,7 @@ interface UserDetailsTooltipProps {
 
 export const UserDetailsTooltip: React.FC<UserDetailsTooltipProps> = ({ user, currentUserId }) => {
   return (
-    <div className="bg-primary-bg p-2">
+    <div className="bg-secondary-bg p-2">
       <div className="flex gap-3">
         {/* User Avatar */}
         <UserAvatar
@@ -37,7 +37,7 @@ export const UserDetailsTooltip: React.FC<UserDetailsTooltipProps> = ({ user, cu
               className="block transition-opacity hover:opacity-80"
             >
               <div className="flex items-center gap-2">
-                <h3 className="text-link hover:text-link-hover text-lg font-semibold transition-colors">
+                <h3 className="text-link hover:text-link-hover max-w-[300px] truncate text-lg font-semibold transition-colors">
                   {user.global_name && user.global_name !== 'None'
                     ? user.global_name
                     : user.username}

@@ -177,8 +177,17 @@ export default function UserSearch({ initialUsers }: UserSearchProps) {
               disableTouchListener
               slotProps={{
                 tooltip: {
-                  className:
-                    'bg-primary-bg border border-stroke max-w-sm w-auto min-w-[300px] [&_.MuiTooltip-arrow]:text-primary-bg',
+                  sx: {
+                    backgroundColor: 'var(--color-secondary-bg)',
+                    color: 'var(--color-primary-text)',
+                    border: '1px solid var(--color-stroke)',
+                    maxWidth: '24rem',
+                    width: 'auto',
+                    minWidth: '300px',
+                    '& .MuiTooltip-arrow': {
+                      color: 'var(--color-secondary-bg)',
+                    },
+                  },
                 },
               }}
             >

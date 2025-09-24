@@ -457,19 +457,22 @@ export default function ItemDetailsClient({
                 </div>
                 <div className="text-secondary-text mt-2 text-sm">
                   {currentItem.last_updated ? (
-                    <Tooltip
-                      title={formatCustomDate(currentItem.last_updated)}
-                      placement="top"
-                      arrow
-                      slotProps={{
-                        tooltip: {
-                          className:
-                            'bg-secondary-bg text-secondary-text text-xs px-3 py-2 rounded-lg shadow-lg border border-stroke [&_.MuiTooltip-arrow]:text-primary-bg',
-                        },
-                      }}
-                    >
-                      <span className="cursor-help">Last updated: {relativeTime}</span>
-                    </Tooltip>
+                    <>
+                      Last updated:{' '}
+                      <Tooltip
+                        title={formatCustomDate(currentItem.last_updated)}
+                        placement="top"
+                        arrow
+                        slotProps={{
+                          tooltip: {
+                            className:
+                              'bg-secondary-bg text-secondary-text text-xs px-3 py-2 rounded-lg shadow-lg border border-stroke [&_.MuiTooltip-arrow]:text-primary-bg',
+                          },
+                        }}
+                      >
+                        <span className="cursor-help">{relativeTime}</span>
+                      </Tooltip>
+                    </>
                   ) : (
                     <>Last updated: Never</>
                   )}
@@ -527,6 +530,31 @@ export default function ItemDetailsClient({
                   scrollButtons="auto"
                   allowScrollButtonsMobile
                   className="[&_.MuiTab-root]:text-secondary-text [&_.MuiTab-root:hover]:text-primary-text [&_.MuiTab-root:hover]:bg-button-info/10 [&_.MuiTab-root.Mui-selected]:text-button-info [&_.MuiTab-root.Mui-selected]:border-button-info [&_.MuiTabs-indicator]:bg-button-info [&_.MuiTabs-scrollButtons]:text-secondary-text [&_.MuiTabs-scrollButtons:hover]:bg-button-info/10 [&_.MuiTabs-scrollButtons:hover]:text-primary-text [&_.MuiTab-root]:mr-1 [&_.MuiTab-root]:min-h-12 [&_.MuiTab-root]:rounded-t-lg [&_.MuiTab-root]:px-5 [&_.MuiTab-root]:py-3 [&_.MuiTab-root]:text-sm [&_.MuiTab-root]:font-medium [&_.MuiTab-root]:normal-case [&_.MuiTab-root]:transition-all [&_.MuiTab-root]:duration-200 [&_.MuiTab-root.Mui-selected]:border-b-2 [&_.MuiTab-root.Mui-selected]:font-semibold [&_.MuiTabs-indicator]:h-1 [&_.MuiTabs-indicator]:rounded-sm [&_.MuiTabs-scrollButtons.Mui-disabled]:opacity-30"
+                  sx={{
+                    '& .MuiTabs-scrollButtons': {
+                      color: 'var(--color-primary-text) !important',
+                      '&:hover': {
+                        backgroundColor: 'var(--color-quaternary-bg)',
+                      },
+                      '&.Mui-disabled': {
+                        opacity: 0.3,
+                        color: 'var(--color-primary-text) !important',
+                      },
+                    },
+                    '& .MuiTabScrollButton-root': {
+                      color: 'var(--color-primary-text) !important',
+                      '&:hover': {
+                        backgroundColor: 'var(--color-quaternary-bg)',
+                      },
+                      '&.Mui-disabled': {
+                        opacity: 0.3,
+                        color: 'var(--color-primary-text) !important',
+                      },
+                    },
+                    '& .MuiSvgIcon-root': {
+                      color: 'var(--color-primary-text) !important',
+                    },
+                  }}
                 >
                   <Tab label="Details" />
                   <Tab label="Value History" />
@@ -601,7 +629,7 @@ export default function ItemDetailsClient({
 
               {activeTab === 1 && (
                 <div className="mb-8 space-y-6">
-                  <div className="rounded-lg p-4" style={{ backgroundColor: '#242629' }}>
+                  <div className="bg-secondary-bg rounded-lg p-4">
                     {(() => {
                       const urlVariant = new URLSearchParams(window.location.search).get('variant');
 
