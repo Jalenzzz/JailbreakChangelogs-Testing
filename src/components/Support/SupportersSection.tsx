@@ -53,7 +53,6 @@ export default function SupportersSection({ supporters }: SupportersSectionProps
                     username={supporter.username}
                     size={40}
                     showBadge={false}
-                    showBorder={false}
                     premiumType={supporter.premiumtype}
                     settings={{ avatar_discord: 1 }}
                   />

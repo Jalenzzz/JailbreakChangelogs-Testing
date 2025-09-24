@@ -56,33 +56,6 @@ const calculateSeed = (userId: string): number => {
 };
 
 /**
- * Converts various color formats to a valid hex color string
- * Handles Discord's color format (numbers) and string formats
- * @param color - The color value from Discord API or user settings
- * @returns string - Valid hex color with # prefix, or default blue
- */
-function formatAccentColor(color: number | string | null | undefined): string {
-  // Return default color if color is falsy, "None", or "0"
-  if (!color || color === 'None' || color === '0') return '#2462cd';
-
-  // If it's a string, pad with zeros to 6 chars, then use first 6 chars
-  if (typeof color === 'string') {
-    const padded = (color + '000000').substring(0, 6);
-    return `#${padded}`;
-  }
-
-  // If it's a number, convert to string, pad with zeros, then use first 6 chars
-  if (typeof color === 'number') {
-    const colorStr = color.toString();
-    const padded = (colorStr + '000000').substring(0, 6);
-    return `#${padded}`;
-  }
-
-  // If all else fails, return the default color
-  return '#2462cd';
-}
-
-/**
  * Determines which banner URL to use for the user's profile
  * Prioritizes user preferences and falls back to defaults
  * @param user - The user object from the API

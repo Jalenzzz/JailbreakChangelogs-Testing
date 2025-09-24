@@ -493,7 +493,6 @@ export default function UserProfileClient({
                     avatarHash={user.avatar}
                     username={user.username}
                     size={38}
-                    accent_color={user.accent_color}
                     custom_avatar={user.custom_avatar}
                     showBadge={false}
                     settings={user.settings}
@@ -574,7 +573,6 @@ export default function UserProfileClient({
                   avatarHash={user.avatar}
                   username={user.username}
                   size={38}
-                  accent_color={user.accent_color}
                   custom_avatar={user.custom_avatar}
                   isOnline={
                     user.settings?.hide_presence === 1 && currentUserId !== user.id

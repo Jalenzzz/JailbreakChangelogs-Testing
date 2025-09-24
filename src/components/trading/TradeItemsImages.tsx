@@ -54,7 +54,7 @@ export default function TradeItemsImages({ offering, requesting }: TradeItemsIma
       {/* Offering Items Images */}
       <div>
         <h2 className="text-primary-text mb-4 text-lg font-semibold">Offering</h2>
-        <div className="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-5">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {groupItems(offering).map((item) => (
             <Tooltip
               key={`${item.id}-${item.name}-${item.type}`}
@@ -121,7 +121,7 @@ export default function TradeItemsImages({ offering, requesting }: TradeItemsIma
       {/* Requesting Items Images */}
       <div>
         <h2 className="text-primary-text mb-4 text-lg font-semibold">Requesting</h2>
-        <div className="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-5">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {groupItems(requesting).map((item) => (
             <Tooltip
               key={`${item.id}-${item.name}-${item.type}`}

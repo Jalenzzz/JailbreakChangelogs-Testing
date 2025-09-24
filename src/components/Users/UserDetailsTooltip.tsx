@@ -22,11 +22,9 @@ export const UserDetailsTooltip: React.FC<UserDetailsTooltipProps> = ({ user, cu
           avatarHash={user.avatar}
           username={user.username}
           size={16}
-          accent_color={user.accent_color}
           custom_avatar={user.custom_avatar}
           showBadge={false}
           settings={user.settings}
-          showBorder={true}
           premiumType={user.premiumtype}
         />
 

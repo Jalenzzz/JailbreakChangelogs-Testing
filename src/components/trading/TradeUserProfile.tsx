@@ -39,7 +39,6 @@ export default function TradeUserProfile({ user }: TradeUserProfileProps) {
                 avatarHash={user.avatar || null}
                 username={user.username}
                 size={10}
-                accent_color={user.accent_color}
                 custom_avatar={user.custom_avatar}
                 showBadge={false}
                 settings={user.settings}

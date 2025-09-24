@@ -113,13 +113,13 @@ const ItemRow: React.FC<ItemRowProps> = ({ item, side, isFirst = false }) => {
               >
                 {item.name}
               </Link>
+            </div>
+            <div className="mt-1 flex flex-wrap items-center gap-2">
               {item.count > 1 && (
-                <span className="bg-primary/10 border-primary/30 text-primary-text ml-2 rounded-lg border px-2 py-1 text-xs font-medium">
+                <span className="bg-primary/10 border-primary/30 text-primary-text rounded-lg border px-2 py-1 text-xs font-medium">
                   ×{item.count}
                 </span>
               )}
-            </div>
-            <div className="mt-1 flex flex-wrap items-center gap-2">
               <span
                 className="text-primary-text flex items-center rounded-lg border px-2 py-1 text-xs font-medium"
                 style={{
@@ -242,7 +242,7 @@ export default function TradeItemsWithValues({ offering, requesting }: TradeItem
                 <div className="bg-status-success h-3 w-3 rounded-full"></div>
                 <h3 className="text-primary-text text-lg font-semibold">Offering Side</h3>
               </div>
-              <span className="bg-status-success/20 border-status-success/30 text-primary-text rounded-full border px-3 py-1 text-xs font-medium">
+              <span className="bg-status-success/20 border-status-success/30 text-primary-text hidden rounded-full border px-3 py-1 text-xs font-medium sm:block">
                 Offering
               </span>
               <span className="bg-primary/10 border-primary/20 text-primary-text rounded-full border px-3 py-1 text-xs font-medium">
@@ -288,7 +288,7 @@ export default function TradeItemsWithValues({ offering, requesting }: TradeItem
                 <div className="bg-status-error h-3 w-3 rounded-full"></div>
                 <h3 className="text-primary-text text-lg font-semibold">Requesting Side</h3>
               </div>
-              <span className="bg-status-error/20 border-status-error/30 text-primary-text rounded-full border px-3 py-1 text-xs font-medium">
+              <span className="bg-status-error/20 border-status-error/30 text-primary-text hidden rounded-full border px-3 py-1 text-xs font-medium sm:block">
                 Requesting
               </span>
               <span className="bg-primary/10 border-primary/20 text-primary-text rounded-full border px-3 py-1 text-xs font-medium">
@@ -328,26 +328,38 @@ export default function TradeItemsWithValues({ offering, requesting }: TradeItem
       </div>
 
       {/* Overall Difference */}
-      <div className="bg-secondary-bg border-border-primary rounded-lg border p-6">
+      <div className="from-primary/3 to-primary/5 rounded-xl bg-gradient-to-r p-6">
         <h4 className="text-primary-text mb-4 text-lg font-semibold">Overall Difference</h4>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="text-center">
-            <div className="text-secondary-text text-sm">Cash Value Difference</div>
-            <div
-              className={`text-lg font-semibold ${cashDifference >= 0 ? 'text-status-success' : 'text-status-error'}`}
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <span className="text-secondary-text text-base">Cash Value Difference</span>
+            <span
+              className={`inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-base font-semibold ${
+                cashDifference < 0
+                  ? 'bg-status-success text-white'
+                  : cashDifference > 0
+                    ? 'bg-status-error text-white'
+                    : 'bg-primary-bg text-primary-text'
+              }`}
             >
-              {cashDifference >= 0 ? '+' : ''}
-              {formatFullValue(cashDifference)}
-            </div>
+              {cashDifference !== 0 && (cashDifference < 0 ? '↑' : '↓')}
+              {formatFullValue(Math.abs(cashDifference))}
+            </span>
           </div>
-          <div className="text-center">
-            <div className="text-secondary-text text-sm">Duped Value Difference</div>
-            <div
-              className={`text-lg font-semibold ${dupedDifference >= 0 ? 'text-status-success' : 'text-status-error'}`}
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <span className="text-secondary-text text-base">Duped Value Difference</span>
+            <span
+              className={`inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-base font-semibold ${
+                dupedDifference < 0
+                  ? 'bg-status-success text-white'
+                  : dupedDifference > 0
+                    ? 'bg-status-error text-white'
+                    : 'bg-primary-bg text-primary-text'
+              }`}
             >
-              {dupedDifference >= 0 ? '+' : ''}
-              {formatFullValue(dupedDifference)}
-            </div>
+              {dupedDifference !== 0 && (dupedDifference < 0 ? '↑' : '↓')}
+              {formatFullValue(Math.abs(dupedDifference))}
+            </span>
           </div>
         </div>
       </div>

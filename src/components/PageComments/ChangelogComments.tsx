@@ -686,7 +686,6 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                                   avatarHash={userData[comment.user_id]?.avatar}
                                   username={userData[comment.user_id]?.username || comment.author}
                                   size={10}
-                                  accent_color={userData[comment.user_id]?.accent_color}
                                   custom_avatar={userData[comment.user_id]?.custom_avatar}
                                   showBadge={false}
                                   settings={userData[comment.user_id]?.settings}

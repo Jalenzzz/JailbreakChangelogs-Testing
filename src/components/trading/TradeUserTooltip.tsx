@@ -32,11 +32,9 @@ export const TradeUserTooltip: React.FC<TradeUserTooltipProps> = ({ user }) => {
           avatarHash={user.avatar || null}
           username={user.username}
           size={16}
-          accent_color={user.accent_color}
           custom_avatar={user.custom_avatar}
           showBadge={false}
           settings={user.settings}
-          showBorder={true}
           premiumType={user.premiumtype as unknown as number}
         />
 

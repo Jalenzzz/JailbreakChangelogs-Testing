@@ -250,7 +250,6 @@ export default function Header() {
                 avatarHash={userData.avatar}
                 username={userData.username}
                 size={10}
-                accent_color={userData.accent_color}
                 custom_avatar={userData.custom_avatar}
                 showBadge={false}
                 settings={userData.settings}
@@ -1197,7 +1196,6 @@ export default function Header() {
                         avatarHash={userData.avatar}
                         username={userData.username}
                         size={10}
-                        accent_color={userData.accent_color}
                         custom_avatar={userData.custom_avatar}
                         showBadge={false}
                         settings={userData.settings}
@@ -1247,7 +1245,6 @@ export default function Header() {
                                     avatarHash={userData.avatar}
                                     username={userData.username}
                                     size={10}
-                                    accent_color={userData.accent_color}
                                     custom_avatar={userData.custom_avatar}
                                     showBadge={false}
                                     settings={userData.settings}

@@ -156,7 +156,6 @@ export default function ContributorsClient({ usersWithFlags }: ContributorsClien
           username={user.username}
           size={32}
           showBadge={false}
-          accent_color={user.accent_color}
           custom_avatar={user.custom_avatar}
           settings={user.settings}
           premiumType={user.premiumtype}

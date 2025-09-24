@@ -328,7 +328,6 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
                                 avatarHash={user.avatar}
                                 username={user.username}
                                 size={10}
-                                accent_color={user.accent_color}
                                 custom_avatar={user.custom_avatar}
                                 showBadge={false}
                                 settings={user.settings}

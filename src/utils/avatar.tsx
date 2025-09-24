@@ -2,7 +2,6 @@ import Image from 'next/image';
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
 
-const Tooltip = dynamic(() => import('@mui/material/Tooltip'), { ssr: false });
 const CircularProgress = dynamic(() => import('@mui/material/CircularProgress'), { ssr: false });
 
 // Removed dynamic Badge import and styled components to prevent layout shifts
@@ -13,7 +12,6 @@ interface UserAvatarProps {
   avatarHash: string | null;
   username: string;
   size?: number;
-  accent_color?: string;
   custom_avatar?: string;
   isOnline?: boolean;
   showBadge?: boolean;
@@ -22,34 +20,7 @@ interface UserAvatarProps {
     hide_presence?: number;
   };
   shape?: 'circle' | 'square';
-  showBorder?: boolean;
   premiumType?: number;
-}
-
-/**
- * Formats a color value to a hex color format by taking first 6 characters
- * @param color - The color value to format
- * @returns A hex color string with a # prefix, or a default color if input is invalid
- */
-function formatAccentColor(color: number | string | null | undefined): string {
-  // Return default color if color is falsy, "None", or "0"
-  if (!color || color === 'None' || color === '0') return '#124e66';
-
-  // If it's a string, pad with zeros to 6 chars, then use first 6 chars
-  if (typeof color === 'string') {
-    const padded = (color + '000000').substring(0, 6);
-    return `#${padded}`;
-  }
-
-  // If it's a number, convert to string, pad with zeros, then use first 6 chars
-  if (typeof color === 'number') {
-    const colorStr = color.toString();
-    const padded = (colorStr + '000000').substring(0, 6);
-    return `#${padded}`;
-  }
-
-  // If all else fails, return the default color
-  return '#124e66';
 }
 
 export const DefaultAvatar = () => (
@@ -115,13 +86,11 @@ export const UserAvatar = ({
   avatarHash,
   username,
   size = 12,
-  accent_color,
   custom_avatar,
   isOnline,
   showBadge = true,
   settings,
   shape = 'circle',
-  showBorder = true,
   premiumType,
 }: UserAvatarProps) => {
   const [imageError, setImageError] = useState(false);

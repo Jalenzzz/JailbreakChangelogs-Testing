@@ -27,7 +27,6 @@ export default function DiscordUserCard({ user }: DiscordUserCardProps) {
         avatarHash={user.avatar}
         username={user.username}
         size={12}
-        accent_color={user.accent_color}
         custom_avatar={user.custom_avatar}
         showBadge={false}
         settings={user.settings}

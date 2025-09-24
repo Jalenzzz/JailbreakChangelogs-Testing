@@ -50,7 +50,7 @@ export function useOnlineUsersPolling(intervalMs: number = 30000) {
           retryCount: prev.retryCount + 1,
         }));
       }
-    } catch (error) {
+    } catch {
       setData((prev) => ({
         ...prev,
         error: 'Network error',

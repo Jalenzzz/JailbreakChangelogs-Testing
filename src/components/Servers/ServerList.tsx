@@ -470,7 +470,6 @@ const ServerList: React.FC = () => {
                     avatarHash={userData[server.owner].avatar}
                     username={userData[server.owner].username}
                     size={8}
-                    accent_color={userData[server.owner].accent_color}
                     custom_avatar={userData[server.owner].custom_avatar}
                     showBadge={false}
                     settings={userData[server.owner].settings}
