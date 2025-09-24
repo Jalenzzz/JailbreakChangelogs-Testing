@@ -662,75 +662,41 @@ export default function Header() {
                         transition={{
                           duration: 0.2,
                           ease: [0.4, 0, 0.2, 1],
-                          staggerChildren: 0.05,
                         }}
                       >
-                        <motion.div
-                          className="flex flex-col gap-1 px-2 py-3"
-                          initial="hidden"
-                          animate="visible"
-                          exit="hidden"
-                          variants={{
-                            hidden: { opacity: 0 },
-                            visible: { opacity: 1 },
-                          }}
-                        >
-                          <motion.div
-                            variants={{
-                              hidden: { opacity: 0, x: -10 },
-                              visible: { opacity: 1, x: 0 },
-                            }}
-                            transition={{ duration: 0.2 }}
+                        <div className="flex flex-col gap-1 px-2 py-3">
+                          <Link
+                            href="/seasons"
+                            className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
+                            onClick={handleSeasonsMenuClose}
                           >
-                            <Link
-                              href="/seasons"
-                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
-                              onClick={handleSeasonsMenuClose}
-                            >
-                              Browse Seasons
-                            </Link>
-                          </motion.div>
-                          <motion.div
-                            variants={{
-                              hidden: { opacity: 0, x: -10 },
-                              visible: { opacity: 1, x: 0 },
-                            }}
-                            transition={{ duration: 0.2, delay: 0.05 }}
+                            Browse Seasons
+                          </Link>
+                          <Link
+                            href="/seasons/will-i-make-it"
+                            className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
+                            onClick={handleSeasonsMenuClose}
                           >
-                            <Link
-                              href="/seasons/will-i-make-it"
-                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
-                              onClick={handleSeasonsMenuClose}
-                            >
-                              <div className="flex flex-wrap items-center gap-2">
-                                <span>Will I Make It</span>
-                                <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
-                                  New
-                                </span>
-                              </div>
-                            </Link>
-                          </motion.div>
-                          <motion.div
-                            variants={{
-                              hidden: { opacity: 0, x: -10 },
-                              visible: { opacity: 1, x: 0 },
-                            }}
-                            transition={{ duration: 0.2, delay: 0.1 }}
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span>Will I Make It</span>
+                              <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                New
+                              </span>
+                            </div>
+                          </Link>
+                          <Link
+                            href="/seasons/contracts"
+                            className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
+                            onClick={handleSeasonsMenuClose}
                           >
-                            <Link
-                              href="/seasons/contracts"
-                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
-                              onClick={handleSeasonsMenuClose}
-                            >
-                              <div className="flex flex-wrap items-center gap-2">
-                                <span>Weekly Contracts</span>
-                                <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
-                                  New
-                                </span>
-                              </div>
-                            </Link>
-                          </motion.div>
-                        </motion.div>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span>Weekly Contracts</span>
+                              <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                New
+                              </span>
+                            </div>
+                          </Link>
+                        </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -782,173 +748,99 @@ export default function Header() {
                         transition={{
                           duration: 0.2,
                           ease: [0.4, 0, 0.2, 1],
-                          staggerChildren: 0.05,
                         }}
                       >
-                        <motion.div
-                          className="flex flex-col gap-1 px-2 py-3"
-                          initial="hidden"
-                          animate="visible"
-                          exit="hidden"
-                          variants={{
-                            hidden: { opacity: 0 },
-                            visible: { opacity: 1 },
-                          }}
-                        >
-                          <motion.div
-                            variants={{
-                              hidden: { opacity: 0, x: -10 },
-                              visible: { opacity: 1, x: 0 },
-                            }}
-                            transition={{ duration: 0.2 }}
+                        <div className="flex flex-col gap-1 px-2 py-3">
+                          <Link
+                            href="/values"
+                            className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
+                            onClick={handleNavMenuClose}
                           >
-                            <Link
-                              href="/values"
-                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
-                              onClick={handleNavMenuClose}
-                            >
-                              Value List
-                            </Link>
-                          </motion.div>
-                          <motion.div
-                            variants={{
-                              hidden: { opacity: 0, x: -10 },
-                              visible: { opacity: 1, x: 0 },
-                            }}
-                            transition={{ duration: 0.2, delay: 0.05 }}
+                            Value List
+                          </Link>
+                          <Link
+                            href="/values/changelogs"
+                            className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
+                            onClick={handleNavMenuClose}
                           >
-                            <Link
-                              href="/values/changelogs"
-                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
-                              onClick={handleNavMenuClose}
-                            >
-                              Value Changelogs
-                            </Link>
-                          </motion.div>
-                          <motion.div
-                            variants={{
-                              hidden: { opacity: 0, x: -10 },
-                              visible: { opacity: 1, x: 0 },
-                            }}
-                            transition={{ duration: 0.2, delay: 0.1 }}
+                            Value Changelogs
+                          </Link>
+                          <Link
+                            href="/values/calculator"
+                            className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
+                            onClick={handleNavMenuClose}
                           >
-                            <Link
-                              href="/values/calculator"
-                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
-                              onClick={handleNavMenuClose}
-                            >
-                              Value Calculator
-                            </Link>
-                          </motion.div>
-                          <motion.div
-                            variants={{
-                              hidden: { opacity: 0, x: -10 },
-                              visible: { opacity: 1, x: 0 },
-                            }}
-                            transition={{ duration: 0.2, delay: 0.1 }}
+                            Value Calculator
+                          </Link>
+                          <Link
+                            href="/dupes"
+                            className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
+                            onClick={handleNavMenuClose}
                           >
-                            <Link
-                              href="/dupes"
-                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
-                              onClick={handleNavMenuClose}
-                            >
-                              <div className="flex flex-wrap items-center gap-2">
-                                <span>Dupe Finder</span>
-                                {isFeatureEnabled('DUPE_FINDER') ? (
-                                  <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
-                                    New
-                                  </span>
-                                ) : (
-                                  <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
-                                    Coming Soon
-                                  </span>
-                                )}
-                              </div>
-                            </Link>
-                          </motion.div>
-                          <motion.div
-                            variants={{
-                              hidden: { opacity: 0, x: -10 },
-                              visible: { opacity: 1, x: 0 },
-                            }}
-                            transition={{ duration: 0.2, delay: 0.15 }}
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span>Dupe Finder</span>
+                              {isFeatureEnabled('DUPE_FINDER') ? (
+                                <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                  New
+                                </span>
+                              ) : (
+                                <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                  Coming Soon
+                                </span>
+                              )}
+                            </div>
+                          </Link>
+                          <Link
+                            href="/dupes/calculator"
+                            className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
+                            onClick={handleNavMenuClose}
                           >
-                            <Link
-                              href="/dupes/calculator"
-                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
-                              onClick={handleNavMenuClose}
-                            >
-                              Dupe Calculator
-                            </Link>
-                          </motion.div>
-                          <motion.div
-                            variants={{
-                              hidden: { opacity: 0, x: -10 },
-                              visible: { opacity: 1, x: 0 },
-                            }}
-                            transition={{ duration: 0.2, delay: 0.2 }}
+                            Dupe Calculator
+                          </Link>
+                          <Link
+                            href="/trading"
+                            className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
+                            onClick={handleNavMenuClose}
                           >
-                            <Link
-                              href="/trading"
-                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
-                              onClick={handleNavMenuClose}
-                            >
-                              Trade Ads
-                            </Link>
-                          </motion.div>
-                          <motion.div
-                            variants={{
-                              hidden: { opacity: 0, x: -10 },
-                              visible: { opacity: 1, x: 0 },
-                            }}
-                            transition={{ duration: 0.2, delay: 0.25 }}
+                            Trade Ads
+                          </Link>
+                          <Link
+                            href="/inventories"
+                            className="group text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
+                            onClick={handleNavMenuClose}
                           >
-                            <Link
-                              href="/inventories"
-                              className="group text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
-                              onClick={handleNavMenuClose}
-                            >
-                              <div className="flex flex-wrap items-center gap-2">
-                                <span>Inventory Calculator</span>
-                                {isFeatureEnabled('INVENTORY_CALCULATOR') ? (
-                                  <span className="border-primary-text text-primary-text group-hover:border-form-button-text group-hover:text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase transition-colors duration-200">
-                                    Beta
-                                  </span>
-                                ) : (
-                                  <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
-                                    Coming Soon
-                                  </span>
-                                )}
-                              </div>
-                            </Link>
-                          </motion.div>
-                          <motion.div
-                            variants={{
-                              hidden: { opacity: 0, x: -10 },
-                              visible: { opacity: 1, x: 0 },
-                            }}
-                            transition={{ duration: 0.2, delay: 0.3 }}
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span>Inventory Calculator</span>
+                              {isFeatureEnabled('INVENTORY_CALCULATOR') ? (
+                                <span className="border-primary-text text-primary-text group-hover:border-form-button-text group-hover:text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase transition-colors duration-200">
+                                  Beta
+                                </span>
+                              ) : (
+                                <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                  Coming Soon
+                                </span>
+                              )}
+                            </div>
+                          </Link>
+                          <Link
+                            href="/og"
+                            className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
+                            onClick={handleNavMenuClose}
                           >
-                            <Link
-                              href="/og"
-                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
-                              onClick={handleNavMenuClose}
-                            >
-                              <div className="flex flex-wrap items-center gap-2">
-                                <span>OG Finder</span>
-                                {isFeatureEnabled('OG_FINDER') ? (
-                                  <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
-                                    New
-                                  </span>
-                                ) : (
-                                  <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
-                                    Coming Soon
-                                  </span>
-                                )}
-                              </div>
-                            </Link>
-                          </motion.div>
-                        </motion.div>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span>OG Finder</span>
+                              {isFeatureEnabled('OG_FINDER') ? (
+                                <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                  New
+                                </span>
+                              ) : (
+                                <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                  Coming Soon
+                                </span>
+                              )}
+                            </div>
+                          </Link>
+                        </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -1000,135 +892,69 @@ export default function Header() {
                         transition={{
                           duration: 0.2,
                           ease: [0.4, 0, 0.2, 1],
-                          staggerChildren: 0.05,
                         }}
                       >
-                        <motion.div
-                          className="flex flex-col gap-1 px-2 py-3"
-                          initial="hidden"
-                          animate="visible"
-                          exit="hidden"
-                          variants={{
-                            hidden: { opacity: 0 },
-                            visible: { opacity: 1 },
-                          }}
-                        >
-                          <motion.div
-                            variants={{
-                              hidden: { opacity: 0, x: -10 },
-                              visible: { opacity: 1, x: 0 },
-                            }}
-                            transition={{ duration: 0.2 }}
+                        <div className="flex flex-col gap-1 px-2 py-3">
+                          <Link
+                            href="/users"
+                            className="text-primary-text hover:bg-button-info-hover active:bg-button-info-active hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold transition-colors duration-200"
+                            onClick={handleCommunityMenuClose}
                           >
-                            <Link
-                              href="/users"
-                              className="text-primary-text hover:bg-button-info-hover active:bg-button-info-active hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold transition-colors duration-200"
-                              onClick={handleCommunityMenuClose}
-                            >
-                              User Search
-                            </Link>
-                          </motion.div>
-                          <motion.div
-                            variants={{
-                              hidden: { opacity: 0, x: -10 },
-                              visible: { opacity: 1, x: 0 },
-                            }}
-                            transition={{ duration: 0.2, delay: 0.05 }}
+                            User Search
+                          </Link>
+                          <Link
+                            href="/crews"
+                            className="text-primary-text hover:bg-button-info-hover active:bg-button-info-active hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold transition-colors duration-200"
+                            onClick={handleCommunityMenuClose}
                           >
-                            <Link
-                              href="/crews"
-                              className="text-primary-text hover:bg-button-info-hover active:bg-button-info-active hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold transition-colors duration-200"
-                              onClick={handleCommunityMenuClose}
-                            >
-                              <div className="flex flex-wrap items-center gap-2">
-                                <span>Crew Leaderboard</span>
-                                <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
-                                  New
-                                </span>
-                              </div>
-                            </Link>
-                          </motion.div>
-                          <motion.div
-                            variants={{
-                              hidden: { opacity: 0, x: -10 },
-                              visible: { opacity: 1, x: 0 },
-                            }}
-                            transition={{ duration: 0.2, delay: 0.1 }}
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span>Crew Leaderboard</span>
+                              <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                New
+                              </span>
+                            </div>
+                          </Link>
+                          <Link
+                            href="/leaderboard/money"
+                            className="text-primary-text hover:bg-button-info-hover active:bg-button-info-active hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold transition-colors duration-200"
+                            onClick={handleCommunityMenuClose}
                           >
-                            <Link
-                              href="/leaderboard/money"
-                              className="text-primary-text hover:bg-button-info-hover active:bg-button-info-active hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold transition-colors duration-200"
-                              onClick={handleCommunityMenuClose}
-                            >
-                              <div className="flex flex-wrap items-center gap-2">
-                                <span>Money Leaderboard</span>
-                                <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
-                                  New
-                                </span>
-                              </div>
-                            </Link>
-                          </motion.div>
-                          <motion.div
-                            variants={{
-                              hidden: { opacity: 0, x: -10 },
-                              visible: { opacity: 1, x: 0 },
-                            }}
-                            transition={{ duration: 0.2, delay: 0.15 }}
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span>Money Leaderboard</span>
+                              <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                New
+                              </span>
+                            </div>
+                          </Link>
+                          <Link
+                            href="/servers"
+                            className="text-primary-text hover:bg-button-info-hover active:bg-button-info-active hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold transition-colors duration-200"
+                            onClick={handleCommunityMenuClose}
                           >
-                            <Link
-                              href="/servers"
-                              className="text-primary-text hover:bg-button-info-hover active:bg-button-info-active hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold transition-colors duration-200"
-                              onClick={handleCommunityMenuClose}
-                            >
-                              Private Servers
-                            </Link>
-                          </motion.div>
-                          <motion.div
-                            variants={{
-                              hidden: { opacity: 0, x: -10 },
-                              visible: { opacity: 1, x: 0 },
-                            }}
-                            transition={{ duration: 0.2, delay: 0.2 }}
+                            Private Servers
+                          </Link>
+                          <Link
+                            href="/bot"
+                            className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
+                            onClick={handleCommunityMenuClose}
                           >
-                            <Link
-                              href="/bot"
-                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
-                              onClick={handleCommunityMenuClose}
-                            >
-                              Discord Bot
-                            </Link>
-                          </motion.div>
-                          <motion.div
-                            variants={{
-                              hidden: { opacity: 0, x: -10 },
-                              visible: { opacity: 1, x: 0 },
-                            }}
-                            transition={{ duration: 0.2, delay: 0.25 }}
+                            Discord Bot
+                          </Link>
+                          <Link
+                            href="/faq"
+                            className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
+                            onClick={handleCommunityMenuClose}
                           >
-                            <Link
-                              href="/faq"
-                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
-                              onClick={handleCommunityMenuClose}
-                            >
-                              FAQ
-                            </Link>
-                          </motion.div>
-                          <motion.div
-                            variants={{
-                              hidden: { opacity: 0, x: -10 },
-                              visible: { opacity: 1, x: 0 },
-                            }}
-                            transition={{ duration: 0.2, delay: 0.3 }}
+                            FAQ
+                          </Link>
+                          <Link
+                            href="/contributors"
+                            className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
+                            onClick={handleCommunityMenuClose}
                           >
-                            <Link
-                              href="/contributors"
-                              className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold"
-                              onClick={handleCommunityMenuClose}
-                            >
-                              Meet the team
-                            </Link>
-                          </motion.div>
-                        </motion.div>
+                            Meet the team
+                          </Link>
+                        </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -1218,105 +1044,64 @@ export default function Header() {
                               staggerChildren: 0.05,
                             }}
                           >
-                            <motion.div
-                              className="flex flex-col gap-1 px-2 py-3"
-                              initial="hidden"
-                              animate="visible"
-                              exit="hidden"
-                              variants={{
-                                hidden: { opacity: 0 },
-                                visible: { opacity: 1 },
-                              }}
-                            >
-                              <motion.div
-                                variants={{
-                                  hidden: { opacity: 0, x: -10 },
-                                  visible: { opacity: 1, x: 0 },
-                                }}
-                                transition={{ duration: 0.2 }}
+                            <div className="flex flex-col gap-1 px-2 py-3">
+                              <Link
+                                href={`/users/${String(userData?.id).replace(/\D/g, '')}`}
+                                className="group text-primary-text hover:bg-button-info-hover hover:text-form-button-text flex items-center rounded-lg px-4 py-3 text-base font-bold transition-colors"
+                                onClick={handleMenuClose}
                               >
-                                <Link
-                                  href={`/users/${String(userData?.id).replace(/\D/g, '')}`}
-                                  className="group text-primary-text hover:bg-button-info-hover hover:text-form-button-text flex items-center rounded-lg px-4 py-3 text-base font-bold transition-colors"
-                                  onClick={handleMenuClose}
-                                >
-                                  <UserAvatar
-                                    userId={userData.id}
-                                    avatarHash={userData.avatar}
-                                    username={userData.username}
-                                    size={10}
-                                    custom_avatar={userData.custom_avatar}
-                                    showBadge={false}
-                                    settings={userData.settings}
-                                    premiumType={userData.premiumtype}
-                                  />
-                                  <div className="ml-3">
-                                    <div className="font-bold">{userData.username}</div>
-                                    <div className="text-secondary-text group-hover:text-form-button-text text-sm">
-                                      @{userData.username}
-                                    </div>
+                                <UserAvatar
+                                  userId={userData.id}
+                                  avatarHash={userData.avatar}
+                                  username={userData.username}
+                                  size={10}
+                                  custom_avatar={userData.custom_avatar}
+                                  showBadge={false}
+                                  settings={userData.settings}
+                                  premiumType={userData.premiumtype}
+                                />
+                                <div className="ml-3">
+                                  <div className="font-bold">{userData.username}</div>
+                                  <div className="text-secondary-text group-hover:text-form-button-text text-sm">
+                                    @{userData.username}
                                   </div>
-                                </Link>
-                              </motion.div>
+                                </div>
+                              </Link>
 
                               <div className="border-secondary-text my-1 border-t"></div>
 
                               {!userData.roblox_id && (
-                                <motion.div
-                                  variants={{
-                                    hidden: { opacity: 0, x: -10 },
-                                    visible: { opacity: 1, x: 0 },
+                                <button
+                                  className="group text-primary-text hover:bg-button-info-hover hover:text-form-button-text flex w-full items-center rounded-lg px-4 py-2 text-base font-bold transition-colors"
+                                  onClick={() => {
+                                    handleMenuClose();
+                                    setShowLoginModal(true);
+                                    const event = new CustomEvent('setLoginTab', { detail: 1 });
+                                    window.dispatchEvent(event);
                                   }}
-                                  transition={{ duration: 0.2, delay: 0.05 }}
                                 >
-                                  <button
-                                    className="group text-primary-text hover:bg-button-info-hover hover:text-form-button-text flex w-full items-center rounded-lg px-4 py-2 text-base font-bold transition-colors"
-                                    onClick={() => {
-                                      handleMenuClose();
-                                      setShowLoginModal(true);
-                                      const event = new CustomEvent('setLoginTab', { detail: 1 });
-                                      window.dispatchEvent(event);
-                                    }}
-                                  >
-                                    <RobloxIcon className="group-hover:text-form-button-text mr-3 h-5 w-5" />
-                                    Connect Roblox
-                                  </button>
-                                </motion.div>
+                                  <RobloxIcon className="group-hover:text-form-button-text mr-3 h-5 w-5" />
+                                  Connect Roblox
+                                </button>
                               )}
 
-                              <motion.div
-                                variants={{
-                                  hidden: { opacity: 0, x: -10 },
-                                  visible: { opacity: 1, x: 0 },
-                                }}
-                                transition={{ duration: 0.2, delay: 0.1 }}
+                              <Link
+                                href="/settings"
+                                className="group text-primary-text hover:bg-button-info-hover hover:text-form-button-text flex items-center rounded-lg px-4 py-2 text-base font-bold transition-colors"
+                                onClick={handleMenuClose}
                               >
-                                <Link
-                                  href="/settings"
-                                  className="group text-primary-text hover:bg-button-info-hover hover:text-form-button-text flex items-center rounded-lg px-4 py-2 text-base font-bold transition-colors"
-                                  onClick={handleMenuClose}
-                                >
-                                  <SettingsIcon className="text-primary-text group-hover:text-form-button-text mr-3 text-xl" />
-                                  Settings
-                                </Link>
-                              </motion.div>
+                                <SettingsIcon className="text-primary-text group-hover:text-form-button-text mr-3 text-xl" />
+                                Settings
+                              </Link>
 
-                              <motion.div
-                                variants={{
-                                  hidden: { opacity: 0, x: -10 },
-                                  visible: { opacity: 1, x: 0 },
-                                }}
-                                transition={{ duration: 0.2, delay: 0.15 }}
+                              <button
+                                className="text-button-danger hover:bg-button-danger/10 hover:text-button-danger flex w-full cursor-pointer items-center rounded-lg px-4 py-2 text-base font-bold transition-colors"
+                                onClick={handleLogout}
                               >
-                                <button
-                                  className="text-button-danger hover:bg-button-danger/10 hover:text-button-danger flex w-full cursor-pointer items-center rounded-lg px-4 py-2 text-base font-bold transition-colors"
-                                  onClick={handleLogout}
-                                >
-                                  <LogoutIcon className="text-button-danger mr-3 text-xl" />
-                                  Logout
-                                </button>
-                              </motion.div>
-                            </motion.div>
+                                <LogoutIcon className="text-button-danger mr-3 text-xl" />
+                                Logout
+                              </button>
+                            </div>
                           </motion.div>
                         )}
                       </AnimatePresence>

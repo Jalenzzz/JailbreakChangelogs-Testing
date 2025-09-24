@@ -37,7 +37,7 @@ export const UserDetailsTooltip: React.FC<UserDetailsTooltipProps> = ({ user, cu
               className="block transition-opacity hover:opacity-80"
             >
               <div className="flex items-center gap-2">
-                <h3 className="text-link hover:text-link-hover max-w-[300px] truncate text-lg font-semibold transition-colors">
+                <h3 className="text-primary-text hover:text-link max-w-[300px] truncate text-lg font-semibold transition-colors">
                   {user.global_name && user.global_name !== 'None'
                     ? user.global_name
                     : user.username}
@@ -49,7 +49,7 @@ export const UserDetailsTooltip: React.FC<UserDetailsTooltipProps> = ({ user, cu
                   size="sm"
                 />
               </div>
-              <p className="text-link hover:text-link-hover text-sm">@{user.username}</p>
+              <p className="text-secondary-text text-sm">@{user.username}</p>
             </Link>
           </div>
 

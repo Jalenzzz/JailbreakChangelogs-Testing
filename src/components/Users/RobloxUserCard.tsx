@@ -49,10 +49,10 @@ export default function RobloxUserCard({ user }: RobloxUserCardProps) {
         </div>
       )}
       <div className="min-w-0 flex-1">
-        <h2 className="text-primary-text group-hover:text-border-focus max-w-[180px] truncate text-base font-semibold transition-colors sm:max-w-[250px]">
+        <h2 className="text-primary-text hover:text-border-focus max-w-[180px] truncate text-base font-semibold transition-colors sm:max-w-[250px]">
           {user.roblox_display_name || user.roblox_username || 'Roblox User'}
         </h2>
-        <p className="text-secondary-text group-hover:text-border-focus max-w-[180px] truncate text-sm transition-colors sm:max-w-[250px]">
+        <p className="text-secondary-text max-w-[180px] truncate text-sm sm:max-w-[250px]">
           @{user.roblox_username || 'unknown'}
         </p>
         <p className="text-tertiary-text text-sm">

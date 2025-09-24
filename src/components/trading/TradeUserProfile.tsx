@@ -78,7 +78,7 @@ export default function TradeUserProfile({ user }: TradeUserProfileProps) {
                 >
                   <Link
                     href={`/users/${user.id}`}
-                    className="text-primary-text hover:text-button-info font-medium transition-colors"
+                    className="text-primary-text hover:text-link font-medium transition-colors"
                   >
                     {user.global_name && user.global_name !== 'None'
                       ? user.global_name

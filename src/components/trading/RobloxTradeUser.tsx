@@ -83,7 +83,7 @@ export default function RobloxTradeUser({ user, showBadge = false }: RobloxTrade
               href={`https://www.roblox.com/users/${user.roblox_id}/profile`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary-text hover:text-button-info inline-block truncate font-medium transition-colors"
+              className="text-primary-text hover:text-link inline-block truncate font-medium transition-colors"
             >
               {user.roblox_display_name || user.roblox_username}
             </Link>

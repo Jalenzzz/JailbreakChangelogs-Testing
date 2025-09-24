@@ -8,6 +8,12 @@ import { ItemGrid } from './ItemGrid';
 import RobloxTradeUser from './RobloxTradeUser';
 import { ConfirmDialog } from '@/components/UI/ConfirmDialog';
 import { useRealTimeRelativeDate } from '@/hooks/useRealTimeRelativeDate';
+import dynamic from 'next/dynamic';
+import { formatCustomDate } from '@/utils/timestamp';
+
+const Tooltip = dynamic(() => import('@mui/material/Tooltip'), {
+  ssr: false,
+});
 
 interface TradeAdCardProps {
   trade: TradeAd;
@@ -73,7 +79,7 @@ export const TradeAdCard: React.FC<TradeAdCardProps> = ({
         <div className="mb-3 flex items-center gap-2">
           <Link
             href={`/trading/ad/${trade.id}`}
-            className="text-primary-text hover:text-button-info cursor-pointer text-lg font-semibold underline-offset-2 transition-colors hover:underline"
+            className="text-primary-text hover:text-link cursor-pointer text-lg font-semibold underline-offset-2 transition-colors hover:underline"
             role="button"
             tabIndex={0}
           >
@@ -179,8 +185,55 @@ export const TradeAdCard: React.FC<TradeAdCardProps> = ({
         </div>
 
         <div className="text-secondary-text mt-4 text-xs">
-          Created {createdRelative}
-          {trade.expires && <span className="ml-2">• Expires {expiresRelative}</span>}
+          <Tooltip
+            title={formatCustomDate(trade.created_at)}
+            placement="top"
+            arrow
+            slotProps={{
+              tooltip: {
+                sx: {
+                  backgroundColor: 'var(--color-primary-bg)',
+                  color: 'var(--color-secondary-text)',
+                  fontSize: '0.75rem',
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 12px var(--color-card-shadow)',
+                  '& .MuiTooltip-arrow': {
+                    color: 'var(--color-primary-bg)',
+                  },
+                },
+              },
+            }}
+          >
+            <span className="cursor-help">Created {createdRelative}</span>
+          </Tooltip>
+          {trade.expires && (
+            <>
+              <span className="ml-2">•</span>
+              <Tooltip
+                title={formatCustomDate(trade.expires)}
+                placement="top"
+                arrow
+                slotProps={{
+                  tooltip: {
+                    sx: {
+                      backgroundColor: 'var(--color-primary-bg)',
+                      color: 'var(--color-secondary-text)',
+                      fontSize: '0.75rem',
+                      padding: '8px 12px',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 12px var(--color-card-shadow)',
+                      '& .MuiTooltip-arrow': {
+                        color: 'var(--color-primary-bg)',
+                      },
+                    },
+                  },
+                }}
+              >
+                <span className="ml-2 cursor-help">Expires {expiresRelative}</span>
+              </Tooltip>
+            </>
+          )}
         </div>
       </div>
 
