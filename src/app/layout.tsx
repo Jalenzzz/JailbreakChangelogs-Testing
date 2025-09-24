@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import Script from 'next/script';
+import Image from 'next/image';
 import './globals.css';
 import Header from '@/components/Layout/Header';
 import NewsTicker from '@/components/Layout/NewsTicker';
@@ -91,9 +92,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <noscript>
             <div className="bg-primary-bg fixed inset-0 z-50 flex items-center justify-center">
               <div className="mx-auto max-w-md p-8 text-center">
-                <img
+                <Image
                   src="/assets/images/JBCL_Logo_Short_Transparent.webp"
                   alt="Jailbreak Changelogs"
+                  width={96}
+                  height={96}
                   className="mx-auto mb-6 h-24 w-24"
                 />
                 <h1 className="text-primary-text mb-4 text-2xl font-bold">JavaScript Required</h1>
@@ -176,9 +179,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <noscript>
           <div className="bg-primary-bg fixed inset-0 z-50 flex items-center justify-center">
             <div className="mx-auto max-w-md p-8 text-center">
-              <img
+              <Image
                 src="/assets/images/JBCL_Logo_Short_Transparent.webp"
                 alt="Jailbreak Changelogs"
+                width={96}
+                height={96}
                 className="mx-auto mb-6 h-24 w-24"
               />
               <h1 className="text-primary-text mb-4 text-2xl font-bold">JavaScript Required</h1>

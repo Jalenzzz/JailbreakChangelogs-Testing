@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowLeftIcon, HomeIcon } from '@heroicons/react/24/outline';
 
 export default function NotFound() {
@@ -36,10 +37,12 @@ export default function NotFound() {
         </div>
 
         <div className="relative mt-12 w-full lg:mt-0 lg:w-1/2">
-          <img
+          <Image
             className="w-full max-w-lg lg:mx-auto"
             src="/assets/images/404.svg"
             alt="404 Error Illustration"
+            width={500}
+            height={400}
           />
         </div>
       </div>

@@ -187,6 +187,16 @@ export default function Breadcrumb({ userData, loading }: BreadcrumbProps) {
         }
       }
 
+      // Special handling for supporting route
+      if (pathSegments[0] === 'supporting') {
+        if (index === 0) {
+          return {
+            label: 'Supporting',
+            href: '/supporting',
+          };
+        }
+      }
+
       return {
         label: segment.charAt(0).toUpperCase() + segment.slice(1),
         href: `/${pathSegments.slice(0, index + 1).join('/')}`,
