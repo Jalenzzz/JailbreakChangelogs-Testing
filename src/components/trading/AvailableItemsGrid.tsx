@@ -254,7 +254,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
 
   return (
     <div className="space-y-4" data-component="available-items-grid">
-      <div className="rounded-lg border p-1 pt-4 sm:p-2">
+      <div className="border-border-primary hover:border-border-focus hover:shadow-card-shadow bg-secondary-bg rounded-lg border p-1 pt-4 transition-colors duration-200 sm:p-2">
         {/* Ad Placement: Above the grid, only for non-premium users */}
         {premiumStatusLoaded && currentUserPremiumType === 0 && (
           <div className="mb-6 flex w-full flex-col items-center">
@@ -285,7 +285,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
                 placeholder="Search items by name or type..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="text-primary-text border-stroke bg-secondary-bg placeholder-secondary-text focus:border-button-info min-h-[56px] w-full rounded-lg border px-4 py-3 pr-10 pl-10 transition-all duration-300 focus:outline-none"
+                className="text-primary-text border-stroke bg-primary-bg placeholder-secondary-text focus:border-button-info hover:bg-primary-bg min-h-[56px] w-full rounded-lg border px-4 py-3 pr-10 pl-10 transition-all duration-300 focus:outline-none"
               />
               {searchQuery && (
                 <button
@@ -382,7 +382,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
                 unstyled
                 classNames={{
                   control: () =>
-                    'text-secondary-text flex items-center justify-between rounded-lg border border-stroke bg-secondary-bg p-3 min-h-[56px] hover:cursor-pointer hover:bg-primary-bg focus-within:border-button-info',
+                    'text-secondary-text flex items-center justify-between rounded-lg border border-stroke bg-primary-bg p-3 min-h-[56px] hover:cursor-pointer hover:bg-primary-bg focus-within:border-button-info',
                   singleValue: () => 'text-secondary-text',
                   placeholder: () => 'text-secondary-text',
                   menu: () =>
@@ -505,7 +505,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
                 unstyled
                 classNames={{
                   control: () =>
-                    'text-secondary-text flex items-center justify-between rounded-lg border border-stroke bg-secondary-bg p-3 min-h-[56px] hover:cursor-pointer hover:bg-primary-bg focus-within:border-button-info',
+                    'text-secondary-text flex items-center justify-between rounded-lg border border-stroke bg-primary-bg p-3 min-h-[56px] hover:cursor-pointer hover:bg-primary-bg focus-within:border-button-info',
                   singleValue: () => 'text-secondary-text',
                   placeholder: () => 'text-secondary-text',
                   menu: () =>
@@ -584,7 +584,7 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
             paginatedItems.map((item) => (
               <div
                 key={item.id}
-                className={`group border-border-primary bg-tertiary-bg flex w-full flex-col rounded-lg border text-left transition-colors ${
+                className={`group border-border-primary bg-primary-bg flex w-full flex-col rounded-lg border text-left transition-colors ${
                   item.tradable === 1 ? 'hover:border-button-info' : 'cursor-not-allowed opacity-50'
                 }`}
                 tabIndex={0}
