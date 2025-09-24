@@ -7,6 +7,8 @@ import { TradeItem } from '@/types/trading';
 import { getItemImagePath, handleImageError } from '@/utils/images';
 import { FaArrowCircleUp, FaArrowAltCircleDown } from 'react-icons/fa';
 import { formatFullValue, demandOrder } from '@/utils/values';
+import { getDemandColor, getTrendColor } from '@/utils/badgeColors';
+import { getCategoryColor } from '@/utils/categoryIcons';
 
 interface TotalSimilarItemsProps {
   targetValue: number;
@@ -103,21 +105,10 @@ export const TotalSimilarItems: React.FC<TotalSimilarItemsProps> = ({
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <h3 className="text-primary-text text-2xl font-bold">{heading}</h3>
-            {contextLabel && (
-              <span
-                className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${
-                  contextLabel.toLowerCase() === 'offering'
-                    ? 'bg-status-success/20 border-status-success/30 text-primary-text border'
-                    : 'bg-status-error/20 border-status-error/30 text-primary-text border'
-                }`}
-              >
-                {contextLabel}
-              </span>
-            )}
           </div>
-          <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+          <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
             {enableDemandSort && (
-              <div className="bg-primary/5 border-primary/10 inline-flex overflow-hidden rounded-lg border">
+              <div className="bg-primary-bg border-primary/10 flex w-full flex-col overflow-hidden rounded-lg border sm:w-auto sm:flex-row">
                 <button
                   onClick={() => setSortMode('diff')}
                   className={`cursor-pointer px-4 py-2 text-sm font-medium transition-all duration-200 ${
@@ -199,97 +190,87 @@ export const TotalSimilarItems: React.FC<TotalSimilarItemsProps> = ({
                       <h4 className="text-primary-text group-hover:text-link line-clamp-2 text-base font-semibold transition-colors">
                         {displayName}
                       </h4>
-                      <span className="bg-primary/10 border-primary/30 text-primary-text flex items-center rounded-lg border px-2 py-1 text-xs font-medium whitespace-nowrap">
+                      <span
+                        className="text-primary-text flex items-center rounded-full border px-2 py-1 text-xs font-medium"
+                        style={{
+                          borderColor: getCategoryColor(item.type),
+                          backgroundColor: getCategoryColor(item.type) + '20', // Add 20% opacity
+                        }}
+                      >
                         {item.type}
                       </span>
                     </div>
 
-                    {/* Values Grid */}
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="bg-secondary-bg/50 border-border-primary rounded-lg border p-3">
-                        <div className="text-secondary-text mb-1 text-xs">Cash</div>
-                        <div className="text-primary-text text-sm font-semibold">
-                          {formatFullValue(item.cash_value)}
-                        </div>
-                      </div>
-                      <div className="bg-secondary-bg/50 border-border-primary rounded-lg border p-3">
-                        <div className="text-secondary-text mb-1 text-xs">Duped</div>
-                        <div className="text-primary-text text-sm font-semibold">
-                          {formatFullValue(item.duped_value)}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Demand and Trend */}
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="bg-secondary-bg/50 border-border-primary rounded-lg border p-3">
-                        <div className="text-secondary-text mb-1 text-xs">Demand</div>
-                        <div className="text-primary-text text-sm font-semibold">
-                          {itemDemand === 'N/A' ? 'Unknown' : itemDemand}
-                        </div>
-                      </div>
-                      <div className="bg-secondary-bg/50 border-border-primary rounded-lg border p-3">
-                        <div className="text-secondary-text mb-1 text-xs">Trend</div>
-                        <div className="text-primary-text text-sm font-semibold">
-                          {!item.trend || item.trend === 'N/A' ? 'Unknown' : item.trend}
-                        </div>
-                      </div>
+                    {/* Values and Stats */}
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="bg-button-info text-form-button-text inline-block rounded-lg px-2 py-1 text-sm font-semibold">
+                        Cash: {formatFullValue(item.cash_value)}
+                      </span>
+                      <span className="bg-button-info text-form-button-text inline-block rounded-lg px-2 py-1 text-sm font-semibold">
+                        Duped: {formatFullValue(item.duped_value)}
+                      </span>
+                      <span
+                        className={`${getDemandColor(itemDemand)} inline-block rounded-lg px-2 py-1 text-sm font-semibold`}
+                      >
+                        {itemDemand === 'N/A' ? 'Unknown' : itemDemand}
+                      </span>
+                      <span
+                        className={`${getTrendColor(item.trend || 'N/A')} inline-block rounded-lg px-2 py-1 text-sm font-semibold`}
+                      >
+                        {!item.trend || item.trend === 'N/A' ? 'Unknown' : item.trend}
+                      </span>
                     </div>
 
                     {/* Comparison Section */}
-                    <div className="from-primary/5 to-primary/10 border-primary/20 rounded-lg border bg-gradient-to-r p-4">
-                      <div className="space-y-2">
-                        {/* Value Comparison */}
-                        {diff === 0 ? (
-                          <div className="flex items-center gap-2">
-                            <div className="bg-status-info h-2 w-2 rounded-full"></div>
-                            <span className="text-primary-text text-sm font-medium">
-                              Same value
-                            </span>
-                          </div>
-                        ) : (
-                          <div
-                            className={`flex items-center gap-2 ${isAbove ? 'text-status-success' : 'text-status-error'}`}
-                          >
-                            {isAbove ? (
-                              <FaArrowCircleUp className="h-4 w-4" />
-                            ) : (
-                              <FaArrowAltCircleDown className="h-4 w-4" />
-                            )}
-                            <span className="text-sm font-medium">
-                              {isAbove ? 'Above by' : 'Below by'} {diff.toLocaleString()}
-                            </span>
-                          </div>
-                        )}
+                    <div className="border-border-primary space-y-2 border-t pt-3">
+                      {/* Value Comparison */}
+                      {diff === 0 ? (
+                        <div className="flex items-center gap-2">
+                          <div className="bg-status-info h-2 w-2 rounded-full"></div>
+                          <span className="text-primary-text text-sm font-medium">Same value</span>
+                        </div>
+                      ) : (
+                        <div
+                          className={`flex items-center gap-2 ${isAbove ? 'text-status-success' : 'text-status-error'}`}
+                        >
+                          {isAbove ? (
+                            <FaArrowCircleUp className="h-4 w-4" />
+                          ) : (
+                            <FaArrowAltCircleDown className="h-4 w-4" />
+                          )}
+                          <span className="text-primary-text text-sm font-medium">
+                            {isAbove ? 'Above by' : 'Below by'} {diff.toLocaleString()}
+                          </span>
+                        </div>
+                      )}
 
-                        {/* Demand Comparison */}
-                        {demandDelta !== null && (
-                          <div className="border-border-primary border-t pt-1">
-                            {demandDelta === 0 ? (
-                              <div className="flex items-center gap-2">
-                                <div className="bg-status-info h-2 w-2 rounded-full"></div>
-                                <span className="text-secondary-text text-sm">Same demand</span>
-                              </div>
-                            ) : (
-                              <div
-                                className={`flex items-center gap-2 ${demandDelta > 0 ? 'text-status-success' : 'text-status-error'}`}
-                              >
-                                {demandDelta > 0 ? (
-                                  <FaArrowCircleUp className="h-4 w-4" />
-                                ) : (
-                                  <FaArrowAltCircleDown className="h-4 w-4" />
-                                )}
-                                <span className="text-sm">
-                                  {Math.abs(demandDelta)} level
-                                  {Math.abs(demandDelta) === 1 ? '' : 's'}{' '}
-                                  {demandDelta > 0 ? 'higher' : 'lower'}
-                                  {baselineDemand ? ` than ${baselineDemand}` : ''}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
+                      {/* Demand Comparison */}
+                      {demandDelta !== null && (
+                        <div>
+                          {demandDelta === 0 ? (
+                            <div className="flex items-center gap-2">
+                              <div className="bg-status-info h-2 w-2 rounded-full"></div>
+                              <span className="text-primary-text text-sm">Same demand</span>
+                            </div>
+                          ) : (
+                            <div
+                              className={`flex items-center gap-2 ${demandDelta > 0 ? 'text-status-success' : 'text-status-error'}`}
+                            >
+                              {demandDelta > 0 ? (
+                                <FaArrowCircleUp className="h-4 w-4" />
+                              ) : (
+                                <FaArrowAltCircleDown className="h-4 w-4" />
+                              )}
+                              <span className="text-primary-text text-sm">
+                                {Math.abs(demandDelta)} level
+                                {Math.abs(demandDelta) === 1 ? '' : 's'}{' '}
+                                {demandDelta > 0 ? 'higher' : 'lower'}
+                                {baselineDemand ? ` than ${baselineDemand}` : ''}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

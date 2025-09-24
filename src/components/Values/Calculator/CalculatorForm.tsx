@@ -15,6 +15,7 @@ import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
 import { CiBoxList } from 'react-icons/ci';
 import { TradeAdTooltip } from '../../trading/TradeAdTooltip';
 import { getCategoryColor } from '@/utils/categoryIcons';
+import { getDemandColor, getTrendColor } from '@/utils/badgeColors';
 import TotalSimilarItems from './TotalSimilarItems';
 import { useLockBodyScroll } from '@/hooks/useLockBodyScroll';
 
@@ -529,18 +530,20 @@ const CalculatorValueComparison: React.FC<{
         <div className="relative">
           {/* Side Header */}
           <div className="mb-6">
-            <div className="mb-3 flex items-center gap-3">
+            <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
               <div className="flex items-center gap-2">
                 <div className="bg-status-success h-3 w-3 rounded-full"></div>
                 <h4 className="text-primary-text text-lg font-semibold">Offering Side</h4>
               </div>
-              <span className="bg-status-success/20 border-status-success/30 text-primary-text rounded-full border px-3 py-1 text-xs font-medium">
-                Offering
-              </span>
-              <span className="bg-primary/10 border-primary/20 text-primary-text rounded-full border px-3 py-1 text-xs font-medium">
-                {groupItems(offering).reduce((sum, item) => sum + item.count, 0)} item
-                {groupItems(offering).reduce((sum, item) => sum + item.count, 0) !== 1 ? 's' : ''}
-              </span>
+              <div className="flex gap-2">
+                <span className="bg-status-success/20 border-status-success/30 text-primary-text rounded-full border px-3 py-1 text-xs font-medium">
+                  Offering
+                </span>
+                <span className="bg-primary/10 border-primary/20 text-primary-text rounded-full border px-3 py-1 text-xs font-medium">
+                  {groupItems(offering).reduce((sum, item) => sum + item.count, 0)} item
+                  {groupItems(offering).reduce((sum, item) => sum + item.count, 0) !== 1 ? 's' : ''}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -558,7 +561,7 @@ const CalculatorValueComparison: React.FC<{
                     index !== array.length - 1 ? 'mb-4' : ''
                   }`}
                 >
-                  <div className="flex items-start justify-between">
+                  <div className="space-y-4">
                     <div className="flex-1">
                       {/* Item Name */}
                       <div className="mb-3 flex items-center gap-2">
@@ -566,7 +569,7 @@ const CalculatorValueComparison: React.FC<{
                           {item.sub_name ? `${item.name} (${item.sub_name})` : item.name}
                         </h5>
                         {item.count > 1 && (
-                          <span className="bg-status-success/20 border-status-success/30 text-status-success rounded-full border px-2 py-1 text-xs font-medium">
+                          <span className="bg-button-info text-form-button-text rounded-full border px-2 py-1 text-xs font-medium">
                             ×{item.count}
                           </span>
                         )}
@@ -576,7 +579,13 @@ const CalculatorValueComparison: React.FC<{
                       <div className="space-y-2">
                         {/* Type and Status */}
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="bg-primary/10 border-primary/30 text-primary-text rounded-lg border px-2 py-1 text-xs font-medium">
+                          <span
+                            className="text-primary-text flex items-center rounded-full border px-2 py-1 text-xs font-medium"
+                            style={{
+                              borderColor: getCategoryColor(item.type),
+                              backgroundColor: getCategoryColor(item.type) + '20', // Add 20% opacity
+                            }}
+                          >
                             {item.type}
                           </span>
                           {(item.is_limited === 1 || item.data?.is_limited === 1) && (
@@ -598,33 +607,27 @@ const CalculatorValueComparison: React.FC<{
                           >
                             {isDupedSelected ? 'Duped' : 'Clean'}
                           </span>
-                        </div>
-
-                        {/* Demand and Trend */}
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="bg-secondary-bg/30 border-border-primary rounded-lg border p-2">
-                            <div className="text-secondary-text mb-1 text-xs">Demand</div>
-                            <div className="text-primary-text text-sm font-medium">
-                              {demand === 'N/A' ? 'Unknown' : demand}
-                            </div>
-                          </div>
-                          <div className="bg-secondary-bg/30 border-border-primary rounded-lg border p-2">
-                            <div className="text-secondary-text mb-1 text-xs">Trend</div>
-                            <div className="text-primary-text text-sm font-medium">
-                              {!('trend' in item) || item.trend === null || item.trend === 'N/A'
-                                ? 'Unknown'
-                                : (item.trend as string)}
-                            </div>
-                          </div>
+                          <span
+                            className={`${getDemandColor(demand)} rounded-lg px-2 py-1 text-xs font-semibold`}
+                          >
+                            {demand === 'N/A' ? 'Unknown' : demand}
+                          </span>
+                          <span
+                            className={`${getTrendColor(item.trend || 'N/A')} rounded-lg px-2 py-1 text-xs font-semibold`}
+                          >
+                            {!('trend' in item) || item.trend === null || item.trend === 'N/A'
+                              ? 'Unknown'
+                              : (item.trend as string)}
+                          </span>
                         </div>
                       </div>
                     </div>
 
                     {/* Value */}
-                    <div className="ml-4 text-right">
-                      <div className="text-primary-text text-lg font-bold">
+                    <div className="text-center sm:text-right">
+                      <span className="bg-button-info text-form-button-text inline-block rounded-lg px-3 py-2 text-lg font-bold">
                         {formatCurrencyValue(getSelectedValue(item, 'offering'))}
-                      </div>
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -634,9 +637,9 @@ const CalculatorValueComparison: React.FC<{
             {/* Total */}
             <div className="bg-status-success/5 mt-4 rounded-lg p-4">
               <div className="flex items-center justify-between">
-                <span className="text-status-success text-base font-semibold">Total</span>
+                <span className="text-primary-text text-base font-semibold">Total</span>
                 <div className="text-right">
-                  <div className="text-status-success text-xl font-bold">
+                  <div className="text-primary-text text-xl font-bold">
                     {formatCurrencyValue(offeringTotal)}
                   </div>
                 </div>
@@ -649,18 +652,22 @@ const CalculatorValueComparison: React.FC<{
         <div className="relative">
           {/* Side Header */}
           <div className="mb-6">
-            <div className="mb-3 flex items-center gap-3">
+            <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
               <div className="flex items-center gap-2">
                 <div className="bg-status-error h-3 w-3 rounded-full"></div>
                 <h4 className="text-primary-text text-lg font-semibold">Requesting Side</h4>
               </div>
-              <span className="bg-status-error/20 border-status-error/30 text-primary-text rounded-full border px-3 py-1 text-xs font-medium">
-                Requesting
-              </span>
-              <span className="bg-primary/10 border-primary/20 text-primary-text rounded-full border px-3 py-1 text-xs font-medium">
-                {groupItems(requesting).reduce((sum, item) => sum + item.count, 0)} item
-                {groupItems(requesting).reduce((sum, item) => sum + item.count, 0) !== 1 ? 's' : ''}
-              </span>
+              <div className="flex gap-2">
+                <span className="bg-status-error/20 border-status-error/30 text-primary-text rounded-full border px-3 py-1 text-xs font-medium">
+                  Requesting
+                </span>
+                <span className="bg-primary/10 border-primary/20 text-primary-text rounded-full border px-3 py-1 text-xs font-medium">
+                  {groupItems(requesting).reduce((sum, item) => sum + item.count, 0)} item
+                  {groupItems(requesting).reduce((sum, item) => sum + item.count, 0) !== 1
+                    ? 's'
+                    : ''}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -678,7 +685,7 @@ const CalculatorValueComparison: React.FC<{
                     index !== array.length - 1 ? 'mb-4' : ''
                   }`}
                 >
-                  <div className="flex items-start justify-between">
+                  <div className="space-y-4">
                     <div className="flex-1">
                       {/* Item Name */}
                       <div className="mb-3 flex items-center gap-2">
@@ -686,7 +693,7 @@ const CalculatorValueComparison: React.FC<{
                           {item.sub_name ? `${item.name} (${item.sub_name})` : item.name}
                         </h5>
                         {item.count > 1 && (
-                          <span className="bg-status-error/20 border-status-error/30 text-status-error rounded-full border px-2 py-1 text-xs font-medium">
+                          <span className="bg-button-info text-form-button-text rounded-full border px-2 py-1 text-xs font-medium">
                             ×{item.count}
                           </span>
                         )}
@@ -696,7 +703,13 @@ const CalculatorValueComparison: React.FC<{
                       <div className="space-y-2">
                         {/* Type and Status */}
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="bg-primary/10 border-primary/30 text-primary-text rounded-lg border px-2 py-1 text-xs font-medium">
+                          <span
+                            className="text-primary-text flex items-center rounded-full border px-2 py-1 text-xs font-medium"
+                            style={{
+                              borderColor: getCategoryColor(item.type),
+                              backgroundColor: getCategoryColor(item.type) + '20', // Add 20% opacity
+                            }}
+                          >
                             {item.type}
                           </span>
                           {(item.is_limited === 1 || item.data?.is_limited === 1) && (
@@ -718,33 +731,27 @@ const CalculatorValueComparison: React.FC<{
                           >
                             {isDupedSelected ? 'Duped' : 'Clean'}
                           </span>
-                        </div>
-
-                        {/* Demand and Trend */}
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="bg-secondary-bg/30 border-border-primary rounded-lg border p-2">
-                            <div className="text-secondary-text mb-1 text-xs">Demand</div>
-                            <div className="text-primary-text text-sm font-medium">
-                              {demand === 'N/A' ? 'Unknown' : demand}
-                            </div>
-                          </div>
-                          <div className="bg-secondary-bg/30 border-border-primary rounded-lg border p-2">
-                            <div className="text-secondary-text mb-1 text-xs">Trend</div>
-                            <div className="text-primary-text text-sm font-medium">
-                              {!('trend' in item) || item.trend === null || item.trend === 'N/A'
-                                ? 'Unknown'
-                                : (item.trend as string)}
-                            </div>
-                          </div>
+                          <span
+                            className={`${getDemandColor(demand)} rounded-lg px-2 py-1 text-xs font-semibold`}
+                          >
+                            {demand === 'N/A' ? 'Unknown' : demand}
+                          </span>
+                          <span
+                            className={`${getTrendColor(item.trend || 'N/A')} rounded-lg px-2 py-1 text-xs font-semibold`}
+                          >
+                            {!('trend' in item) || item.trend === null || item.trend === 'N/A'
+                              ? 'Unknown'
+                              : (item.trend as string)}
+                          </span>
                         </div>
                       </div>
                     </div>
 
                     {/* Value */}
-                    <div className="ml-4 text-right">
-                      <div className="text-primary-text text-lg font-bold">
+                    <div className="text-center sm:text-right">
+                      <span className="bg-button-info text-form-button-text inline-block rounded-lg px-3 py-2 text-lg font-bold">
                         {formatCurrencyValue(getSelectedValue(item, 'requesting'))}
-                      </div>
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -754,9 +761,9 @@ const CalculatorValueComparison: React.FC<{
             {/* Total */}
             <div className="bg-status-error/5 mt-4 rounded-lg p-4">
               <div className="flex items-center justify-between">
-                <span className="text-status-error text-base font-semibold">Total</span>
+                <span className="text-primary-text text-base font-semibold">Total</span>
                 <div className="text-right">
-                  <div className="text-status-error text-xl font-bold">
+                  <div className="text-primary-text text-xl font-bold">
                     {formatCurrencyValue(requestingTotal)}
                   </div>
                 </div>
@@ -770,23 +777,23 @@ const CalculatorValueComparison: React.FC<{
       <div className="mt-8">
         <div className="from-primary/3 to-primary/5 rounded-xl bg-gradient-to-r p-6">
           <h4 className="text-primary-text mb-4 text-lg font-semibold">Overall Difference</h4>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <span className="text-secondary-text text-base">Value Difference</span>
             <div className="flex items-center gap-3">
               <span
                 className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-base font-semibold ${
                   difference < 0
-                    ? 'bg-status-success/10 text-status-success'
+                    ? 'bg-status-success text-white'
                     : difference > 0
-                      ? 'bg-status-error/10 text-status-error'
+                      ? 'bg-status-error text-white'
                       : 'bg-secondary-bg/50 text-primary-text'
                 }`}
               >
                 {difference !== 0 &&
                   (difference < 0 ? (
-                    <FaArrowUp className="text-status-success" />
+                    <FaArrowUp className="text-white" />
                   ) : (
-                    <FaArrowDown className="text-status-error" />
+                    <FaArrowDown className="text-white" />
                   ))}
                 {formatCurrencyValue(Math.abs(difference))}
               </span>

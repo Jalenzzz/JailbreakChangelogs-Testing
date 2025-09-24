@@ -15,6 +15,7 @@ import { Pagination } from '@mui/material';
 import toast from 'react-hot-toast';
 import { getItemImagePath, handleImageError, isVideoItem, getVideoPath } from '@/utils/images';
 import { sortByCashValue, sortByDemand, formatFullValue } from '@/utils/values';
+import { getDemandColor, getTrendColor } from '@/utils/badgeColors';
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { CategoryIconBadge, getCategoryColor } from '@/utils/categoryIcons';
 import { TradeAdErrorModal } from './TradeAdErrorModal';
@@ -739,7 +740,9 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
                                     )?.data.demand ?? 'N/A')
                                   : (item.demand ?? 'N/A');
                               return (
-                                <span className="bg-button-info text-form-button-text rounded-lg px-2 py-0.5 text-xs font-bold shadow-sm">
+                                <span
+                                  className={`${getDemandColor(d)} rounded-lg px-2 py-0.5 text-xs font-bold shadow-sm`}
+                                >
                                   {d === 'N/A' ? 'Unknown' : d}
                                 </span>
                               );
@@ -749,7 +752,9 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
                             <span className="text-secondary-text text-xs font-medium whitespace-nowrap">
                               Trend
                             </span>
-                            <span className="bg-button-info text-form-button-text rounded-lg px-2 py-0.5 text-xs font-bold shadow-sm">
+                            <span
+                              className={`${getTrendColor(item.trend || 'N/A')} rounded-lg px-2 py-0.5 text-xs font-bold shadow-sm`}
+                            >
                               {!item.trend || item.trend === 'N/A' ? 'Unknown' : item.trend}
                             </span>
                           </div>

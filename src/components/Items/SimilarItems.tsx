@@ -9,6 +9,7 @@ import { SparklesIcon } from '@heroicons/react/24/outline';
 import dynamic from 'next/dynamic';
 import { formatFullValue } from '@/utils/values';
 import { getCategoryColor } from '@/utils/categoryIcons';
+import { getTrendColor, getDemandColor } from '@/utils/badgeColors';
 
 const Select = dynamic(() => import('react-select'), { ssr: false });
 
@@ -442,7 +443,9 @@ const SimilarItems = ({ currentItem, similarItemsPromise }: SimilarItemsProps) =
                     {/* Demand */}
                     <div className="bg-primary-bg flex items-center justify-between rounded-lg p-1.5">
                       <span className="text-secondary-text text-[10px] font-medium">Demand</span>
-                      <span className="bg-button-info text-form-button-text rounded-lg px-1.5 py-0.5 text-[9px] font-bold whitespace-nowrap">
+                      <span
+                        className={`${getDemandColor(item.demand)} rounded-lg px-1.5 py-0.5 text-[9px] font-bold whitespace-nowrap`}
+                      >
                         {item.demand === 'N/A' ? 'Unknown' : item.demand}
                       </span>
                     </div>
@@ -451,7 +454,9 @@ const SimilarItems = ({ currentItem, similarItemsPromise }: SimilarItemsProps) =
                     {item.trend && item.trend !== 'N/A' && (
                       <div className="bg-primary-bg flex items-center justify-between rounded-lg p-1.5">
                         <span className="text-secondary-text text-[10px] font-medium">Trend</span>
-                        <span className="bg-button-info text-form-button-text rounded-lg px-1.5 py-0.5 text-[9px] font-bold whitespace-nowrap">
+                        <span
+                          className={`${getTrendColor(item.trend)} rounded-lg px-1.5 py-0.5 text-[9px] font-bold whitespace-nowrap`}
+                        >
                           {item.trend}
                         </span>
                       </div>

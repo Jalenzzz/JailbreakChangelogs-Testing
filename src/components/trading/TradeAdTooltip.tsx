@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { TradeItem } from '@/types/trading';
 import { CategoryIconBadge, getCategoryColor } from '@/utils/categoryIcons';
 import { formatFullValue } from '@/utils/values';
+import { getDemandColor, getTrendColor } from '@/utils/badgeColors';
 
 interface TradeAdTooltipProps {
   item: TradeItem;
@@ -75,13 +76,17 @@ export const TradeAdTooltip: React.FC<TradeAdTooltipProps> = ({ item }) => {
           </div>
           <div className="flex items-center gap-2">
             <span className="text-secondary-text text-xs tracking-wider uppercase">Demand:</span>
-            <span className="bg-button-info text-form-button-text rounded-full px-2 py-0.5 text-xs font-semibold whitespace-nowrap">
+            <span
+              className={`${getDemandColor(demand)} rounded-full px-2 py-0.5 text-xs font-semibold whitespace-nowrap`}
+            >
               {demand === 'N/A' ? 'Unknown' : demand}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-secondary-text text-xs tracking-wider uppercase">Trend:</span>
-            <span className="bg-button-info text-form-button-text rounded-full px-2 py-0.5 text-xs font-semibold whitespace-nowrap">
+            <span
+              className={`${getTrendColor(trend || 'N/A')} rounded-full px-2 py-0.5 text-xs font-semibold whitespace-nowrap`}
+            >
               {!trend || trend === 'N/A' ? 'Unknown' : trend}
             </span>
           </div>

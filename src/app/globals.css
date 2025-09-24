@@ -41,8 +41,8 @@
   --color-link-visited: hsl(214, 12%, 45%); /* Visited links */
 
   /* Button Colors */
-  --color-button-info: hsl(210, 99%, 50%); /* Primary buttons */
-  --color-button-info-hover: hsl(210, 99%, 40%); /* Button hover states */
+  --color-button-info: hsl(210, 99%, 35%); /* Primary buttons - Darker for better contrast */
+  --color-button-info-hover: hsl(210, 99%, 30%); /* Button hover states */
   --color-button-info-active: hsl(218, 60%, 32%); /* Button active states */
   --color-button-info-disabled: hsl(214, 8%, 25%); /* Disabled buttons */
   --color-button-success: hsl(155, 61%, 44%); /* Success actions */
@@ -51,7 +51,7 @@
   --color-button-danger-hover: hsl(0, 75%, 55%); /* Danger hover */
   --color-button-secondary: hsl(214, 8%, 25%); /* Secondary buttons */
   --color-button-secondary-hover: hsl(214, 6%, 20%); /* Secondary hover */
-  --color-form-button: hsl(210, 99%, 50%); /* Form submit buttons */
+  --color-form-button: hsl(210, 99%, 35%); /* Form submit buttons - Darker for better contrast */
   --color-form-button-text: hsl(60, 100%, 100%); /* Text on form buttons */
 
   /* Form Elements */
@@ -64,9 +64,9 @@
   --color-form-success: hsl(155, 61%, 44%); /* Success text */
 
   /* Status Colors */
-  --color-status-success: hsl(155, 61%, 44%); /* Success states */
+  --color-status-success: hsl(155, 61%, 30%); /* Success states - Even darker for better contrast */
   --color-status-warning: hsl(38, 100%, 61%); /* Warning states */
-  --color-status-error: hsl(0, 81%, 62%); /* Error states */
+  --color-status-error: hsl(0, 81%, 45%); /* Error states - Darker for better contrast */
   --color-status-info: hsl(210, 99%, 50%); /* Info states */
   --color-status-neutral: hsl(214, 8%, 35%); /* Neutral states */
 
@@ -174,8 +174,8 @@
   --color-link-visited: hsl(214, 12%, 55%); /* Visited links - Gray */
 
   /* Button Colors - Light theme (same as dark) */
-  --color-button-info: hsl(210, 99%, 50%); /* Primary buttons */
-  --color-button-info-hover: hsl(210, 99%, 40%); /* Button hover states */
+  --color-button-info: hsl(210, 99%, 35%); /* Primary buttons - Darker for better contrast */
+  --color-button-info-hover: hsl(210, 99%, 30%); /* Button hover states */
   --color-button-info-active: hsl(218, 60%, 32%); /* Button active states */
   --color-button-info-disabled: hsl(214, 8%, 75%); /* Disabled buttons - Light gray */
   --color-button-success: hsl(155, 61%, 44%); /* Success actions */
@@ -184,7 +184,7 @@
   --color-button-danger-hover: hsl(0, 75%, 55%); /* Danger hover */
   --color-button-secondary: hsl(214, 8%, 75%); /* Secondary buttons - Light gray */
   --color-button-secondary-hover: hsl(214, 6%, 80%); /* Secondary hover - Lighter */
-  --color-form-button: hsl(210, 99%, 50%); /* Form submit buttons */
+  --color-form-button: hsl(210, 99%, 35%); /* Form submit buttons - Darker for better contrast */
   --color-form-button-text: hsl(60, 100%, 100%); /* Text on form buttons */
 
   /* Form Elements - Light theme */
@@ -197,9 +197,9 @@
   --color-form-success: hsl(155, 61%, 44%); /* Success text - Same green */
 
   /* Status Colors - Light theme (same as dark) */
-  --color-status-success: hsl(155, 61%, 44%); /* Success states */
+  --color-status-success: hsl(155, 61%, 30%); /* Success states - Even darker for better contrast */
   --color-status-warning: hsl(38, 100%, 61%); /* Warning states */
-  --color-status-error: hsl(0, 81%, 62%); /* Error states */
+  --color-status-error: hsl(0, 81%, 45%); /* Error states - Darker for better contrast */
   --color-status-info: hsl(210, 99%, 50%); /* Info states */
   --color-status-neutral: hsl(214, 8%, 65%); /* Neutral states - Light gray */
 

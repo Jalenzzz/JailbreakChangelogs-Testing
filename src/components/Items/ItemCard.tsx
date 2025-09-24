@@ -17,6 +17,7 @@ import {
 import { formatCustomDate } from '@/utils/timestamp';
 import { useOptimizedRealTimeRelativeDate } from '@/hooks/useSharedTimer';
 import { formatFullValue } from '@/utils/values';
+import { getDemandColor, getTrendColor } from '@/utils/badgeColors';
 import { useEffect, useRef, useState } from 'react';
 import { PlayIcon } from '@heroicons/react/24/solid';
 import { StarIcon } from '@heroicons/react/24/outline';
@@ -428,7 +429,9 @@ export default function ItemCard({ item, isFavorited, onFavoriteChange }: ItemCa
                     Demand
                   </span>
                 </div>
-                <span className="bg-button-info text-form-button-text rounded-lg px-0.5 py-0.5 text-[9px] font-bold whitespace-nowrap shadow-sm min-[401px]:px-2 min-[401px]:py-1 min-[401px]:text-xs min-[480px]:px-3 min-[480px]:py-1.5">
+                <span
+                  className={`${getDemandColor(currentItemData.demand)} rounded-lg px-0.5 py-0.5 text-[9px] font-bold whitespace-nowrap shadow-sm min-[401px]:px-2 min-[401px]:py-1 min-[401px]:text-xs min-[480px]:px-3 min-[480px]:py-1.5`}
+                >
                   {currentItemData.demand === 'N/A' ? 'Unknown' : currentItemData.demand}
                 </span>
               </div>
@@ -440,7 +443,9 @@ export default function ItemCard({ item, isFavorited, onFavoriteChange }: ItemCa
                       Trend
                     </span>
                   </div>
-                  <span className="bg-button-info text-form-button-text rounded-lg px-0.5 py-0.5 text-[9px] font-bold whitespace-nowrap shadow-sm min-[401px]:px-2 min-[401px]:py-1 min-[401px]:text-xs min-[480px]:px-3 min-[480px]:py-1.5">
+                  <span
+                    className={`${getTrendColor(item.trend || 'N/A')} rounded-lg px-0.5 py-0.5 text-[9px] font-bold whitespace-nowrap shadow-sm min-[401px]:px-2 min-[401px]:py-1 min-[401px]:text-xs min-[480px]:px-3 min-[480px]:py-1.5`}
+                  >
                     {item.trend === null || item.trend === 'N/A' ? 'Unknown' : item.trend}
                   </span>
                 </div>

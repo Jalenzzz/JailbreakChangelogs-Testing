@@ -3,6 +3,7 @@ import { TradeItem } from '@/types/trading';
 import Link from 'next/link';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { getCategoryColor } from '@/utils/categoryIcons';
+import { getDemandColor, getTrendColor } from '@/utils/badgeColors';
 
 interface TradeItemsWithValuesProps {
   offering: TradeItem[];
@@ -185,7 +186,9 @@ const ItemRow: React.FC<ItemRowProps> = ({ item, side, isFirst = false }) => {
             {/* Demand */}
             <div className="bg-primary-bg flex items-center justify-between rounded-lg p-2">
               <span className="text-secondary-text text-xs font-medium">Demand</span>
-              <span className="bg-button-info text-form-button-text rounded-lg px-2 py-1 text-xs font-bold">
+              <span
+                className={`${getDemandColor(item.demand || 'N/A')} rounded-lg px-2 py-1 text-xs font-bold`}
+              >
                 {item.demand || 'N/A'}
               </span>
             </div>
@@ -193,7 +196,9 @@ const ItemRow: React.FC<ItemRowProps> = ({ item, side, isFirst = false }) => {
             {/* Trend */}
             <div className="bg-primary-bg flex items-center justify-between rounded-lg p-2">
               <span className="text-secondary-text text-xs font-medium">Trend</span>
-              <span className="bg-button-info text-form-button-text rounded-lg px-2 py-1 text-xs font-bold">
+              <span
+                className={`${getTrendColor(item.trend || 'N/A')} rounded-lg px-2 py-1 text-xs font-bold`}
+              >
                 {item.trend || 'N/A'}
               </span>
             </div>
