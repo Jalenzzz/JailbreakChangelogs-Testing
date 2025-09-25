@@ -643,7 +643,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
             </div>
           ) : (
             <>
-              <div className="bg-tertiary-bg rounded-xl p-2">
+              <div className="p-2">
                 <div className="space-y-2 sm:space-y-3">
                   {currentComments.map((comment) => {
                     const flags = userData[comment.user_id]?.flags || [];
@@ -652,10 +652,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                       userData[comment.user_id]?.settings?.show_recent_comments === 0 &&
                       currentUserId !== comment.user_id;
                     return (
-                      <div
-                        key={comment.id}
-                        className="group hover:border-border-focus border-border-tertiary relative overflow-hidden rounded-lg border p-3 transition-all duration-200"
-                      >
+                      <div key={comment.id} className="group relative p-3">
                         {/* Header Section */}
                         <div className="flex items-center justify-between pb-2">
                           <div className="flex items-center gap-3">
@@ -734,10 +731,10 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                                         slotProps={{
                                           tooltip: {
                                             sx: {
-                                              backgroundColor: 'var(--color-primary-bg)',
+                                              backgroundColor: 'var(--color-secondary-bg)',
                                               color: 'var(--color-primary-text)',
                                               '& .MuiTooltip-arrow': {
-                                                color: 'var(--color-primary-bg)',
+                                                color: 'var(--color-secondary-bg)',
                                               },
                                             },
                                           },
@@ -745,7 +742,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                                       >
                                         <Link
                                           href={`/users/${comment.user_id}`}
-                                          className={`${inter.className} text-md text-link hover:text-link-hover truncate font-semibold transition-colors duration-200 hover:underline`}
+                                          className={`${inter.className} text-md text-primary-text hover:text-link-hover truncate font-semibold transition-colors duration-200 hover:underline`}
                                         >
                                           {userData[comment.user_id]?.username || comment.author}
                                         </Link>
@@ -787,7 +784,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                             <IconButton
                               size="small"
                               onClick={(e) => handleMenuOpen(e, comment.id)}
-                              className={`text-primary-text hover:bg-quaternary-bg rounded-lg p-2 opacity-0 transition-all duration-200 group-hover:opacity-100 ${Boolean(menuAnchorEl) && selectedCommentId === comment.id ? 'opacity-100' : ''}`}
+                              className={`text-primary-text hover:bg-quaternary-bg rounded-lg p-2 opacity-100 transition-all duration-200 lg:opacity-0 lg:group-hover:opacity-100 ${Boolean(menuAnchorEl) && selectedCommentId === comment.id ? 'opacity-100' : ''}`}
                             >
                               <EllipsisHorizontalIcon className="h-4 w-4" />
                             </IconButton>
