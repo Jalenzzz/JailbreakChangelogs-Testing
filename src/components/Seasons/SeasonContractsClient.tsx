@@ -44,7 +44,7 @@ export default function SeasonContractsClient({ contracts, updatedAt }: SeasonCo
     <div className="space-y-12">
       {formatUpdatedAt && (
         <div className="text-center">
-          <span className="bg-secondary-bg text-secondary-text inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm backdrop-blur-sm">
+          <span className="bg-secondary-bg text-secondary-text border-border-primary inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm backdrop-blur-sm">
             Last updated: {formatUpdatedAt}
           </span>
         </div>

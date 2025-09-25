@@ -155,7 +155,7 @@ export default function ValuesSearchControls({
             <div
               className={
                 currentUserPremiumType !== 0 && premiumStatusLoaded
-                  ? 'flex w-full flex-col lg:flex-row lg:items-center lg:gap-4'
+                  ? 'flex w-full flex-col gap-4 lg:flex-row lg:items-center lg:gap-4'
                   : 'flex w-full flex-col gap-4'
               }
             >
@@ -171,7 +171,7 @@ export default function ValuesSearchControls({
                   placeholder={`Search ${filterSort === 'name-all-items' ? 'items' : filterSort.replace('name-', '').replace('-items', '').replace(/-/g, ' ').toLowerCase()}...`}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className={`text-primary-text border-border-primary hover:border-border-focus bg-secondary-bg placeholder-secondary-text w-full rounded-lg border px-4 py-2 pr-10 pl-10 transition-all duration-300 focus:outline-none ${
+                  className={`text-primary-text border-border-primary hover:border-border-focus bg-secondary-bg placeholder-secondary-text w-full rounded-lg border px-4 py-3 pr-10 pl-10 transition-all duration-300 focus:outline-none ${
                     isSearchHighlighted
                       ? 'border-button-info bg-button-info/10 shadow-button-info/20 shadow-lg'
                       : isItemIdSearch
@@ -193,10 +193,10 @@ export default function ValuesSearchControls({
 
               {/* Filter and Sort dropdowns container - responsive layout for premium users */}
               <div
-                className={`flex gap-4 ${
+                className={`flex ${
                   currentUserPremiumType !== 0 && premiumStatusLoaded
-                    ? 'w-full flex-col lg:w-1/2 lg:flex-row'
-                    : 'w-full flex-col'
+                    ? 'w-full flex-col gap-4 lg:w-1/2 lg:flex-row'
+                    : 'w-full flex-col gap-4'
                 }`}
               >
                 {/* Filter dropdown */}
