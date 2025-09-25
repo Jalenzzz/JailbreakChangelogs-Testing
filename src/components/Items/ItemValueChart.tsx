@@ -347,7 +347,7 @@ const ItemValueChart = ({ itemId, variantId }: ItemValueChartProps) => {
         <ButtonGroup size="small" variant="outlined">
           <Button
             onClick={() => handleDateRangeChange('1w')}
-            className={`border-secondary hover:border-button-info transition-colors ${
+            className={`border-secondary hover:border-border-focus transition-colors ${
               hasDataForRange('1w') ? 'cursor-pointer' : 'cursor-not-allowed'
             }`}
             style={{ color: dateRange === '1w' ? '#2461cc' : '#fffffe' }}
@@ -356,7 +356,7 @@ const ItemValueChart = ({ itemId, variantId }: ItemValueChartProps) => {
           </Button>
           <Button
             onClick={() => handleDateRangeChange('1m')}
-            className={`border-secondary hover:border-button-info transition-colors ${
+            className={`border-secondary hover:border-border-focus transition-colors ${
               hasDataForRange('1m') ? 'cursor-pointer' : 'cursor-not-allowed'
             }`}
             style={{ color: dateRange === '1m' ? '#2461cc' : '#fffffe' }}
@@ -365,7 +365,7 @@ const ItemValueChart = ({ itemId, variantId }: ItemValueChartProps) => {
           </Button>
           <Button
             onClick={() => handleDateRangeChange('6m')}
-            className={`border-secondary hover:border-button-info transition-colors ${
+            className={`border-secondary hover:border-border-focus transition-colors ${
               hasDataForRange('6m') ? 'cursor-pointer' : 'cursor-not-allowed'
             }`}
             style={{ color: dateRange === '6m' ? '#2461cc' : '#fffffe' }}
@@ -374,7 +374,7 @@ const ItemValueChart = ({ itemId, variantId }: ItemValueChartProps) => {
           </Button>
           <Button
             onClick={() => handleDateRangeChange('1y')}
-            className={`border-secondary hover:border-button-info transition-colors ${
+            className={`border-secondary hover:border-border-focus transition-colors ${
               hasDataForRange('1y') ? 'cursor-pointer' : 'cursor-not-allowed'
             }`}
             style={{ color: dateRange === '1y' ? '#2461cc' : '#fffffe' }}
@@ -383,7 +383,7 @@ const ItemValueChart = ({ itemId, variantId }: ItemValueChartProps) => {
           </Button>
           <Button
             onClick={() => handleDateRangeChange('all')}
-            className={`border-secondary hover:border-button-info transition-colors ${
+            className={`border-secondary hover:border-border-focus transition-colors ${
               hasDataForRange('all') ? 'cursor-pointer' : 'cursor-not-allowed'
             }`}
             style={{ color: dateRange === 'all' ? '#2461cc' : '#fffffe' }}

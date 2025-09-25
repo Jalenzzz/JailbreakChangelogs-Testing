@@ -146,7 +146,7 @@ const WeeklyContractsCountdown: React.FC<WeeklyContractsCountdownProps> = ({ sea
   }, [nextResetUnix, nextDailyResetUnix]);
 
   return (
-    <div className="border-stroke bg-secondary-bg relative overflow-hidden rounded-2xl border p-6">
+    <div className="border-border-primary hover:border-border-focus bg-secondary-bg relative overflow-hidden rounded-2xl border p-6">
       {/* Main Content */}
       <div className="relative z-10">
         {/* Header */}
@@ -180,7 +180,7 @@ const WeeklyContractsCountdown: React.FC<WeeklyContractsCountdownProps> = ({ sea
         {/* Timer Section */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {/* Weekly Contracts Timer */}
-          <div className="border-stroke rounded-xl border p-4">
+          <div className="border-border-primary hover:border-border-focus rounded-xl border p-4">
             <div className="text-center">
               <div className="mb-3 flex items-center justify-center gap-2">
                 <span className="text-primary-text text-sm font-semibold tracking-wide uppercase">
@@ -199,7 +199,7 @@ const WeeklyContractsCountdown: React.FC<WeeklyContractsCountdownProps> = ({ sea
           </div>
 
           {/* Daily XP Timer */}
-          <div className="border-stroke rounded-xl border p-4">
+          <div className="border-border-primary hover:border-border-focus rounded-xl border p-4">
             <div className="text-center">
               <div className="mb-3 flex items-center justify-center gap-2">
                 <span className="text-primary-text text-sm font-semibold tracking-wide uppercase">

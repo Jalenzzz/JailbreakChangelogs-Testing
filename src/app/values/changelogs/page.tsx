@@ -117,7 +117,10 @@ export default function ValuesChangelogPage() {
           {loading ? (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {[...Array(10)].map((_, i) => (
-                <div key={i} className="border-stroke bg-secondary-bg rounded-lg border p-4">
+                <div
+                  key={i}
+                  className="border-border-primary hover:border-border-focus bg-secondary-bg rounded-lg border p-4"
+                >
                   <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                     <div>
                       <Skeleton variant="text" width={120} height={24} />
@@ -139,7 +142,7 @@ export default function ValuesChangelogPage() {
                 </p>
                 <button
                   onClick={toggleSortOrder}
-                  className="border-stroke bg-button-info text-form-button-text hover:bg-button-info-hover flex cursor-pointer items-center gap-1 rounded-lg border px-3 py-1.5 text-sm transition-colors"
+                  className="border-border-primary hover:border-border-focus bg-button-info text-form-button-text hover:bg-button-info-hover flex cursor-pointer items-center gap-1 rounded-lg border px-3 py-1.5 text-sm transition-colors"
                 >
                   {sortOrder === 'newest' ? (
                     <ArrowDownIcon className="h-4 w-4" />
@@ -162,7 +165,7 @@ export default function ValuesChangelogPage() {
                         className={`rounded-lg border p-4 transition-all duration-200 hover:translate-y-[-2px] hover:shadow-lg ${
                           isLatest
                             ? 'border-button-info from-button-info/10 to-button-info-hover/10 shadow-button-info/20 bg-gradient-to-r shadow-lg'
-                            : 'border-border-primary bg-secondary-bg hover:border-button-info'
+                            : 'border-border-primary bg-secondary-bg hover:border-border-focus'
                         }`}
                       >
                         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">

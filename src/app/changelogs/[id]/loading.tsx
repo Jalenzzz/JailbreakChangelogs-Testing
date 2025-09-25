@@ -26,7 +26,10 @@ export default function Loading() {
             <div className="bg-secondary-bg mb-4 h-4 w-full animate-pulse rounded"></div>
             <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="border-stroke bg-secondary-bg rounded-lg border p-4">
+                <div
+                  key={i}
+                  className="border-border-primary hover:border-border-focus bg-secondary-bg rounded-lg border p-4"
+                >
                   <div className="bg-secondary-bg mb-2 h-4 w-1/2 animate-pulse rounded"></div>
                   <div className="bg-secondary-bg h-4 w-3/4 animate-pulse rounded"></div>
                 </div>
@@ -35,7 +38,10 @@ export default function Loading() {
             <div className="bg-secondary-bg mb-4 h-6 w-1/4 animate-pulse rounded"></div>
             <div className="space-y-4">
               {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="border-stroke bg-secondary-bg rounded-lg border p-4">
+                <div
+                  key={i}
+                  className="border-border-primary hover:border-border-focus bg-secondary-bg rounded-lg border p-4"
+                >
                   <div className="mb-2 flex items-center justify-between">
                     <div className="bg-secondary-bg h-4 w-1/3 animate-pulse rounded"></div>
                     <div className="flex gap-2">
@@ -53,14 +59,17 @@ export default function Loading() {
           <div className="space-y-8 sm:col-span-12 xl:col-span-4">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="border-stroke bg-secondary-bg rounded-lg border p-4">
+                <div
+                  key={i}
+                  className="border-border-primary hover:border-border-focus bg-secondary-bg rounded-lg border p-4"
+                >
                   <div className="bg-secondary-bg mb-2 h-4 w-3/4 animate-pulse rounded"></div>
                   <div className="bg-secondary-bg mb-2 h-4 w-1/2 animate-pulse rounded"></div>
                   <div className="bg-secondary-bg aspect-video animate-pulse rounded-lg"></div>
                 </div>
               ))}
             </div>
-            <div className="border-stroke bg-secondary-bg rounded-lg border p-4">
+            <div className="border-border-primary hover:border-border-focus bg-secondary-bg rounded-lg border p-4">
               <div className="bg-secondary-bg mb-4 h-4 w-1/3 animate-pulse rounded"></div>
               <div className="space-y-4">
                 {[1, 2, 3].map((i) => (

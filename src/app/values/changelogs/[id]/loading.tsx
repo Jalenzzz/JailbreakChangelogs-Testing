@@ -8,7 +8,7 @@ export default function Loading() {
           {/* Header Skeleton with Side-by-Side Layout */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             {/* Changelog Info Skeleton - Takes up 2/3 of the space */}
-            <div className="border-stroke bg-secondary-bg rounded-lg border p-6 lg:col-span-2">
+            <div className="border-border-primary hover:border-border-focus bg-secondary-bg rounded-lg border p-6 lg:col-span-2">
               <Skeleton variant="text" width="60%" height={40} className="bg-secondary-bg" />
               <Skeleton variant="text" width="40%" height={24} className="bg-secondary-bg mt-2" />
               <div className="mt-4">
@@ -46,7 +46,7 @@ export default function Loading() {
           </div>
 
           {/* Search and Filters Skeleton */}
-          <div className="border-stroke rounded-lg border p-4">
+          <div className="border-border-primary hover:border-border-focus rounded-lg border p-4">
             <div className="flex flex-col gap-4 sm:flex-row">
               <Skeleton
                 variant="rectangular"
@@ -66,7 +66,10 @@ export default function Loading() {
           {/* Changes Grid Skeleton */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="border-stroke rounded-lg border p-4">
+              <div
+                key={i}
+                className="border-border-primary hover:border-border-focus rounded-lg border p-4"
+              >
                 <div className="mb-4 flex items-center gap-3">
                   <Skeleton
                     variant="rectangular"
@@ -88,7 +91,7 @@ export default function Loading() {
                   <Skeleton variant="text" width="70%" height={20} className="bg-secondary-bg" />
                   <Skeleton variant="text" width="90%" height={20} className="bg-secondary-bg" />
                 </div>
-                <div className="border-stroke flex items-center justify-between border-t pt-4">
+                <div className="border-border-primary hover:border-border-focus flex items-center justify-between border-t pt-4">
                   <Skeleton variant="circular" width={24} height={24} className="bg-secondary-bg" />
                   <Skeleton variant="text" width="30%" height={16} className="bg-secondary-bg" />
                 </div>

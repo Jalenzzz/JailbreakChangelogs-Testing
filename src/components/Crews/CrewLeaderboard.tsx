@@ -101,7 +101,7 @@ export default function CrewLeaderboard({ leaderboard, currentSeason }: CrewLead
     return (
       <div className="mt-8">
         <h2 className="text-primary-text mb-4 text-xl font-bold">Crew Leaderboard</h2>
-        <div className="border-stroke bg-secondary-bg rounded-lg border p-4 shadow-sm">
+        <div className="border-border-primary hover:border-border-focus bg-secondary-bg rounded-lg border p-4 shadow-sm">
           <p className="text-secondary-text py-8 text-center">No crew data available.</p>
         </div>
       </div>
@@ -127,7 +127,7 @@ export default function CrewLeaderboard({ leaderboard, currentSeason }: CrewLead
             placeholder="Search crews..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="text-primary-text border-stroke bg-secondary-bg placeholder-secondary-text focus:border-button-info w-full rounded-lg border px-4 py-2 pr-10 pl-10 transition-all duration-300 focus:outline-none"
+            className="text-primary-text border-border-primary hover:border-border-focus bg-secondary-bg placeholder-secondary-text focus:border-button-info w-full rounded-lg border px-4 py-2 pr-10 pl-10 transition-all duration-300 focus:outline-none"
           />
           <MagnifyingGlassIcon className="text-secondary-text absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
           {searchTerm && (
@@ -163,7 +163,7 @@ export default function CrewLeaderboard({ leaderboard, currentSeason }: CrewLead
         </div>
       )}
 
-      <div className="border-stroke bg-secondary-bg rounded-lg border p-4 shadow-sm">
+      <div className="border-border-primary hover:border-border-focus bg-secondary-bg rounded-lg border p-4 shadow-sm">
         <div className="max-h-[48rem] space-y-3 overflow-y-auto pr-2">
           {filteredLeaderboard.map((crew, crewIndex) => {
             // The API data is already sorted by rating, so the position in the array is the rank
@@ -238,7 +238,7 @@ function CrewLeaderboardEntry({
   return (
     <div
       className={`flex flex-col gap-3 rounded-lg border p-6 transition-colors sm:flex-row sm:items-center ${
-        index <= 3 ? '' : 'hover:border-button-info'
+        index <= 3 ? '' : 'border-border-primary hover:border-border-focus'
       }`}
       style={{
         ...(index === 0 && {

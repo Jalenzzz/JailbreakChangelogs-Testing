@@ -440,7 +440,7 @@ export default function OGFinderResults({
                   ADVERTISEMENT
                 </span>
                 <div
-                  className="border-stroke bg-secondary-bg relative h-full overflow-hidden rounded-lg border shadow transition-all duration-300"
+                  className="border-border-primary hover:border-border-focus bg-secondary-bg relative h-full overflow-hidden rounded-lg border shadow transition-all duration-300"
                   style={{ minHeight: '250px' }}
                 >
                   <DisplayAd

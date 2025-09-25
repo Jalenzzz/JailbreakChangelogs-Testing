@@ -555,12 +555,12 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                   className: '[&_textarea]:resize-y',
                 },
               }}
-              className="[&_.MuiFormHelperText-root]:text-secondary-text [&_.MuiFormHelperText-root.Mui-disabled]:text-secondary-text [&_.MuiFormHelperText-root.Mui-error]:text-button-danger [&_.MuiInputBase-root]:bg-form-input [&_.MuiInputBase-root.Mui-disabled]:bg-primary-bg [&_.MuiInputBase-root.Mui-disabled_.MuiOutlinedInput-notchedOutline]:border-secondary-bg [&_.MuiInputBase-root.Mui-disabled_.MuiInputBase-input]:text-secondary-text [&_.MuiInputBase-input]:text-primary-text [&_.MuiInputBase-input::placeholder]:text-secondary-text [&_.MuiOutlinedInput-notchedOutline]:border-stroke [&_.MuiInputBase-root:hover_.MuiOutlinedInput-notchedOutline]:border-button-info [&_.MuiInputBase-root.Mui-focused_.MuiOutlinedInput-notchedOutline]:border-button-info"
+              className="[&_.MuiFormHelperText-root]:text-secondary-text [&_.MuiFormHelperText-root.Mui-disabled]:text-secondary-text [&_.MuiFormHelperText-root.Mui-error]:text-button-danger [&_.MuiInputBase-root]:bg-form-input [&_.MuiInputBase-root.Mui-disabled]:bg-primary-bg [&_.MuiInputBase-root.Mui-disabled_.MuiOutlinedInput-notchedOutline]:border-secondary-bg [&_.MuiInputBase-root.Mui-disabled_.MuiInputBase-input]:text-secondary-text [&_.MuiInputBase-input]:text-primary-text [&_.MuiInputBase-input::placeholder]:text-secondary-text [&_.MuiOutlinedInput-notchedOutline]:border-border-primary hover:border-border-focus [&_.MuiInputBase-root:hover_.MuiOutlinedInput-notchedOutline]:border-button-info [&_.MuiInputBase-root.Mui-focused_.MuiOutlinedInput-notchedOutline]:border-button-info"
             />
             <div className="mt-2 flex items-center justify-between">
               <button
                 onClick={toggleSortOrder}
-                className="border-stroke bg-button-info text-form-button-text hover:bg-button-info-hover flex items-center gap-1 rounded-lg border px-3 py-1.5 text-sm transition-colors"
+                className="border-border-primary hover:border-border-focus bg-button-info text-form-button-text hover:bg-button-info-hover flex items-center gap-1 rounded-lg border px-3 py-1.5 text-sm transition-colors"
               >
                 {sortOrder === 'newest' ? (
                   <ArrowDownIcon className="h-4 w-4" />
@@ -823,7 +823,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                                     className: '[&_textarea]:resize-y',
                                   },
                                 }}
-                                className="[&_.MuiFormHelperText-root]:text-secondary-text [&_.MuiFormHelperText-root.Mui-disabled]:text-secondary-text [&_.MuiFormHelperText-root.Mui-error]:text-button-danger [&_.MuiInputBase-root]:bg-form-input [&_.MuiInputBase-root.Mui-disabled]:bg-primary-bg [&_.MuiInputBase-root.Mui-disabled_.MuiOutlinedInput-notchedOutline]:border-secondary-bg [&_.MuiInputBase-root.Mui-disabled_.MuiInputBase-input]:text-secondary-text [&_.MuiInputBase-input]:text-primary-text [&_.MuiInputBase-input::placeholder]:text-secondary-text [&_.MuiOutlinedInput-notchedOutline]:border-stroke [&_.MuiInputBase-root:hover_.MuiOutlinedInput-notchedOutline]:border-button-info [&_.MuiInputBase-root.Mui-focused_.MuiOutlinedInput-notchedOutline]:border-button-info"
+                                className="[&_.MuiFormHelperText-root]:text-secondary-text [&_.MuiFormHelperText-root.Mui-disabled]:text-secondary-text [&_.MuiFormHelperText-root.Mui-error]:text-button-danger [&_.MuiInputBase-root]:bg-form-input [&_.MuiInputBase-root.Mui-disabled]:bg-primary-bg [&_.MuiInputBase-root.Mui-disabled_.MuiOutlinedInput-notchedOutline]:border-secondary-bg [&_.MuiInputBase-root.Mui-disabled_.MuiInputBase-input]:text-secondary-text [&_.MuiInputBase-input]:text-primary-text [&_.MuiInputBase-input::placeholder]:text-secondary-text [&_.MuiOutlinedInput-notchedOutline]:border-border-primary hover:border-border-focus [&_.MuiInputBase-root:hover_.MuiOutlinedInput-notchedOutline]:border-button-info [&_.MuiInputBase-root.Mui-focused_.MuiOutlinedInput-notchedOutline]:border-button-info"
                               />
                               <div className="flex gap-2">
                                 <Button

@@ -147,7 +147,7 @@ export default function MoneyLeaderboardClient({
                     <div
                       key={user.user_id}
                       className={`rounded-lg border p-3 transition-colors ${
-                        originalRank <= 3 ? '' : 'hover:border-button-info'
+                        originalRank <= 3 ? '' : 'border-border-primary hover:border-border-focus'
                       }`}
                       style={{
                         ...(originalRank === 1 && {
@@ -206,7 +206,7 @@ export default function MoneyLeaderboardClient({
                               href={`https://www.roblox.com/users/${user.user_id}/profile`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-link hover:text-link-hover truncate text-sm font-medium transition-colors sm:text-base"
+                              className="text-primary-text hover:text-link-hover truncate text-sm font-medium transition-colors sm:text-base"
                             >
                               {userDisplay}
                             </a>

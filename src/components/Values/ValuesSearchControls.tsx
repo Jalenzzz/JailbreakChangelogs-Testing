@@ -15,7 +15,7 @@ const Select = dynamic(() => import('react-select'), { ssr: false });
 const Slider = dynamic(() => import('@mui/material/Slider'), {
   ssr: false,
   loading: () => (
-    <div className="border-stroke bg-secondary-bg mt-1 h-8 w-full animate-pulse rounded-md border"></div>
+    <div className="border-border-primary hover:border-border-focus bg-secondary-bg mt-1 h-8 w-full animate-pulse rounded-md border"></div>
   ),
 });
 
@@ -119,7 +119,7 @@ export default function ValuesSearchControls({
         .responsive-ad-container-search {
           width: 320px;
           height: 100px;
-          border: 1px solid var(--color-border-stroke);
+          border: 1px solid var(--color-border-border-primary hover: border-border-focus);
           background-color: var(--color-secondary-bg);
           border-radius: 8px;
           overflow: hidden;
@@ -171,7 +171,7 @@ export default function ValuesSearchControls({
                   placeholder={`Search ${filterSort === 'name-all-items' ? 'items' : filterSort.replace('name-', '').replace('-items', '').replace(/-/g, ' ').toLowerCase()}...`}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className={`text-primary-text border-stroke bg-secondary-bg placeholder-secondary-text w-full rounded-lg border px-4 py-2 pr-10 pl-10 transition-all duration-300 focus:outline-none ${
+                  className={`text-primary-text border-border-primary hover:border-border-focus bg-secondary-bg placeholder-secondary-text w-full rounded-lg border px-4 py-2 pr-10 pl-10 transition-all duration-300 focus:outline-none ${
                     isSearchHighlighted
                       ? 'border-button-info bg-button-info/10 shadow-button-info/20 shadow-lg'
                       : isItemIdSearch
@@ -290,11 +290,11 @@ export default function ValuesSearchControls({
                       unstyled
                       classNames={{
                         control: () =>
-                          'text-secondary-text flex items-center justify-between rounded-lg border border-stroke bg-secondary-bg p-3 min-h-[56px] hover:cursor-pointer focus-within:border-button-info',
+                          'text-secondary-text flex items-center justify-between rounded-lg border border-border-primary hover:border-border-focus bg-secondary-bg p-3 min-h-[56px] hover:cursor-pointer focus-within:border-button-info',
                         singleValue: () => 'text-secondary-text',
                         placeholder: () => 'text-secondary-text',
                         menu: () =>
-                          'absolute z-[3000] mt-1 w-full rounded-lg border border-stroke bg-secondary-bg shadow-lg',
+                          'absolute z-[3000] mt-1 w-full rounded-lg border border-border-primary hover:border-border-focus bg-secondary-bg shadow-lg',
                         option: ({ isSelected, isFocused }) =>
                           `px-4 py-3 cursor-pointer ${
                             isSelected
@@ -311,7 +311,7 @@ export default function ValuesSearchControls({
                       isSearchable={false}
                     />
                   ) : (
-                    <div className="border-stroke bg-secondary-bg h-10 w-full animate-pulse rounded-md border"></div>
+                    <div className="border-border-primary hover:border-border-focus bg-secondary-bg h-10 w-full animate-pulse rounded-md border"></div>
                   )}
                 </div>
 
@@ -547,11 +547,11 @@ export default function ValuesSearchControls({
                       unstyled
                       classNames={{
                         control: () =>
-                          'text-secondary-text flex items-center justify-between rounded-lg border border-stroke bg-secondary-bg p-3 min-h-[56px] hover:cursor-pointer focus-within:border-button-info',
+                          'text-secondary-text flex items-center justify-between rounded-lg border border-border-primary hover:border-border-focus bg-secondary-bg p-3 min-h-[56px] hover:cursor-pointer focus-within:border-button-info',
                         singleValue: () => 'text-secondary-text',
                         placeholder: () => 'text-secondary-text',
                         menu: () =>
-                          'absolute z-[3000] mt-1 w-full rounded-lg border border-stroke bg-secondary-bg shadow-lg',
+                          'absolute z-[3000] mt-1 w-full rounded-lg border border-border-primary hover:border-border-focus bg-secondary-bg shadow-lg',
                         option: ({ isSelected, isFocused }) =>
                           `px-4 py-3 cursor-pointer ${
                             isSelected
@@ -569,7 +569,7 @@ export default function ValuesSearchControls({
                       isSearchable={false}
                     />
                   ) : (
-                    <div className="border-stroke bg-secondary-bg h-10 w-full animate-pulse rounded-md border"></div>
+                    <div className="border-border-primary hover:border-border-focus bg-secondary-bg h-10 w-full animate-pulse rounded-md border"></div>
                   )}
                 </div>
               </div>
@@ -577,7 +577,7 @@ export default function ValuesSearchControls({
 
             {/* Value range slider (always its own row) */}
             <div className="w-full">
-              <div className="border-stroke bg-secondary-bg rounded-lg border px-3 py-2">
+              <div className="border-border-primary hover:border-border-focus bg-secondary-bg rounded-lg border px-3 py-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="text-secondary-text text-xs">Value Range</span>

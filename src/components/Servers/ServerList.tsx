@@ -267,7 +267,10 @@ const ServerList: React.FC = () => {
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="border-stroke bg-secondary-bg rounded-lg border p-4 sm:p-6">
+            <div
+              key={i}
+              className="border-border-primary hover:border-border-focus bg-secondary-bg rounded-lg border p-4 sm:p-6"
+            >
               <div className="mb-4 flex flex-col gap-3">
                 <div className="flex items-center space-x-2">
                   <ShieldCheckIcon className="text-button-info h-5 w-5" />
@@ -321,7 +324,7 @@ const ServerList: React.FC = () => {
                   />
                 </div>
 
-                <div className="border-stroke bg-primary-bg rounded-lg border p-3 sm:p-4">
+                <div className="border-border-primary hover:border-border-focus bg-primary-bg rounded-lg border p-3 sm:p-4">
                   <Skeleton
                     variant="text"
                     width={100}
@@ -367,7 +370,7 @@ const ServerList: React.FC = () => {
 
   if (servers.length === 0) {
     return (
-      <div className="border-stroke bg-secondary-bg rounded-lg border p-8 text-center">
+      <div className="border-border-primary hover:border-border-focus bg-secondary-bg rounded-lg border p-8 text-center">
         <ShieldCheckIcon className="text-button-info mx-auto mb-4 h-12 w-12" />
         <h3 className="text-primary-text mb-2 text-xl font-semibold">No servers available</h3>
         <p className="text-secondary-text">You can add a server or check back later</p>
@@ -399,7 +402,7 @@ const ServerList: React.FC = () => {
         {currentServers.map((server, index) => (
           <div
             key={server.id}
-            className="border-stroke bg-secondary-bg rounded-lg border p-4 sm:p-6"
+            className="border-border-primary hover:border-border-focus bg-secondary-bg rounded-lg border p-4 sm:p-6"
           >
             <div className="mb-4 flex flex-col gap-3">
               <div className="flex items-center space-x-2">
@@ -519,7 +522,7 @@ const ServerList: React.FC = () => {
                 </span>
               </div>
 
-              <div className="border-stroke bg-primary-bg rounded-lg border p-3 sm:p-4">
+              <div className="border-border-primary hover:border-border-focus bg-primary-bg rounded-lg border p-3 sm:p-4">
                 <h3 className="text-primary-text mb-2 text-sm font-semibold">Server Rules</h3>
                 <p className="text-secondary-text text-xs break-words whitespace-pre-wrap sm:text-sm">
                   {server.rules === 'N/A' ? 'No Rules set by owner' : server.rules}

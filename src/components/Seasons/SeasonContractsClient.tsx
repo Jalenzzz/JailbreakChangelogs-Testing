@@ -77,7 +77,7 @@ export default function SeasonContractsClient({ contracts, updatedAt }: SeasonCo
             {grouped[team].map((c, idx) => (
               <div
                 key={`${team}-${c.name}-${idx}`}
-                className="group hover:shadow-3xl border-stroke relative flex flex-col overflow-hidden rounded-2xl border shadow-2xl transition-all duration-300 hover:scale-105"
+                className="group hover:shadow-3xl border-border-primary hover:border-border-focus relative flex flex-col overflow-hidden rounded-2xl border shadow-2xl transition-all duration-300 hover:scale-105"
               >
                 {/* Season Pass Corner Badge */}
                 {c.reqseasonpass && (
@@ -125,7 +125,7 @@ export default function SeasonContractsClient({ contracts, updatedAt }: SeasonCo
                     <div className="mt-auto">
                       <div className="relative">
                         <div className="bg-primary-bg absolute inset-0 rounded-xl opacity-50 blur-sm"></div>
-                        <div className="border-stroke bg-primary-bg relative rounded-xl border px-4 py-3 shadow-lg">
+                        <div className="border-border-primary hover:border-border-focus bg-primary-bg relative rounded-xl border px-4 py-3 shadow-lg">
                           <div
                             className={`text-primary-text text-2xl uppercase ${bangers.className} text-center`}
                           >

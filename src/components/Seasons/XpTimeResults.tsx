@@ -11,7 +11,7 @@ interface XpTimeResultsProps {
 
 export default function XpTimeResults({ timeNoPass, timeWithPass }: XpTimeResultsProps) {
   return (
-    <div className="border-stroke bg-secondary-bg rounded-lg border p-4">
+    <div className="border-border-primary hover:border-border-focus bg-secondary-bg rounded-lg border p-4">
       <h3 className="text-muted mb-3 text-xl font-semibold">
         ⏱️ Time to Complete (Normal XP Rate)
       </h3>

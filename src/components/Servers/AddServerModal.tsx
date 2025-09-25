@@ -191,7 +191,7 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal */}
-      <div className="border-stroke bg-secondary-bg relative w-full max-w-md rounded-lg border shadow-xl">
+      <div className="border-border-primary hover:border-border-focus bg-secondary-bg relative w-full max-w-md rounded-lg border shadow-xl">
         {/* Header */}
         <div className="border-border-primary flex items-center justify-between border-b p-4">
           <h2 className="text-primary-text text-xl font-semibold">
@@ -220,7 +220,7 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
                 type="text"
                 value={link}
                 onChange={(e) => setLink(e.target.value)}
-                className="text-primary-text border-stroke bg-secondary-bg placeholder-secondary-text focus:border-button-info w-full rounded-md border px-3 py-2 focus:outline-none"
+                className="text-primary-text border-border-primary hover:border-border-focus bg-secondary-bg placeholder-secondary-text focus:border-button-info w-full rounded-md border px-3 py-2 focus:outline-none"
                 placeholder="Enter the server link"
               />
               <p className="text-secondary-text mt-1 text-sm">
@@ -241,7 +241,7 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
                 onChange={(e) => handleRulesChange(e.target.value)}
                 rows={4}
                 maxLength={MAX_RULES_LENGTH}
-                className="text-primary-text border-stroke bg-secondary-bg placeholder-secondary-text focus:border-button-info w-full rounded-md border px-3 py-2 focus:outline-none"
+                className="text-primary-text border-border-primary hover:border-border-focus bg-secondary-bg placeholder-secondary-text focus:border-button-info w-full rounded-md border px-3 py-2 focus:outline-none"
                 placeholder="Enter the server rules"
               />
               <p className="text-secondary-text mt-1 text-sm">
