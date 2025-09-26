@@ -18,6 +18,12 @@ export async function DELETE(request: Request) {
   });
 
   const text = await upstream.text();
+
+  if (!upstream.ok) {
+    console.error('Favorite remove failed:', text);
+    return NextResponse.json({ message: 'Failed to remove favorite' }, { status: upstream.status });
+  }
+
   return new NextResponse(text, {
     status: upstream.status,
     headers: { 'content-type': upstream.headers.get('content-type') || 'application/json' },

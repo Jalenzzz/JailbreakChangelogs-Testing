@@ -19,10 +19,8 @@ export async function DELETE() {
 
     if (!resp.ok) {
       const err = await resp.text();
-      return NextResponse.json(
-        { message: err || 'Failed to delete account' },
-        { status: resp.status },
-      );
+      console.error('Account deletion failed:', err);
+      return NextResponse.json({ message: 'Failed to delete account' }, { status: resp.status });
     }
 
     // Clear auth cookie too

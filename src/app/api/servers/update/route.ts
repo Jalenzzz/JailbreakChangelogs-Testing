@@ -23,6 +23,12 @@ export async function POST(request: Request) {
   );
 
   const text = await upstream.text();
+
+  if (!upstream.ok) {
+    console.error('Server update failed:', text);
+    return NextResponse.json({ message: 'Failed to update server' }, { status: upstream.status });
+  }
+
   return new NextResponse(text, {
     status: upstream.status,
     headers: { 'content-type': upstream.headers.get('content-type') || 'application/json' },

@@ -18,6 +18,12 @@ export async function POST(request: Request) {
   });
 
   const text = await upstream.text();
+
+  if (!upstream.ok) {
+    console.error('Code redeem failed:', text);
+    return NextResponse.json({ message: 'Failed to redeem code' }, { status: upstream.status });
+  }
+
   return new NextResponse(text, {
     status: upstream.status,
     headers: { 'content-type': upstream.headers.get('content-type') || 'application/json' },
