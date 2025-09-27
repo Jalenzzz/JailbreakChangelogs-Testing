@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     siteName: 'Jailbreak Changelogs',
     images: [
       {
-        url: 'https://assets.jailbreakchangelogs.xyz/assets/logos/JBCL_Long_Dark_Background.webp',
+        url: '/api/assets/logos/JBCL_Long_Dark_Background.webp',
         width: 1200,
         height: 630,
         alt: 'Dupe Calculator Banner',
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Dupe Calculator',
     description: 'Check for duplicated items in your inventory using our dupe calculator tool.',
-    images: ['https://assets.jailbreakchangelogs.xyz/assets/logos/JBCL_Long_Dark_Background.webp'],
+    images: ['/api/assets/logos/JBCL_Long_Dark_Background.webp'],
   },
 };
 

@@ -306,14 +306,14 @@ export default function ModernPricingSection() {
           <div className="bg-secondary-bg border-border-primary rounded-lg border p-6 text-center">
             <h3 className="text-primary-text mb-4 text-lg font-semibold">Ko-fi Donations</h3>
             <Image
-              src="https://assets.jailbreakchangelogs.xyz/assets/images/kofi_assets/kofi_symbol.svg"
+              src="/api/assets/images/kofi_assets/kofi_symbol.svg"
               alt="Ko-fi Symbol"
               width={40}
               height={40}
               className="mx-auto mb-4"
             />
             <Image
-              src="https://assets.jailbreakchangelogs.xyz/assets/images/support/KoFi_Supporter_QR_Code.webp"
+              src="/api/assets/images/support/KoFi_Supporter_QR_Code.webp"
               alt="Ko-fi Support QR Code"
               width={192}
               height={192}
@@ -333,7 +333,7 @@ export default function ModernPricingSection() {
             <h3 className="text-primary-text mb-4 text-lg font-semibold">Roblox Donations</h3>
             <RobloxIcon className="mx-auto mb-4 h-10 w-10" />
             <Image
-              src="https://assets.jailbreakchangelogs.xyz/assets/images/support/Roblox_Supporter_QR_Code.webp"
+              src="/api/assets/images/support/Roblox_Supporter_QR_Code.webp"
               alt="Roblox Support QR Code"
               width={192}
               height={192}
