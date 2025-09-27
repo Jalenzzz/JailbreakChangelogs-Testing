@@ -16,7 +16,6 @@ import ExperimentalFeatureBanner from '@/components/UI/ExperimentalFeatureBanner
 import ComingSoon from '@/components/UI/ComingSoon';
 import ConnectedBotsPolling from '@/components/UI/ConnectedBotsPolling';
 import { isFeatureEnabled } from '@/utils/featureFlags';
-import { MdOutlineSecurity } from 'react-icons/md';
 import { RiVerifiedBadgeFill } from 'react-icons/ri';
 import ScanOptionSection from '@/components/Inventory/ScanOptionSection';
 import InventoryConfetti from '@/components/Inventory/InventoryConfetti';
@@ -285,14 +284,11 @@ async function OfficialBotsSection() {
           })}
         </div>
         <div className="border-border-primary bg-button-info/10 mt-4 rounded-lg border p-4 shadow-sm">
-          <div className="flex items-start gap-4">
-            <MdOutlineSecurity className="text-button-info mt-0.5 h-4 w-4 flex-shrink-0" />
-            <div className="relative z-10">
-              <span className="text-primary-text text-base font-bold">Security Notice</span>
-              <div className="text-secondary-text mt-1">
-                If someone claims to be scanning inventories for JBCL but isn&apos;t one of these
-                official bots, they are impersonating us. Please report such users to prevent scams.
-              </div>
+          <div className="relative z-10">
+            <span className="text-primary-text text-base font-bold">Security Notice</span>
+            <div className="text-secondary-text mt-1">
+              If someone claims to be scanning inventories for JBCL but isn&apos;t one of these
+              official bots, they are impersonating us. Please report such users to prevent scams.
             </div>
           </div>
         </div>

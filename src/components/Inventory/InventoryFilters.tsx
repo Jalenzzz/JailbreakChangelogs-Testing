@@ -35,6 +35,7 @@ interface InventoryFiltersProps {
   onNonOriginalFilterToggle: (checked: boolean) => void;
   sortOrder: SortOrder;
   setSortOrder: (order: SortOrder) => void;
+  hasDuplicates: boolean;
 }
 
 export default function InventoryFilters({
@@ -49,6 +50,7 @@ export default function InventoryFilters({
   onNonOriginalFilterToggle,
   sortOrder,
   setSortOrder,
+  hasDuplicates,
 }: InventoryFiltersProps) {
   const [selectLoaded, setSelectLoaded] = useState(false);
   const MAX_SEARCH_LENGTH = 50;
@@ -134,6 +136,7 @@ export default function InventoryFilters({
               className="w-full"
               isMulti={false}
               isClearable={true}
+              isSearchable={false}
               placeholder="Filter by category..."
               unstyled
               classNames={{
@@ -195,18 +198,34 @@ export default function InventoryFilters({
                 }
               }}
               options={[
-                { value: 'duplicates', label: 'Duplicates First' },
-                { value: 'alpha-asc', label: 'A-Z' },
-                { value: 'alpha-desc', label: 'Z-A' },
-                { value: 'created-asc', label: 'Oldest First' },
-                { value: 'created-desc', label: 'Newest First' },
-                { value: 'cash-desc', label: 'Cash Value (High to Low)' },
-                { value: 'cash-asc', label: 'Cash Value (Low to High)' },
+                ...(hasDuplicates ? [{ value: 'duplicates', label: 'Group Duplicates' }] : []),
+                {
+                  label: 'Date',
+                  options: [
+                    { value: 'created-asc', label: 'Oldest First' },
+                    { value: 'created-desc', label: 'Newest First' },
+                  ],
+                },
+                {
+                  label: 'Values',
+                  options: [
+                    { value: 'cash-desc', label: 'Cash Value (High to Low)' },
+                    { value: 'cash-asc', label: 'Cash Value (Low to High)' },
+                  ],
+                },
+                {
+                  label: 'Alphabetically',
+                  options: [
+                    { value: 'alpha-asc', label: 'A-Z' },
+                    { value: 'alpha-desc', label: 'Z-A' },
+                  ],
+                },
               ]}
               classNamePrefix="react-select"
               className="w-full"
               isMulti={false}
-              isClearable={false}
+              isClearable={true}
+              isSearchable={false}
               placeholder="Sort by..."
               unstyled
               classNames={{

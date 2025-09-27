@@ -334,6 +334,11 @@ export default function InventoryItems({
     };
   }, [initialData.data]);
 
+  // Check if there are any duplicates
+  const hasDuplicates = useMemo(() => {
+    return inventoryStats.duplicates.length > 0;
+  }, [inventoryStats.duplicates]);
+
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
     if (onPageChange) {
@@ -358,6 +363,7 @@ export default function InventoryItems({
         onNonOriginalFilterToggle={handleNonOriginalFilterToggle}
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}
+        hasDuplicates={hasDuplicates}
       />
 
       {/* Duplicate Info */}

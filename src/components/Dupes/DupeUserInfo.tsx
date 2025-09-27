@@ -155,7 +155,7 @@ export default function DupeUserInfo({
 
       {/* Stats */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div className="border-border-primary bg-tertiary-bg rounded-lg border p-4 text-center">
+        <div className="border-border-primary bg-primary-bg rounded-lg border p-4 text-center">
           <div className="text-secondary-text mb-2 text-sm">Dupe Items Found</div>
           <Tooltip
             title={`${dupeItemsCount.toLocaleString()}`}
