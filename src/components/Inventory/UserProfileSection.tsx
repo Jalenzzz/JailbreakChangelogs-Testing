@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic';
 import { InventoryData, UserConnectionData } from '@/app/inventories/types';
 import { DiscordIcon } from '@/components/Icons/DiscordIcon';
 import { RobloxIcon } from '@/components/Icons/RobloxIcon';
+import { DefaultAvatar } from '@/utils/avatar';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { useScanWebSocket } from '@/hooks/useScanWebSocket';
 import { useSupporterModal } from '@/hooks/useSupporterModal';
@@ -160,7 +161,7 @@ export default function UserProfileSection({
   ]);
 
   return (
-    <div className="mb-6 flex flex-col gap-4 rounded-lg p-4 sm:flex-row sm:items-center">
+    <div className="mb-6 flex flex-col gap-4 rounded-lg p-4 xl:flex-row xl:items-center">
       {/* Avatar */}
       {getUserAvatar(userId) ? (
         <Image
@@ -171,15 +172,8 @@ export default function UserProfileSection({
           className="flex-shrink-0 rounded-full"
         />
       ) : (
-        <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full">
-          <svg className="text-muted h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-            />
-          </svg>
+        <div className="bg-primary-bg flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full">
+          <DefaultAvatar />
         </div>
       )}
 
@@ -467,7 +461,7 @@ export default function UserProfileSection({
       ) : (
         /* Show login prompt for potential profile owner */
         <div className="mt-4">
-          <div className="border-border-primary bg-secondary-bg shadow-card-shadow rounded-lg border p-4">
+          <div className="border-border-primary bg-primary-bg shadow-card-shadow rounded-lg border p-4">
             <div className="flex items-start gap-3">
               <div className="flex-shrink-0">
                 <svg

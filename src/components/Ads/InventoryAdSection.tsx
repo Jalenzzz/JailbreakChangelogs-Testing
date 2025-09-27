@@ -23,9 +23,7 @@ export default function InventoryAdSection({ className = '' }: InventoryAdSectio
         .responsive-ad-container-inventory {
           width: 320px;
           height: 100px;
-          border: 1px solid var(--color-border-border-primary);
           border-radius: 8px;
-          background: var(--color-secondary-bg);
           overflow: hidden;
         }
 
@@ -51,20 +49,16 @@ export default function InventoryAdSection({ className = '' }: InventoryAdSectio
         }
       `}</style>
       <div className={className}>
-        <div className="flex justify-center">
-          <div className="w-full max-w-[700px]">
-            <span className="text-secondary-text mb-2 block text-center text-xs">
-              ADVERTISEMENT
-            </span>
-            <div className="responsive-ad-container-inventory">
-              <DisplayAd
-                adSlot="3210934616"
-                adFormat="fluid"
-                style={{ display: 'block', width: '100%', height: '100%' }}
-              />
-            </div>
-            <AdRemovalNotice className="mt-2" />
+        <div className="flex flex-col items-center">
+          <span className="text-secondary-text mb-2 block text-center text-xs">ADVERTISEMENT</span>
+          <div className="responsive-ad-container-inventory">
+            <DisplayAd
+              adSlot="3210934616"
+              adFormat="fluid"
+              style={{ display: 'block', width: '100%', height: '100%' }}
+            />
           </div>
+          <AdRemovalNotice className="mt-2" />
         </div>
       </div>
     </>

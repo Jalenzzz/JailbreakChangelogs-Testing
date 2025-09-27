@@ -216,11 +216,11 @@ export default function ConnectedBotsPolling() {
         </div>
       </div>
       <div className="border-border-primary bg-secondary-bg shadow-card-shadow rounded-lg border p-4">
-        {isLoading ? (
+        {isLoading && !botsData ? (
           <div className="flex items-center justify-center py-20">
             <div className="flex items-center gap-2">
               <div className="h-5 w-5 animate-spin rounded-full border-2 border-blue-400 border-t-transparent"></div>
-              <span className="text-sm text-blue-400">Updating...</span>
+              <span className="text-sm text-blue-400">Loading...</span>
             </div>
           </div>
         ) : (
@@ -268,7 +268,7 @@ export default function ConnectedBotsPolling() {
                       href={`https://www.roblox.com/users/${queueInfo.last_dequeue.user_id}/profile`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-link hover:text-link-hover font-bold transition-colors"
+                      className="text-primary-text hover:text-link-hover font-bold transition-colors"
                     >
                       {lastProcessedUserData?.[queueInfo.last_dequeue.user_id]?.displayName ||
                         lastProcessedUserData?.[queueInfo.last_dequeue.user_id]?.name ||
@@ -288,7 +288,7 @@ export default function ConnectedBotsPolling() {
                             href={`https://www.roblox.com/users/${botId}/profile`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-link hover:text-link-hover transition-colors"
+                            className="text-primary-text hover:text-link-hover transition-colors"
                           >
                             {botDisplayName}
                           </a>
@@ -377,11 +377,11 @@ function BotStatusCard({
               href={`https://www.roblox.com/users/${bot.id}/profile`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-link hover:text-link-hover text-sm font-medium transition-colors"
+              className="text-primary-text hover:text-link-hover text-sm font-medium transition-colors"
             >
               {displayName}
             </a>
-            <div className="text-tertiary-text text-xs">@{username}</div>
+            <div className="text-secondary-text text-xs">@{username}</div>
           </div>
         </div>
 

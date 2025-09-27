@@ -6,7 +6,14 @@ import dynamic from 'next/dynamic';
 
 const Select = dynamic(() => import('react-select'), { ssr: false });
 
-type SortOrder = 'duplicates' | 'alpha-asc' | 'alpha-desc' | 'created-asc' | 'created-desc';
+type SortOrder =
+  | 'duplicates'
+  | 'alpha-asc'
+  | 'alpha-desc'
+  | 'created-asc'
+  | 'created-desc'
+  | 'cash-desc'
+  | 'cash-asc';
 
 export interface InventoryStats {
   isLargeInventory: boolean;
@@ -176,7 +183,11 @@ export default function InventoryFilters({
                           ? 'Oldest First'
                           : sortOrder === 'created-desc'
                             ? 'Newest First'
-                            : 'Sort by...',
+                            : sortOrder === 'cash-desc'
+                              ? 'Cash Value (High to Low)'
+                              : sortOrder === 'cash-asc'
+                                ? 'Cash Value (Low to High)'
+                                : 'Sort by...',
               }}
               onChange={(option) => {
                 if (option) {
@@ -189,6 +200,8 @@ export default function InventoryFilters({
                 { value: 'alpha-desc', label: 'Z-A' },
                 { value: 'created-asc', label: 'Oldest First' },
                 { value: 'created-desc', label: 'Newest First' },
+                { value: 'cash-desc', label: 'Cash Value (High to Low)' },
+                { value: 'cash-asc', label: 'Cash Value (Low to High)' },
               ]}
               classNamePrefix="react-select"
               className="w-full"

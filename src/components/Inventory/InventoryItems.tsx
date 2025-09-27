@@ -40,7 +40,13 @@ export default function InventoryItems({
   const [showActionModal, setShowActionModal] = useState(false);
   const [selectedItemForAction, setSelectedItemForAction] = useState<InventoryItem | null>(null);
   const [sortOrder, setSortOrder] = useState<
-    'duplicates' | 'alpha-asc' | 'alpha-desc' | 'created-asc' | 'created-desc'
+    | 'duplicates'
+    | 'alpha-asc'
+    | 'alpha-desc'
+    | 'created-asc'
+    | 'created-desc'
+    | 'cash-desc'
+    | 'cash-asc'
   >('created-desc');
 
   const itemsPerPage = 20;
@@ -131,6 +137,18 @@ export default function InventoryItems({
     return counts;
   }, [initialData.data]);
 
+  // Parse numeric value from string format like "23.4m" -> 23400000
+  const parseNumericValue = (value: string | null): number => {
+    if (!value || value === 'N/A') return -1;
+    const lower = value.toLowerCase();
+    const num = parseFloat(lower.replace(/[^0-9.]/g, ''));
+    if (Number.isNaN(num)) return -1;
+    if (lower.includes('k')) return num * 1_000;
+    if (lower.includes('m')) return num * 1_000_000;
+    if (lower.includes('b')) return num * 1_000_000_000;
+    return num;
+  };
+
   // Filter and sort logic
   const filteredAndSortedItems = useMemo(() => {
     const filtered = initialData.data.filter((item) => {
@@ -215,6 +233,14 @@ export default function InventoryItems({
             return new Date(bCreatedDesc).getTime() - new Date(aCreatedDesc).getTime();
           }
           return 0;
+        case 'cash-desc':
+          const aCashDesc = parseNumericValue(a.itemData?.cash_value);
+          const bCashDesc = parseNumericValue(b.itemData?.cash_value);
+          return bCashDesc - aCashDesc;
+        case 'cash-asc':
+          const aCashAsc = parseNumericValue(a.itemData?.cash_value);
+          const bCashAsc = parseNumericValue(b.itemData?.cash_value);
+          return aCashAsc - bCashAsc;
         default:
           return 0;
       }
