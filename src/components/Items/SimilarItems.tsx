@@ -364,15 +364,7 @@ const SimilarItems = ({ currentItem, similarItemsPromise }: SimilarItemsProps) =
               href={`/item/${item.type.toLowerCase()}/${item.name}`}
               className="group block"
             >
-              <div
-                className={`border-border-primary hover:border-border-focus relative overflow-hidden rounded-lg border transition-all duration-300 ${
-                  item.is_seasonal === 1
-                    ? 'border-button-info'
-                    : item.is_limited === 1
-                      ? 'border-button-info'
-                      : ''
-                } bg-secondary-bg`}
-              >
+              <div className="border-border-primary hover:border-border-focus bg-primary-bg relative overflow-hidden rounded-lg border transition-all duration-300">
                 {/* Media Section */}
                 <div className="relative aspect-video w-full overflow-hidden">
                   {isVideoItem(item.name) ? (
@@ -399,7 +391,7 @@ const SimilarItems = ({ currentItem, similarItemsPromise }: SimilarItemsProps) =
                 <div className="flex flex-1 flex-col space-y-2 p-3">
                   {/* Item Name */}
                   <div className="flex items-center justify-between">
-                    <h3 className="text-link hover:text-link-hover line-clamp-2 text-sm leading-tight font-semibold transition-colors">
+                    <h3 className="text-primary-text hover:text-link line-clamp-2 text-sm leading-tight font-semibold transition-colors">
                       {item.name}
                     </h3>
                   </div>
@@ -425,7 +417,7 @@ const SimilarItems = ({ currentItem, similarItemsPromise }: SimilarItemsProps) =
                   {/* Values Section */}
                   <div className="space-y-1">
                     {/* Cash Value */}
-                    <div className="bg-primary-bg flex items-center justify-between rounded-lg p-1.5">
+                    <div className="bg-secondary-bg flex items-center justify-between rounded-lg p-1.5">
                       <span className="text-secondary-text text-[10px] font-medium">Cash</span>
                       <span className="bg-button-info text-form-button-text rounded-lg px-1.5 py-0.5 text-[9px] font-bold">
                         {formatFullValue(item.cash_value)}
@@ -433,7 +425,7 @@ const SimilarItems = ({ currentItem, similarItemsPromise }: SimilarItemsProps) =
                     </div>
 
                     {/* Duped Value */}
-                    <div className="bg-primary-bg flex items-center justify-between rounded-lg p-1.5">
+                    <div className="bg-secondary-bg flex items-center justify-between rounded-lg p-1.5">
                       <span className="text-secondary-text text-[10px] font-medium">Duped</span>
                       <span className="bg-button-info text-form-button-text rounded-lg px-1.5 py-0.5 text-[9px] font-bold">
                         {formatFullValue(item.duped_value)}
@@ -441,7 +433,7 @@ const SimilarItems = ({ currentItem, similarItemsPromise }: SimilarItemsProps) =
                     </div>
 
                     {/* Demand */}
-                    <div className="bg-primary-bg flex items-center justify-between rounded-lg p-1.5">
+                    <div className="bg-secondary-bg flex items-center justify-between rounded-lg p-1.5">
                       <span className="text-secondary-text text-[10px] font-medium">Demand</span>
                       <span
                         className={`${getDemandColor(item.demand)} rounded-lg px-1.5 py-0.5 text-[9px] font-bold whitespace-nowrap`}
@@ -452,7 +444,7 @@ const SimilarItems = ({ currentItem, similarItemsPromise }: SimilarItemsProps) =
 
                     {/* Trend */}
                     {item.trend && item.trend !== 'N/A' && (
-                      <div className="bg-primary-bg flex items-center justify-between rounded-lg p-1.5">
+                      <div className="bg-secondary-bg flex items-center justify-between rounded-lg p-1.5">
                         <span className="text-secondary-text text-[10px] font-medium">Trend</span>
                         <span
                           className={`${getTrendColor(item.trend)} rounded-lg px-1.5 py-0.5 text-[9px] font-bold whitespace-nowrap`}

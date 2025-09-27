@@ -10,8 +10,14 @@ const ChangelogMediaEmbed: React.FC<ChangelogMediaEmbedProps> = ({ type, url }) 
   switch (type) {
     case 'image':
       return (
-        <div className="relative my-4 aspect-video w-full max-w-2xl">
-          <Image src={url} alt="Embedded image" fill className="rounded-lg object-contain" />
+        <div className="my-4 w-full max-w-2xl">
+          <Image
+            src={url}
+            alt="Embedded image"
+            width={800}
+            height={600}
+            className="w-full rounded-lg object-contain"
+          />
         </div>
       );
     case 'video':

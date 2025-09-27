@@ -86,6 +86,15 @@ export async function GET(
     });
   } catch (error) {
     console.error('Error serving file from Railway Object Storage:', error);
+
+    // Handle specific AWS S3 errors
+    if (error && typeof error === 'object' && ('name' in error || 'Code' in error)) {
+      const s3Error = error as { name?: string; Code?: string };
+      if (s3Error.name === 'NoSuchKey' || s3Error.Code === 'NoSuchKey') {
+        return new NextResponse('Media not found', { status: 404 });
+      }
+    }
+
     return new NextResponse('Internal Server Error', { status: 500 });
   }
 }

@@ -91,7 +91,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <div className="bg-primary-bg fixed inset-0 z-50 flex items-center justify-center">
               <div className="mx-auto max-w-md p-8 text-center">
                 <Image
-                  src="/assets/images/JBCL_Logo_Short_Transparent.webp"
+                  src="/api/assets/logos/JBCL_Short_Transparent.webp"
                   alt="Jailbreak Changelogs"
                   width={96}
                   height={96}
@@ -178,7 +178,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <div className="bg-primary-bg fixed inset-0 z-50 flex items-center justify-center">
             <div className="mx-auto max-w-md p-8 text-center">
               <Image
-                src="/assets/images/JBCL_Logo_Short_Transparent.webp"
+                src="/api/assets/logos/JBCL_Short_Transparent.webp"
                 alt="Jailbreak Changelogs"
                 width={96}
                 height={96}
