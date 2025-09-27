@@ -163,6 +163,11 @@ export default function DupeFinderResults({
         initialData.forEach((dupeItem) => {
           const itemData = itemMap.get(dupeItem.item_id);
           if (itemData) {
+            // Skip items with 49+ ownership history entries
+            if (dupeItem.history && dupeItem.history.length >= 49) {
+              return;
+            }
+
             const dupedValue = getDupedValueForItem(itemData, dupeItem);
             if (!isNaN(dupedValue) && dupedValue > 0) {
               totalDuped += dupedValue;

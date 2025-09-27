@@ -19,6 +19,8 @@ import { isFeatureEnabled } from '@/utils/featureFlags';
 import { MdOutlineSecurity } from 'react-icons/md';
 import { RiVerifiedBadgeFill } from 'react-icons/ri';
 import ScanOptionSection from '@/components/Inventory/ScanOptionSection';
+import InventoryConfetti from '@/components/Inventory/InventoryConfetti';
+import InventoryAdSection from '@/components/Ads/InventoryAdSection';
 
 interface BotAvatarData {
   targetId: number;
@@ -36,6 +38,7 @@ export default function InventoriesPage() {
 
   return (
     <div className="container mx-auto px-4 pb-8">
+      <InventoryConfetti />
       <Breadcrumb />
       <div className="mb-6 flex items-center gap-3">
         <h1 className="text-primary-text text-3xl font-bold">Inventory Calculator</h1>
@@ -52,13 +55,16 @@ export default function InventoriesPage() {
       </p>
 
       {/* Want on-demand scans section */}
-      <ScanOptionSection />
+      <ScanOptionSection variant="main" />
 
       <InventoryCheckerClient />
 
       <Suspense fallback={<StatsSkeleton />}>
         <StatsSection />
       </Suspense>
+
+      {/* Ad Section - Only show for non-premium users */}
+      <InventoryAdSection className="mt-8" />
 
       <ConnectedBotsPolling />
 

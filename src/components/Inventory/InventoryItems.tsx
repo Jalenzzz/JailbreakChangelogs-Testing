@@ -14,6 +14,7 @@ interface InventoryItemsProps {
   onItemClick: (item: InventoryItem) => void;
   itemsData?: Item[];
   onPageChange?: (page: number) => void;
+  isOwnInventory?: boolean;
 }
 
 export default function InventoryItems({
@@ -23,6 +24,7 @@ export default function InventoryItems({
   onItemClick,
   itemsData: propItemsData,
   onPageChange,
+  isOwnInventory = false,
 }: InventoryItemsProps) {
   // State management
   const [searchTerm, setSearchTerm] = useState('');
@@ -336,25 +338,24 @@ export default function InventoryItems({
       {inventoryStats.duplicates.length > 0 && (
         <div className="border-button-info bg-button-info/10 mb-4 rounded-lg border p-4">
           <div className="text-primary-text mb-3 flex items-center gap-2 text-sm">
-            <span className="text-button-info">📊</span>
-            <span className="font-medium">Duplicate Items Found</span>
+            <span className="font-medium">Multiple Copies Found</span>
           </div>
           <div className="text-secondary-text space-y-1 text-sm">
             <div>
-              Found{' '}
+              {isOwnInventory ? 'You have' : 'They have'}{' '}
               <span className="text-primary-text font-semibold">
                 {inventoryStats.duplicates.length}
               </span>{' '}
-              items with duplicates
+              different items with multiple copies
             </div>
             <div>
-              Total duplicate items:{' '}
+              Total copies:{' '}
               <span className="text-primary-text font-semibold">
                 {inventoryStats.totalDuplicates}
               </span>
             </div>
             <div className="mt-2 text-xs">
-              Top duplicates:{' '}
+              Items with most copies:{' '}
               {inventoryStats.duplicates
                 .slice(0, 3)
                 .map(([itemName, count]) => (

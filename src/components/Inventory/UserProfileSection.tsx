@@ -57,33 +57,8 @@ export default function UserProfileSection({
     return dataAge < 300; // 5 minutes
   };
 
-  // Check if user has access to refresh feature (requires Supporter II+)
-  const checkRefreshAccess = () => {
-    if (!isAuthenticated || !user) {
-      setShowLoginModal(true);
-      return false;
-    }
-
-    const userTier = user.premiumtype || 0;
-    if (userTier < 2) {
-      openModal({
-        feature: 'inventory_refresh',
-        currentTier: userTier,
-        requiredTier: 2,
-        currentLimit: userTier === 0 ? 'Free' : userTier === 1 ? 'Supporter I' : 'Unknown',
-        requiredLimit: 'Supporter II',
-      });
-      return false;
-    }
-    return true;
-  };
-
   const handleRefresh = () => {
     if (isRefreshing) return;
-
-    // Check if user has access to refresh feature
-    if (!checkRefreshAccess()) return;
-
     onRefresh();
   };
 
@@ -124,8 +99,49 @@ export default function UserProfileSection({
         scanWebSocket.message.includes('User not found in game')
       ) {
         showScanErrorToast('User not found in game. Please join a trade server and try again.');
+      } else if (scanWebSocket.error && scanWebSocket.error.includes('high enough supporter')) {
+        showScanErrorToast('You need to be Supporter III to use this feature.');
+        const userTier = user?.premiumtype || 0;
+        const TIER_NAMES = {
+          0: 'Free',
+          1: 'Supporter I',
+          2: 'Supporter II',
+          3: 'Supporter III',
+        };
+        const currentLimit = TIER_NAMES[userTier as keyof typeof TIER_NAMES] || 'Unknown';
+        openModal({
+          feature: 'inventory_refresh',
+          currentTier: userTier,
+          requiredTier: 3,
+          currentLimit: currentLimit,
+          requiredLimit: 'Supporter III',
+        });
+      } else if (scanWebSocket.error && scanWebSocket.error.includes('recent scan')) {
+        let message = 'You have a recent scan. Please wait before requesting another scan.';
+
+        if (scanWebSocket.expiresAt) {
+          const now = Math.floor(Date.now() / 1000);
+          const remainingSeconds = scanWebSocket.expiresAt - now;
+
+          if (remainingSeconds > 0) {
+            let timeText;
+            if (remainingSeconds < 60) {
+              timeText = `${remainingSeconds} seconds`;
+            } else if (remainingSeconds < 3600) {
+              const minutes = Math.ceil(remainingSeconds / 60);
+              timeText = `${minutes} minute${minutes !== 1 ? 's' : ''}`;
+            } else {
+              const hours = Math.floor(remainingSeconds / 3600);
+              const minutes = Math.ceil((remainingSeconds % 3600) / 60);
+              timeText = `${hours}h ${minutes}m`;
+            }
+            message = `You have a recent scan. Please wait ${timeText} before requesting another scan.`;
+          }
+        }
+
+        showScanErrorToast(message);
       } else if (scanWebSocket.error) {
-        showScanErrorToast('No bots online at the moment. Please try again later.');
+        showScanErrorToast(scanWebSocket.error);
       }
     }
 
@@ -133,7 +149,15 @@ export default function UserProfileSection({
       dismissScanLoadingToast();
       scanCompletedRef.current = false;
     }
-  }, [scanWebSocket.message, scanWebSocket.status, scanWebSocket.error, scanWebSocket.progress]);
+  }, [
+    scanWebSocket.message,
+    scanWebSocket.status,
+    scanWebSocket.error,
+    scanWebSocket.progress,
+    scanWebSocket.expiresAt,
+    openModal,
+    user?.premiumtype,
+  ]);
 
   return (
     <div className="mb-6 flex flex-col gap-4 rounded-lg p-4 sm:flex-row sm:items-center">
@@ -512,6 +536,8 @@ export default function UserProfileSection({
         feature={modalState.feature || 'refresh inventory data'}
         currentTier={modalState.currentTier || 0}
         requiredTier={modalState.requiredTier || 1}
+        currentLimit={modalState.currentLimit}
+        requiredLimit={modalState.requiredLimit}
       />
     </div>
   );

@@ -253,7 +253,7 @@ export default function UserStatsSection({
 
       {/* Total Values */}
       <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div className="border-border-primary bg-secondary-bg rounded-lg border p-4 text-center">
+        <div className="border-border-primary bg-primary-bg rounded-lg border p-4 text-center">
           <div className="text-secondary-text mb-2 text-sm">Total Cash Value</div>
           {isLoadingValues ? (
             <div className="text-secondary-text animate-pulse text-2xl font-bold">Loading...</div>
@@ -284,7 +284,7 @@ export default function UserStatsSection({
             </Tooltip>
           )}
         </div>
-        <div className="border-border-primary bg-secondary-bg rounded-lg border p-4 text-center">
+        <div className="border-border-primary bg-primary-bg rounded-lg border p-4 text-center">
           <div className="text-secondary-text mb-2 text-sm">Total Duped Value</div>
           {isLoadingValues ? (
             <div className="text-secondary-text animate-pulse text-2xl font-bold">Loading...</div>

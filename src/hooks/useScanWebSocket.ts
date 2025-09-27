@@ -13,6 +13,7 @@ interface ScanStatus {
   message?: string;
   progress?: number;
   error?: string;
+  expiresAt?: number;
 }
 
 interface UseScanWebSocketReturn {
@@ -20,6 +21,7 @@ interface UseScanWebSocketReturn {
   message: string | undefined;
   progress: number | undefined;
   error: string | undefined;
+  expiresAt: number | undefined;
   isConnected: boolean;
   startScan: () => void;
   stopScan: () => void;
@@ -30,6 +32,7 @@ export function useScanWebSocket(userId: string): UseScanWebSocketReturn {
   const [message, setMessage] = useState<string | undefined>();
   const [progress, setProgress] = useState<number | undefined>();
   const [error, setError] = useState<string | undefined>();
+  const [expiresAt, setExpiresAt] = useState<number | undefined>();
   const [isConnected, setIsConnected] = useState(false);
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -98,11 +101,13 @@ export function useScanWebSocket(userId: string): UseScanWebSocketReturn {
 
           if (data.error) {
             setError(data.error);
+            setExpiresAt(data.expires_at || undefined);
             setStatus('error');
             return;
           }
 
           setError(undefined);
+          setExpiresAt(undefined);
 
           if (data.action === 'request_response') {
             setStatus('scanning');
@@ -341,6 +346,7 @@ export function useScanWebSocket(userId: string): UseScanWebSocketReturn {
     setMessage(undefined);
     setProgress(undefined);
     setError(undefined);
+    setExpiresAt(undefined);
   }, []);
 
   useEffect(() => {
@@ -354,6 +360,7 @@ export function useScanWebSocket(userId: string): UseScanWebSocketReturn {
     message,
     progress,
     error,
+    expiresAt,
     isConnected,
     startScan,
     stopScan,
