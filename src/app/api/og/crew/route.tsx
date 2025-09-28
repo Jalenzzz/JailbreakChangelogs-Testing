@@ -25,7 +25,7 @@ async function isImageAccessible(url: string): Promise<boolean> {
 const BACKGROUND_COUNT = 19;
 const BACKGROUNDS = Array.from(
   { length: BACKGROUND_COUNT },
-  (_, i) => `/api/assets/backgrounds/png/background${i + 1}.png`,
+  (_, i) => `https://assets.jailbreakchangelogs.xyz/assets/backgrounds/png/background${i + 1}.png`,
 );
 
 /**
@@ -90,7 +90,7 @@ export async function GET(request: Request) {
 
   // Determine background image: crew flag or fallback to random background
   let bannerUrl: string;
-  const crewFlagUrl = '/api/assets/images/crews/flags/Flag_2.png';
+  const crewFlagUrl = 'https://assets.jailbreakchangelogs.xyz/assets/images/crews/flags/Flag_2.png';
 
   const isFlagAccessible = await isImageAccessible(crewFlagUrl);
   if (isFlagAccessible) {

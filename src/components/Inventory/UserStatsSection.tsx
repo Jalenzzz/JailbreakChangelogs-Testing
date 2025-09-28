@@ -98,7 +98,7 @@ const formatPreciseMoney = (money: number) => {
 };
 
 const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-  e.currentTarget.src = '/api/assets/images/placeholder.png';
+  e.currentTarget.src = 'https://assets.jailbreakchangelogs.xyz/assets/images/placeholder.png';
 };
 
 const formatDate = (timestamp: number) => {

@@ -168,7 +168,7 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
           {/* Crew Flag with Owner Avatar */}
           <div className="relative h-28 w-40 flex-shrink-0 overflow-hidden rounded sm:h-32 sm:w-48">
             <Image
-              src="/api/assets/images/crews/flags/Flag_3.png"
+              src="https://assets.jailbreakchangelogs.xyz/assets/images/crews/flags/Flag_3.png"
               alt="Crew flag"
               width={192}
               height={128}
@@ -253,7 +253,7 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
             {/* Flag background */}
             <div className="light:opacity-20 absolute inset-0 opacity-5 dark:opacity-5">
               <Image
-                src="/api/assets/images/crews/flags/Flag_3.png"
+                src="https://assets.jailbreakchangelogs.xyz/assets/images/crews/flags/Flag_3.png"
                 alt="Crew flag background"
                 fill
                 className="object-cover"
@@ -273,7 +273,7 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
             {/* Flag background */}
             <div className="light:opacity-20 absolute inset-0 opacity-5 dark:opacity-5">
               <Image
-                src="/api/assets/images/crews/flags/Flag_3.png"
+                src="https://assets.jailbreakchangelogs.xyz/assets/images/crews/flags/Flag_3.png"
                 alt="Crew flag background"
                 fill
                 className="object-cover"
@@ -291,7 +291,7 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
             {/* Flag background */}
             <div className="light:opacity-20 absolute inset-0 opacity-5 dark:opacity-5">
               <Image
-                src="/api/assets/images/crews/flags/Flag_3.png"
+                src="https://assets.jailbreakchangelogs.xyz/assets/images/crews/flags/Flag_3.png"
                 alt="Crew flag background"
                 fill
                 className="object-cover"
@@ -315,7 +315,7 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
             {/* Flag background */}
             <div className="light:opacity-20 absolute inset-0 opacity-5 dark:opacity-5">
               <Image
-                src="/api/assets/images/crews/flags/Flag_3.png"
+                src="https://assets.jailbreakchangelogs.xyz/assets/images/crews/flags/Flag_3.png"
                 alt="Crew flag background"
                 fill
                 className="object-cover"
@@ -335,7 +335,7 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
             {/* Flag background */}
             <div className="light:opacity-20 absolute inset-0 opacity-5 dark:opacity-5">
               <Image
-                src="/api/assets/images/crews/flags/Flag_3.png"
+                src="https://assets.jailbreakchangelogs.xyz/assets/images/crews/flags/Flag_3.png"
                 alt="Crew flag background"
                 fill
                 className="object-cover"
@@ -354,7 +354,7 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
             {/* Flag background */}
             <div className="light:opacity-20 absolute inset-0 opacity-5 dark:opacity-5">
               <Image
-                src="/api/assets/images/crews/flags/Flag_3.png"
+                src="https://assets.jailbreakchangelogs.xyz/assets/images/crews/flags/Flag_3.png"
                 alt="Crew flag background"
                 fill
                 className="object-cover"

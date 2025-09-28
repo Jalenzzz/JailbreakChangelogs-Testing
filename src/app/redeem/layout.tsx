@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     url: 'https://jailbreakchangelogs.xyz/redeem',
     images: [
       {
-        url: '/api/assets/logos/JBCL_Long_Dark_Background.webp',
+        url: 'https://assets.jailbreakchangelogs.xyz/assets/logos/JBCL_Long_Dark_Background.webp',
         width: 1200,
         height: 630,
         alt: 'Redeem Code Banner',
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Jailbreak Changelogs Redeem Code - Claim Your Perks',
     description: 'Redeem your unique code to claim exclusive perks on Jailbreak Changelogs.',
-    images: ['/api/assets/logos/JBCL_Long_Dark_Background.webp'],
+    images: ['https://assets.jailbreakchangelogs.xyz/assets/logos/JBCL_Long_Dark_Background.webp'],
   },
 };
 
