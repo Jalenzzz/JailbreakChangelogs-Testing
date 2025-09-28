@@ -194,6 +194,7 @@ export default function XpResultsSummary({ results, season }: XpResultsSummaryPr
                   <div className="mt-1 text-xs text-gray-400">(minimum realistic time)</div>
                 )}
               </div>
+              <div className="mt-1 text-xs text-gray-500">Results may vary (±1 day)</div>
               {results.achievableNoPass ? (
                 <div className="text-secondary-text mt-1 text-xs">
                   {results.timeNoPass.completionDate}
@@ -228,6 +229,7 @@ export default function XpResultsSummary({ results, season }: XpResultsSummaryPr
                   <div className="mt-1 text-xs text-gray-400">(minimum realistic time)</div>
                 )}
               </div>
+              <div className="mt-1 text-xs text-gray-500">Results may vary (±1 day)</div>
               {results.achievableWithPass ? (
                 <div className="text-secondary-text mt-1 text-xs">
                   {results.timeWithPass.completionDate}
