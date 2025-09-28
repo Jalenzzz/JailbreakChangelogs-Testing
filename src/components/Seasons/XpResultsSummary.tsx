@@ -318,6 +318,7 @@ export default function XpResultsSummary({ results, season }: XpResultsSummaryPr
                           ? 'day'
                           : 'days'}{' '}
                         - Complete by: {results.doubleXpResults.noPass.completionDate})
+                        <div className="mt-1 text-xs text-gray-500">Results may vary (±1 day)</div>
                       </span>
                     )}
                   </div>
@@ -387,6 +388,7 @@ export default function XpResultsSummary({ results, season }: XpResultsSummaryPr
                           ? 'day'
                           : 'days'}{' '}
                         - Complete by: {results.doubleXpResults.withPass.completionDate})
+                        <div className="mt-1 text-xs text-gray-500">Results may vary (±1 day)</div>
                       </span>
                     )}
                   </div>
