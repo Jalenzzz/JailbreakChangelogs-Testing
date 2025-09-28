@@ -131,7 +131,10 @@ export async function POST(request: Request) {
         file.type as (typeof UPLOAD_CONFIG.ALLOWED_FILE_TYPES)[number],
       )
     ) {
-      console.warn('Invalid MIME type:', { fileName: file.name, mimeType: file.type });
+      console.warn('Invalid MIME type:', {
+        fileName: file.name,
+        mimeType: file.type,
+      });
       return NextResponse.json(
         {
           message: `Invalid file type. Only ${getAllowedFileExtensions()} files are allowed for upload.`,
@@ -145,7 +148,10 @@ export async function POST(request: Request) {
     const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
 
     if (!allowedExtensions.includes(fileExtension)) {
-      console.warn('Invalid file extension:', { fileName: file.name, extension: fileExtension });
+      console.warn('Invalid file extension:', {
+        fileName: file.name,
+        extension: fileExtension,
+      });
       return NextResponse.json({ message: 'Invalid file extension' }, { status: 400 });
     }
 
@@ -162,7 +168,9 @@ export async function POST(request: Request) {
     // File size validation
     if (file.size > UPLOAD_CONFIG.MAX_FILE_SIZE) {
       return NextResponse.json(
-        { message: `File too large. Maximum size is ${UPLOAD_CONFIG.MAX_FILE_SIZE_MB}MB.` },
+        {
+          message: `File too large. Maximum size is ${UPLOAD_CONFIG.MAX_FILE_SIZE_MB}MB.`,
+        },
         { status: 400 },
       );
     }

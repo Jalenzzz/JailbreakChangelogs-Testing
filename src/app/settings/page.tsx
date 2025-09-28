@@ -210,7 +210,12 @@ export default function SettingsPage() {
           gap: 1,
         }}
       >
-        <SettingsIcon sx={{ fontSize: '2rem', color: 'var(--color-primary-text) !important' }} />
+        <SettingsIcon
+          sx={{
+            fontSize: '2rem',
+            color: 'var(--color-primary-text) !important',
+          }}
+        />
         Settings
       </Typography>
       <Typography variant="body1" sx={{ mb: 4, color: 'var(--color-primary-text)' }}>

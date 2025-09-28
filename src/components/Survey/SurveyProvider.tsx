@@ -40,7 +40,9 @@ export const SurveyProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const checkForSurvey = async () => {
     try {
-      const response = await fetch('/api/surveys/request', { cache: 'no-store' });
+      const response = await fetch('/api/surveys/request', {
+        cache: 'no-store',
+      });
       if (!response.ok) return;
 
       const data = await response.json();

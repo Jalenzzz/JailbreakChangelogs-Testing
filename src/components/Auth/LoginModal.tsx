@@ -206,15 +206,27 @@ function LoginModalInner({ open, onClose }: LoginModalProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1, duration: 0.3 }}
               >
-                <Box sx={{ borderBottom: 1, borderColor: 'var(--color-border-primary)', mb: 3 }}>
+                <Box
+                  sx={{
+                    borderBottom: 1,
+                    borderColor: 'var(--color-border-primary)',
+                    mb: 3,
+                  }}
+                >
                   <Tabs
                     value={campaign ? 0 : tabValue}
                     onChange={campaign ? undefined : handleTabChange}
                     variant="fullWidth"
                     sx={{
-                      '& .MuiTabs-indicator': { backgroundColor: 'var(--color-button-info)' },
-                      '& .Mui-selected': { color: 'var(--color-button-info) !important' },
-                      '& .MuiTab-root': { color: 'var(--color-secondary-text)' },
+                      '& .MuiTabs-indicator': {
+                        backgroundColor: 'var(--color-button-info)',
+                      },
+                      '& .Mui-selected': {
+                        color: 'var(--color-button-info) !important',
+                      },
+                      '& .MuiTab-root': {
+                        color: 'var(--color-secondary-text)',
+                      },
                     }}
                   >
                     <Tab
@@ -266,9 +278,15 @@ function LoginModalInner({ open, onClose }: LoginModalProps) {
               <AnimatePresence mode="wait">
                 <motion.div
                   key={campaign ? 0 : tabValue}
-                  initial={{ opacity: 0, x: (campaign ? 0 : tabValue) === 0 ? -20 : 20 }}
+                  initial={{
+                    opacity: 0,
+                    x: (campaign ? 0 : tabValue) === 0 ? -20 : 20,
+                  }}
                   animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: (campaign ? 0 : tabValue) === 0 ? 20 : -20 }}
+                  exit={{
+                    opacity: 0,
+                    x: (campaign ? 0 : tabValue) === 0 ? 20 : -20,
+                  }}
                   transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
                 >
                   <TabPanel value={campaign ? 0 : tabValue} index={0}>

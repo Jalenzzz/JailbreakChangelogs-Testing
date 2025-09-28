@@ -3,7 +3,10 @@ import { cookies } from 'next/headers';
 import { BASE_API_URL } from '@/utils/api';
 
 export async function POST(request: Request) {
-  const { id, item_type } = (await request.json()) as { id?: number; item_type?: string };
+  const { id, item_type } = (await request.json()) as {
+    id?: number;
+    item_type?: string;
+  };
   const cookieStore = await cookies();
   const token = cookieStore.get('token')?.value;
   if (!token || !id || !item_type) {
@@ -26,6 +29,8 @@ export async function POST(request: Request) {
 
   return new NextResponse(text, {
     status: upstream.status,
-    headers: { 'content-type': upstream.headers.get('content-type') || 'application/json' },
+    headers: {
+      'content-type': upstream.headers.get('content-type') || 'application/json',
+    },
   });
 }

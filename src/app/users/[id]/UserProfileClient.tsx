@@ -19,7 +19,10 @@ const Tooltip = dynamic(() => import('@mui/material/Tooltip'), {
 });
 
 const UserBadges = dynamic(
-  () => import('@/components/Profile/UserBadges').then((mod) => ({ default: mod.UserBadges })),
+  () =>
+    import('@/components/Profile/UserBadges').then((mod) => ({
+      default: mod.UserBadges,
+    })),
   {
     ssr: false,
     loading: () => <div className="h-6 w-6" />, // Placeholder with same size as lg badge

@@ -314,7 +314,11 @@ export default function SeasonDetailsClient({
                     <DisplayAd
                       adSlot="2909908750"
                       adFormat="auto"
-                      style={{ display: 'block', width: '100%', height: '100%' }}
+                      style={{
+                        display: 'block',
+                        width: '100%',
+                        height: '100%',
+                      }}
                     />
                   </div>
                   <AdRemovalNotice className="mt-2" />

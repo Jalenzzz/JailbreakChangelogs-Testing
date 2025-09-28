@@ -787,7 +787,8 @@ export default function ItemDetailsClient({
                             return (
                               <div className="py-8 text-center">
                                 <div className="text-secondary-text text-sm break-words">
-                                  No duped owners found matching &quot;{displayQuery}&quot;
+                                  No duped owners found matching &quot;
+                                  {displayQuery}&quot;
                                 </div>
                                 <button
                                   onClick={() => {

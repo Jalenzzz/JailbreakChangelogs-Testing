@@ -98,7 +98,7 @@ export default function ConnectedBotsPolling() {
         return;
       }
 
-      const userId = queueInfo.last_dequeue.user_id;
+      const userId = queueInfo.last_dequeue!.user_id;
       console.log('[CLIENT] Fetching last processed user data:', userId);
 
       try {
@@ -121,7 +121,7 @@ export default function ConnectedBotsPolling() {
     };
 
     fetchLastProcessedData();
-  }, [queueInfo?.last_dequeue?.user_id]); // Only when last processed user changes
+  }, [queueInfo?.last_dequeue]); // Only when last processed user changes
 
   if (error) {
     return (
@@ -239,68 +239,75 @@ export default function ConnectedBotsPolling() {
                     {queueInfo.current_delay.toFixed(2)}s
                   </span>
                 </div>
-                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
+                {queueInfo.last_dequeue ? (
+                  <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-secondary-text">Last Updated:</span>
+                      <div className="bg-surface-bg flex h-6 w-6 items-center justify-center overflow-hidden rounded-full">
+                        {lastProcessedAvatarData &&
+                        Object.values(lastProcessedAvatarData).find(
+                          (avatar: RobloxAvatar) =>
+                            avatar?.targetId?.toString() === queueInfo.last_dequeue!.user_id,
+                        )?.imageUrl ? (
+                          <Image
+                            src={
+                              Object.values(lastProcessedAvatarData).find(
+                                (avatar: RobloxAvatar) =>
+                                  avatar?.targetId?.toString() === queueInfo.last_dequeue!.user_id,
+                              )?.imageUrl || ''
+                            }
+                            alt="Last processed user avatar"
+                            width={24}
+                            height={24}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <DefaultAvatar />
+                        )}
+                      </div>
+                      <a
+                        href={`https://www.roblox.com/users/${queueInfo.last_dequeue!.user_id}/profile`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary-text hover:text-link-hover font-bold transition-colors"
+                      >
+                        {lastProcessedUserData?.[queueInfo.last_dequeue!.user_id]?.displayName ||
+                          lastProcessedUserData?.[queueInfo.last_dequeue!.user_id]?.name ||
+                          queueInfo.last_dequeue!.user_id}
+                      </a>
+                    </div>
+                    {(() => {
+                      const botId = queueInfo.last_dequeue!.data.bot_id;
+                      const botUserData = botUsersData?.[botId];
+                      if (botUserData) {
+                        const botDisplayName =
+                          botUserData.displayName || botUserData.name || `Bot ${botId}`;
+                        return (
+                          <span className="text-tertiary-text text-xs">
+                            (scanned by{' '}
+                            <a
+                              href={`https://www.roblox.com/users/${botId}/profile`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary-text hover:text-link-hover transition-colors"
+                            >
+                              {botDisplayName}
+                            </a>
+                            ) • {lastScannedRelativeTime}
+                          </span>
+                        );
+                      }
+                      return (
+                        <span className="text-xs text-gray-400">• {lastScannedRelativeTime}</span>
+                      );
+                    })()}
+                  </div>
+                ) : (
                   <div className="flex items-center gap-2">
                     <span className="text-secondary-text">Last Updated:</span>
-                    <div className="bg-surface-bg flex h-6 w-6 items-center justify-center overflow-hidden rounded-full">
-                      {lastProcessedAvatarData &&
-                      Object.values(lastProcessedAvatarData).find(
-                        (avatar: RobloxAvatar) =>
-                          avatar?.targetId?.toString() === queueInfo.last_dequeue.user_id,
-                      )?.imageUrl ? (
-                        <Image
-                          src={
-                            Object.values(lastProcessedAvatarData).find(
-                              (avatar: RobloxAvatar) =>
-                                avatar?.targetId?.toString() === queueInfo.last_dequeue.user_id,
-                            )?.imageUrl || ''
-                          }
-                          alt="Last processed user avatar"
-                          width={24}
-                          height={24}
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <DefaultAvatar />
-                      )}
-                    </div>
-                    <a
-                      href={`https://www.roblox.com/users/${queueInfo.last_dequeue.user_id}/profile`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary-text hover:text-link-hover font-bold transition-colors"
-                    >
-                      {lastProcessedUserData?.[queueInfo.last_dequeue.user_id]?.displayName ||
-                        lastProcessedUserData?.[queueInfo.last_dequeue.user_id]?.name ||
-                        queueInfo.last_dequeue.user_id}
-                    </a>
+                    <span className="text-tertiary-text">No recent activity</span>
                   </div>
-                  {(() => {
-                    const botId = queueInfo.last_dequeue.data.bot_id;
-                    const botUserData = botUsersData?.[botId];
-                    if (botUserData) {
-                      const botDisplayName =
-                        botUserData.displayName || botUserData.name || `Bot ${botId}`;
-                      return (
-                        <span className="text-tertiary-text text-xs">
-                          (scanned by{' '}
-                          <a
-                            href={`https://www.roblox.com/users/${botId}/profile`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-primary-text hover:text-link-hover transition-colors"
-                          >
-                            {botDisplayName}
-                          </a>
-                          ) • {lastScannedRelativeTime}
-                        </span>
-                      );
-                    }
-                    return (
-                      <span className="text-xs text-gray-400">• {lastScannedRelativeTime}</span>
-                    );
-                  })()}
-                </div>
+                )}
               </div>
             )}
 

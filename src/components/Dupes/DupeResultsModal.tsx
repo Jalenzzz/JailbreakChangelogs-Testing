@@ -135,7 +135,8 @@ const DupeResultsModal: React.FC<DupeResultsModalProps> = ({
                     <FaExclamationCircle className="text-button-danger h-6 w-6 flex-shrink-0" />
                     <div className="flex-1">
                       <h3 className="text-primary-text text-lg font-semibold">
-                        {uniqueItemsCount} Dupe Item{uniqueItemsCount !== 1 ? 's' : ''} Found
+                        {uniqueItemsCount} Dupe Item
+                        {uniqueItemsCount !== 1 ? 's' : ''} Found
                       </h3>
                       <p className="text-secondary-text text-sm">
                         Owner:{' '}

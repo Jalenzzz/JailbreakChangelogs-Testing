@@ -484,10 +484,22 @@ const AvailableItemsGrid: React.FC<AvailableItemsGridProps> = ({ items, onSelect
                     {
                       label: 'Values',
                       options: [
-                        { value: 'cash-desc', label: 'Cash Value (High to Low)' },
-                        { value: 'cash-asc', label: 'Cash Value (Low to High)' },
-                        { value: 'duped-desc', label: 'Duped Value (High to Low)' },
-                        { value: 'duped-asc', label: 'Duped Value (Low to High)' },
+                        {
+                          value: 'cash-desc',
+                          label: 'Cash Value (High to Low)',
+                        },
+                        {
+                          value: 'cash-asc',
+                          label: 'Cash Value (Low to High)',
+                        },
+                        {
+                          value: 'duped-desc',
+                          label: 'Duped Value (High to Low)',
+                        },
+                        {
+                          value: 'duped-asc',
+                          label: 'Duped Value (Low to High)',
+                        },
                       ],
                     },
                     {

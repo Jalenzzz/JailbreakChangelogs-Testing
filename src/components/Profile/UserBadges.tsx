@@ -494,7 +494,9 @@ export const UserBadges = ({
       >
         <div
           className={`inline-flex cursor-help items-center justify-center rounded-full text-black hover:opacity-90 ${currentSize.container}`}
-          style={{ background: premiumStyles[premiumType as keyof typeof premiumStyles] }}
+          style={{
+            background: premiumStyles[premiumType as keyof typeof premiumStyles],
+          }}
           onClick={handlePremiumBadgeClick}
         >
           <TrophyIcon className={currentSize.icon} />

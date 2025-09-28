@@ -508,7 +508,9 @@ export default function UserProfileSection({
                     <button
                       onClick={() => {
                         setShowLoginModal(true);
-                        const event = new CustomEvent('setLoginTab', { detail: 1 });
+                        const event = new CustomEvent('setLoginTab', {
+                          detail: 1,
+                        });
                         window.dispatchEvent(event);
                       }}
                       className="bg-button-info text-form-button-text hover:bg-button-info-hover inline-flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors"

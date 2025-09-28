@@ -102,7 +102,10 @@ export class UserDataService {
     // Prepare fetch promises
     const fetchPromises: Promise<unknown>[] = [
       fetchRobloxUsersBatch(finalUserIds).catch((error) => {
-        logError(`Failed to fetch user data`, error, { component: context, action: 'fetch_users' });
+        logError(`Failed to fetch user data`, error, {
+          component: context,
+          action: 'fetch_users',
+        });
         return {};
       }),
       fetchRobloxAvatars(finalUserIds).catch((error) => {

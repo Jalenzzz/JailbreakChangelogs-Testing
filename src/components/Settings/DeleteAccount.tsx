@@ -81,7 +81,11 @@ export const DeleteAccount = () => {
       <Box sx={{ mb: 2 }}>
         <Typography
           variant="h6"
-          sx={{ color: 'var(--color-button-danger)', fontWeight: 'bold', mb: 1 }}
+          sx={{
+            color: 'var(--color-button-danger)',
+            fontWeight: 'bold',
+            mb: 1,
+          }}
         >
           Account Deletion
         </Typography>
@@ -141,7 +145,14 @@ export const DeleteAccount = () => {
           <WarningIcon sx={{ color: 'var(--color-button-danger)' }} />
           Delete Account
         </DialogTitle>
-        <DialogContent sx={{ pt: 3, px: 3, py: 2, backgroundColor: 'var(--color-primary-bg)' }}>
+        <DialogContent
+          sx={{
+            pt: 3,
+            px: 3,
+            py: 2,
+            backgroundColor: 'var(--color-primary-bg)',
+          }}
+        >
           {!showFinalWarning ? (
             <>
               <Typography variant="body1" sx={{ mb: 3, color: 'var(--color-primary-text)' }}>
@@ -156,7 +167,13 @@ export const DeleteAccount = () => {
             </>
           ) : (
             <Box sx={{ textAlign: 'center', py: 2 }}>
-              <WarningIcon sx={{ fontSize: 48, color: 'var(--color-button-danger)', mb: 2 }} />
+              <WarningIcon
+                sx={{
+                  fontSize: 48,
+                  color: 'var(--color-button-danger)',
+                  mb: 2,
+                }}
+              />
               <Typography variant="h6" sx={{ color: 'var(--color-button-danger)', mb: 2 }}>
                 Final Warning
               </Typography>

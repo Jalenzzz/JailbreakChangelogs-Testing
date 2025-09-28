@@ -10,7 +10,11 @@ export async function POST() {
     try {
       await fetch(
         `${BASE_API_URL}/users/token/invalidate?session_token=${encodeURIComponent(token)}`,
-        { method: 'POST', headers: { 'content-type': 'application/json' }, cache: 'no-store' },
+        {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          cache: 'no-store',
+        },
       );
     } catch {
       // Ignore network errors on logout

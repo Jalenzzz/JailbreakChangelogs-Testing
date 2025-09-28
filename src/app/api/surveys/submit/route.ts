@@ -8,7 +8,10 @@ export async function POST(request: Request) {
     const token = cookieStore.get('token')?.value;
     if (!token) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
-    const { id, answer } = (await request.json()) as { id?: string; answer?: string };
+    const { id, answer } = (await request.json()) as {
+      id?: string;
+      answer?: string;
+    };
     if (!id || !answer) {
       return NextResponse.json({ message: 'Missing id or answer' }, { status: 400 });
     }

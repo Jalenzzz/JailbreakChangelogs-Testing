@@ -106,7 +106,10 @@ export default function HyperchromeCalculatorModal({
                         color: 'var(--color-primary-text)',
                         cursor: state.isFocused ? 'pointer' : 'pointer',
                       }),
-                      singleValue: (base) => ({ ...base, color: 'var(--color-primary-text)' }),
+                      singleValue: (base) => ({
+                        ...base,
+                        color: 'var(--color-primary-text)',
+                      }),
                       menu: (base) => ({
                         ...base,
                         backgroundColor: 'var(--color-secondary-bg)',

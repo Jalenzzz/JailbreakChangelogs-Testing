@@ -47,7 +47,7 @@ export default async function ConnectedBotsSection() {
   const userIdsToFetch = [...allBots.map((bot) => bot.id)];
 
   if (queueInfo?.last_dequeue?.user_id) {
-    userIdsToFetch.push(queueInfo.last_dequeue.user_id);
+    userIdsToFetch.push(queueInfo.last_dequeue!.user_id);
   }
 
   if (userIdsToFetch.length > 0) {

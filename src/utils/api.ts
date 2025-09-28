@@ -1602,7 +1602,7 @@ export interface QueueInfo {
       xp: number;
       bot_id: string;
     };
-  };
+  } | null;
 }
 
 export async function fetchQueueInfo(): Promise<QueueInfo | null> {

@@ -30,6 +30,8 @@ export async function POST(request: Request) {
 
   return new NextResponse(text, {
     status: upstream.status,
-    headers: { 'content-type': upstream.headers.get('content-type') || 'application/json' },
+    headers: {
+      'content-type': upstream.headers.get('content-type') || 'application/json',
+    },
   });
 }

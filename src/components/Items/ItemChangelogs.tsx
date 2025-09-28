@@ -440,7 +440,8 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-2">
             <span className="border-primary-text text-primary-text flex items-center rounded-full border bg-transparent px-1.5 py-0.5 text-[10px] sm:px-2 sm:py-1 sm:text-xs">
-              {displayableChanges.length} change{displayableChanges.length !== 1 ? 's' : ''}
+              {displayableChanges.length} change
+              {displayableChanges.length !== 1 ? 's' : ''}
             </span>
             {suggestionsCount > 0 && (
               <span className="border-primary-text text-primary-text flex items-center rounded-full border bg-transparent px-1.5 py-0.5 text-[10px] sm:px-2 sm:py-1 sm:text-xs">

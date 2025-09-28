@@ -1588,8 +1588,12 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
                           sx={{
                             color: 'var(--color-button-info)',
                             mt: 1,
-                            '& .MuiSlider-markLabel': { color: 'var(--color-secondary-text)' },
-                            '& .MuiSlider-mark': { backgroundColor: 'var(--color-secondary-text)' },
+                            '& .MuiSlider-markLabel': {
+                              color: 'var(--color-secondary-text)',
+                            },
+                            '& .MuiSlider-mark': {
+                              backgroundColor: 'var(--color-secondary-text)',
+                            },
                           }}
                         />
                         <div className="text-secondary-text text-xs">

@@ -357,7 +357,9 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
                                         {loadingFollow[user.id] ? (
                                           <CircularProgress
                                             size={10}
-                                            sx={{ color: 'var(--color-button-info)' }}
+                                            sx={{
+                                              color: 'var(--color-button-info)',
+                                            }}
                                           />
                                         ) : (
                                           'Follow'

@@ -270,7 +270,10 @@ export default function ValuesSearchControls({
                         { value: 'name-all-items', label: 'All Items' },
                         { value: 'favorites', label: 'My Favorites' },
                         { value: 'name-limited-items', label: 'Limited Items' },
-                        { value: 'name-seasonal-items', label: 'Seasonal Items' },
+                        {
+                          value: 'name-seasonal-items',
+                          label: 'Seasonal Items',
+                        },
                         { value: 'name-vehicles', label: 'Vehicles' },
                         { value: 'name-spoilers', label: 'Spoilers' },
                         { value: 'name-rims', label: 'Rims' },
@@ -524,8 +527,14 @@ export default function ValuesSearchControls({
                           label: 'Trend',
                           options: [
                             { value: 'trend-avoided', label: 'Avoided Trend' },
-                            { value: 'trend-dropping', label: 'Dropping Trend' },
-                            { value: 'trend-unstable', label: 'Unstable Trend' },
+                            {
+                              value: 'trend-dropping',
+                              label: 'Dropping Trend',
+                            },
+                            {
+                              value: 'trend-unstable',
+                              label: 'Unstable Trend',
+                            },
                             { value: 'trend-hoarded', label: 'Hoarded Trend' },
                             {
                               value: 'trend-projected',
@@ -623,8 +632,12 @@ export default function ValuesSearchControls({
                     sx={{
                       color: 'var(--color-button-info)',
                       mt: 1,
-                      '& .MuiSlider-markLabel': { color: 'var(--color-secondary-text)' },
-                      '& .MuiSlider-mark': { backgroundColor: 'var(--color-secondary-text)' },
+                      '& .MuiSlider-markLabel': {
+                        color: 'var(--color-secondary-text)',
+                      },
+                      '& .MuiSlider-mark': {
+                        backgroundColor: 'var(--color-secondary-text)',
+                      },
                     }}
                   />
                 </div>

@@ -165,7 +165,10 @@ export default function OGFinderResults({
     try {
       router.push(`/og/${searchValue}`);
     } catch (error) {
-      logError('Search error', error, { component: 'OGFinderResults', action: 'handleSearch' });
+      logError('Search error', error, {
+        component: 'OGFinderResults',
+        action: 'handleSearch',
+      });
     } finally {
       setIsLoading(false);
     }

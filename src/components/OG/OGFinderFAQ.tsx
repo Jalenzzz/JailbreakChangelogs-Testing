@@ -3,11 +3,17 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 
-const Accordion = dynamic(() => import('@mui/material/Accordion'), { ssr: false });
+const Accordion = dynamic(() => import('@mui/material/Accordion'), {
+  ssr: false,
+});
 const AccordionSummary = dynamic(() => import('@mui/material/AccordionSummary'), { ssr: false });
 const AccordionDetails = dynamic(() => import('@mui/material/AccordionDetails'), { ssr: false });
-const Typography = dynamic(() => import('@mui/material/Typography'), { ssr: false });
-const ExpandMoreIcon = dynamic(() => import('@mui/icons-material/ExpandMore'), { ssr: false });
+const Typography = dynamic(() => import('@mui/material/Typography'), {
+  ssr: false,
+});
+const ExpandMoreIcon = dynamic(() => import('@mui/icons-material/ExpandMore'), {
+  ssr: false,
+});
 
 const faqs = [
   {

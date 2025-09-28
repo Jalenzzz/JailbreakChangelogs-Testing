@@ -193,7 +193,10 @@ export default function UserStats({
       // Update the parent component with new data
       await onRefresh(refreshedData);
     } catch (error) {
-      logError('Error refreshing data', error, { component: 'UserStats', action: 'handleRefresh' });
+      logError('Error refreshing data', error, {
+        component: 'UserStats',
+        action: 'handleRefresh',
+      });
       console.error('Refresh failed:', error);
 
       // Show error toast to user

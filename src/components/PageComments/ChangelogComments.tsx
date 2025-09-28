@@ -491,7 +491,10 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ comment_id: reportingCommentId, reason: reason.trim() }),
+        body: JSON.stringify({
+          comment_id: reportingCommentId,
+          reason: reason.trim(),
+        }),
       });
 
       if (!response.ok) {
