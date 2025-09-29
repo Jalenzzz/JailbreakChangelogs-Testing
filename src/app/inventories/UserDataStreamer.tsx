@@ -5,11 +5,15 @@ import { Season } from '@/types/seasons';
 import { UserDataService } from '@/services/userDataService';
 import { fetchUserByRobloxId } from '@/utils/api';
 import { logError } from '@/services/logger';
+import { CommentData } from '@/utils/api';
+import { UserData } from '@/types/auth';
 
 interface UserDataStreamerProps {
   robloxId: string;
   inventoryData: InventoryData;
   currentSeason: Season | null;
+  initialComments?: CommentData[];
+  initialCommentUserMap?: Record<string, UserData>;
 }
 
 // Loading component for user data - shows inventory immediately
@@ -17,6 +21,8 @@ function UserDataLoadingFallback({
   robloxId,
   inventoryData,
   currentSeason,
+  initialComments,
+  initialCommentUserMap,
 }: UserDataStreamerProps) {
   return (
     <InventoryCheckerClient
@@ -26,12 +32,20 @@ function UserDataLoadingFallback({
       robloxAvatars={{}}
       userConnectionData={null}
       currentSeason={currentSeason}
+      initialComments={initialComments}
+      initialCommentUserMap={initialCommentUserMap}
     />
   );
 }
 
 // Component that fetches user data in parallel with optimized batching
-async function UserDataFetcher({ robloxId, inventoryData, currentSeason }: UserDataStreamerProps) {
+async function UserDataFetcher({
+  robloxId,
+  inventoryData,
+  currentSeason,
+  initialComments,
+  initialCommentUserMap,
+}: UserDataStreamerProps) {
   // Extract user IDs from inventory data
   const userIds = UserDataService.extractUserIdsFromInventory(inventoryData, robloxId);
 
@@ -74,6 +88,8 @@ async function UserDataFetcher({ robloxId, inventoryData, currentSeason }: UserD
       initialDupeData={userDataResult.dupeData}
       currentSeason={currentSeason}
       remainingUserIds={remainingUserIds.length > 0 ? remainingUserIds : undefined}
+      initialComments={initialComments}
+      initialCommentUserMap={initialCommentUserMap}
     />
   );
 }
@@ -82,6 +98,8 @@ export default function UserDataStreamer({
   robloxId,
   inventoryData,
   currentSeason,
+  initialComments,
+  initialCommentUserMap,
 }: UserDataStreamerProps) {
   return (
     <Suspense
@@ -90,6 +108,8 @@ export default function UserDataStreamer({
           robloxId={robloxId}
           inventoryData={inventoryData}
           currentSeason={currentSeason}
+          initialComments={initialComments}
+          initialCommentUserMap={initialCommentUserMap}
         />
       }
     >
@@ -97,6 +117,8 @@ export default function UserDataStreamer({
         robloxId={robloxId}
         inventoryData={inventoryData}
         currentSeason={currentSeason}
+        initialComments={initialComments}
+        initialCommentUserMap={initialCommentUserMap}
       />
     </Suspense>
   );

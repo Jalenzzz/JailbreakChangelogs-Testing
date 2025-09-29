@@ -1229,9 +1229,6 @@ export async function fetchRobloxUsersBatch(userIds: string[]) {
         );
 
         if (!response.ok) {
-          console.error(
-            `[SERVER] fetchRobloxUsersBatch: Failed with status ${response.status} ${response.statusText} for chunk`,
-          );
           continue;
         }
 
@@ -1380,9 +1377,6 @@ export async function fetchRobloxAvatars(userIds: string[]) {
         );
 
         if (!response.ok) {
-          console.error(
-            `[SERVER] fetchRobloxAvatars: Failed with status ${response.status} ${response.statusText} for chunk`,
-          );
           continue;
         }
 
