@@ -65,6 +65,11 @@
 
   /* Status Colors */
   --color-status-success: hsl(155, 61%, 30%); /* Success states - Even darker for better contrast */
+  --color-status-success-vibrant: hsl(
+    120,
+    61%,
+    50%
+  ); /* Vibrant green for online presence - theme independent */
   --color-status-warning: hsl(38, 100%, 61%); /* Warning states */
   --color-status-error: hsl(0, 81%, 45%); /* Error states - Darker for better contrast */
   --color-status-info: hsl(210, 99%, 50%); /* Info states */
@@ -198,6 +203,11 @@
 
   /* Status Colors - Light theme (same as dark) */
   --color-status-success: hsl(155, 61%, 30%); /* Success states - Even darker for better contrast */
+  --color-status-success-vibrant: hsl(
+    120,
+    61%,
+    50%
+  ); /* Vibrant green for online presence - theme independent */
   --color-status-warning: hsl(38, 100%, 61%); /* Warning states */
   --color-status-error: hsl(0, 81%, 45%); /* Error states - Darker for better contrast */
   --color-status-info: hsl(210, 99%, 50%); /* Info states */
