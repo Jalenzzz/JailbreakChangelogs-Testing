@@ -136,13 +136,19 @@ const formatBooleanLikeValue = (value: ItemChangeValue | undefined): string => {
 // Format creator information the same way as CreatorLink component
 const formatCreatorValue = (
   value: ItemChangeValue | undefined,
-): { display: string; robloxId?: string } => {
+): { display: string; robloxId?: string; isBadimo?: boolean } => {
   if (value === undefined || value === null) return { display: 'N/A' };
   if (value === 'N/A') return { display: '???' };
 
   const strValue = String(value);
   const match = strValue.match(/(.*?)\s*\((\d+)\)/);
-  if (!match) return { display: strValue };
+  if (!match) {
+    // Special case for Badimo
+    if (strValue === 'Badimo') {
+      return { display: strValue, isBadimo: true };
+    }
+    return { display: strValue };
+  }
 
   const [, name, id] = match;
   return { display: name, robloxId: id };
@@ -612,6 +618,7 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                     display: string;
                     robloxId?: string;
                     isCreator?: boolean;
+                    isBadimo?: boolean;
                   } => {
                     if (k === 'cash_value' || k === 'duped_value') {
                       return { display: formatFullValue(String(v)) };
@@ -670,17 +677,30 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                               >
                                 {(() => {
                                   const formatted = formatValue(key, oldValue);
-                                  if (formatted.isCreator && formatted.robloxId) {
-                                    return (
-                                      <a
-                                        href={`https://www.roblox.com/users/${formatted.robloxId}/profile`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-link hover:text-link-hover transition-colors hover:underline"
-                                      >
-                                        {formatted.display}
-                                      </a>
-                                    );
+                                  if (formatted.isCreator) {
+                                    if (formatted.isBadimo) {
+                                      return (
+                                        <a
+                                          href="https://www.roblox.com/communities/3059674/Badimo#!/about"
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="text-link hover:text-link-hover transition-colors hover:underline"
+                                        >
+                                          {formatted.display}
+                                        </a>
+                                      );
+                                    } else if (formatted.robloxId) {
+                                      return (
+                                        <a
+                                          href={`https://www.roblox.com/users/${formatted.robloxId}/profile`}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="text-link hover:text-link-hover transition-colors hover:underline"
+                                        >
+                                          {formatted.display}
+                                        </a>
+                                      );
+                                    }
                                   }
                                   return convertUrlsToLinks(formatted.display);
                                 })()}
@@ -700,17 +720,30 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                               >
                                 {(() => {
                                   const formatted = formatValue(key, newValue);
-                                  if (formatted.isCreator && formatted.robloxId) {
-                                    return (
-                                      <a
-                                        href={`https://www.roblox.com/users/${formatted.robloxId}/profile`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-link hover:text-link-hover transition-colors hover:underline"
-                                      >
-                                        {formatted.display}
-                                      </a>
-                                    );
+                                  if (formatted.isCreator) {
+                                    if (formatted.isBadimo) {
+                                      return (
+                                        <a
+                                          href="https://www.roblox.com/communities/3059674/Badimo#!/about"
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="text-link hover:text-link-hover transition-colors hover:underline"
+                                        >
+                                          {formatted.display}
+                                        </a>
+                                      );
+                                    } else if (formatted.robloxId) {
+                                      return (
+                                        <a
+                                          href={`https://www.roblox.com/users/${formatted.robloxId}/profile`}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="text-link hover:text-link-hover transition-colors hover:underline"
+                                        >
+                                          {formatted.display}
+                                        </a>
+                                      );
+                                    }
                                   }
                                   return convertUrlsToLinks(formatted.display);
                                 })()}

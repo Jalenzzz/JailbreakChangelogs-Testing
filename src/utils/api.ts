@@ -53,6 +53,7 @@ export const PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 export const INVENTORY_API_URL = process.env.NEXT_PUBLIC_INVENTORY_API_URL;
 export const CREW_LEADERBOARD_BASE_URL = process.env.NEXT_PUBLIC_CREW_LEADERBOARD_BASE_URL;
 export const INVENTORY_WS_URL = process.env.NEXT_PUBLIC_INVENTORY_WS_URL as string;
+export const ENABLE_WS_SCAN = process.env.NEXT_PUBLIC_ENABLE_WS_SCAN === 'true';
 export interface OnlineUser {
   id: string;
   username: string;
@@ -333,8 +334,8 @@ export async function fetchItems() {
     if (!response.ok) throw new Error('Failed to fetch items');
     const data = await response.json();
     return data as Item[];
-  } catch (err) {
-    console.error('[SERVER] Error fetching items:', err);
+  } catch {
+    console.error('[SERVER] Error fetching items');
     return [];
   }
 }
@@ -1036,10 +1037,13 @@ export async function fetchInventoryData(
               try {
                 socket.close();
               } catch {}
-              console.error(`[WS] Connection error for user ${robloxId}:`, err);
+              const errorMessage = err instanceof Error ? err.message : String(err);
+              // Only log 502 errors briefly, skip verbose timeout errors
+              if (errorMessage.includes('502')) {
+                console.error(`[WS] Connection error for user ${robloxId}: ${errorMessage}`);
+              }
 
               // Check if it's a 404 error (service unavailable)
-              const errorMessage = err instanceof Error ? err.message : String(err);
               if (
                 errorMessage.includes('404') ||
                 errorMessage.includes('Unexpected server response: 404')
@@ -1144,14 +1148,13 @@ export async function fetchInventoryData(
           err.message.includes('connection') ||
           err.message.includes('network'))
       ) {
-        console.warn(
-          `[SERVER] Inventory data request failed (attempt ${attempt + 1}/${maxRetries + 1}):`,
-          err.message,
-        );
+        // Only log retry attempts for the first failure, skip verbose retry logs
+        if (attempt === 0) {
+          console.warn(`[SERVER] Inventory data request failed, retrying...`);
+        }
 
         // Exponential backoff: wait 1s, 2s, 4s between retries
         const delayMs = Math.pow(2, attempt) * 1000;
-        console.log(`[SERVER] Retrying inventory data fetch in ${delayMs}ms...`);
         await new Promise((resolve) => setTimeout(resolve, delayMs));
         continue;
       }
@@ -1163,7 +1166,7 @@ export async function fetchInventoryData(
   }
 
   // All retries failed
-  console.error('[SERVER] All retry attempts failed for inventory data:', lastError);
+  console.error('[SERVER] All retry attempts failed for inventory data');
 
   if (lastError instanceof Error && lastError.message.includes('timeout')) {
     return {
@@ -1303,7 +1306,7 @@ export async function fetchRobloxUsersBatchLeaderboard(userIds: string[]) {
         `${INVENTORY_API_URL}/proxy/users?userIds=${validUserIds.join(',')}`,
         {
           headers: {
-            'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0',
+            'User-Agent': 'JailbreakChangelogs-Leaderboard/1.0',
           },
         },
       );
@@ -1427,8 +1430,8 @@ export async function fetchItemCountStats(): Promise<ItemCountStats | null> {
 
     const data = await response.json();
     return data as ItemCountStats;
-  } catch (err) {
-    console.error('[SERVER] Error fetching item count stats:', err);
+  } catch {
+    console.error('[SERVER] Error fetching item count stats');
     return null;
   }
 }
@@ -1787,8 +1790,8 @@ export async function fetchUsersWithFlags(): Promise<UserWithFlags[]> {
 
     const data = await response.json();
     return data as UserWithFlags[];
-  } catch (err) {
-    console.error('[SERVER] Error fetching users with flags:', err);
+  } catch {
+    console.error('[SERVER] Error fetching users with flags');
     return [];
   }
 }

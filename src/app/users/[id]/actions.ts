@@ -162,6 +162,12 @@ export async function fetchCommentDetails(
     };
   } catch (error) {
     console.error('[SERVER ACTION] Failed to fetch comment details:', error);
-    return { changelogs: {}, items: {}, seasons: {}, trades: {}, inventories: {} };
+    return {
+      changelogs: {},
+      items: {},
+      seasons: {},
+      trades: {},
+      inventories: {},
+    };
   }
 }

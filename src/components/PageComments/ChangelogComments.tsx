@@ -82,13 +82,19 @@ const cleanCommentText = (text: string): string => {
     .join('\n');
 };
 
+// Process @ mentions in comment text similar to changelogs
+const processMentions = (text: string): string => {
+  return text.replace(/@(\w+)/g, (_, username) => {
+    return `<span class="text-link-hover">@${username}</span>`;
+  });
+};
+
 const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
   changelogId,
   changelogTitle,
   type,
   itemType,
   trade,
-  inventory,
   initialComments = [],
   initialUserMap = {},
 }) => {
@@ -118,6 +124,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
   const [postSnackbarMsg, setPostSnackbarMsg] = useState('');
   const [postErrorSnackbarOpen, setPostErrorSnackbarOpen] = useState(false);
   const [postErrorSnackbarMsg, setPostErrorSnackbarMsg] = useState('');
+  const [isRefreshingComments, setIsRefreshingComments] = useState(false);
   const [editSnackbarOpen, setEditSnackbarOpen] = useState(false);
   const [editSnackbarMsg, setEditSnackbarMsg] = useState('');
   const [globalErrorSnackbarOpen, setGlobalErrorSnackbarOpen] = useState(false);
@@ -219,6 +226,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
 
   // Function to refresh comments using Server Action
   const refreshCommentsFromServer = useCallback(async () => {
+    setIsRefreshingComments(true);
     try {
       const result = await refreshComments(
         type === 'item' ? itemType || type : type,
@@ -239,8 +247,17 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
       }
     } catch (err) {
       console.error('Error refreshing comments:', err);
+    } finally {
+      setIsRefreshingComments(false);
     }
   }, [changelogId, type, itemType, fetchUserData]);
+
+  // Refresh comments when changelogId changes (e.g., when switching between changelogs)
+  useEffect(() => {
+    if (changelogId) {
+      refreshCommentsFromServer();
+    }
+  }, [changelogId, refreshCommentsFromServer]);
 
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -591,7 +608,19 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
           </form>
 
           {/* Comments List */}
-          {filteredComments.length === 0 ? (
+          {isRefreshingComments ? (
+            <div className="flex flex-col items-center justify-center py-12 text-center sm:py-16">
+              <div className="relative mb-6">
+                <div className="from-border-focus/20 to-button-info-hover/20 absolute inset-0 rounded-full bg-gradient-to-r blur-xl"></div>
+                <div className="border-border-focus/30 bg-secondary-bg relative rounded-full border p-4">
+                  <CircularProgress size={32} className="text-border-focus" />
+                </div>
+              </div>
+              <h3 className="text-primary-text mb-2 text-lg font-semibold sm:text-xl">
+                Fetching comments...
+              </h3>
+            </div>
+          ) : filteredComments.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center sm:py-16">
               <div className="relative mb-6">
                 <div className="from-border-focus/20 to-button-info-hover/20 absolute inset-0 rounded-full bg-gradient-to-r blur-xl"></div>
@@ -652,7 +681,13 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                                 </svg>
                               </div>
                             ) : (
-                              <div className="group-hover:ring-border-focus/20 rounded-full ring-2 ring-transparent transition-all duration-200">
+                              <div
+                                className={`group-hover:ring-border-focus/60 group-hover:bg-border-focus/10 ring-2 ring-transparent transition-all duration-200 ${
+                                  userData[comment.user_id]?.premiumtype === 3
+                                    ? 'rounded-sm'
+                                    : 'rounded-full'
+                                }`}
+                              >
                                 <UserAvatar
                                   userId={comment.user_id}
                                   avatarHash={userData[comment.user_id]?.avatar}
@@ -717,7 +752,7 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                                       >
                                         <Link
                                           href={`/users/${comment.user_id}`}
-                                          className={`${inter.className} text-md text-primary-text hover:text-link-hover truncate font-semibold transition-colors duration-200 hover:underline`}
+                                          className={`${inter.className} text-md text-primary-text group-hover:text-link truncate font-semibold transition-colors duration-200 group-hover:underline`}
                                         >
                                           {userData[comment.user_id]?.username || comment.author}
                                         </Link>
@@ -740,15 +775,6 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
                                       comment.user_id === trade.author && (
                                         <span className="from-button-info to-button-info-hover text-card-tag-text rounded-full bg-gradient-to-r px-2 py-0.5 text-xs font-medium shadow-sm">
                                           OP
-                                        </span>
-                                      )}
-
-                                    {/* Inventory Owner Badge */}
-                                    {type === 'inventory' &&
-                                      inventory &&
-                                      comment.item_id.toString() === inventory.owner && (
-                                        <span className="from-button-success to-button-success-hover text-card-tag-text rounded-full bg-gradient-to-r px-2 py-0.5 text-xs font-medium shadow-sm">
-                                          Inventory Owner
                                         </span>
                                       )}
                                   </>
@@ -868,9 +894,14 @@ const ChangelogComments: React.FC<ChangelogCommentsProps> = ({
 
                                       return (
                                         <>
-                                          <p className="text-primary-text text-sm leading-relaxed break-words whitespace-pre-wrap">
-                                            {convertUrlsToLinks(visibleContent)}
-                                          </p>
+                                          <p
+                                            className="text-primary-text text-sm leading-relaxed break-words whitespace-pre-wrap"
+                                            dangerouslySetInnerHTML={{
+                                              __html: convertUrlsToLinks(
+                                                processMentions(visibleContent),
+                                              ),
+                                            }}
+                                          />
                                           {shouldTruncate && (
                                             <button
                                               onClick={() => toggleCommentExpand(comment.id)}
