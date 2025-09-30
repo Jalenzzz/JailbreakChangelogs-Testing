@@ -77,6 +77,7 @@ export default function OGFilters({
     : false;
 
   const sortOptions = [
+    ...(hasDuplicates ? [{ value: 'duplicates', label: 'Group Duplicates' }] : []),
     {
       label: 'Date',
       options: [
@@ -90,7 +91,6 @@ export default function OGFilters({
         },
       ],
     },
-    ...(hasDuplicates ? [{ value: 'duplicates', label: 'Group Duplicates' }] : []),
     {
       label: 'Alphabetically',
       options: [

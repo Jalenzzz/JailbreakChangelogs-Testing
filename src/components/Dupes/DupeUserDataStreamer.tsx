@@ -1,15 +1,16 @@
 import { Suspense } from 'react';
-import { DupeFinderItem } from '@/types';
+import { DupeFinderItem, Item } from '@/types';
 import DupeFinderResults from './DupeFinderResults';
 import { UserDataService } from '@/services/userDataService';
 
 interface DupeUserDataStreamerProps {
   robloxId: string;
   dupeData: DupeFinderItem[]; // Dupe finder data
+  items: Item[]; // Items data passed from server
 }
 
 // Loading fallback component
-function DupeUserDataLoadingFallback({ robloxId, dupeData }: DupeUserDataStreamerProps) {
+function DupeUserDataLoadingFallback({ robloxId, dupeData, items }: DupeUserDataStreamerProps) {
   return (
     <DupeFinderResults
       initialData={dupeData}
@@ -17,12 +18,13 @@ function DupeUserDataLoadingFallback({ robloxId, dupeData }: DupeUserDataStreame
       robloxUsers={{}}
       robloxAvatars={{}}
       userConnectionData={null}
+      items={items}
     />
   );
 }
 
 // Component that fetches user data in parallel with optimized batching
-async function DupeUserDataFetcher({ robloxId, dupeData }: DupeUserDataStreamerProps) {
+async function DupeUserDataFetcher({ robloxId, dupeData, items }: DupeUserDataStreamerProps) {
   // Extract user IDs from dupe finder data
   const userIds = UserDataService.extractUserIdsFromDupeData(dupeData, robloxId);
 
@@ -51,14 +53,23 @@ async function DupeUserDataFetcher({ robloxId, dupeData }: DupeUserDataStreamerP
       robloxUsers={userDataResult.robloxUsers}
       robloxAvatars={userDataResult.robloxAvatars}
       userConnectionData={userDataResult.userConnectionData || null}
+      items={items}
     />
   );
 }
 
-export default function DupeUserDataStreamer({ robloxId, dupeData }: DupeUserDataStreamerProps) {
+export default function DupeUserDataStreamer({
+  robloxId,
+  dupeData,
+  items,
+}: DupeUserDataStreamerProps) {
   return (
-    <Suspense fallback={<DupeUserDataLoadingFallback robloxId={robloxId} dupeData={dupeData} />}>
-      <DupeUserDataFetcher robloxId={robloxId} dupeData={dupeData} />
+    <Suspense
+      fallback={
+        <DupeUserDataLoadingFallback robloxId={robloxId} dupeData={dupeData} items={items} />
+      }
+    >
+      <DupeUserDataFetcher robloxId={robloxId} dupeData={dupeData} items={items} />
     </Suspense>
   );
 }

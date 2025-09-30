@@ -42,6 +42,7 @@ export default function DupeFilters({
   ).sort();
 
   const sortOptions = [
+    ...(hasDuplicates ? [{ value: 'duplicates', label: 'Group Duplicates' }] : []),
     {
       label: 'Date',
       options: [
@@ -55,7 +56,6 @@ export default function DupeFilters({
         },
       ],
     },
-    ...(hasDuplicates ? [{ value: 'duplicates', label: 'Group Duplicates' }] : []),
     {
       label: 'Alphabetically',
       options: [
@@ -187,7 +187,7 @@ export default function DupeFilters({
               }}
               onChange={(option) => {
                 if (!option) {
-                  setSortOrder('created-desc');
+                  setSortOrder('duplicates');
                   return;
                 }
                 setSortOrder(

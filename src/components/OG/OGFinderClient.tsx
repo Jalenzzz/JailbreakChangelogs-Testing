@@ -198,7 +198,9 @@ export default function OGFinderClient({
                 <ExclamationTriangleIcon className="text-status-error h-8 w-8" />
               </div>
             </div>
-            <h3 className="text-status-error mb-2 text-lg font-semibold">User Not Found</h3>
+            <h3 className="text-status-error mb-2 text-lg font-semibold">
+              {error.includes('Server error') ? 'Server Error' : 'User Not Found'}
+            </h3>
             <p className="text-secondary-text">{error}</p>
           </div>
         </div>

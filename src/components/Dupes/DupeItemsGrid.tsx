@@ -49,7 +49,7 @@ export default function DupeItemsGrid({
 
           const itemKey = `${item.categoryTitle}-${item.title}`;
           const isDuplicate = (itemCounts.get(itemKey) || 0) > 1;
-          const duplicateNumber = isDuplicate ? (duplicateOrders.get(itemKey) || 0) + 1 : undefined;
+          const duplicateNumber = isDuplicate ? duplicateOrders.get(item.id) : undefined;
 
           return (
             <DupeItemCard
