@@ -279,6 +279,7 @@ async function OGFinderDataFetcher({ robloxId }: { robloxId: string }) {
           name: user.name,
           displayName: user.displayName,
           username: user.username,
+          hasVerifiedBadge: user.hasVerifiedBadge,
         };
       }
     });

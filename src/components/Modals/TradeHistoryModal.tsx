@@ -6,6 +6,7 @@ import { Dialog } from '@headlessui/react';
 import { XMarkIcon, ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/24/outline';
 import { DefaultAvatar } from '@/utils/avatar';
 import { getCategoryColor } from '@/utils/categoryIcons';
+import { VerifiedBadgeIcon } from '@/components/Icons/VerifiedBadgeIcon';
 
 interface TradeHistoryEntry {
   UserId: number;
@@ -26,6 +27,8 @@ interface TradeHistoryModalProps {
   getUserDisplay: (userId: string) => string;
   formatDate: (timestamp: number) => string;
   loadingUserIds?: Set<string>;
+  getUsername?: (userId: string) => string;
+  getHasVerifiedBadge?: (userId: string) => boolean;
 }
 
 export default function TradeHistoryModal({
@@ -36,6 +39,8 @@ export default function TradeHistoryModal({
   getUserDisplay,
   formatDate,
   loadingUserIds = new Set(),
+  getUsername,
+  getHasVerifiedBadge,
 }: TradeHistoryModalProps) {
   const [tradeSortOrder, setTradeSortOrder] = useState<'newest' | 'oldest'>('newest');
 
@@ -229,7 +234,15 @@ export default function TradeHistoryModal({
                                     rel="noopener noreferrer"
                                     className="text-link hover:text-link-hover truncate font-medium transition-colors hover:underline"
                                   >
-                                    {getUserDisplay(trade.fromUser.UserId.toString())}
+                                    <span className="inline-flex items-center gap-1.5">
+                                      {getUsername
+                                        ? getUsername(trade.fromUser.UserId.toString())
+                                        : getUserDisplay(trade.fromUser.UserId.toString())}
+                                      {getHasVerifiedBadge &&
+                                        getHasVerifiedBadge(trade.fromUser.UserId.toString()) && (
+                                          <VerifiedBadgeIcon className="h-4 w-4" />
+                                        )}
+                                    </span>
                                   </a>
                                 </div>
 
@@ -276,7 +289,15 @@ export default function TradeHistoryModal({
                                     rel="noopener noreferrer"
                                     className="text-link hover:text-link-hover truncate font-medium transition-colors hover:underline"
                                   >
-                                    {getUserDisplay(trade.toUser.UserId.toString())}
+                                    <span className="inline-flex items-center gap-1.5">
+                                      {getUsername
+                                        ? getUsername(trade.toUser.UserId.toString())
+                                        : getUserDisplay(trade.toUser.UserId.toString())}
+                                      {getHasVerifiedBadge &&
+                                        getHasVerifiedBadge(trade.toUser.UserId.toString()) && (
+                                          <VerifiedBadgeIcon className="h-4 w-4" />
+                                        )}
+                                    </span>
                                   </a>
                                 </div>
                               </div>

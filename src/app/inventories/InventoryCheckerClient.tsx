@@ -237,7 +237,7 @@ export default function InventoryCheckerClient({
   const getUserDisplay = useCallback(
     (userId: string) => {
       const user = robloxUsers[userId] || initialRobloxUsers?.[userId];
-      return user?.displayName || user?.name || userId;
+      return user?.name || user?.displayName || userId;
     },
     [robloxUsers, initialRobloxUsers],
   );
@@ -935,6 +935,14 @@ export default function InventoryCheckerClient({
               item={selectedItem}
               getUserAvatar={getUserAvatar}
               getUserDisplay={getUserDisplay}
+              getUsername={(userId) => {
+                const user = robloxUsers[userId] || initialRobloxUsers?.[userId];
+                return user?.name || userId;
+              }}
+              getHasVerifiedBadge={(userId) => {
+                const user = robloxUsers[userId] || initialRobloxUsers?.[userId];
+                return Boolean(user?.hasVerifiedBadge);
+              }}
               formatDate={formatDate}
               loadingUserIds={loadingUserIds}
             />

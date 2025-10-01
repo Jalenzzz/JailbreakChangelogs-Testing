@@ -192,6 +192,7 @@ export class UserDataService {
             name: userData.name || '',
             displayName: userData.displayName || '',
             username: userData.name || '', // Map 'name' to 'username' for compatibility
+            hasVerifiedBadge: userData.hasVerifiedBadge ?? false,
           };
         }
       });

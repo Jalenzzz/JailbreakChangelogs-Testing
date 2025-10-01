@@ -100,7 +100,7 @@ export default function InventoryItems({
     (userId: string) => {
       const user = localRobloxUsers[userId];
       if (!user) return userId;
-      return user.displayName || user.name || userId;
+      return user.name || user.displayName || userId;
     },
     [localRobloxUsers],
   );
@@ -110,6 +110,14 @@ export default function InventoryItems({
       return localRobloxAvatars[userId] || '';
     },
     [localRobloxAvatars],
+  );
+
+  const getHasVerifiedBadge = useCallback(
+    (userId: string) => {
+      const user = localRobloxUsers[userId];
+      return Boolean(user?.hasVerifiedBadge);
+    },
+    [localRobloxUsers],
   );
 
   // Effects
@@ -435,6 +443,7 @@ export default function InventoryItems({
         onPageChange={handlePageChange}
         getUserDisplay={getUserDisplay}
         getUserAvatar={getUserAvatar}
+        getHasVerifiedBadge={getHasVerifiedBadge}
         onCardClick={handleCardClick}
         isLoading={isFiltering}
         userId={initialData.user_id}
