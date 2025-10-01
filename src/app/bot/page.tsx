@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   ChatBubbleLeftRightIcon,
   CommandLineIcon,
@@ -25,11 +25,11 @@ export default function BotPage() {
   }, []);
 
   // Function to cycle to the next image
-  const nextImage = () => {
+  const nextImage = useCallback(() => {
     setCurrentImageIndex((prevIndex) =>
       prevIndex + 1 >= backgroundImages.length ? 0 : prevIndex + 1,
     );
-  };
+  }, [backgroundImages.length]);
 
   // Auto-cycle through images every 10 seconds
   useEffect(() => {
@@ -37,7 +37,7 @@ export default function BotPage() {
 
     const interval = setInterval(nextImage, 10000);
     return () => clearInterval(interval);
-  }, [backgroundImages.length]);
+  }, [backgroundImages.length, nextImage]);
 
   const currentBackgroundImage = backgroundImages[currentImageIndex] || '';
 
