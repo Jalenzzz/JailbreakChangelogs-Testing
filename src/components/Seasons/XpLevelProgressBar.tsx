@@ -72,15 +72,14 @@ export default function XpLevelProgressBar({
 
   return (
     <div className="mb-3">
-      {/* Game-style Progress Bar */}
-      <div className="border-button-info bg-primary-bg relative h-8 w-full rounded-lg border-2">
+      {/* Game-style Progress Bar - old design without rounded corners */}
+      <div className="border-button-info bg-primary-bg relative h-8 w-full border-2">
         {/* Progress Fill */}
         <div
           className="bg-button-info absolute top-0 left-0 h-full transition-all duration-500"
-          style={{
-            width: `${progressPercentage}%`,
-            borderRadius: progressPercentage === 100 ? '0.5rem' : '0.375rem 0 0 0.375rem',
-          }}
+          style={
+            progressPercentage === 100 ? { left: 0, right: 0 } : { width: `${progressPercentage}%` }
+          }
         />
 
         {/* Mobile Layout - Stack vertically on small screens */}

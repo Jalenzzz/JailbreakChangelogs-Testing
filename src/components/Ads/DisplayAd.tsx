@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 
 interface DisplayAdProps {
@@ -9,6 +10,7 @@ interface DisplayAdProps {
   adFormat?: 'auto' | 'fluid'; // AdSense ad format type
   layoutKey?: string; // Required for in-feed ads to maintain layout
   showFallback?: boolean; // Show support message when ad fails to load
+  enableReloading?: boolean; // Enable ad reloading on route changes
 }
 
 const DisplayAd: React.FC<DisplayAdProps> = ({
@@ -18,18 +20,20 @@ const DisplayAd: React.FC<DisplayAdProps> = ({
   adFormat = 'auto',
   layoutKey,
   showFallback = true,
+  enableReloading = true,
 }) => {
   const adRef = useRef<HTMLModElement>(null);
   const [, setAdLoaded] = useState(false);
   const [showSupportMessage, setShowSupportMessage] = useState(false);
-  const [hasInitialized, setHasInitialized] = useState(false);
-
-  // Use current path as key to prevent React from re-rendering ads unnecessarily
-  const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+  const [initializedPath, setInitializedPath] = useState<string | null>(null);
+  const currentPath = usePathname() || '';
+  const observerRef = useRef<MutationObserver | null>(null);
+  const timeoutRef = useRef<number | null>(null);
+  const finishedRef = useRef<boolean>(false);
 
   useEffect(() => {
-    // Only initialize once per path change to prevent duplicate ad requests
-    if (hasInitialized) return;
+    if (!currentPath) return;
+    if (initializedPath === currentPath) return;
 
     // Configure container dimensions based on ad format
     if (adRef.current) {
@@ -48,39 +52,82 @@ const DisplayAd: React.FC<DisplayAdProps> = ({
       }
     }
 
-    // Official Google AdSense method for detecting ad load status
-    const checkAdStatus = () => {
-      if (adRef.current) {
-        const adStatus = adRef.current.getAttribute('data-ad-status');
-
-        if (adStatus === 'filled') {
-          setAdLoaded(true);
-          setShowSupportMessage(false);
-        } else if (adStatus === 'unfilled') {
-          // No ad inventory available or ad blocked - show support message
-          if (showFallback) {
-            setShowSupportMessage(true);
-          }
-        } else {
-          // Ad still loading, check again in 1 second
-          setTimeout(checkAdStatus, 1000);
-        }
-      }
-    };
-
     // Initialize AdSense ad only once per path
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
-      setHasInitialized(true);
-      // Start monitoring ad status after AdSense initialization
-      setTimeout(checkAdStatus, 500);
+      setInitializedPath(currentPath);
+      // Start monitoring ad status via MutationObserver
+      const element = adRef.current;
+      if (element) {
+        finishedRef.current = false;
+
+        const evaluateStatus = () => {
+          if (!element || finishedRef.current) return;
+          const adStatus = element.getAttribute('data-ad-status');
+          if (adStatus === 'filled') {
+            finishedRef.current = true;
+            setAdLoaded(true);
+            setShowSupportMessage(false);
+            if (observerRef.current) observerRef.current.disconnect();
+            if (timeoutRef.current) {
+              window.clearTimeout(timeoutRef.current);
+              timeoutRef.current = null;
+            }
+          } else if (adStatus === 'unfilled') {
+            finishedRef.current = true;
+            if (showFallback) setShowSupportMessage(true);
+            if (observerRef.current) observerRef.current.disconnect();
+            if (timeoutRef.current) {
+              window.clearTimeout(timeoutRef.current);
+              timeoutRef.current = null;
+            }
+          }
+        };
+
+        // Observe attribute changes for immediate reaction
+        observerRef.current = new MutationObserver((mutations) => {
+          for (const mutation of mutations) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'data-ad-status') {
+              evaluateStatus();
+            }
+          }
+        });
+        observerRef.current.observe(element, {
+          attributes: true,
+          attributeFilter: ['data-ad-status'],
+        });
+
+        // Evaluate immediately in case the attribute is already set by the time we attach
+        evaluateStatus();
+
+        // Safety timeout in case the attribute never appears (e.g., script blocked)
+        timeoutRef.current = window.setTimeout(() => {
+          if (!finishedRef.current && showFallback) {
+            setShowSupportMessage(true);
+          }
+          if (observerRef.current) observerRef.current.disconnect();
+          timeoutRef.current = null;
+        }, 9000);
+      }
     } catch {
       // AdSense blocked or unavailable - show support message immediately
       if (showFallback) {
         setShowSupportMessage(true);
       }
     }
-  }, [adFormat, showFallback, currentPath, hasInitialized]);
+    return () => {
+      // Cleanup observer and timeout on unmount or path change
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+        observerRef.current = null;
+      }
+      if (timeoutRef.current) {
+        window.clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+      finishedRef.current = false;
+    };
+  }, [adFormat, showFallback, currentPath, initializedPath]);
 
   // Fallback: Show branded support message when ad fails to load
   if (showSupportMessage && showFallback) {
@@ -166,7 +213,6 @@ const DisplayAd: React.FC<DisplayAdProps> = ({
 
   return (
     <ins
-      key={`${currentPath}-${adSlot}`}
       ref={adRef}
       className={`adsbygoogle ${className}`}
       style={{
@@ -177,11 +223,12 @@ const DisplayAd: React.FC<DisplayAdProps> = ({
         maxHeight: adFormat === 'fluid' ? '500px' : undefined,
         ...style,
       }}
-      data-ad-client="ca-pub-8152532464536367"
+      data-ad-client={`ca-pub-${process.env.NEXT_PUBLIC_GOOGLE_ADS_CLIENT}`}
       data-ad-slot={adSlot}
       data-ad-format={adFormat}
       {...(layoutKey ? { 'data-ad-layout-key': layoutKey } : {})}
       data-full-width-responsive={adFormat === 'auto' ? 'true' : undefined}
+      {...(enableReloading ? { 'data-ad': 'true' } : {})}
     />
   );
 };

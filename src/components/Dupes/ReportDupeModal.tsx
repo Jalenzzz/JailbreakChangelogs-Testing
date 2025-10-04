@@ -135,7 +135,7 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
           <h2 className="text-primary-text text-xl font-semibold">Report Dupe</h2>
           <button
             onClick={onClose}
-            className="text-muted hover:text-primary-text transition-colors"
+            className="text-muted hover:text-primary-text cursor-pointer transition-colors"
           >
             <XMarkIcon className="h-6 w-6" />
           </button>
@@ -223,7 +223,7 @@ const ReportDupeModal: React.FC<ReportDupeModalProps> = ({
                     <button
                       type="button"
                       onClick={() => removeProofUrl(index)}
-                      className="text-status-danger hover:text-status-danger-hover absolute top-1/2 right-3 -translate-y-1/2"
+                      className="text-status-danger hover:text-status-danger-hover absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
                     >
                       <XMarkIcon className="h-5 w-5" />
                     </button>

@@ -1,6 +1,6 @@
 'use client';
 
-import { Dialog } from '@headlessui/react';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
 
@@ -46,21 +46,21 @@ export default function ItemActionModal({
       <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="modal-container bg-secondary-bg border-button-info mx-auto max-h-[80vh] w-full max-w-sm overflow-hidden rounded-lg border shadow-lg sm:max-w-md">
+        <DialogPanel className="modal-container bg-secondary-bg border-button-info mx-auto max-h-[80vh] w-full max-w-sm overflow-hidden rounded-lg border shadow-lg sm:max-w-md">
           {/* Modal Header */}
           <div className="modal-header text-primary-text border-border-primary hover:border-border-focus px-4 py-4 text-lg font-semibold sm:px-6 sm:text-xl">
             <div className="flex items-start justify-between gap-4 sm:items-center">
               <div className="min-w-0 flex-1">
-                <Dialog.Title className="text-primary-text text-lg font-semibold sm:text-xl">
+                <DialogTitle className="text-primary-text text-lg font-semibold sm:text-xl">
                   Item Actions
-                </Dialog.Title>
+                </DialogTitle>
                 <p className="text-secondary-text truncate text-sm">
                   {item.title} {item.categoryTitle && `(${item.categoryTitle})`}
                 </p>
               </div>
               <button
                 onClick={onClose}
-                className="text-secondary-text hover:text-primary-text rounded-full p-1"
+                className="text-secondary-text hover:text-primary-text cursor-pointer rounded-full p-1"
               >
                 <XMarkIcon className="h-6 w-6" />
               </button>
@@ -108,7 +108,7 @@ export default function ItemActionModal({
               )}
             </div>
           </div>
-        </Dialog.Panel>
+        </DialogPanel>
       </div>
     </Dialog>
   );

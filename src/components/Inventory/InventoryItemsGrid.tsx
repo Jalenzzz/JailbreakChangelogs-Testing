@@ -70,7 +70,7 @@ export default function InventoryItemsGrid({
     <div className="space-y-4">
       {/* Items Grid */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {filteredItems.map(({ item }) => {
+        {filteredItems.map(({ item, itemData }) => {
           const itemKey = `${item.categoryTitle}-${item.title}`;
           const duplicateCount = itemCounts.get(itemKey) || 1;
           const uniqueKey = `${item.id}-${item.timesTraded}-${item.uniqueCirculation}`;
@@ -80,6 +80,7 @@ export default function InventoryItemsGrid({
             <InventoryItemCard
               key={item.id}
               item={item}
+              itemData={itemData}
               getUserDisplay={getUserDisplay}
               getUserAvatar={getUserAvatar}
               getHasVerifiedBadge={getHasVerifiedBadge}

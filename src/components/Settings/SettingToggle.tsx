@@ -1,4 +1,4 @@
-import { Switch, FormControlLabel, Box, Typography } from '@mui/material';
+import { Switch, Field, Label, Description } from '@headlessui/react';
 import { SettingConfigItem } from '@/config/settings';
 import { UserSettings } from '@/types/auth';
 
@@ -15,47 +15,18 @@ interface SettingToggleProps {
 
 export const SettingToggle = ({ name, value, config, onChange, disabled }: SettingToggleProps) => {
   return (
-    <Box sx={{ mb: 2 }}>
-      <FormControlLabel
-        control={
-          <Switch
-            checked={value === 1}
-            onChange={(e) => onChange(name, e.target.checked ? 1 : 0)}
-            name={name}
-            disabled={disabled}
-            sx={{
-              '& .MuiSwitch-switchBase.Mui-checked': {
-                color: 'var(--color-button-info)',
-              },
-              '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                backgroundColor: 'var(--color-button-info)',
-              },
-              '& .MuiSwitch-track': {
-                backgroundColor: 'var(--color-primary-bg)',
-                border: '1px solid var(--color-border-primary)',
-              },
-              '&.Mui-disabled': {
-                color: 'var(--color-primary-text)',
-                '& + .MuiSwitch-track': {},
-              },
-            }}
-          />
-        }
-        label={
-          <Box>
-            <Typography
-              variant="subtitle1"
-              component="div"
-              sx={{ color: 'var(--color-primary-text)' }}
-            >
-              {config.displayName}
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'var(--color-secondary-text)' }}>
-              {config.description}
-            </Typography>
-          </Box>
-        }
-      />
-    </Box>
+    <div className="mb-2">
+      <Field disabled={disabled}>
+        <Label className="text-primary-text text-base font-medium">{config.displayName}</Label>
+        <Description className="text-secondary-text text-sm">{config.description}</Description>
+        <Switch
+          checked={value === 1}
+          onChange={(checked) => onChange(name, checked ? 1 : 0)}
+          className="group dark:bg-primary-bg border-border-primary data-checked:bg-button-info inline-flex h-6 w-11 cursor-pointer items-center rounded-full border bg-gray-200 transition data-disabled:cursor-not-allowed data-disabled:opacity-50"
+        >
+          <span className="size-4 translate-x-1 rounded-full bg-white transition group-data-checked:translate-x-6 dark:bg-gray-200" />
+        </Switch>
+      </Field>
+    </div>
   );
 };

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { Dialog } from '@headlessui/react';
+import { Dialog, DialogPanel } from '@headlessui/react';
 import { FaArrowRight } from 'react-icons/fa';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { calculateRobberiesToLevelUp, calculateAllLevelPercentages } from '@/utils/hyperchrome';
@@ -52,7 +52,7 @@ export default function HyperchromeCalculatorModal({
       <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="modal-container bg-secondary-bg border-button-info w-full max-w-[480px] min-w-[320px] rounded-lg border shadow-lg">
+        <DialogPanel className="modal-container bg-secondary-bg border-button-info w-full max-w-[480px] min-w-[320px] rounded-lg border shadow-lg">
           <div className="modal-header text-primary-text flex items-center justify-between px-6 py-4 text-xl font-semibold">
             <span>Hyperchrome Pity Calculator</span>
             <button
@@ -248,7 +248,7 @@ export default function HyperchromeCalculatorModal({
               </button>
             )}
           </div>
-        </Dialog.Panel>
+        </DialogPanel>
       </div>
     </Dialog>
   );

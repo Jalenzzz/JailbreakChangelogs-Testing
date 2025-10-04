@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dialog } from '@headlessui/react';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { XMarkIcon, TrophyIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { getAllowedFileExtensions } from '@/config/settings';
@@ -129,7 +129,7 @@ export default function SupporterModal({
       <div className="bg-overlay-bg fixed inset-0 backdrop-blur-sm" aria-hidden="true" />
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="modal-container bg-secondary-bg border-button-info mx-auto w-full max-w-2xl overflow-hidden rounded-lg border shadow-lg">
+        <DialogPanel className="modal-container bg-secondary-bg border-button-info mx-auto w-full max-w-2xl overflow-hidden rounded-lg border shadow-lg">
           {/* Header */}
           <div className="modal-header border-border-primary flex items-center justify-between border-b p-6">
             <div className="flex items-center gap-3">
@@ -137,9 +137,9 @@ export default function SupporterModal({
                 <SparklesIcon className="text-form-button-text h-6 w-6" />
               </div>
               <div>
-                <Dialog.Title className="text-primary-text text-xl font-semibold">
+                <DialogTitle className="text-primary-text text-xl font-semibold">
                   {featureInfo.title}
-                </Dialog.Title>
+                </DialogTitle>
                 <p className="text-secondary-text text-sm">
                   Upgrade your supporter tier to unlock this feature
                 </p>
@@ -147,7 +147,7 @@ export default function SupporterModal({
             </div>
             <button
               onClick={onClose}
-              className="text-secondary-text rounded-lg p-2 transition-colors"
+              className="text-secondary-text cursor-pointer rounded-lg p-2 transition-colors"
             >
               <XMarkIcon className="h-5 w-5" />
             </button>
@@ -303,7 +303,7 @@ export default function SupporterModal({
               </p>
             </div>
           </div>
-        </Dialog.Panel>
+        </DialogPanel>
       </div>
     </Dialog>
   );

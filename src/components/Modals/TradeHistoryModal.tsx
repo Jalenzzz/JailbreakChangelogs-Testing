@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { Dialog } from '@headlessui/react';
+import { Dialog, DialogTitle } from '@headlessui/react';
 import { XMarkIcon, ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/24/outline';
 import { DefaultAvatar } from '@/utils/avatar';
 import { getCategoryColor } from '@/utils/categoryIcons';
@@ -60,9 +60,9 @@ export default function TradeHistoryModal({
           <div className="border-border-primary border-b p-4 sm:p-6">
             <div className="flex items-start justify-between gap-4 sm:items-center">
               <div className="min-w-0 flex-1">
-                <Dialog.Title className="text-primary-text text-lg font-semibold sm:text-xl">
+                <DialogTitle className="text-primary-text text-lg font-semibold sm:text-xl">
                   Ownership History
-                </Dialog.Title>
+                </DialogTitle>
                 <div className="flex items-center gap-2">
                   <p className="text-primary-text truncate text-sm">{item.title}</p>
                   {item.categoryTitle && (
@@ -106,7 +106,7 @@ export default function TradeHistoryModal({
               </div>
               <button
                 onClick={onClose}
-                className="text-secondary-text hover:text-primary-text rounded-full p-1 transition-colors"
+                className="text-secondary-text hover:text-primary-text cursor-pointer rounded-full p-1 transition-colors"
               >
                 <XMarkIcon className="h-6 w-6" />
               </button>

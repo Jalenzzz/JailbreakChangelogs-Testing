@@ -4,7 +4,8 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { ThemeProvider, Tabs, Tab, Box, Pagination } from '@mui/material';
+import { ThemeProvider, Box, Pagination } from '@mui/material';
+import React from 'react';
 import dynamic from 'next/dynamic';
 
 const Tooltip = dynamic(() => import('@mui/material/Tooltip'), { ssr: false });
@@ -18,6 +19,7 @@ import {
   MagnifyingGlassIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
+import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
 
 import toast from 'react-hot-toast';
@@ -146,7 +148,7 @@ export default function ItemDetailsClient({
     // Hash navigation
     if (window.location.hash === '#comments') {
       setActiveTab(5);
-    } else if (window.location.hash === '#history') {
+    } else if (window.location.hash === '#charts') {
       setActiveTab(1);
     } else if (window.location.hash === '#changes') {
       setActiveTab(2);
@@ -245,7 +247,7 @@ export default function ItemDetailsClient({
         window.location.pathname + (searchParams.toString() ? `?${searchParams.toString()}` : ''),
       );
     } else if (newValue === 1) {
-      window.location.hash = 'history';
+      window.location.hash = 'charts';
     } else if (newValue === 2) {
       window.location.hash = 'changes';
     } else if (newValue === 3) {
@@ -256,6 +258,111 @@ export default function ItemDetailsClient({
       window.location.hash = 'comments';
     }
   };
+
+  // Custom horizontal scroll tabs to avoid MUI auto-centering behavior
+  const ItemDetailsTabs = React.useMemo(() => {
+    const TabsInner = React.memo(
+      function TabsInner({
+        value,
+        onChange,
+      }: {
+        value: number;
+        onChange: (e: React.SyntheticEvent, v: number) => void;
+      }) {
+        const scrollerRef = React.useRef<HTMLDivElement | null>(null);
+        const [showArrows, setShowArrows] = React.useState(false);
+
+        const scrollByAmount = (delta: number) => {
+          const node = scrollerRef.current;
+          if (!node) return;
+          node.scrollBy({ left: delta, behavior: 'smooth' });
+        };
+
+        const updateArrowVisibility = React.useCallback(() => {
+          const node = scrollerRef.current;
+          if (!node) return setShowArrows(false);
+          // When wrapping is enabled on desktop, overflow-x is visible and widths are similar
+          const hasOverflow = node.scrollWidth > node.clientWidth + 1;
+          setShowArrows(hasOverflow);
+        }, []);
+
+        React.useEffect(() => {
+          updateArrowVisibility();
+          const onResize = () => updateArrowVisibility();
+          window.addEventListener('resize', onResize);
+          return () => window.removeEventListener('resize', onResize);
+        }, [updateArrowVisibility]);
+
+        React.useEffect(() => {
+          // Re-evaluate when active tab changes (sizes can shift slightly)
+          updateArrowVisibility();
+        }, [value, updateArrowVisibility]);
+
+        const labels = ['Details', 'Charts', 'Changes', 'Dupes', 'Similar Items', 'Comments'];
+
+        return (
+          <Box>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <button
+                type="button"
+                aria-label="scroll left"
+                onClick={() => scrollByAmount(-200)}
+                className={`text-primary-text hover:bg-button-info/10 rounded p-2 ${
+                  showArrows ? '' : 'hidden'
+                }`}
+              >
+                ‹
+              </button>
+              <div
+                ref={scrollerRef}
+                role="tablist"
+                aria-label="item details tabs"
+                style={{
+                  scrollbarWidth: 'thin',
+                  WebkitOverflowScrolling: 'touch',
+                  flex: 1,
+                }}
+                className="overflow-x-auto whitespace-nowrap md:flex md:flex-wrap md:overflow-visible md:whitespace-normal"
+              >
+                {labels.map((label, idx) => (
+                  <button
+                    key={label}
+                    role="tab"
+                    aria-selected={value === idx}
+                    aria-controls={`item-tabpanel-${idx}`}
+                    id={`item-tab-${idx}`}
+                    onClick={(e) => onChange(e as unknown as React.SyntheticEvent, idx)}
+                    style={{ display: 'inline-block' }}
+                    className={
+                      (value === idx
+                        ? 'text-button-info border-button-info border-b-2 font-semibold '
+                        : 'text-secondary-text hover:text-primary-text ') +
+                      'hover:bg-button-info/10 mr-1 cursor-pointer rounded-t-md px-4 py-2'
+                    }
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+              <button
+                type="button"
+                aria-label="scroll right"
+                onClick={() => scrollByAmount(200)}
+                className={`text-primary-text hover:bg-button-info/10 rounded p-2 ${
+                  showArrows ? '' : 'hidden'
+                }`}
+              >
+                ›
+              </button>
+            </div>
+          </Box>
+        );
+      },
+      (prev, next) => prev.value === next.value,
+    );
+
+    return TabsInner;
+  }, []);
 
   const currentItem = selectedVariant || item;
 
@@ -481,7 +588,7 @@ export default function ItemDetailsClient({
                 {/* Official Metrics from Badimo dataset */}
                 {currentItem.metadata && Object.keys(currentItem.metadata).length > 0 && (
                   <div className="mt-3">
-                    <div className="border-button-info/30 bg-button-info/10 rounded-md border px-2 py-1">
+                    <div className="border-button-info/30 bg-button-info/10 rounded-md border px-2 py-2">
                       <div className="text-button-info text-xs font-semibold tracking-wide uppercase">
                         Official Trading Metrics
                       </div>
@@ -502,7 +609,29 @@ export default function ItemDetailsClient({
                         )}
                         {typeof currentItem.metadata.UniqueCirculation === 'number' && (
                           <div className="border-button-info/30 rounded-md border p-3">
-                            <div className="text-secondary-text text-xs">Unique Circulation</div>
+                            <div className="text-secondary-text flex items-center gap-1 text-xs">
+                              Unique Circulation
+                              <Tooltip
+                                title={'Unique copies that have been traded in the last 30 days.'}
+                                placement="top"
+                                arrow
+                                slotProps={{
+                                  tooltip: {
+                                    sx: {
+                                      backgroundColor: 'var(--color-secondary-bg)',
+                                      color: 'var(--color-primary-text)',
+                                      '& .MuiTooltip-arrow': {
+                                        color: 'var(--color-secondary-bg)',
+                                      },
+                                    },
+                                  },
+                                }}
+                              >
+                                <span className="text-tertiary-text hover:text-primary-text cursor-help">
+                                  <InformationCircleIcon className="h-4 w-4" />
+                                </span>
+                              </Tooltip>
+                            </div>
                             <div className="text-primary-text text-lg font-semibold">
                               {currentItem.metadata.UniqueCirculation.toLocaleString()}
                             </div>
@@ -522,48 +651,7 @@ export default function ItemDetailsClient({
                 )}
               </div>
 
-              <Box className="border-secondary-text border-b">
-                <Tabs
-                  value={activeTab}
-                  onChange={handleTabChange}
-                  variant="scrollable"
-                  scrollButtons="auto"
-                  allowScrollButtonsMobile
-                  className="[&_.MuiTab-root]:text-secondary-text [&_.MuiTab-root:hover]:text-primary-text [&_.MuiTab-root:hover]:bg-button-info/10 [&_.MuiTab-root.Mui-selected]:text-button-info [&_.MuiTab-root.Mui-selected]:border-button-info [&_.MuiTabs-indicator]:bg-button-info [&_.MuiTabs-scrollButtons]:text-secondary-text [&_.MuiTabs-scrollButtons:hover]:bg-button-info/10 [&_.MuiTabs-scrollButtons:hover]:text-primary-text [&_.MuiTab-root]:mr-1 [&_.MuiTab-root]:min-h-12 [&_.MuiTab-root]:rounded-t-lg [&_.MuiTab-root]:px-5 [&_.MuiTab-root]:py-3 [&_.MuiTab-root]:text-sm [&_.MuiTab-root]:font-medium [&_.MuiTab-root]:normal-case [&_.MuiTab-root]:transition-all [&_.MuiTab-root]:duration-200 [&_.MuiTab-root.Mui-selected]:border-b-2 [&_.MuiTab-root.Mui-selected]:font-semibold [&_.MuiTabs-indicator]:h-1 [&_.MuiTabs-indicator]:rounded-sm [&_.MuiTabs-scrollButtons.Mui-disabled]:opacity-30"
-                  sx={{
-                    '& .MuiTabs-scrollButtons': {
-                      color: 'var(--color-primary-text) !important',
-                      '&:hover': {
-                        backgroundColor: 'var(--color-quaternary-bg)',
-                      },
-                      '&.Mui-disabled': {
-                        opacity: 0.3,
-                        color: 'var(--color-primary-text) !important',
-                      },
-                    },
-                    '& .MuiTabScrollButton-root': {
-                      color: 'var(--color-primary-text) !important',
-                      '&:hover': {
-                        backgroundColor: 'var(--color-quaternary-bg)',
-                      },
-                      '&.Mui-disabled': {
-                        opacity: 0.3,
-                        color: 'var(--color-primary-text) !important',
-                      },
-                    },
-                    '& .MuiSvgIcon-root': {
-                      color: 'var(--color-primary-text) !important',
-                    },
-                  }}
-                >
-                  <Tab label="Details" />
-                  <Tab label="Value History" />
-                  <Tab label="Changes" />
-                  <Tab label="Dupes" />
-                  <Tab label="Similar Items" />
-                  <Tab label="Comments" />
-                </Tabs>
-              </Box>
+              <ItemDetailsTabs value={activeTab} onChange={handleTabChange} />
 
               {activeTab === 0 && (
                 <>
@@ -699,7 +787,7 @@ export default function ItemDetailsClient({
                     <>
                       {/* Owners Grid */}
                       <div className="space-y-4">
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                           <h3 className="text-primary-text text-2xl font-bold">
                             Duped Owners List
                           </h3>
@@ -747,7 +835,7 @@ export default function ItemDetailsClient({
                                 setOwnerSearchTerm('');
                                 setDupedOwnersPage(1);
                               }}
-                              className="text-tertiary-text hover:text-primary-text absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2 transition-colors"
+                              className="text-tertiary-text hover:text-primary-text absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2 cursor-pointer transition-colors"
                               aria-label="Clear search"
                             >
                               <XMarkIcon />

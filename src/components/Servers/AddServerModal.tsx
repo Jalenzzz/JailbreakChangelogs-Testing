@@ -199,7 +199,7 @@ const AddServerModal: React.FC<AddServerModalProps> = ({
           </h2>
           <button
             onClick={onClose}
-            className="text-secondary-text hover:text-primary-text rounded-md p-1"
+            className="text-secondary-text hover:text-primary-text cursor-pointer rounded-md p-1"
           >
             <XMarkIcon className="h-5 w-5" />
           </button>

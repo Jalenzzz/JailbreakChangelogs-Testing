@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Error from 'next/error';
+import { notFound } from 'next/navigation';
 import { UserAvatar } from '@/utils/avatar';
 import Breadcrumb from '@/components/Layout/Breadcrumb';
 import { Button, Skeleton } from '@mui/material';
@@ -86,7 +87,7 @@ const LinSuperIdol = ({ userId }: { userId: string }) => {
     <div className="fixed right-4 bottom-4 z-50">
       <button
         onClick={handlePlayClick}
-        className="group bg-secondary-bg/80 text-primary-text/80 hover:bg-secondary-bg hover:text-primary-text rounded-full p-3 shadow-lg backdrop-blur-sm transition-all duration-300"
+        className="group bg-secondary-bg/80 text-primary-text/80 hover:bg-secondary-bg hover:text-primary-text cursor-pointer rounded-full p-3 shadow-lg backdrop-blur-sm transition-all duration-300"
         title="Lin is a super idol"
       >
         <BsMusicNoteBeamed className="text-xl opacity-60 transition-opacity duration-300 group-hover:opacity-100" />
@@ -475,11 +476,16 @@ export default function UserProfileClient({
       );
     }
 
+    // Handle 404 errors by calling notFound() to trigger the custom not-found page
+    if (errorCode === 404) {
+      notFound();
+    }
+
     return <Error statusCode={errorCode} title={errorState || undefined} />;
   }
 
   if (!user) {
-    return <Error statusCode={404} title="User not found" />;
+    notFound();
   }
 
   if (user.settings?.profile_public === 0 && currentUserId !== user.id) {

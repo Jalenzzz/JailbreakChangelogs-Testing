@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { convertUrlsToLinks } from '@/utils/urlConverter';
 import { Button, Pagination } from '@mui/material';
-import { Dialog } from '@headlessui/react';
+import { Dialog, DialogPanel } from '@headlessui/react';
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
@@ -288,7 +288,7 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
         <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
 
         <div className="fixed inset-0 flex items-center justify-center p-4">
-          <Dialog.Panel className="modal-container bg-secondary-bg border-button-info w-full max-w-[480px] min-w-[320px] rounded-lg border shadow-lg">
+          <DialogPanel className="modal-container bg-secondary-bg border-button-info w-full max-w-[480px] min-w-[320px] rounded-lg border shadow-lg">
             <div className="modal-header text-primary-text px-6 py-4 text-2xl font-bold">
               Voters
             </div>
@@ -409,7 +409,7 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                 Close
               </button>
             </div>
-          </Dialog.Panel>
+          </DialogPanel>
         </div>
       </Dialog>
 

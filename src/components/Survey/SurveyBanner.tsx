@@ -32,7 +32,7 @@ const SurveyBanner: React.FC<SurveyBannerProps> = ({ onAccept, onDismiss }) => {
           </button>
           <button
             onClick={onDismiss}
-            className="text-form-button-text hover:text-form-button-text/80 p-2 transition-colors"
+            className="text-form-button-text hover:text-form-button-text/80 cursor-pointer p-2 transition-colors"
             aria-label="Dismiss"
           >
             <XMarkIcon className="h-5 w-5 text-current" />

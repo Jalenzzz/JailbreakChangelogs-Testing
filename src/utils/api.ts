@@ -91,6 +91,11 @@ export async function fetchUserById(id: string) {
         throw new Error(`BANNED_USER: ${errorMessage}`);
       }
 
+      // Handle 404 errors specifically
+      if (response.status === 404) {
+        throw new Error(`NOT_FOUND: User not found with id ${id}`);
+      }
+
       // Log error response for other types of errors
       console.error('Error response:', {
         status: response.status,
@@ -110,13 +115,13 @@ export async function fetchUserById(id: string) {
   } catch (error) {
     console.error('Error fetching user by ID:', error);
 
-    // Re-throw BANNED_USER errors so calling code can handle them
+    // Re-throw BANNED_USER and NOT_FOUND errors so calling code can handle them
     if (
       error &&
       typeof error === 'object' &&
       'message' in error &&
       typeof error.message === 'string' &&
-      error.message.startsWith('BANNED_USER:')
+      (error.message.startsWith('BANNED_USER:') || error.message.startsWith('NOT_FOUND:'))
     ) {
       throw error;
     }
@@ -207,6 +212,11 @@ export async function fetchUserByIdForMetadata(id: string) {
         throw new Error(`BANNED_USER: ${errorMessage}`);
       }
 
+      // Handle 404 errors specifically
+      if (response.status === 404) {
+        throw new Error(`NOT_FOUND: User not found with id ${id}`);
+      }
+
       // Log error response for other types of errors
       console.error('Error response:', {
         status: response.status,
@@ -226,13 +236,13 @@ export async function fetchUserByIdForMetadata(id: string) {
   } catch (error) {
     console.error('Error fetching user by ID for metadata:', error);
 
-    // Re-throw BANNED_USER errors so calling code can handle them
+    // Re-throw BANNED_USER and NOT_FOUND errors so calling code can handle them
     if (
       error &&
       typeof error === 'object' &&
       'message' in error &&
       typeof error.message === 'string' &&
-      error.message.startsWith('BANNED_USER:')
+      (error.message.startsWith('BANNED_USER:') || error.message.startsWith('NOT_FOUND:'))
     ) {
       throw error;
     }
@@ -458,6 +468,7 @@ export async function fetchLatestChangelog(): Promise<Changelog> {
     headers: {
       'User-Agent': 'JailbreakChangelogs-Changelogs/1.0',
     },
+    cache: 'no-store',
   });
   if (!response.ok) throw new Error('Failed to fetch latest changelog');
   return response.json();
@@ -657,6 +668,7 @@ export async function fetchLatestSeason() {
       headers: {
         'User-Agent': 'JailbreakChangelogs-Seasons/1.0',
       },
+      cache: 'no-store',
     });
 
     if (!response.ok) {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dialog } from '@headlessui/react';
+import { Dialog, DialogPanel } from '@headlessui/react';
 
 interface CustomConfirmationModalProps {
   open: boolean;
@@ -27,7 +27,7 @@ export const CustomConfirmationModal: React.FC<CustomConfirmationModalProps> = (
       <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="modal-container bg-secondary-bg border-button-info w-full max-w-[480px] min-w-[320px] rounded-lg border shadow-lg">
+        <DialogPanel className="modal-container bg-secondary-bg border-button-info w-full max-w-[480px] min-w-[320px] rounded-lg border shadow-lg">
           <div className="modal-header text-primary-text px-6 py-4 text-xl font-semibold">
             {title}
           </div>
@@ -52,7 +52,7 @@ export const CustomConfirmationModal: React.FC<CustomConfirmationModalProps> = (
               {confirmText}
             </button>
           </div>
-        </Dialog.Panel>
+        </DialogPanel>
       </div>
     </Dialog>
   );

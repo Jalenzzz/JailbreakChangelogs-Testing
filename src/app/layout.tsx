@@ -83,7 +83,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           {/* Google AdSense */}
           <Script
             async
-            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8152532464536367"
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-${process.env.NEXT_PUBLIC_GOOGLE_ADS_CLIENT}`}
             crossOrigin="anonymous"
             strategy="afterInteractive"
           />
@@ -170,7 +170,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {/* Google AdSense */}
         <Script
           async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8152532464536367"
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-${process.env.NEXT_PUBLIC_GOOGLE_ADS_CLIENT}`}
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />
