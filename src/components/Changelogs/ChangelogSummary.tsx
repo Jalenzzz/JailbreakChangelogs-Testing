@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Icon } from '../UI/IconWrapper';
 import { cleanMarkdown } from '@/utils/changelogs';
+import { motion } from 'framer-motion';
 
 interface ChangelogSummaryProps {
   changelogId: number;
@@ -59,6 +60,31 @@ export default function ChangelogSummary({ changelogId, title, content }: Change
     }
   }, [content, title, changelogId, loading]);
 
+  const checkCachedSummary = useCallback(async () => {
+    try {
+      const cleanedContent = cleanMarkdown(content);
+      const response = await fetch('/api/gemini/summarize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: cleanedContent, title, changelogId }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.cached) {
+        // Cached summary found, load it automatically
+        setSummary(data.summary);
+        setHighlights(data.highlights || []);
+        setWhatsNew(data.whatsNew || '');
+        setTags(data.tags || []);
+        setHasGenerated(true);
+      }
+    } catch (error) {
+      // Silently fail for cached check - user can still manually generate
+      console.debug('No cached summary found or error checking cache:', error);
+    }
+  }, [content, title, changelogId]);
+
   useEffect(() => {
     // Reset state when changelogId changes (navigation to different changelog)
     setSummary('');
@@ -67,7 +93,12 @@ export default function ChangelogSummary({ changelogId, title, content }: Change
     setTags([]);
     setError('');
     setHasGenerated(false);
-  }, [changelogId]);
+
+    // Auto-check for cached summary
+    if (content.length > 300) {
+      checkCachedSummary();
+    }
+  }, [changelogId, content.length, checkCachedSummary]);
 
   // Show message for short content
   if (content.length <= 300) {
@@ -91,9 +122,15 @@ export default function ChangelogSummary({ changelogId, title, content }: Change
       <div className="bg-secondary-bg border-border-focus hover:border-border-focus hover:shadow-card-shadow mb-6 rounded-lg border p-4 transition-colors duration-200 hover:shadow-lg">
         <div className="mb-2 flex items-center gap-2">
           <Icon icon="solar:magic-stick-3-bold" className="text-link h-5 w-5 animate-pulse" />
-          <span className="text-primary-text font-medium">Generating AI Summary...</span>
+          <span className="text-primary-text font-medium">Generating AI Summary</span>
         </div>
-        <div className="bg-border h-4 animate-pulse rounded"></div>
+        <motion.div
+          animate={{ opacity: [0.4, 1, 0.4] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          className="text-secondary-text text-sm"
+        >
+          Thinking...
+        </motion.div>
       </div>
     );
   }
