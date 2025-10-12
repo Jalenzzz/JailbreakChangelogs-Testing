@@ -1,24 +1,4 @@
 import { NextResponse } from 'next/server';
-import { createHash } from 'crypto';
-
-// Simple in-memory cache (in production, use Redis or database)
-const summaryCache = new Map<
-  string,
-  {
-    summary: string;
-    highlights: string[];
-    whatsNew: string;
-    tags: Array<{ name: string; category: string; relevance: number; type: string }>;
-    timestamp: number;
-  }
->();
-const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
-
-// Cache key generator
-function generateCacheKey(title: string, content: string): string {
-  const hash = createHash('md5').update(`${title}:${content}`).digest('hex');
-  return `summary:${hash}`;
-}
 
 // Fetch previous changelog for context
 async function fetchPreviousChangelog(currentId: number): Promise<string | null> {
@@ -51,20 +31,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Content and title required' }, { status: 400 });
   }
 
-  // Check cache first
-  const cacheKey = generateCacheKey(title, content);
-  const cached = summaryCache.get(cacheKey);
-
-  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
-    return NextResponse.json({
-      summary: cached.summary,
-      highlights: cached.highlights,
-      whatsNew: cached.whatsNew,
-      tags: cached.tags,
-      cached: true,
-    });
-  }
-
   try {
     const apiKey = process.env.OPEN_ROUTER_API_KEY;
 
@@ -93,7 +59,7 @@ export async function POST(request: Request) {
     }
 
     // Call OpenRouter API with Llama 4 Maverick
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    const apiResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -102,7 +68,7 @@ export async function POST(request: Request) {
         'X-Title': 'Jailbreak Changelogs',
       },
       body: JSON.stringify({
-        model: 'meta-llama/llama-4-maverick:free',
+        model: 'google/gemini-2.0-flash-exp:free',
         messages: [
           {
             role: 'user',
@@ -145,13 +111,27 @@ Respond in JSON format:
       }),
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`OpenRouter API error ${response.status}:`, errorText);
-      throw new Error(`API error: ${response.status} - ${errorText}`);
+    if (!apiResponse.ok) {
+      const errorText = await apiResponse.text();
+      console.error(`OpenRouter API error ${apiResponse.status}:`, errorText);
+
+      // For rate limit errors, preserve the status code and error details
+      if (apiResponse.status === 429) {
+        return NextResponse.json(
+          {
+            error: 'Rate limit exceeded',
+            rateLimitError: true,
+            errorDetails: errorText,
+            status: 429,
+          },
+          { status: 429 },
+        );
+      }
+
+      throw new Error(`API error: ${apiResponse.status} - ${errorText}`);
     }
 
-    const data = await response.json();
+    const data = await apiResponse.json();
     const generatedText = data.choices?.[0]?.message?.content;
     const finishReason = data.choices?.[0]?.finish_reason;
 
@@ -196,22 +176,17 @@ Respond in JSON format:
       throw new Error('Invalid JSON response');
     }
 
-    // Cache the result
-    summaryCache.set(cacheKey, {
-      summary: result.summary || content.substring(0, 200),
-      highlights: result.highlights || [],
-      whatsNew: result.whatsNew || '',
-      tags: result.tags || [],
-      timestamp: Date.now(),
-    });
-
-    return NextResponse.json({
+    const response = NextResponse.json({
       summary: result.summary || content.substring(0, 200),
       highlights: result.highlights || [],
       whatsNew: result.whatsNew || '',
       tags: result.tags || [],
       cached: false,
     });
+
+    response.headers.set('Cache-Control', 'public, max-age=604800, s-maxage=604800');
+
+    return response;
   } catch (error) {
     console.error('OpenRouter API Error:', error);
     return NextResponse.json(

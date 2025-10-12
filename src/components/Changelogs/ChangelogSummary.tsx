@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Icon } from '../UI/IconWrapper';
 import { cleanMarkdown } from '@/utils/changelogs';
 import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
 
 interface ChangelogSummaryProps {
   changelogId: number;
@@ -44,6 +45,42 @@ export default function ChangelogSummary({ changelogId, title, content }: Change
       const data = await response.json();
 
       if (!response.ok) {
+        // Check if it's a rate limit error
+        if (response.status === 429 && data.rateLimitError) {
+          // Parse the rate limit reset time from the error details
+          try {
+            const errorDetails = JSON.parse(data.errorDetails);
+            const resetTimestamp = errorDetails.metadata?.headers?.['X-RateLimit-Reset'];
+
+            if (resetTimestamp) {
+              const resetDate = new Date(parseInt(resetTimestamp));
+              const now = new Date();
+              const timeUntilReset = Math.max(0, resetDate.getTime() - now.getTime());
+              const hoursUntilReset = Math.ceil(timeUntilReset / (1000 * 60 * 60));
+
+              toast.error(
+                `AI Summary rate limit exceeded. Please try again in ${hoursUntilReset} hour${hoursUntilReset !== 1 ? 's' : ''}.`,
+                {
+                  duration: 8000,
+                  position: 'bottom-right',
+                },
+              );
+            } else {
+              toast.error('AI Summary rate limit exceeded. Please try again later.', {
+                duration: 6000,
+                position: 'bottom-right',
+              });
+            }
+          } catch {
+            toast.error('AI Summary rate limit exceeded. Please try again later.', {
+              duration: 6000,
+              position: 'bottom-right',
+            });
+          }
+          setError('Rate limit exceeded. Please try again later.');
+          return;
+        }
+
         throw new Error(data.error || 'Failed to generate summary');
       }
 
@@ -54,36 +91,17 @@ export default function ChangelogSummary({ changelogId, title, content }: Change
       setHasGenerated(true);
     } catch (error) {
       console.error('Failed to generate summary:', error);
+
+      // For other errors, show a generic error toast
+      toast.error('Failed to generate AI summary. Please try again.', {
+        duration: 4000,
+        position: 'bottom-right',
+      });
       setError(error instanceof Error ? error.message : 'Failed to generate summary');
     } finally {
       setLoading(false);
     }
   }, [content, title, changelogId, loading]);
-
-  const checkCachedSummary = useCallback(async () => {
-    try {
-      const cleanedContent = cleanMarkdown(content);
-      const response = await fetch('/api/gemini/summarize', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: cleanedContent, title, changelogId }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.cached) {
-        // Cached summary found, load it automatically
-        setSummary(data.summary);
-        setHighlights(data.highlights || []);
-        setWhatsNew(data.whatsNew || '');
-        setTags(data.tags || []);
-        setHasGenerated(true);
-      }
-    } catch (error) {
-      // Silently fail for cached check - user can still manually generate
-      console.debug('No cached summary found or error checking cache:', error);
-    }
-  }, [content, title, changelogId]);
 
   useEffect(() => {
     // Reset state when changelogId changes (navigation to different changelog)
@@ -93,12 +111,7 @@ export default function ChangelogSummary({ changelogId, title, content }: Change
     setTags([]);
     setError('');
     setHasGenerated(false);
-
-    // Auto-check for cached summary
-    if (content.length > 300) {
-      checkCachedSummary();
-    }
-  }, [changelogId, content.length, checkCachedSummary]);
+  }, [changelogId]);
 
   // Show message for short content
   if (content.length <= 300) {
