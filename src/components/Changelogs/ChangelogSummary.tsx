@@ -8,9 +8,18 @@ interface ChangelogSummaryProps {
   content: string;
 }
 
+interface TagData {
+  name: string;
+  category: string;
+  relevance: number;
+  type: string;
+}
+
 export default function ChangelogSummary({ changelogId, title, content }: ChangelogSummaryProps) {
   const [summary, setSummary] = useState<string>('');
-  const [tags, setTags] = useState<string[]>([]);
+  const [highlights, setHighlights] = useState<string[]>([]);
+  const [whatsNew, setWhatsNew] = useState<string>('');
+  const [tags, setTags] = useState<TagData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
   const [hasGenerated, setHasGenerated] = useState(false);
@@ -28,7 +37,7 @@ export default function ChangelogSummary({ changelogId, title, content }: Change
       const response = await fetch('/api/gemini/summarize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: cleanedContent, title }),
+        body: JSON.stringify({ content: cleanedContent, title, changelogId }),
       });
 
       const data = await response.json();
@@ -38,7 +47,9 @@ export default function ChangelogSummary({ changelogId, title, content }: Change
       }
 
       setSummary(data.summary);
-      setTags(data.tags);
+      setHighlights(data.highlights || []);
+      setWhatsNew(data.whatsNew || '');
+      setTags(data.tags || []);
       setHasGenerated(true);
     } catch (error) {
       console.error('Failed to generate summary:', error);
@@ -46,11 +57,13 @@ export default function ChangelogSummary({ changelogId, title, content }: Change
     } finally {
       setLoading(false);
     }
-  }, [content, title, loading]);
+  }, [content, title, changelogId, loading]);
 
   useEffect(() => {
     // Reset state when changelogId changes (navigation to different changelog)
     setSummary('');
+    setHighlights([]);
+    setWhatsNew('');
     setTags([]);
     setError('');
     setHasGenerated(false);
@@ -110,28 +123,50 @@ export default function ChangelogSummary({ changelogId, title, content }: Change
   if (hasGenerated && summary) {
     return (
       <div className="bg-secondary-bg border-border-focus hover:border-border-focus hover:shadow-card-shadow mb-6 rounded-lg border p-4 transition-colors duration-200 hover:shadow-lg">
-        <div className="mb-3 flex items-center gap-2">
-          <Icon icon="solar:magic-stick-3-bold" className="text-link h-5 w-5" />
-          <span className="text-primary-text font-medium">AI Summary</span>
-        </div>
+        <div className="max-h-80 overflow-y-auto">
+          <div className="mb-3 flex items-center gap-2">
+            <Icon icon="solar:magic-stick-3-bold" className="text-link h-5 w-5" />
+            <span className="text-primary-text font-medium">AI Summary</span>
+          </div>
 
-        <p className="text-secondary-text mb-3">{summary}</p>
+          <p className="text-secondary-text mb-3">{summary}</p>
 
-        {tags.length > 0 && (
-          <div className="flex items-center gap-2">
-            <Icon icon="solar:tag-bold" className="text-secondary-text h-4 w-4" />
+          {highlights.length > 0 && (
+            <div className="mb-3">
+              <h4 className="text-primary-text mb-2 font-medium">Key Highlights:</h4>
+              <ul className="text-secondary-text space-y-1">
+                {highlights.map((highlight, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <span className="text-link mt-1">•</span>
+                    <span>{highlight}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {whatsNew && (
+            <div className="mb-3">
+              <h4 className="text-primary-text mb-2 font-medium">What&apos;s New:</h4>
+              <p className="text-secondary-text">{whatsNew}</p>
+            </div>
+          )}
+
+          {tags.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {tags.map((tag, index) => (
                 <span
                   key={index}
-                  className="bg-primary-bg text-primary-text border-border hover:bg-border cursor-pointer rounded-full border px-2 py-1 text-xs transition-colors"
+                  className="text-primary-text border-border hover:text-link flex cursor-pointer items-center gap-1 rounded-full border px-2 py-1 text-xs transition-colors"
+                  title={`${tag.category} (${Math.round(tag.relevance * 100)}% relevant)`}
                 >
-                  #{tag}
+                  <Icon icon="solar:tag-bold" className="h-3 w-3" />
+                  {tag.name}
                 </span>
               ))}
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     );
   }

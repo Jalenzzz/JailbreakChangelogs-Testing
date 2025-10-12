@@ -167,7 +167,7 @@ export async function generateMetadata({
         siteName: 'Jailbreak Changelogs',
         images: [
           {
-            url: 'https://jailbreakchangelogs.xyz/assets/images/JBCL_Long_Dark_Background.png',
+            url: 'https://assets.jailbreakchangelogs.xyz/assets/logos/JBCL_Long_Light_Background.png',
             width: 1200,
             height: 630,
             alt: 'Jailbreak Changelogs Logo',
@@ -178,7 +178,9 @@ export async function generateMetadata({
         card: 'summary_large_image',
         title: 'User Not Found | Changelogs',
         description: 'This user profile could not be found on Jailbreak Changelogs.',
-        images: ['https://jailbreakchangelogs.xyz/assets/images/JBCL_Long_Dark_Background.png'],
+        images: [
+          'https://assets.jailbreakchangelogs.xyz/assets/logos/JBCL_Long_Light_Background.png',
+        ],
       },
     };
   }

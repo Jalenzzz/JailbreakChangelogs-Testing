@@ -1,19 +1,77 @@
 import { NextResponse } from 'next/server';
+import { createHash } from 'crypto';
+
+// Simple in-memory cache (in production, use Redis or database)
+const summaryCache = new Map<
+  string,
+  {
+    summary: string;
+    highlights: string[];
+    whatsNew: string;
+    tags: Array<{ name: string; category: string; relevance: number; type: string }>;
+    timestamp: number;
+  }
+>();
+const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
+
+// Cache key generator
+function generateCacheKey(title: string, content: string): string {
+  const hash = createHash('md5').update(`${title}:${content}`).digest('hex');
+  return `summary:${hash}`;
+}
+
+// Fetch previous changelog for context
+async function fetchPreviousChangelog(currentId: number): Promise<string | null> {
+  try {
+    const response = await fetch(
+      `${process.env.PUBLIC_API_URL || 'https://api.jailbreakchangelogs.xyz'}/changelogs/${currentId - 1}`,
+      {
+        headers: {
+          'User-Agent': 'JailbreakChangelogs-AI/1.0',
+        },
+      },
+    );
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const data = await response.json();
+    return data.sections || null;
+  } catch (error) {
+    console.warn('Failed to fetch previous changelog:', error);
+    return null;
+  }
+}
 
 export async function POST(request: Request) {
-  const { content, title } = await request.json();
+  const { content, title, changelogId } = await request.json();
 
   if (!content || !title) {
     return NextResponse.json({ error: 'Content and title required' }, { status: 400 });
   }
 
+  // Check cache first
+  const cacheKey = generateCacheKey(title, content);
+  const cached = summaryCache.get(cacheKey);
+
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return NextResponse.json({
+      summary: cached.summary,
+      highlights: cached.highlights,
+      whatsNew: cached.whatsNew,
+      tags: cached.tags,
+      cached: true,
+    });
+  }
+
   try {
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.OPEN_ROUTER_API_KEY;
 
     if (!apiKey) {
       return NextResponse.json(
         {
-          error: 'GEMINI_API_KEY environment variable is required',
+          error: 'OPEN_ROUTER_API_KEY environment variable is required',
         },
         { status: 500 },
       );
@@ -25,53 +83,80 @@ export async function POST(request: Request) {
       .replace(/\s+/g, ' ') // Reduce multiple spaces to single
       .substring(0, 4000); // Truncate to avoid token limits
 
-    // Call Gemini API
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: `Summarize this Roblox Jailbreak changelog in 2 sentences and extract 5 relevant tags:
+    // Fetch previous changelog for context (if changelogId is provided)
+    let previousContext = '';
+    if (changelogId && typeof changelogId === 'number') {
+      const previousContent = await fetchPreviousChangelog(changelogId);
+      if (previousContent) {
+        previousContext = `\n\nPrevious changelog context:\n${previousContent.substring(0, 1000)}`;
+      }
+    }
+
+    // Call OpenRouter API with Llama 4 Maverick
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+        'HTTP-Referer': 'https://jailbreakchangelogs.xyz',
+        'X-Title': 'Jailbreak Changelogs',
+      },
+      body: JSON.stringify({
+        model: 'meta-llama/llama-4-maverick:free',
+        messages: [
+          {
+            role: 'user',
+            content: `You are an expert Roblox Jailbreak analyst. Analyze this changelog and provide a comprehensive summary.
 
 Title: "${title}"
-Content: "${cleanContent}"
+Content: "${cleanContent}"${previousContext}
+
+Create a comprehensive analysis with the following structure:
+
+1. **Summary**: Concise 2-3 sentence overview of the main changes (do not repeat the changelog title)
+2. **Highlights**: Top 3 most important features or changes
+3. **What's New**: List the most exciting and notable new features or changes in a casual, engaging way
+4. **Tags**: Categorize exactly 5 tags with hierarchy and relevance
+
+For tags, create a hierarchical system with categories and relevance scores:
+- **Primary tags** (2-3): Most important features/changes (relevance: 0.9-1.0)
+- **Secondary tags** (2-3): Supporting features/locations (relevance: 0.6-0.8)
+- **Tag categories**: Features, Locations, Mechanics, Quality of Life, Bug Fixes
+
+Keep tags short (1-2 words max) and use spaces, not underscores. Avoid generic tags like "Roblox", "Jailbreak", "Update", "Gaming".
 
 Respond in JSON format:
 {
-  "summary": "Brief summary here",
-  "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"]
+  "summary": "Concise 2-3 sentence overview",
+  "highlights": ["Key feature 1", "Key feature 2", "Key feature 3"],
+  "whatsNew": "Most exciting and notable new features or changes",
+  "tags": [
+    {"name": "tag1", "category": "Features", "relevance": 0.95, "type": "primary"},
+    {"name": "tag2", "category": "Mechanics", "relevance": 0.85, "type": "primary"},
+    {"name": "tag3", "category": "Locations", "relevance": 0.75, "type": "secondary"},
+    {"name": "tag4", "category": "Quality of Life", "relevance": 0.70, "type": "secondary"},
+    {"name": "tag5", "category": "Bug Fixes", "relevance": 0.65, "type": "secondary"}
+  ]
 }`,
-                },
-              ],
-            },
-          ],
-          generationConfig: {
-            temperature: 0.3,
-            topK: 40,
-            topP: 0.95,
-            maxOutputTokens: 2048,
           },
-        }),
-      },
-    );
+        ],
+        temperature: 0.3,
+        max_tokens: 2048,
+      }),
+    });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`Gemini API error ${response.status}:`, errorText);
+      console.error(`OpenRouter API error ${response.status}:`, errorText);
       throw new Error(`API error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
-    const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    const finishReason = data.candidates?.[0]?.finishReason;
+    const generatedText = data.choices?.[0]?.message?.content;
+    const finishReason = data.choices?.[0]?.finish_reason;
 
     if (!generatedText) {
-      if (finishReason === 'MAX_TOKENS') {
+      if (finishReason === 'length') {
         throw new Error('Content too long - please try with shorter content');
       }
 
@@ -111,12 +196,24 @@ Respond in JSON format:
       throw new Error('Invalid JSON response');
     }
 
+    // Cache the result
+    summaryCache.set(cacheKey, {
+      summary: result.summary || content.substring(0, 200),
+      highlights: result.highlights || [],
+      whatsNew: result.whatsNew || '',
+      tags: result.tags || [],
+      timestamp: Date.now(),
+    });
+
     return NextResponse.json({
       summary: result.summary || content.substring(0, 200),
+      highlights: result.highlights || [],
+      whatsNew: result.whatsNew || '',
       tags: result.tags || [],
+      cached: false,
     });
   } catch (error) {
-    console.error('Gemini API Error:', error);
+    console.error('OpenRouter API Error:', error);
     return NextResponse.json(
       {
         error: 'Failed to generate AI summary',
