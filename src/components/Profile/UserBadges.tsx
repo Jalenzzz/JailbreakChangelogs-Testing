@@ -6,9 +6,7 @@ import {
   ChartBarIcon,
   UserGroupIcon,
 } from '@heroicons/react/24/solid';
-import { FaCrown, FaHandsHelping } from 'react-icons/fa';
-import { FaWrench } from 'react-icons/fa6';
-import { CgCodeSlash } from 'react-icons/cg';
+import { Icon } from '../UI/IconWrapper';
 import { toast } from 'react-hot-toast';
 import type { UserFlag } from '@/types/auth';
 import Image from 'next/image';
@@ -158,7 +156,11 @@ export const UserBadges = ({
     toast(
       () => (
         <div className="flex items-center gap-2">
-          <FaHandsHelping className="h-10 w-10 text-orange-100" />
+          <Icon
+            icon="fa7-solid:hands-helping"
+            className="h-10 w-10 text-orange-100"
+            inline={true}
+          />
           <span>
             {partnerFlag?.description || 'This user is a partner of Jailbreak Changelogs!'}
           </span>
@@ -180,7 +182,11 @@ export const UserBadges = ({
     toast(
       () => (
         <div className="flex items-center gap-2">
-          <FaWrench className="h-5 w-5 text-teal-100" />
+          <Icon
+            icon="fa6-solid:screwdriver-wrench"
+            className="h-5 w-5 text-teal-100"
+            inline={true}
+          />
           <span>
             {contributorFlag?.description || 'This user contributed to Jailbreak Changelogs!'}
           </span>
@@ -202,7 +208,7 @@ export const UserBadges = ({
     toast(
       () => (
         <div className="flex items-center gap-2">
-          <CgCodeSlash className="h-5 w-5 text-black" />
+          <Icon icon="ri:code-s-slash-line" className="h-5 w-5 text-black" inline={true} />
           <span>
             {developerFlag?.description || 'This user is a developer for Jailbreak Changelogs!'}
           </span>
@@ -283,7 +289,7 @@ export const UserBadges = ({
               style={{ background: 'var(--color-badge-owner)' }}
               onClick={handleOwnerBadgeClick}
             >
-              <FaCrown className={currentSize.icon} />
+              <Icon icon="fa-solid:crown" className={currentSize.icon} inline={true} />
             </div>
           </Tooltip>
         );
@@ -395,7 +401,7 @@ export const UserBadges = ({
               style={{ background: 'var(--color-badge-partner)' }}
               onClick={handlePartnerBadgeClick}
             >
-              <FaHandsHelping className={currentSize.icon} />
+              <Icon icon="fa7-solid:hands-helping" className={currentSize.icon} inline={true} />
             </div>
           </Tooltip>
         );
@@ -423,7 +429,11 @@ export const UserBadges = ({
               style={{ background: 'var(--color-badge-contributor)' }}
               onClick={handleContributorBadgeClick}
             >
-              <FaWrench className={currentSize.icon} />
+              <Icon
+                icon="fa6-solid:screwdriver-wrench"
+                className={currentSize.icon}
+                inline={true}
+              />
             </div>
           </Tooltip>
         );
@@ -451,7 +461,7 @@ export const UserBadges = ({
               style={{ background: 'var(--color-badge-developer)' }}
               onClick={handleDeveloperBadgeClick}
             >
-              <CgCodeSlash className={currentSize.icon} />
+              <Icon icon="ri:code-s-slash-line" className={currentSize.icon} inline={true} />
             </div>
           </Tooltip>
         );

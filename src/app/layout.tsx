@@ -4,7 +4,7 @@ import Script from 'next/script';
 import Image from 'next/image';
 import './globals.css';
 import Header from '@/components/Layout/Header';
-import NewsTicker from '@/components/Layout/NewsTicker';
+// import NewsTicker from "@/components/Layout/NewsTicker";
 import MaintenanceBypass from '@/components/Layout/MaintenanceBypass';
 import Footer from '@/components/Layout/Footer';
 import OfflineDetector from '@/components/OfflineDetector';
@@ -138,7 +138,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                         >
                           <Header />
                         </Suspense>
-                        <NewsTicker />
+                        {/* <NewsTicker /> */}
                         <main className="flex-1">{children}</main>
                         <Footer />
                       </div>
@@ -148,15 +148,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               </ThemeProvider>
             </CustomThemeProvider>
           </AppRouterCacheProvider>
-          <Script id="clarity-script" strategy="afterInteractive">
-            {`
-              (function(c,l,a,r,i,t,y){
+          <Script
+            id="microsoft-clarity-analytics"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function(c,l,a,r,i,t,y){
                   c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
                   t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
                   y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-              })(window, document, "clarity", "script", "${process.env.NEXT_PUBLIC_CLARITY_PROJECT}");
-            `}
-          </Script>
+                })(window, document, "clarity", "script", "${process.env.NEXT_PUBLIC_CLARITY_PROJECT}");
+              `,
+            }}
+          />
         </body>
       </html>
     );
@@ -167,13 +171,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head>
         {/* Google Analytics */}
         <GoogleAnalytics gaId="G-729QSV9S7B" />
-        {/* Google AdSense */}
-        <Script
-          async
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-${process.env.NEXT_PUBLIC_GOOGLE_ADS_CLIENT}`}
-          crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
+        {/* Google AdSense script is now loaded directly in DisplayAd component to avoid data-nscript attribute */}
       </head>
       <body className={`${inter.className} bg-primary-bg`}>
         <noscript>
@@ -274,7 +272,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                     >
                       <Header />
                     </Suspense>
-                    <NewsTicker />
+                    {/* <NewsTicker /> */}
                     <main className="flex-1">{children}</main>
                     <Footer />
                   </div>
@@ -283,15 +281,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </ThemeProvider>
           </CustomThemeProvider>
         </AppRouterCacheProvider>
-        <Script id="clarity-script" strategy="afterInteractive">
-          {`
-            (function(c,l,a,r,i,t,y){
+        <Script
+          id="microsoft-clarity-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(c,l,a,r,i,t,y){
                 c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
                 t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
                 y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-            })(window, document, "clarity", "script", "${process.env.NEXT_PUBLIC_CLARITY_PROJECT}");
-          `}
-        </Script>
+              })(window, document, "clarity", "script", "${process.env.NEXT_PUBLIC_CLARITY_PROJECT}");
+            `,
+          }}
+        />
       </body>
     </html>
   );

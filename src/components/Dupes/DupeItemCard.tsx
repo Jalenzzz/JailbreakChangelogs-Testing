@@ -114,6 +114,18 @@ export default function DupeItemCard({
               playsInline
               loop
               autoPlay
+              onError={(e) => {
+                console.log('Video error:', e);
+              }}
+              onAbort={(e) => {
+                console.log('Video aborted by browser power saving:', e);
+              }}
+              onPause={(e) => {
+                console.log('Video paused:', e);
+              }}
+              onPlay={(e) => {
+                console.log('Video play attempted:', e);
+              }}
             />
           ) : isDriftItem(item.categoryTitle) ? (
             <div className="relative h-full w-full">
@@ -218,7 +230,12 @@ export default function DupeItemCard({
               className="text-primary-text cursor-help text-xl font-bold"
               aria-label={`Duped value: ${dupedValue > 0 ? formatCurrencyValue(dupedValue) : 'Not available'}`}
             >
-              {dupedValue > 0 ? formatCurrencyValue(dupedValue) : 'N/A'}
+              <span className="sm:hidden">
+                {dupedValue > 0 ? formatCurrencyValue(dupedValue) : 'N/A'}
+              </span>
+              <span className="hidden sm:inline">
+                {dupedValue > 0 ? `$${dupedValue.toLocaleString()}` : 'N/A'}
+              </span>
             </div>
           </Tooltip>
         </div>

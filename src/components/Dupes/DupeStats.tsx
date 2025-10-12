@@ -96,7 +96,10 @@ export default function DupeStats({
               {isLoadingValues ? (
                 <div className="h-8 w-24 animate-pulse rounded"></div>
               ) : (
-                formatPreciseMoney(totalDupedValue)
+                <>
+                  <span className="sm:hidden">{formatPreciseMoney(totalDupedValue)}</span>
+                  <span className="hidden sm:inline">${totalDupedValue.toLocaleString()}</span>
+                </>
               )}
             </p>
           </div>
@@ -118,8 +121,9 @@ export default function DupeStats({
               <h3 className="font-medium text-yellow-400">Duplicates Detected</h3>
               <p className="mt-1 text-sm text-yellow-300">
                 This user has {duplicateStats.totalDuplicates} duplicate items worth{' '}
-                {formatPreciseMoney(totalDupedValue)}. Duplicates are items that exist multiple
-                times in the same inventory.
+                <span className="sm:hidden">{formatPreciseMoney(totalDupedValue)}</span>
+                <span className="hidden sm:inline">${totalDupedValue.toLocaleString()}</span>.
+                Duplicates are items that exist multiple times in the same inventory.
               </p>
             </div>
           </div>

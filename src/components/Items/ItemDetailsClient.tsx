@@ -134,7 +134,13 @@ export default function ItemDetailsClient({
   useEffect(() => {
     if (item?.type && isDriftItem(item.type) && videoRef.current) {
       if (isHovered) {
-        videoRef.current.play();
+        // Handle video play promise properly to avoid race conditions
+        const playPromise = videoRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((error) => {
+            console.error('Error playing drift video:', error);
+          });
+        }
       } else {
         videoRef.current.pause();
         videoRef.current.currentTime = 0;
@@ -230,10 +236,41 @@ export default function ItemDetailsClient({
     if (isPlaying) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
+      setIsPlaying(false);
+
+      // Add a small delay to prevent race conditions
+      setTimeout(() => {
+        if (audioRef.current && !audioRef.current.paused) {
+          audioRef.current.pause();
+        }
+      }, 150);
     } else {
-      audioRef.current.play();
+      // Check if audio is truly ready to play
+      const isAudioReady =
+        audioRef.current.currentTime > 0 &&
+        !audioRef.current.paused &&
+        !audioRef.current.ended &&
+        audioRef.current.readyState > audioRef.current.HAVE_CURRENT_DATA;
+
+      if (!isAudioReady) {
+        // Reset the audio to start
+        audioRef.current.currentTime = 0;
+
+        // Use a promise to handle play() properly and avoid race conditions
+        const playPromise = audioRef.current.play();
+
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              setIsPlaying(true);
+            })
+            .catch((error) => {
+              console.error('Error playing audio:', error);
+              setIsPlaying(false);
+            });
+        }
+      }
     }
-    setIsPlaying(!isPlaying);
   };
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
@@ -322,7 +359,7 @@ export default function ItemDetailsClient({
                   WebkitOverflowScrolling: 'touch',
                   flex: 1,
                 }}
-                className="overflow-x-auto whitespace-nowrap md:flex md:flex-wrap md:overflow-visible md:whitespace-normal"
+                className="border-secondary-text overflow-x-auto border-b-2 whitespace-nowrap md:flex md:flex-wrap md:overflow-visible md:whitespace-normal"
               >
                 {labels.map((label, idx) => (
                   <button
@@ -335,9 +372,9 @@ export default function ItemDetailsClient({
                     style={{ display: 'inline-block' }}
                     className={
                       (value === idx
-                        ? 'text-button-info border-button-info border-b-2 font-semibold '
-                        : 'text-secondary-text hover:text-primary-text ') +
-                      'hover:bg-button-info/10 mr-1 cursor-pointer rounded-t-md px-4 py-2'
+                        ? 'text-button-info border-button-info border-b-2 font-semibold'
+                        : 'text-secondary-text hover:text-primary-text') +
+                      ' hover:bg-button-info/10 mr-1 cursor-pointer rounded-t-md px-4 py-2'
                     }
                   >
                     {label}
@@ -422,6 +459,18 @@ export default function ItemDetailsClient({
                     playsInline
                     autoPlay
                     className="h-full w-full object-cover"
+                    onError={(e) => {
+                      console.log('Video error:', e);
+                    }}
+                    onAbort={(e) => {
+                      console.log('Video aborted by browser power saving:', e);
+                    }}
+                    onPause={(e) => {
+                      console.log('Video paused:', e);
+                    }}
+                    onPlay={(e) => {
+                      console.log('Video play attempted:', e);
+                    }}
                   />
                 ) : isDriftItem(item.type) ? (
                   <div className="relative h-full w-full">
@@ -726,7 +775,11 @@ export default function ItemDetailsClient({
                         : undefined;
 
                       return (
-                        <ItemValueChart itemId={String(currentItem.id)} variantId={variantId} />
+                        <ItemValueChart
+                          itemId={String(currentItem.id)}
+                          variantId={variantId}
+                          hideTradingMetrics={currentItem.id === 587}
+                        />
                       );
                     })()}
                   </div>

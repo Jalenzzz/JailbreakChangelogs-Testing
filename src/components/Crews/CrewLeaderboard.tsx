@@ -8,7 +8,7 @@ import { RobloxUser } from '@/types';
 import { fetchMissingRobloxData } from '@/app/inventories/actions';
 import localFont from 'next/font/local';
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { FaClock } from 'react-icons/fa';
+import { Icon } from '../UI/IconWrapper';
 import { useDebounce } from '@/hooks/useDebounce';
 
 const bangers = localFont({
@@ -147,7 +147,7 @@ export default function CrewLeaderboard({ leaderboard, currentSeason }: CrewLead
         <div className="bg-secondary-bg border-border-primary mb-4 rounded-lg border p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="text-primary-text flex items-center gap-2">
-              <FaClock className="h-5 w-5" />
+              <Icon icon="mdi:clock" className="h-5 w-5" inline={true} />
               <span className="font-medium">Historical Data</span>
             </div>
             <Link
@@ -237,7 +237,7 @@ function CrewLeaderboardEntry({
 
   return (
     <div
-      className={`flex flex-col gap-3 rounded-lg border p-6 transition-colors sm:flex-row sm:items-center ${
+      className={`bg-primary-bg flex flex-col gap-3 rounded-lg border p-6 transition-colors sm:flex-row sm:items-center ${
         index <= 2 ? '' : 'border-border-primary hover:border-border-focus'
       }`}
       style={{

@@ -3,8 +3,7 @@
 import React from 'react';
 import { formatMessageDate } from '@/utils/timestamp';
 import localFont from 'next/font/local';
-import { RiCriminalFill } from 'react-icons/ri';
-import { GiPoliceOfficerHead } from 'react-icons/gi';
+import { Icon } from '../UI/IconWrapper';
 
 const bangers = localFont({
   src: '../../../public/fonts/Bangers.ttf',
@@ -60,9 +59,17 @@ export default function SeasonContractsClient({ contracts, updatedAt }: SeasonCo
                 <div className="flex items-center justify-center gap-4">
                   {/* Team Icon */}
                   {team === 'Criminal' ? (
-                    <RiCriminalFill className="text-form-button-text h-8 w-8 flex-shrink-0 sm:h-10 sm:w-10" />
+                    <Icon
+                      icon="ri:criminal-fill"
+                      className="text-form-button-text h-8 w-8 flex-shrink-0 sm:h-10 sm:w-10"
+                      inline={true}
+                    />
                   ) : (
-                    <GiPoliceOfficerHead className="text-form-button-text h-8 w-8 flex-shrink-0 sm:h-10 sm:w-10" />
+                    <Icon
+                      icon="game-icons:police-officer-head"
+                      className="text-form-button-text h-8 w-8 flex-shrink-0 sm:h-10 sm:w-10"
+                      inline={true}
+                    />
                   )}
                   <span className="text-form-button-text text-2xl font-bold tracking-wide uppercase">
                     {team} Contracts

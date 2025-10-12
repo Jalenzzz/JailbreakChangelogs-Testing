@@ -10,8 +10,7 @@ import { formatCustomDate } from '@/utils/timestamp';
 import Image from 'next/image';
 import { DefaultAvatar } from '@/utils/avatar';
 import type { UserData } from '@/types/auth';
-import { FaCircleMinus } from 'react-icons/fa6';
-import { FaPlusCircle } from 'react-icons/fa';
+import { Icon } from '../UI/IconWrapper';
 
 type ItemChangeValue = string | number | boolean | null;
 
@@ -46,7 +45,6 @@ export interface Change {
     suggestor_name: string;
     message_id: number | string;
     data: {
-      // Old format fields
       item_name: string;
       current_value?: string;
       suggested_value?: string;
@@ -57,7 +55,6 @@ export interface Change {
       current_trend?: string | null;
       suggested_trend?: string | null;
       reason: string;
-      // New format fields
       item_type?: string;
       item_id?: number;
       current_cash_value?: string;
@@ -165,6 +162,18 @@ const doesSuggestionTypeApplyToKey = (suggestionType?: string, changeKey?: strin
   if (st === 'demand') return key === 'demand';
   if (st === 'trend') return key === 'trend';
   return false;
+};
+
+// Return a human-friendly label for the suggestion type (or fallback to 'Value')
+const formatSuggestionTypeLabel = (suggestionType?: string, changeKey?: string) => {
+  if (doesSuggestionTypeApplyToKey(suggestionType, changeKey) && suggestionType) {
+    const text = suggestionType.replace(/_/g, ' ');
+    return text
+      .split(' ')
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ');
+  }
+  return 'Value';
 };
 
 export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemChangelogsProps) {
@@ -646,17 +655,10 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                               key,
                             ) ? (
                               <span className="border-primary-text text-primary-text mb-2 inline-flex items-center rounded-full border bg-transparent px-1.5 py-0.5 text-[10px] sm:px-2 sm:py-1 sm:text-xs">
-                                {(() => {
-                                  const text =
-                                    change.suggestion_data!.metadata!.suggestion_type!.replace(
-                                      /_/g,
-                                      ' ',
-                                    );
-                                  return text
-                                    .split(' ')
-                                    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-                                    .join(' ');
-                                })()}
+                                {formatSuggestionTypeLabel(
+                                  change.suggestion_data?.metadata?.suggestion_type,
+                                  key,
+                                )}
                               </span>
                             ) : (
                               <>{key.replace(/_/g, ' ')}:</>
@@ -665,8 +667,15 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                           <div className="grid grid-cols-2 gap-6">
                             <div className="min-w-0">
                               <div className="text-tertiary-text mb-2 flex items-center gap-2 text-xs font-semibold tracking-wide uppercase">
-                                <FaCircleMinus className="text-button-danger h-4 w-4" />
-                                OLD VALUE
+                                <Icon
+                                  icon="mdi:minus-circle"
+                                  className="text-button-danger h-4 w-4"
+                                  inline={true}
+                                />
+                                {`OLD ${formatSuggestionTypeLabel(
+                                  change.suggestion_data?.metadata?.suggestion_type,
+                                  key,
+                                ).toUpperCase()}`}
                               </div>
                               <div
                                 className="text-secondary-text overflow-hidden text-lg font-bold break-words line-through"
@@ -708,8 +717,15 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                             </div>
                             <div className="min-w-0">
                               <div className="text-tertiary-text mb-2 flex items-center gap-2 text-xs font-semibold tracking-wide uppercase">
-                                <FaPlusCircle className="text-button-success h-4 w-4" />
-                                NEW VALUE
+                                <Icon
+                                  icon="mdi:plus-circle"
+                                  className="text-button-success h-4 w-4"
+                                  inline={true}
+                                />
+                                {`NEW ${formatSuggestionTypeLabel(
+                                  change.suggestion_data?.metadata?.suggestion_type,
+                                  key,
+                                ).toUpperCase()}`}
                               </div>
                               <div
                                 className="text-primary-text overflow-hidden text-lg font-bold break-words"
@@ -779,6 +795,7 @@ export default function ItemChangelogs({ initialChanges, initialUserMap }: ItemC
                     Changed by{' '}
                     <Link
                       href={`/users/${change.changed_by_id}`}
+                      prefetch={false}
                       className="text-link hover:text-link-hover hover:underline"
                     >
                       {change.changed_by}

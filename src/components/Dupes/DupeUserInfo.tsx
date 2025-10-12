@@ -142,6 +142,7 @@ export default function DupeUserInfo({
               >
                 <Link
                   href={`/users/${userConnectionData.id}`}
+                  prefetch={false}
                   className="text-primary-text border-primary-text hover:bg-quaternary-bg inline-flex items-center gap-1 rounded-full border bg-transparent px-2 py-0.5 text-xs transition-colors"
                 >
                   <Image
@@ -203,14 +204,17 @@ export default function DupeUserInfo({
             }}
           >
             <div className="text-primary-text cursor-help text-2xl font-bold">
-              $
-              {totalDupedValue >= 1000000000
-                ? `${(totalDupedValue / 1000000000).toFixed(1)}B`
-                : totalDupedValue >= 1000000
-                  ? `${(totalDupedValue / 1000000).toFixed(1)}M`
-                  : totalDupedValue >= 1000
-                    ? `${(totalDupedValue / 1000).toFixed(1)}K`
-                    : totalDupedValue.toLocaleString()}
+              <span className="sm:hidden">
+                $
+                {totalDupedValue >= 1000000000
+                  ? `${(totalDupedValue / 1000000000).toFixed(1)}B`
+                  : totalDupedValue >= 1000000
+                    ? `${(totalDupedValue / 1000000).toFixed(1)}M`
+                    : totalDupedValue >= 1000
+                      ? `${(totalDupedValue / 1000).toFixed(1)}K`
+                      : totalDupedValue.toLocaleString()}
+              </span>
+              <span className="hidden sm:inline">${totalDupedValue.toLocaleString()}</span>
             </div>
           </Tooltip>
         </div>

@@ -41,7 +41,11 @@ export const TradeUserTooltip: React.FC<TradeUserTooltipProps> = ({ user }) => {
         {/* User Details */}
         <div className="min-w-0 flex-1">
           <div className="mb-1">
-            <Link href={`/users/${user.id}`} className="block transition-opacity hover:opacity-80">
+            <Link
+              href={`/users/${user.id}`}
+              prefetch={false}
+              className="block transition-opacity hover:opacity-80"
+            >
               <div className="flex items-center gap-2">
                 <h3 className="text-primary-text hover:text-link text-lg font-semibold transition-colors">
                   {user.global_name && user.global_name !== 'None'

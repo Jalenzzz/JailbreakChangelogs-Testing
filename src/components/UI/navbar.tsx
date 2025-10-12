@@ -12,15 +12,21 @@ import { isFeatureEnabled } from '@/utils/featureFlags';
 import dynamic from 'next/dynamic';
 import { Tooltip } from '@mui/material';
 
-const ThemeToggle = dynamic(() => import('@/components/Layout/ThemeToggle'), {
-  ssr: false,
-  loading: () => (
-    <div className="border-border-primary bg-secondary-bg text-secondary-text hover:text-primary-text hover:bg-quaternary-bg flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg border transition-all duration-200 hover:scale-105 active:scale-95">
-      <div className="h-5 w-5" />
-    </div>
-  ),
-});
-import { Settings, LogOut } from 'lucide-react';
+const AnimatedThemeToggler = dynamic(
+  () =>
+    import('@/components/UI/animated-theme-toggler').then((mod) => ({
+      default: mod.AnimatedThemeToggler,
+    })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="border-border-primary bg-secondary-bg text-secondary-text hover:text-primary-text hover:bg-quaternary-bg flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg border transition-all duration-200 hover:scale-105 active:scale-95">
+        <div className="h-5 w-5" />
+      </div>
+    ),
+  },
+);
+import { Icon } from './IconWrapper';
 
 const menuTransition = {
   type: 'spring' as const,
@@ -236,13 +242,11 @@ export const NavbarModern = ({ className }: { className?: string }) => {
             <HoveredLink href="/seasons/will-i-make-it">
               <div className="flex items-center gap-2">
                 <span>Will I Make It</span>
-                <Badge variant="new">New</Badge>
               </div>
             </HoveredLink>
             <HoveredLink href="/seasons/contracts">
               <div className="flex items-center gap-2">
                 <span>Weekly Contracts</span>
-                <Badge variant="new">New</Badge>
               </div>
             </HoveredLink>
           </MenuItem>
@@ -255,9 +259,7 @@ export const NavbarModern = ({ className }: { className?: string }) => {
             <HoveredLink href="/dupes">
               <div className="flex items-center gap-2">
                 <span>Dupe Finder</span>
-                {isFeatureEnabled('DUPE_FINDER') ? (
-                  <Badge variant="new">New</Badge>
-                ) : (
+                {!isFeatureEnabled('DUPE_FINDER') && (
                   <Badge variant="coming-soon">Coming Soon</Badge>
                 )}
               </div>
@@ -266,10 +268,8 @@ export const NavbarModern = ({ className }: { className?: string }) => {
             <HoveredLink href="/trading">Trade Ads</HoveredLink>
             <HoveredLink href="/inventories">
               <div className="flex items-center gap-2">
-                <span>Inventory Calculator</span>
-                {isFeatureEnabled('INVENTORY_CALCULATOR') ? (
-                  <Badge variant="new">New</Badge>
-                ) : (
+                <span>Inventory Checker</span>
+                {!isFeatureEnabled('INVENTORY_CALCULATOR') && (
                   <Badge variant="coming-soon">Coming Soon</Badge>
                 )}
               </div>
@@ -277,11 +277,7 @@ export const NavbarModern = ({ className }: { className?: string }) => {
             <HoveredLink href="/og">
               <div className="flex items-center gap-2">
                 <span>OG Finder</span>
-                {isFeatureEnabled('OG_FINDER') ? (
-                  <Badge variant="new">New</Badge>
-                ) : (
-                  <Badge variant="coming-soon">Coming Soon</Badge>
-                )}
+                {!isFeatureEnabled('OG_FINDER') && <Badge variant="coming-soon">Coming Soon</Badge>}
               </div>
             </HoveredLink>
           </MenuItem>
@@ -291,6 +287,12 @@ export const NavbarModern = ({ className }: { className?: string }) => {
             <HoveredLink href="/users">User Search</HoveredLink>
             <HoveredLink href="/crews">Crew Leaderboard</HoveredLink>
             <HoveredLink href="/leaderboard/money">Money Leaderboard</HoveredLink>
+            <HoveredLink href="/inventories/networth">
+              <div className="flex items-center gap-2">
+                <span>Networth Leaderboard</span>
+                <Badge variant="new">New</Badge>
+              </div>
+            </HoveredLink>
             <HoveredLink href="/servers">Private Servers</HoveredLink>
             <HoveredLink href="/bot">Discord Bot</HoveredLink>
             <HoveredLink href="/faq">FAQ</HoveredLink>
@@ -331,7 +333,7 @@ export const NavbarModern = ({ className }: { className?: string }) => {
           </Tooltip>
 
           {/* Theme toggle */}
-          <ThemeToggle />
+          <AnimatedThemeToggler />
 
           {/* User menu or login button */}
           {userData ? (
@@ -414,7 +416,7 @@ export const NavbarModern = ({ className }: { className?: string }) => {
                         href="/settings"
                         className="text-primary-text hover:bg-button-info-hover hover:text-form-button-text flex items-center gap-3 px-4 py-2 text-sm transition-colors"
                       >
-                        <Settings className="h-4 w-4" />
+                        <Icon icon="material-symbols:settings" className="h-4 w-4" inline={true} />
                         Settings
                       </Link>
 
@@ -422,7 +424,7 @@ export const NavbarModern = ({ className }: { className?: string }) => {
                         className="text-button-danger hover:bg-button-danger/10 hover:text-button-danger flex w-full cursor-pointer items-center gap-3 px-4 py-2 text-left text-sm transition-colors"
                         onClick={handleLogout}
                       >
-                        <LogOut className="h-4 w-4" />
+                        <Icon icon="material-symbols:logout" className="h-4 w-4" inline={true} />
                         Logout
                       </button>
                     </div>

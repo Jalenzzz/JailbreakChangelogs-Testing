@@ -19,8 +19,7 @@ import DisplayAd from '@/components/Ads/DisplayAd';
 import AdRemovalNotice from '@/components/Ads/AdRemovalNotice';
 import { getCurrentUserPremiumType } from '@/contexts/AuthContext';
 import ChangelogDetailsHeader from './ChangelogDetailsHeader';
-import { FaCircleMinus } from 'react-icons/fa6';
-import { FaPlusCircle } from 'react-icons/fa';
+import { Icon } from '../UI/IconWrapper';
 
 interface Item {
   id: number;
@@ -204,6 +203,18 @@ export default function ChangelogDetailsClient({
     if (st === 'demand') return key === 'demand';
     if (st === 'trend') return key === 'trend';
     return false;
+  };
+
+  // Return a human-friendly label for the suggestion type (or fallback to 'Value')
+  const formatSuggestionTypeLabel = (suggestionType?: string, changeKey?: string) => {
+    if (doesSuggestionTypeApplyToKey(suggestionType, changeKey) && suggestionType) {
+      const text = suggestionType.replace(/_/g, ' ');
+      return text
+        .split(' ')
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ');
+    }
+    return 'Value';
   };
 
   useEffect(() => {
@@ -430,40 +441,29 @@ export default function ChangelogDetailsClient({
                   },
                 }}
               />
-              {itemTypes.map((type) => (
-                <Chip
-                  key={type}
-                  label={type}
-                  onClick={() => setSelectedType(type)}
-                  variant={selectedType === type ? 'filled' : 'outlined'}
-                  sx={{
-                    backgroundColor:
-                      selectedType === type ? 'var(--color-button-info)' : 'transparent',
-                    borderColor:
-                      selectedType === type
-                        ? 'var(--color-button-info)'
-                        : 'var(--color-secondary-text)',
-                    color:
-                      selectedType === type
-                        ? 'var(--color-form-button-text)'
-                        : 'var(--color-primary-text)',
-                    '&:hover': {
-                      backgroundColor:
-                        selectedType === type
-                          ? 'var(--color-button-info-hover)'
-                          : 'var(--color-button-info)',
+              {itemTypes.map((type) => {
+                const categoryColor = getCategoryColor(type);
+                return (
+                  <Chip
+                    key={type}
+                    label={type}
+                    onClick={() => setSelectedType(type)}
+                    variant={selectedType === type ? 'filled' : 'outlined'}
+                    sx={{
+                      backgroundColor: selectedType === type ? categoryColor : 'transparent',
                       borderColor:
-                        selectedType === type
-                          ? 'var(--color-button-info-hover)'
-                          : 'var(--color-button-info)',
-                      color:
-                        selectedType === type
-                          ? 'var(--color-form-button-text)'
-                          : 'var(--color-primary-text)',
-                    },
-                  }}
-                />
-              ))}
+                        selectedType === type ? categoryColor : 'var(--color-secondary-text)',
+                      color: selectedType === type ? '#ffffff' : 'var(--color-primary-text)',
+                      '&:hover': {
+                        backgroundColor:
+                          selectedType === type ? categoryColor : categoryColor + '40',
+                        borderColor: selectedType === type ? categoryColor : categoryColor,
+                        color: selectedType === type ? '#ffffff' : 'var(--color-primary-text)',
+                      },
+                    }}
+                  />
+                );
+              })}
             </div>
           </div>
 
@@ -564,7 +564,18 @@ export default function ChangelogDetailsClient({
                             className="h-full w-full object-cover"
                             muted
                             loop
-                            onError={() => {}}
+                            onError={(e) => {
+                              console.log('Video error:', e);
+                            }}
+                            onAbort={(e) => {
+                              console.log('Video aborted by browser power saving:', e);
+                            }}
+                            onPause={(e) => {
+                              console.log('Video paused:', e);
+                            }}
+                            onPlay={(e) => {
+                              console.log('Video play attempted:', e);
+                            }}
                           />
                         ) : (
                           <Image
@@ -764,17 +775,10 @@ export default function ChangelogDetailsClient({
                                     key,
                                   ) ? (
                                     <span className="border-primary-text text-primary-text mb-2 inline-flex items-center rounded-full border bg-transparent px-1.5 py-0.5 text-[10px] sm:px-2 sm:py-1 sm:text-xs">
-                                      {(() => {
-                                        const text =
-                                          change.suggestion!.metadata!.suggestion_type!.replace(
-                                            /_/g,
-                                            ' ',
-                                          );
-                                        return text
-                                          .split(' ')
-                                          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-                                          .join(' ');
-                                      })()}
+                                      {formatSuggestionTypeLabel(
+                                        change.suggestion?.metadata?.suggestion_type,
+                                        key,
+                                      )}
                                     </span>
                                   ) : (
                                     <>{key.replace(/_/g, ' ')}:</>
@@ -783,8 +787,15 @@ export default function ChangelogDetailsClient({
                                 <div className="grid grid-cols-2 gap-6">
                                   <div className="min-w-0">
                                     <div className="text-tertiary-text mb-2 flex items-center gap-2 text-xs font-semibold tracking-wide uppercase">
-                                      <FaCircleMinus className="text-button-danger h-4 w-4" />
-                                      OLD VALUE
+                                      <Icon
+                                        icon="mdi:minus-circle"
+                                        className="text-button-danger h-4 w-4"
+                                        inline={true}
+                                      />
+                                      {`OLD ${formatSuggestionTypeLabel(
+                                        change.suggestion?.metadata?.suggestion_type,
+                                        key,
+                                      ).toUpperCase()}`}
                                     </div>
                                     <div
                                       className="text-secondary-text overflow-hidden text-lg font-bold break-words line-through"
@@ -813,8 +824,15 @@ export default function ChangelogDetailsClient({
                                   </div>
                                   <div className="min-w-0">
                                     <div className="text-tertiary-text mb-2 flex items-center gap-2 text-xs font-semibold tracking-wide uppercase">
-                                      <FaPlusCircle className="text-button-success h-4 w-4" />
-                                      NEW VALUE
+                                      <Icon
+                                        icon="mdi:plus-circle"
+                                        className="text-button-success h-4 w-4"
+                                        inline={true}
+                                      />
+                                      {`NEW ${formatSuggestionTypeLabel(
+                                        change.suggestion?.metadata?.suggestion_type,
+                                        key,
+                                      ).toUpperCase()}`}
                                     </div>
                                     <div
                                       className="text-primary-text overflow-hidden text-lg font-bold break-words"
@@ -873,6 +891,7 @@ export default function ChangelogDetailsClient({
                           Changed by{' '}
                           <Link
                             href={`/users/${change.changed_by_id}`}
+                            prefetch={false}
                             className="text-link hover:text-link-hover hover:underline"
                           >
                             {change.changed_by}

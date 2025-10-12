@@ -11,13 +11,13 @@ const Tooltip = dynamic(() => import('@mui/material/Tooltip'), { ssr: false });
 import { CustomConfirmationModal } from '../../Modals/CustomConfirmationModal';
 import Image from 'next/image';
 import { getItemImagePath, handleImageError } from '@/utils/images';
-import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
-import { CiBoxList } from 'react-icons/ci';
+import { Icon } from '../../UI/IconWrapper';
 import { TradeAdTooltip } from '../../trading/TradeAdTooltip';
 import { getCategoryColor } from '@/utils/categoryIcons';
 import { getDemandColor, getTrendColor } from '@/utils/badgeColors';
 import TotalSimilarItems from './TotalSimilarItems';
 import { useLockBodyScroll } from '@/hooks/useLockBodyScroll';
+import { safeLocalStorage, safeGetJSON, safeSetJSON } from '@/utils/safeStorage';
 
 /**
  * Parses numeric strings like "1.2m", "450k", "12,345", or "N/A".
@@ -84,7 +84,7 @@ const EmptyState: React.FC<{ message: string; onBrowse: () => void }> = ({ messa
           className="bg-button-info text-form-button-text hover:bg-button-info-hover inline-flex items-center gap-2 rounded-lg px-4 py-2 transition-colors hover:cursor-pointer"
           onClick={handleClick}
         >
-          <CiBoxList className="h-4 w-4" />
+          <Icon icon="circum:box-list" className="h-4 w-4" inline={true} />
           Browse Items
         </button>
       </div>
@@ -791,9 +791,9 @@ const CalculatorValueComparison: React.FC<{
               >
                 {difference !== 0 &&
                   (difference < 0 ? (
-                    <FaArrowUp className="text-white" />
+                    <Icon icon="famicons:arrow-up" className="text-white" inline={true} />
                   ) : (
-                    <FaArrowDown className="text-white" />
+                    <Icon icon="famicons:arrow-down" className="text-white" inline={true} />
                   ))}
                 {formatCurrencyValue(Math.abs(difference))}
               </span>
@@ -850,16 +850,19 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
    */
   useEffect(() => {
     try {
-      const saved = localStorage.getItem('calculatorItems');
+      const saved = safeGetJSON('calculatorItems', {
+        offering: [],
+        requesting: [],
+      });
       if (saved) {
-        const { offering, requesting } = JSON.parse(saved);
+        const { offering = [], requesting = [] } = saved;
         if ((offering && offering.length > 0) || (requesting && requesting.length > 0)) {
           setShowRestoreModal(true);
         }
       }
     } catch (error) {
       console.error('Failed to parse stored calculator items from localStorage:', error);
-      localStorage.removeItem('calculatorItems');
+      safeLocalStorage.removeItem('calculatorItems');
     }
   }, []);
 
@@ -886,14 +889,17 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
   }, [offeringItems, requestingItems]);
 
   const saveItemsToLocalStorage = (offering: TradeItem[], requesting: TradeItem[]) => {
-    localStorage.setItem('calculatorItems', JSON.stringify({ offering, requesting }));
+    safeSetJSON('calculatorItems', { offering, requesting });
   };
 
   const handleRestoreItems = () => {
-    const saved = localStorage.getItem('calculatorItems');
+    const saved = safeGetJSON('calculatorItems', {
+      offering: [],
+      requesting: [],
+    });
     if (saved) {
       try {
-        const { offering, requesting } = JSON.parse(saved);
+        const { offering = [], requesting = [] } = saved;
         setOfferingItems(offering || []);
         setRequestingItems(requesting || []);
         setShowRestoreModal(false);
@@ -907,7 +913,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
     setOfferingItems([]);
     setRequestingItems([]);
     setItemValueTypes({});
-    localStorage.removeItem('calculatorItems');
+    safeLocalStorage.removeItem('calculatorItems');
     setShowRestoreModal(false);
     setShowClearConfirmModal(false);
   };
@@ -1135,7 +1141,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
                       return next;
                     });
                     if (requestingItems.length === 0) {
-                      localStorage.removeItem('calculatorItems');
+                      safeLocalStorage.removeItem('calculatorItems');
                     } else {
                       saveItemsToLocalStorage([], requestingItems);
                     }
@@ -1158,7 +1164,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
                       return next;
                     });
                     if (offeringItems.length === 0) {
-                      localStorage.removeItem('calculatorItems');
+                      safeLocalStorage.removeItem('calculatorItems');
                     } else {
                       saveItemsToLocalStorage(offeringItems, []);
                     }

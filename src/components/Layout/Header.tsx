@@ -20,10 +20,8 @@ import {
   Divider,
   Tooltip,
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
-import LogoutIcon from '@mui/icons-material/Logout';
-import SettingsIcon from '@mui/icons-material/Settings';
+import dynamic from 'next/dynamic';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useState, useEffect } from 'react';
 import {
@@ -44,17 +42,24 @@ import { useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { isFeatureEnabled } from '@/utils/featureFlags';
 import { useAuthContext } from '@/contexts/AuthContext';
-import dynamic from 'next/dynamic';
 
-const ThemeToggle = dynamic(() => import('./ThemeToggle'), {
-  ssr: false,
-  loading: () => (
-    <div className="border-border-primary bg-secondary-bg text-secondary-text hover:text-primary-text hover:bg-quaternary-bg flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg border transition-all duration-200 hover:scale-105 active:scale-95">
-      <div className="h-5 w-5" />
-    </div>
-  ),
-});
+const AnimatedThemeToggler = dynamic(
+  () =>
+    import('@/components/UI/animated-theme-toggler').then((mod) => ({
+      default: mod.AnimatedThemeToggler,
+    })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="border-border-primary bg-secondary-bg text-secondary-text hover:text-primary-text hover:bg-quaternary-bg flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg border transition-all duration-200 hover:scale-105 active:scale-95">
+        <div className="h-5 w-5" />
+      </div>
+    ),
+  },
+);
 import { NavbarModern } from '@/components/UI/navbar';
+
+import { Icon } from '../UI/IconWrapper';
 
 export default function Header() {
   const pathname = usePathname();
@@ -285,24 +290,20 @@ export default function Header() {
             className="cursor-pointer"
           >
             <ListItemIcon>
-              <SettingsIcon className="text-primary-text" />
+              <Icon icon="material-symbols:settings" className="text-primary-text" inline={true} />
             </ListItemIcon>
             <ListItemText
-              primary="Settings"
-              primaryTypographyProps={{
-                sx: { color: 'var(--color-primary-text)' },
-              }}
+              primary={
+                <Typography sx={{ color: 'var(--color-primary-text)' }}>Settings</Typography>
+              }
             />
           </ListItem>
           <ListItem component="div" onClick={handleLogout} className="cursor-pointer">
             <ListItemIcon>
-              <LogoutIcon className="text-button-danger" />
+              <Icon icon="material-symbols:logout" className="text-button-danger" inline={true} />
             </ListItemIcon>
             <ListItemText
-              primary="Logout"
-              primaryTypographyProps={{
-                sx: { color: 'var(--color-button-danger)' },
-              }}
+              primary={<Typography sx={{ color: 'var(--color-button-danger)' }}>Logout</Typography>}
             />
           </ListItem>
         </>
@@ -366,9 +367,6 @@ export default function Header() {
           primary={
             <Box className="flex flex-wrap items-center gap-1">
               <span>Will I Make It</span>
-              <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
-                New
-              </span>
             </Box>
           }
         />
@@ -383,9 +381,6 @@ export default function Header() {
           primary={
             <Box className="flex flex-wrap items-center gap-1">
               <span>Weekly Contracts</span>
-              <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
-                New
-              </span>
             </Box>
           }
         />
@@ -430,9 +425,7 @@ export default function Header() {
             <Box className="flex flex-wrap items-center gap-1">
               <span>Dupe Finder</span>
               {isFeatureEnabled('DUPE_FINDER') ? (
-                <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
-                  New
-                </span>
+                <></>
               ) : (
                 <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                   Coming Soon
@@ -467,11 +460,9 @@ export default function Header() {
         <ListItemText
           primary={
             <Box className="flex flex-wrap items-center gap-1">
-              <span>Inventory Calculator</span>
+              <span>Inventory Checker</span>
               {isFeatureEnabled('INVENTORY_CALCULATOR') ? (
-                <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
-                  New
-                </span>
+                <></>
               ) : (
                 <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                   Coming Soon
@@ -492,9 +483,7 @@ export default function Header() {
             <Box className="flex flex-wrap items-center gap-1">
               <span>OG Finder</span>
               {isFeatureEnabled('OG_FINDER') ? (
-                <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
-                  New
-                </span>
+                <></>
               ) : (
                 <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                   Coming Soon
@@ -532,6 +521,23 @@ export default function Header() {
         className="cursor-pointer pl-4"
       >
         <ListItemText primary="Money Leaderboard" />
+      </ListItem>
+      <ListItem
+        component={Link}
+        href="/inventories/networth"
+        onClick={handleDrawerToggle}
+        className="cursor-pointer pl-4"
+      >
+        <ListItemText
+          primary={
+            <Box className="flex flex-wrap items-center gap-1">
+              <span>Networth Leaderboard</span>
+              <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                New
+              </span>
+            </Box>
+          }
+        />
       </ListItem>
       <ListItem
         component={Link}
@@ -687,9 +693,6 @@ export default function Header() {
                             >
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>Will I Make It</span>
-                                <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
-                                  New
-                                </span>
                               </div>
                             </Link>
                             <Link
@@ -699,9 +702,6 @@ export default function Header() {
                             >
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>Weekly Contracts</span>
-                                <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
-                                  New
-                                </span>
                               </div>
                             </Link>
                           </div>
@@ -787,11 +787,7 @@ export default function Header() {
                             >
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>Dupe Finder</span>
-                                {isFeatureEnabled('DUPE_FINDER') ? (
-                                  <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
-                                    New
-                                  </span>
-                                ) : (
+                                {!isFeatureEnabled('DUPE_FINDER') && (
                                   <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                     Coming Soon
                                   </span>
@@ -818,12 +814,8 @@ export default function Header() {
                               onClick={handleNavMenuClose}
                             >
                               <div className="flex flex-wrap items-center gap-2">
-                                <span>Inventory Calculator</span>
-                                {isFeatureEnabled('INVENTORY_CALCULATOR') ? (
-                                  <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
-                                    New
-                                  </span>
-                                ) : (
+                                <span>Inventory Checker</span>
+                                {!isFeatureEnabled('INVENTORY_CALCULATOR') && (
                                   <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                     Coming Soon
                                   </span>
@@ -837,11 +829,7 @@ export default function Header() {
                             >
                               <div className="flex flex-wrap items-center gap-2">
                                 <span>OG Finder</span>
-                                {isFeatureEnabled('OG_FINDER') ? (
-                                  <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
-                                    New
-                                  </span>
-                                ) : (
+                                {!isFeatureEnabled('OG_FINDER') && (
                                   <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
                                     Coming Soon
                                   </span>
@@ -925,6 +913,18 @@ export default function Header() {
                               Money Leaderboard
                             </Link>
                             <Link
+                              href="/inventories/networth"
+                              className="text-primary-text hover:bg-button-info-hover active:bg-button-info-active hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold transition-colors duration-200"
+                              onClick={handleCommunityMenuClose}
+                            >
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span>Networth Leaderboard</span>
+                                <span className="bg-button-info border-border-primary text-form-button-text rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase">
+                                  New
+                                </span>
+                              </div>
+                            </Link>
+                            <Link
                               href="/servers"
                               className="text-primary-text hover:bg-button-info-hover active:bg-button-info-active hover:text-form-button-text block rounded-lg px-4 py-2 text-base font-bold transition-colors duration-200"
                               onClick={handleCommunityMenuClose}
@@ -992,7 +992,7 @@ export default function Header() {
                     </Link>
                   </Tooltip>
 
-                  <ThemeToggle />
+                  <AnimatedThemeToggler />
 
                   {userData ? (
                     <>
@@ -1064,7 +1064,11 @@ export default function Header() {
                                   className="group text-primary-text hover:bg-button-info-hover hover:text-form-button-text flex items-center rounded-lg px-4 py-2 text-base font-bold transition-colors"
                                   onClick={handleMenuClose}
                                 >
-                                  <SettingsIcon className="text-primary-text group-hover:text-form-button-text mr-3 text-xl" />
+                                  <Icon
+                                    icon="material-symbols:settings"
+                                    className="text-primary-text group-hover:text-form-button-text mr-3 text-xl"
+                                    inline={true}
+                                  />
                                   Settings
                                 </Link>
 
@@ -1072,7 +1076,11 @@ export default function Header() {
                                   className="text-button-danger hover:bg-button-danger/10 hover:text-button-danger flex w-full cursor-pointer items-center rounded-lg px-4 py-2 text-base font-bold transition-colors"
                                   onClick={handleLogout}
                                 >
-                                  <LogoutIcon className="text-button-danger mr-3 text-xl" />
+                                  <Icon
+                                    icon="material-symbols:logout"
+                                    className="text-button-danger mr-3 text-xl"
+                                    inline={true}
+                                  />
                                   Logout
                                 </button>
                               </div>
@@ -1127,7 +1135,7 @@ export default function Header() {
                   </Link>
                 </Tooltip>
 
-                <ThemeToggle />
+                <AnimatedThemeToggler />
                 <IconButton
                   aria-label="open drawer"
                   edge="end"
@@ -1139,7 +1147,7 @@ export default function Header() {
                     },
                   }}
                 >
-                  <MenuIcon />
+                  <Icon icon="material-symbols:menu" className="h-6 w-6" inline={true} />
                 </IconButton>
               </Box>
             )}

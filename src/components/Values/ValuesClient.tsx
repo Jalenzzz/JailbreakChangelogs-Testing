@@ -16,6 +16,11 @@ import TradingGuides from './TradingGuides';
 import HyperchromeCalculatorModal from '@/components/Hyperchrome/HyperchromeCalculatorModal';
 import ValuesSearchControls from './ValuesSearchControls';
 import ValuesItemsGrid from './ValuesItemsGrid';
+import ValuesErrorBoundary from './ValuesErrorBoundary';
+import DisplayAd from '@/components/Ads/DisplayAd';
+import AdRemovalNotice from '@/components/Ads/AdRemovalNotice';
+import { getCurrentUserPremiumType } from '@/contexts/AuthContext';
+import { safeLocalStorage } from '@/utils/safeStorage';
 
 interface ValuesClientProps {
   itemsPromise: Promise<Item[]>;
@@ -42,6 +47,8 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
   const [appliedMinValue, setAppliedMinValue] = useState<number>(0);
   const [appliedMaxValue, setAppliedMaxValue] = useState<number>(MAX_VALUE_RANGE);
   const [showHcModal, setShowHcModal] = useState(false);
+  const [currentUserPremiumType, setCurrentUserPremiumType] = useState<number>(0);
+  const [premiumStatusLoaded, setPremiumStatusLoaded] = useState(false);
 
   // Load saved preferences after mount
   useEffect(() => {
@@ -51,17 +58,17 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
 
     if (urlFilterSort || urlValueSort) {
       if (urlFilterSort) {
-        localStorage.setItem('valuesFilterSort', urlFilterSort);
+        safeLocalStorage.setItem('valuesFilterSort', urlFilterSort);
         setFilterSort(urlFilterSort as FilterSort);
       }
       if (urlValueSort) {
-        localStorage.setItem('valuesValueSort', urlValueSort);
+        safeLocalStorage.setItem('valuesValueSort', urlValueSort);
         setValueSort(urlValueSort as ValueSort);
       }
     } else {
       // Only load from localStorage if there are no URL parameters
-      const savedFilterSort = localStorage.getItem('valuesFilterSort') as FilterSort;
-      const savedValueSort = localStorage.getItem('valuesValueSort') as ValueSort;
+      const savedFilterSort = safeLocalStorage.getItem('valuesFilterSort') as FilterSort;
+      const savedValueSort = safeLocalStorage.getItem('valuesValueSort') as ValueSort;
 
       if (savedFilterSort) {
         setFilterSort(savedFilterSort);
@@ -92,10 +99,10 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
     // If clicking the same category, reset to "All Items"
     if (filterSort === filter) {
       setFilterSort('name-all-items');
-      localStorage.setItem('valuesFilterSort', 'name-all-items');
+      safeLocalStorage.setItem('valuesFilterSort', 'name-all-items');
     } else {
       setFilterSort(filter);
-      localStorage.setItem('valuesFilterSort', filter);
+      safeLocalStorage.setItem('valuesFilterSort', filter);
     }
 
     if (searchSectionRef.current) {
@@ -133,6 +140,22 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
     }
   }, [user, loadFavorites]);
 
+  // Load premium status
+  useEffect(() => {
+    setCurrentUserPremiumType(getCurrentUserPremiumType());
+    setPremiumStatusLoaded(true);
+
+    // Listen for auth changes
+    const handleAuthChange = () => {
+      setCurrentUserPremiumType(getCurrentUserPremiumType());
+    };
+
+    window.addEventListener('authStateChanged', handleAuthChange);
+    return () => {
+      window.removeEventListener('authStateChanged', handleAuthChange);
+    };
+  }, []);
+
   useEffect(() => {
     const updateSortedItems = async () => {
       const favoritesData = favorites.map((id) => ({ item_id: String(id) }));
@@ -149,8 +172,31 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
   }, [items, debouncedSearchTerm, filterSort, valueSort, favorites]);
 
   return (
-    <>
-      <Suspense fallback={null}>
+    <ValuesErrorBoundary>
+      <style jsx>{`
+        .sidebar-ad-container {
+          width: 320px;
+          height: 100px;
+          border-radius: 8px;
+          overflow: hidden;
+          transition: all 0.3s ease;
+        }
+
+        @media (min-width: 768px) {
+          .sidebar-ad-container {
+            width: 300px;
+            height: 600px;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .sidebar-ad-container {
+            width: 160px;
+            height: 600px;
+          }
+        }
+      `}</style>
+      <Suspense fallback={<div style={{ display: 'none' }} />}>
         <SearchParamsHandler setFilterSort={setFilterSort} setValueSort={setValueSort} />
       </Suspense>
 
@@ -233,35 +279,89 @@ export default function ValuesClient({ itemsPromise, lastUpdatedPromise }: Value
         searchSectionRef={searchSectionRef}
       />
 
-      <ValuesItemsGrid
-        items={sortedItems}
-        favorites={favorites}
-        onFavoriteChange={(itemId, isFavorited) => {
-          setFavorites((prev) =>
-            isFavorited ? [...prev, itemId] : prev.filter((id) => id !== itemId),
-          );
-        }}
-        appliedMinValue={appliedMinValue}
-        appliedMaxValue={appliedMaxValue}
-        MAX_VALUE_RANGE={MAX_VALUE_RANGE}
-        onResetValueRange={() => {
-          setRangeValue([0, MAX_VALUE_RANGE]);
-          setAppliedMinValue(0);
-          setAppliedMaxValue(MAX_VALUE_RANGE);
-        }}
-        onClearAllFilters={() => {
-          setFilterSort('name-all-items');
-          setValueSort('cash-desc');
-          setSearchTerm('');
-          setRangeValue([0, MAX_VALUE_RANGE]);
-          setAppliedMinValue(0);
-          setAppliedMaxValue(MAX_VALUE_RANGE);
-        }}
-        filterSort={filterSort}
-        valueSort={valueSort}
-        debouncedSearchTerm={debouncedSearchTerm}
-      />
-    </>
+      {/* Mobile Sidebar - Show below search controls on mobile */}
+      {premiumStatusLoaded && currentUserPremiumType === 0 && (
+        <div className="lg:hidden">
+          <div className="flex flex-col items-center">
+            <span className="text-secondary-text mb-2 block text-center text-xs">
+              ADVERTISEMENT
+            </span>
+            <div className="sidebar-ad-container">
+              <DisplayAd
+                adSlot="8162235433"
+                adFormat="auto"
+                style={{ display: 'block', width: '100%', height: '100%' }}
+              />
+            </div>
+            <AdRemovalNotice className="mt-2" />
+          </div>
+        </div>
+      )}
+
+      {/* Main content with sidebar layout */}
+      <div
+        className={`grid gap-8 ${premiumStatusLoaded && currentUserPremiumType === 0 ? 'grid-cols-1 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6' : 'grid-cols-1'}`}
+      >
+        {/* Items Grid - responsive width based on premium status */}
+        <div
+          className={`space-y-6 ${premiumStatusLoaded && currentUserPremiumType === 0 ? 'lg:col-span-3 xl:col-span-4 2xl:col-span-5' : ''}`}
+        >
+          <ValuesItemsGrid
+            items={sortedItems}
+            favorites={favorites}
+            onFavoriteChange={(itemId, isFavorited) => {
+              setFavorites((prev) =>
+                isFavorited ? [...prev, itemId] : prev.filter((id) => id !== itemId),
+              );
+            }}
+            appliedMinValue={appliedMinValue}
+            appliedMaxValue={appliedMaxValue}
+            MAX_VALUE_RANGE={MAX_VALUE_RANGE}
+            onResetValueRange={() => {
+              setRangeValue([0, MAX_VALUE_RANGE]);
+              setAppliedMinValue(0);
+              setAppliedMaxValue(MAX_VALUE_RANGE);
+            }}
+            onClearAllFilters={() => {
+              setFilterSort('name-all-items');
+              setValueSort('cash-desc');
+              setSearchTerm('');
+              setRangeValue([0, MAX_VALUE_RANGE]);
+              setAppliedMinValue(0);
+              setAppliedMaxValue(MAX_VALUE_RANGE);
+            }}
+            filterSort={filterSort}
+            valueSort={valueSort}
+            debouncedSearchTerm={debouncedSearchTerm}
+          />
+        </div>
+
+        {/* Sidebar - responsive width, only show for non-premium users */}
+        {premiumStatusLoaded && currentUserPremiumType === 0 && (
+          <div className="pl-2 lg:col-span-1 xl:col-span-1 2xl:col-span-1">
+            <div className="sticky top-6">
+              <div className="flex flex-col items-center">
+                <span className="text-secondary-text mb-2 block w-full text-center text-xs">
+                  ADVERTISEMENT
+                </span>
+                <div className="sidebar-ad-container">
+                  <DisplayAd
+                    adSlot="8162235433"
+                    adFormat="auto"
+                    style={{
+                      display: 'block',
+                      width: '100%',
+                      height: '100%',
+                    }}
+                  />
+                </div>
+                <AdRemovalNotice className="mt-2" />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </ValuesErrorBoundary>
   );
 }
 

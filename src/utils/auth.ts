@@ -1,5 +1,6 @@
 import toast from 'react-hot-toast';
 import { UserData, AuthResponse } from '../types/auth';
+import { safeLocalStorage, safeSetJSON } from './safeStorage';
 // import { PUBLIC_API_URL } from '@/utils/api';
 // Removed removeCookie import - using server-side logout instead
 
@@ -150,6 +151,8 @@ export function trackLogoutSource(source: string) {
 
 export async function logout() {
   const source = lastLogoutSource || 'Direct API Call';
+  let timeoutId: NodeJS.Timeout | undefined;
+
   try {
     console.group('🔐 Logout Process');
     console.log('📝 Logout Details:', {
@@ -157,7 +160,22 @@ export async function logout() {
       Timestamp: new Date().toISOString(),
     });
 
-    const response = await fetch('/api/auth/logout', { method: 'POST' });
+    // Create AbortController for request cancellation
+    const abortController = new AbortController();
+
+    // Set a timeout to abort the request after 10 seconds
+    timeoutId = setTimeout(() => {
+      abortController.abort();
+    }, 10000);
+
+    const response = await fetch('/api/auth/logout', {
+      method: 'POST',
+      signal: abortController.signal,
+    });
+
+    // Clear timeout since request completed
+    clearTimeout(timeoutId);
+
     if (!response.ok) {
       throw new Error('Failed to clear session');
     }
@@ -165,6 +183,19 @@ export async function logout() {
     clearAuthData('user-initiated logout');
     console.groupEnd();
   } catch (error) {
+    // Clear timeout in case of error
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    // Handle AbortError specifically - still clear auth data locally
+    if (error instanceof Error && error.name === 'AbortError') {
+      console.log('Logout request was aborted, clearing auth data locally');
+      clearAuthData('logout request aborted');
+      console.groupEnd();
+      return; // Don't throw error for aborted logout
+    }
+
     console.error('❌ Error During Logout:', {
       Source: source,
       Timestamp: new Date().toISOString(),
@@ -179,9 +210,9 @@ export async function logout() {
 function clearAuthData(reason: string) {
   console.log(`Clearing auth data. Reason: ${reason}`);
 
-  localStorage.removeItem('user');
-  localStorage.removeItem('userid');
-  localStorage.removeItem('avatar');
+  safeLocalStorage.removeItem('user');
+  safeLocalStorage.removeItem('userid');
+  safeLocalStorage.removeItem('avatar');
 
   window.dispatchEvent(new CustomEvent('authStateChanged'));
 }
@@ -202,7 +233,7 @@ export async function validateAuth(): Promise<boolean> {
   // If we validated recently, return cached result
   if (now - lastAuthValidation < AUTH_VALIDATION_COOLDOWN) {
     // Check localStorage for user data as a quick check
-    const userData = localStorage.getItem('user');
+    const userData = safeLocalStorage.getItem('user');
     return !!userData;
   }
 
@@ -219,40 +250,78 @@ export async function validateAuth(): Promise<boolean> {
 }
 
 async function performAuthValidation(): Promise<boolean> {
+  // Create AbortController for request cancellation
+  const abortController = new AbortController();
+
+  // Set a timeout to abort the request after 10 seconds
+  const timeoutId = setTimeout(() => {
+    abortController.abort();
+  }, 10000);
+
   try {
-    const response = await fetch('/api/session', { cache: 'no-store' });
+    const response = await fetch('/api/session', {
+      cache: 'no-store',
+      signal: abortController.signal,
+    });
+
+    // Clear timeout since request completed
+    clearTimeout(timeoutId);
+
     const { user } = (await response.json()) as { user: UserData | null };
     if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('userid', user.id);
+      safeSetJSON('user', user);
+      safeLocalStorage.setItem('userid', user.id);
       if (user.avatar) {
         const avatarURL = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}?size=4096`;
-        localStorage.setItem('avatar', avatarURL);
+        safeLocalStorage.setItem('avatar', avatarURL);
       }
       window.dispatchEvent(new CustomEvent('authStateChanged', { detail: user }));
       return true;
     }
     clearAuthData('session not found');
     return false;
-  } catch {
-    // On errors, do not log out; keep previous state
+  } catch (error) {
+    // Clear timeout in case of error
+    clearTimeout(timeoutId);
+
+    // Handle AbortError specifically - don't treat it as a real error
+    if (error instanceof Error && error.name === 'AbortError') {
+      console.log('Auth validation request was aborted, keeping previous state');
+      return true; // Keep previous state when request is aborted
+    }
+
+    // For other errors, log them but don't log out; keep previous state
+    console.error('Auth validation error:', error);
     return true;
   }
 }
 
 export async function handleTokenAuth(token: string): Promise<AuthResponse> {
   let loadingToast: string | undefined;
+  let timeoutId: NodeJS.Timeout | undefined;
 
   try {
     // Show loading toast with deduplication
     loadingToast = showLoginLoadingToast();
+
+    // Create AbortController for request cancellation
+    const abortController = new AbortController();
+
+    // Set a timeout to abort the request after 15 seconds
+    timeoutId = setTimeout(() => {
+      abortController.abort();
+    }, 15000);
 
     // Validate token and set cookie via server route
     const response = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token }),
+      signal: abortController.signal,
     });
+
+    // Clear timeout since request completed
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       throw new Error('Failed to validate token');
@@ -261,13 +330,13 @@ export async function handleTokenAuth(token: string): Promise<AuthResponse> {
     const userData: UserData = await response.json();
 
     // Set local storage
-    localStorage.setItem('user', JSON.stringify(userData));
-    localStorage.setItem('userid', userData.id);
+    safeSetJSON('user', userData);
+    safeLocalStorage.setItem('userid', userData.id);
 
     // Set avatar if available
     if (userData.avatar) {
       const avatarURL = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}?size=4096`;
-      localStorage.setItem('avatar', avatarURL);
+      safeLocalStorage.setItem('avatar', avatarURL);
     }
 
     // Dispatch custom event for components to listen to
@@ -279,6 +348,21 @@ export async function handleTokenAuth(token: string): Promise<AuthResponse> {
 
     return { success: true, data: userData };
   } catch (error) {
+    // Clear timeout in case of error
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    // Handle AbortError specifically
+    if (error instanceof Error && error.name === 'AbortError') {
+      console.log('Login request was aborted');
+      toast.error('Login request was cancelled. Please try again.', {
+        duration: 3000,
+        position: 'bottom-right',
+      });
+      return { success: false, error: 'Request was cancelled' };
+    }
+
     console.error('Token authentication error:', error);
     toast.error('Failed to log in. Please try again.', {
       duration: 3000,
@@ -294,7 +378,7 @@ export async function handleTokenAuth(token: string): Promise<AuthResponse> {
 export function isAuthenticated(): boolean {
   // Check localStorage for user data as a quick check
   // The actual validation happens through the session API
-  const userData = localStorage.getItem('user');
+  const userData = safeLocalStorage.getItem('user');
   return !!userData;
 }
 

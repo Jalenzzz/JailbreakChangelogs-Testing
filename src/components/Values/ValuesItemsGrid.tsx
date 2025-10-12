@@ -1,13 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Pagination } from '@mui/material';
+import { useRef } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import ItemCard from '@/components/Items/ItemCard';
 import { Item } from '@/types';
 import { getEffectiveCashValue } from '@/utils/values';
-import DisplayAd from '@/components/Ads/DisplayAd';
-import AdRemovalNotice from '@/components/Ads/AdRemovalNotice';
-import { getCurrentUserPremiumType } from '@/contexts/AuthContext';
 import React from 'react';
 
 interface ValuesItemsGridProps {
@@ -37,34 +34,7 @@ export default function ValuesItemsGrid({
   valueSort,
   debouncedSearchTerm,
 }: ValuesItemsGridProps) {
-  const [page, setPage] = useState(1);
-  const [currentUserPremiumType, setCurrentUserPremiumType] = useState<number>(0);
-  const [premiumStatusLoaded, setPremiumStatusLoaded] = useState(false);
-  const itemsPerPage = 24;
-
-  useEffect(() => {
-    // Get current user's premium type
-    setCurrentUserPremiumType(getCurrentUserPremiumType());
-    setPremiumStatusLoaded(true);
-
-    // Listen for auth changes
-    const handleAuthChange = () => {
-      setCurrentUserPremiumType(getCurrentUserPremiumType());
-    };
-
-    window.addEventListener('authStateChanged', handleAuthChange);
-    return () => {
-      window.removeEventListener('authStateChanged', handleAuthChange);
-    };
-  }, []);
-
-  useEffect(() => {
-    setPage(1);
-  }, [filterSort, valueSort, debouncedSearchTerm, appliedMinValue, appliedMaxValue]);
-
-  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value);
-  };
+  const parentRef = useRef<HTMLDivElement>(null);
 
   const parseNumericValue = (value: string | null): number => {
     if (!value || value === 'N/A') return -1;
@@ -87,13 +57,32 @@ export default function ValuesItemsGrid({
           return cash >= appliedMinValue && cash <= appliedMaxValue;
         });
 
-  const adjustedIndexOfLastItem = page * itemsPerPage;
-  const adjustedIndexOfFirstItem = adjustedIndexOfLastItem - itemsPerPage;
-  const displayedItems = rangeFilteredItems.slice(
-    adjustedIndexOfFirstItem,
-    adjustedIndexOfLastItem,
-  );
-  const totalPages = Math.ceil(rangeFilteredItems.length / itemsPerPage);
+  // Organize items into rows for grid virtualization
+  // Each row contains multiple items based on screen size
+  const getItemsPerRow = () => {
+    if (typeof window === 'undefined') return 4; // Default for SSR
+    const width = window.innerWidth;
+    if (width < 375) return 1;
+    if (width < 768) return 2;
+    if (width < 1024) return 2;
+    if (width < 1280) return 2;
+    return 4;
+  };
+
+  const itemsPerRow = getItemsPerRow();
+  const rows: Item[][] = [];
+  for (let i = 0; i < rangeFilteredItems.length; i += itemsPerRow) {
+    rows.push(rangeFilteredItems.slice(i, i + itemsPerRow));
+  }
+
+  // TanStack Virtual setup for performance with large item datasets
+  // Only renders visible rows (~10-15 at a time) for 60FPS scrolling
+  const virtualizer = useVirtualizer({
+    count: rows.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 300, // Simple estimate - let TanStack measure actual content
+    overscan: 2, // Render 2 extra rows above/below viewport for smooth scrolling
+  });
 
   const getNoItemsMessage = () => {
     const hasCategoryFilter = filterSort !== 'name-all-items';
@@ -152,69 +141,18 @@ export default function ValuesItemsGrid({
 
   return (
     <>
-      <style jsx>{`
-        .responsive-ad-container-values {
-          width: 320px;
-          height: 100px;
-          border: 1px solid var(--color-border-border-primary hover: border-border-focus);
-          border-radius: 8px;
-          overflow: hidden;
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-          transition: all 0.3s ease;
-        }
-
-        @media (min-width: 500px) {
-          .responsive-ad-container-values {
-            width: 468px;
-            height: 60px;
-          }
-        }
-
-        @media (min-width: 800px) {
-          .responsive-ad-container-values {
-            width: 728px;
-            height: 90px;
-          }
-        }
-      `}</style>
       <div className="mb-4 flex flex-col gap-4">
         <p className="text-secondary-text">
           {debouncedSearchTerm
             ? `Found ${rangeFilteredItems.length} ${rangeFilteredItems.length === 1 ? 'item' : 'items'} matching "${debouncedSearchTerm}"${filterSort !== 'name-all-items' ? ` in ${filterSort.replace('name-', '').replace('-items', '').replace(/-/g, ' ')}` : ''}`
             : `Total ${filterSort !== 'name-all-items' ? filterSort.replace('name-', '').replace('-items', '').replace(/-/g, ' ') : 'Items'}: ${rangeFilteredItems.length}`}
         </p>
-        {totalPages > 1 && (
-          <div className="flex justify-center">
-            <Pagination
-              count={totalPages}
-              page={page}
-              onChange={handlePageChange}
-              sx={{
-                '& .MuiPaginationItem-root': {
-                  color: 'var(--color-primary-text)',
-                  '&.Mui-selected': {
-                    backgroundColor: 'var(--color-button-info)',
-                    color: 'var(--color-form-button-text)',
-                    '&:hover': {
-                      backgroundColor: 'var(--color-button-info-hover)',
-                    },
-                  },
-                  '&:hover': {
-                    backgroundColor: 'var(--color-quaternary-bg)',
-                  },
-                },
-                '& .MuiPaginationItem-icon': {
-                  color: 'var(--color-primary-text)',
-                },
-              }}
-            />
-          </div>
-        )}
       </div>
 
-      <div className="mb-8 grid grid-cols-1 gap-4 min-[375px]:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {displayedItems.length === 0 ? (
-          <div className="bg-secondary-bg border-border-primary hover:border-border-focus col-span-full mb-4 rounded-lg border p-8 text-center">
+      {/* Virtualized items container with fixed height for performance */}
+      <div ref={parentRef} className="mb-8 h-[60rem] overflow-y-auto">
+        {rangeFilteredItems.length === 0 ? (
+          <div className="bg-secondary-bg border-border-primary hover:border-border-focus rounded-lg border p-8 text-center">
             <p className="text-secondary-text text-lg">
               {rangeFilteredItems.length === 0 && items.length > 0
                 ? `No items found in the selected value range (${appliedMinValue.toLocaleString()} - ${appliedMaxValue >= MAX_VALUE_RANGE ? `${MAX_VALUE_RANGE.toLocaleString()}+` : appliedMaxValue.toLocaleString()})`
@@ -236,73 +174,56 @@ export default function ValuesItemsGrid({
             </button>
           </div>
         ) : (
-          displayedItems.map((item, index) => (
-            <React.Fragment key={item.id}>
-              <ItemCard
-                item={item}
-                isFavorited={favorites.includes(item.id)}
-                onFavoriteChange={(fav) => {
-                  onFavoriteChange(item.id, fav);
-                }}
-              />
-              {/* Show in-feed ad after every 12 items */}
-              {premiumStatusLoaded &&
-                currentUserPremiumType === 0 &&
-                (index + 1) % 12 === 0 &&
-                index + 1 < displayedItems.length && (
-                  <div className="col-span-full my-4 flex justify-center">
-                    <div className="w-full max-w-[700px]">
-                      <span className="text-secondary-text mb-2 block text-center text-xs">
-                        ADVERTISEMENT
-                      </span>
-                      <div className="responsive-ad-container-values">
-                        <DisplayAd
-                          adSlot="4358721799"
-                          adFormat="fluid"
-                          layoutKey="-62+ck+1k-2e+cb"
-                          style={{
-                            display: 'block',
-                            width: '100%',
-                            height: '100%',
-                          }}
-                        />
-                      </div>
-                      <AdRemovalNotice />
-                    </div>
+          <div
+            style={{
+              height: `${virtualizer.getTotalSize()}px`,
+              width: '100%',
+              position: 'relative',
+            }}
+          >
+            {virtualizer.getVirtualItems().map((virtualRow) => {
+              const rowItems = rows[virtualRow.index];
+              const rowIndex = virtualRow.index;
+
+              return (
+                <div
+                  key={`row-${rowIndex}`}
+                  data-index={virtualRow.index}
+                  ref={virtualizer.measureElement}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    transform: `translateY(${virtualRow.start}px)`,
+                  }}
+                >
+                  <div
+                    className="mb-4 grid gap-4"
+                    style={{
+                      gridTemplateColumns: `repeat(${itemsPerRow}, 1fr)`,
+                    }}
+                  >
+                    {rowItems.map((item: Item) => {
+                      return (
+                        <React.Fragment key={item.id}>
+                          <ItemCard
+                            item={item}
+                            isFavorited={favorites.includes(item.id)}
+                            onFavoriteChange={(fav) => {
+                              onFavoriteChange(item.id, fav);
+                            }}
+                          />
+                        </React.Fragment>
+                      );
+                    })}
                   </div>
-                )}
-            </React.Fragment>
-          ))
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
-
-      {totalPages > 1 && (
-        <div className="mt-8 flex justify-center">
-          <Pagination
-            count={totalPages}
-            page={page}
-            onChange={handlePageChange}
-            sx={{
-              '& .MuiPaginationItem-root': {
-                color: 'var(--color-primary-text)',
-                '&.Mui-selected': {
-                  backgroundColor: 'var(--color-button-info)',
-                  color: 'var(--color-form-button-text)',
-                  '&:hover': {
-                    backgroundColor: 'var(--color-button-info-hover)',
-                  },
-                },
-                '&:hover': {
-                  backgroundColor: 'var(--color-quaternary-bg)',
-                },
-              },
-              '& .MuiPaginationItem-icon': {
-                color: 'var(--color-primary-text)',
-              },
-            }}
-          />
-        </div>
-      )}
     </>
   );
 }

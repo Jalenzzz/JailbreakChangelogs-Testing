@@ -2,16 +2,8 @@
 
 import Image from 'next/image';
 import { useEffect, useState, useCallback } from 'react';
-import {
-  ChatBubbleLeftRightIcon,
-  CommandLineIcon,
-  BoltIcon,
-  CalendarIcon,
-  DocumentTextIcon,
-  ArrowsRightLeftIcon,
-} from '@heroicons/react/24/outline';
-import { GiTrophy } from 'react-icons/gi';
 import Link from 'next/link';
+import { Icon } from '../../components/UI/IconWrapper';
 import { generateShuffledBackgroundImages } from '@/utils/fisherYatesShuffle';
 
 export default function BotPage() {
@@ -86,7 +78,7 @@ export default function BotPage() {
                     <div className="flex items-center gap-2">
                       <div>
                         <h2 className="text-card-headline flex items-center gap-2 text-lg font-bold md:text-xl">
-                          <GiTrophy className="text-tertiary h-6 w-6" />
+                          <Icon icon="mdi:trophy" className="text-tertiary h-6 w-6" inline={true} />
                           #1 Roblox Jailbreak Bot
                         </h2>
                         <p className="text-card-paragraph text-xs md:text-sm">
@@ -130,7 +122,7 @@ export default function BotPage() {
             {/* Feature 1 - Inventory Commands */}
             <div className="bg-secondary-bg border-border-primary hover:border-border-focus hover:shadow-card-shadow rounded-lg border p-6 transition-colors duration-200 hover:shadow-lg">
               <div className="mb-4 flex items-center gap-2">
-                <CommandLineIcon className="text-link h-6 w-6" />
+                <Icon icon="mdi:console" className="text-link h-6 w-6" inline={true} />
                 <h3 className="text-card-headline text-xl font-semibold">Inventory Commands</h3>
               </div>
               <p className="text-card-paragraph">
@@ -142,7 +134,7 @@ export default function BotPage() {
             {/* Feature 2 - OG Finder */}
             <div className="bg-secondary-bg border-border-primary hover:border-border-focus hover:shadow-card-shadow rounded-lg border p-6 transition-colors duration-200 hover:shadow-lg">
               <div className="mb-4 flex items-center gap-2">
-                <BoltIcon className="text-link h-6 w-6" />
+                <Icon icon="mdi:lightning-bolt" className="text-link h-6 w-6" inline={true} />
                 <h3 className="text-card-headline text-xl font-semibold">OG Finder</h3>
               </div>
               <p className="text-card-paragraph">
@@ -154,7 +146,7 @@ export default function BotPage() {
             {/* Feature 3 - Dupe Detection */}
             <div className="bg-secondary-bg border-border-primary hover:border-border-focus hover:shadow-card-shadow rounded-lg border p-6 transition-colors duration-200 hover:shadow-lg">
               <div className="mb-4 flex items-center gap-2">
-                <ArrowsRightLeftIcon className="text-link h-6 w-6" />
+                <Icon icon="mdi:swap-horizontal" className="text-link h-6 w-6" inline={true} />
                 <h3 className="text-card-headline text-xl font-semibold">Dupe Detection</h3>
               </div>
               <p className="text-card-paragraph">
@@ -166,7 +158,7 @@ export default function BotPage() {
             {/* Feature 4 - Season Tracking */}
             <div className="bg-secondary-bg border-border-primary hover:border-border-focus hover:shadow-card-shadow rounded-lg border p-6 transition-colors duration-200 hover:shadow-lg">
               <div className="mb-4 flex items-center gap-2">
-                <CalendarIcon className="text-link h-6 w-6" />
+                <Icon icon="mdi:calendar" className="text-link h-6 w-6" inline={true} />
                 <h3 className="text-card-headline text-xl font-semibold">Season Tracking</h3>
               </div>
               <p className="text-card-paragraph">
@@ -178,7 +170,7 @@ export default function BotPage() {
             {/* Feature 5 - Changelog History */}
             <div className="bg-secondary-bg border-border-primary hover:border-border-focus hover:shadow-card-shadow rounded-lg border p-6 transition-colors duration-200 hover:shadow-lg">
               <div className="mb-4 flex items-center gap-2">
-                <DocumentTextIcon className="text-link h-6 w-6" />
+                <Icon icon="mdi:file-document" className="text-link h-6 w-6" inline={true} />
                 <h3 className="text-card-headline text-xl font-semibold">Changelog History</h3>
               </div>
               <p className="text-card-paragraph">
@@ -190,7 +182,7 @@ export default function BotPage() {
             {/* Feature 6 - Trade Features */}
             <div className="bg-secondary-bg border-border-primary hover:border-border-focus hover:shadow-card-shadow rounded-lg border p-6 transition-colors duration-200 hover:shadow-lg">
               <div className="mb-4 flex items-center gap-2">
-                <ChatBubbleLeftRightIcon className="text-link h-6 w-6" />
+                <Icon icon="mdi:chat" className="text-link h-6 w-6" inline={true} />
                 <h3 className="text-card-headline text-xl font-semibold">Trade Features</h3>
               </div>
               <p className="text-card-paragraph">
@@ -202,44 +194,11 @@ export default function BotPage() {
           <div className="mt-12 text-center">
             <p className="text-tertiary-text flex items-center justify-center gap-1">
               Bot made with{' '}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                className="inline"
-              >
-                <path
-                  fill="#1d80e2"
-                  fillOpacity="0"
-                  d="M12 8c0 0 0 0 0.76 -1c0.88 -1.16 2.18 -2 3.74 -2c2.49 0 4.5 2.01 4.5 4.5c0 0.93 -0.28 1.79 -0.76 2.5c-0.81 1.21 -8.24 9 -8.24 9c0 0 -7.43 -7.79 -8.24 -9c-0.48 -0.71 -0.76 -1.57 -0.76 -2.5c0 -2.49 2.01 -4.5 4.5 -4.5c1.56 0 2.87 0.84 3.74 2c0.76 1 0.76 1 0.76 1Z"
-                >
-                  <animate
-                    fill="freeze"
-                    attributeName="fill-opacity"
-                    begin="0.7s"
-                    dur="0.5s"
-                    values="0;1"
-                  />
-                </path>
-                <path
-                  fill="none"
-                  stroke="#1d80e2"
-                  strokeDasharray="32"
-                  strokeDashoffset="32"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 8c0 0 0 0 -0.76 -1c-0.88 -1.16 -2.18 -2 -3.74 -2c-2.49 0 -4.5 2.01 -4.5 4.5c0 0.93 0.28 1.79 0.76 2.5c0.81 1.21 8.24 9 8.24 9M12 8c0 0 0 0 0.76 -1c0.88 -1.16 2.18 -2 3.74 -2c2.49 0 4.5 2.01 4.5 4.5c0 0.93 -0.28 1.79 -0.76 2.5c-0.81 1.21 -8.24 9 -8.24 9"
-                >
-                  <animate
-                    fill="freeze"
-                    attributeName="stroke-dashoffset"
-                    dur="0.7s"
-                    values="32;0"
-                  />
-                </path>
-              </svg>
+              <Icon
+                icon="line-md:heart-filled"
+                className="inline h-4 w-4 text-blue-500"
+                style={{ color: '#1d80e2' }}
+              />
               {' by '}
               <Link
                 href="/users/659865209741246514"

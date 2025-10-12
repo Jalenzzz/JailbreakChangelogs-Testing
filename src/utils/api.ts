@@ -344,9 +344,9 @@ export async function fetchItems() {
     if (!response.ok) throw new Error('Failed to fetch items');
     const data = await response.json();
     return data as Item[];
-  } catch {
-    console.error('[SERVER] Error fetching items');
-    return [];
+  } catch (error) {
+    console.error('[SERVER] Error fetching items:', error);
+    throw error; // Re-throw to allow error boundaries to handle it
   }
 }
 
@@ -677,9 +677,9 @@ export async function fetchLatestSeason() {
 
     const data = await response.json();
     return data;
-  } catch (err) {
-    console.error('[SERVER] Error fetching latest season:', err);
-    return null;
+  } catch (error) {
+    console.error('[SERVER] Error fetching latest season:', error);
+    throw error; // Re-throw to allow error boundaries to handle it
   }
 }
 
@@ -806,12 +806,24 @@ export async function fetchItemFavorites(id: string) {
 }
 
 export async function fetchUserFavorites(userId: string) {
+  // Create AbortController for request cancellation
+  const abortController = new AbortController();
+
+  // Set a timeout to abort the request after 10 seconds
+  const timeoutId = setTimeout(() => {
+    abortController.abort();
+  }, 10000);
+
   try {
     const response = await fetch(`${PUBLIC_API_URL}/favorites/get?user=${userId}`, {
       headers: {
         'User-Agent': 'JailbreakChangelogs-Favorites/1.0',
       },
+      signal: abortController.signal,
     });
+
+    // Clear timeout since request completed
+    clearTimeout(timeoutId);
 
     if (response.status === 404) {
       console.log(`[CLIENT] User favorites ${userId} not found`);
@@ -825,6 +837,15 @@ export async function fetchUserFavorites(userId: string) {
     const data = await response.json();
     return data;
   } catch (err) {
+    // Clear timeout in case of error
+    clearTimeout(timeoutId);
+
+    // Handle AbortError specifically - don't treat it as a real error
+    if (err instanceof Error && err.name === 'AbortError') {
+      console.log('User favorites request was aborted');
+      return null; // Return null for aborted requests
+    }
+
     console.error('[CLIENT] Error fetching user favorites:', err);
     return null;
   }
@@ -852,7 +873,7 @@ export async function fetchRandomItem() {
 
 export async function fetchItemHistory(id: string) {
   try {
-    const response = await fetch(`${PUBLIC_API_URL}/item/history?id=${id}`, {
+    const response = await fetch(`${BASE_API_URL}/item/history?id=${id}`, {
       headers: {
         'User-Agent': 'JailbreakChangelogs-ValueHistory/1.0',
       },
@@ -1428,6 +1449,12 @@ export interface MoneyLeaderboardEntry {
   money: number;
 }
 
+export interface NetworthLeaderboardEntry {
+  user_id: string;
+  networth: number;
+  inventory_count: number;
+}
+
 export async function fetchItemCountStats(): Promise<ItemCountStats | null> {
   try {
     const response = await fetch(`${INVENTORY_API_URL}/items/count`, {
@@ -1470,7 +1497,7 @@ export async function fetchUserScansLeaderboard(): Promise<UserScan[]> {
 
 export async function fetchMoneyLeaderboard(): Promise<MoneyLeaderboardEntry[]> {
   try {
-    const response = await fetch(`${INVENTORY_API_URL}/money/leaderboard`, {
+    const response = await fetch(`${INVENTORY_API_URL}/money/leaderboard?limit=1000`, {
       headers: {
         'User-Agent': 'JailbreakChangelogs-Inventory/1.0',
       },
@@ -1484,6 +1511,52 @@ export async function fetchMoneyLeaderboard(): Promise<MoneyLeaderboardEntry[]> 
     return data as MoneyLeaderboardEntry[];
   } catch (err) {
     console.error('[SERVER] Error fetching money leaderboard:', err);
+    return [];
+  }
+}
+
+export async function fetchNetworthLeaderboard(): Promise<NetworthLeaderboardEntry[]> {
+  try {
+    const response = await fetch(`${INVENTORY_API_URL}/networth/leaderboard?limit=1000`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-Inventory/1.0',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch networth leaderboard');
+    }
+
+    const data = await response.json();
+    return data as NetworthLeaderboardEntry[];
+  } catch (err) {
+    console.error('[SERVER] Error fetching networth leaderboard:', err);
+    return [];
+  }
+}
+
+export interface UserNetworthData {
+  snapshot_time: number;
+  networth: number;
+  inventory_count: number;
+}
+
+export async function fetchUserNetworth(robloxId: string): Promise<UserNetworthData[]> {
+  try {
+    const response = await fetch(`${INVENTORY_API_URL}/user/networth?id=${robloxId}`, {
+      headers: {
+        'User-Agent': 'JailbreakChangelogs-Inventory/1.0',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch user networth');
+    }
+
+    const data = await response.json();
+    return data as UserNetworthData[];
+  } catch (err) {
+    console.error('[SERVER] Error fetching user networth:', err);
     return [];
   }
 }

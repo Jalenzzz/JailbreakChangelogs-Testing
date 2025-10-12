@@ -7,7 +7,7 @@ import { notFound } from 'next/navigation';
 import { UserAvatar } from '@/utils/avatar';
 import Breadcrumb from '@/components/Layout/Breadcrumb';
 import { Button, Skeleton } from '@mui/material';
-import SettingsIcon from '@mui/icons-material/Settings';
+import { Icon } from '../../../components/UI/IconWrapper';
 import UserPlusIcon from '@heroicons/react/24/outline/UserPlusIcon';
 import { Banner } from '@/components/Profile/Banner';
 import { UserSettings, FollowingData } from '@/types/auth';
@@ -43,7 +43,6 @@ const FollowingModal = dynamic(() => import('@/components/Users/FollowingModal')
   ssr: false,
 });
 import type { UserFlag } from '@/types/auth';
-import { BsMusicNoteBeamed } from 'react-icons/bs';
 
 const LinSuperIdol = ({ userId }: { userId: string }) => {
   const [showPlayButton, setShowPlayButton] = useState(false);
@@ -90,7 +89,11 @@ const LinSuperIdol = ({ userId }: { userId: string }) => {
         className="group bg-secondary-bg/80 text-primary-text/80 hover:bg-secondary-bg hover:text-primary-text cursor-pointer rounded-full p-3 shadow-lg backdrop-blur-sm transition-all duration-300"
         title="Lin is a super idol"
       >
-        <BsMusicNoteBeamed className="text-xl opacity-60 transition-opacity duration-300 group-hover:opacity-100" />
+        <Icon
+          icon="material-symbols:music-note"
+          className="text-xl opacity-60 transition-opacity duration-300 group-hover:opacity-100"
+          inline={true}
+        />
       </button>
     </div>
   );
@@ -818,7 +821,13 @@ export default function UserProfileClient({
                       <Link href="/settings">
                         <Button
                           variant="contained"
-                          startIcon={<SettingsIcon />}
+                          startIcon={
+                            <Icon
+                              icon="material-symbols:settings"
+                              className="h-5 w-5"
+                              inline={true}
+                            />
+                          }
                           className="bg-button-info text-form-button-text hover:bg-button-info-hover"
                         >
                           Settings

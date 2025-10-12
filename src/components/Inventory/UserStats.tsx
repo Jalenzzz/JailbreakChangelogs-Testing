@@ -38,12 +38,9 @@ export default function UserStats({
   userConnectionData,
   currentSeason,
   itemsData,
-  dupedItems,
   onRefresh,
 }: UserStatsProps) {
-  // State management
   const [totalCashValue, setTotalCashValue] = useState<number>(0);
-  const [totalDupedValue, setTotalDupedValue] = useState<number>(0);
   const [isLoadingValues, setIsLoadingValues] = useState<boolean>(true);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
@@ -114,70 +111,6 @@ export default function UserStats({
     calculateCashValue();
   }, [initialData.data, itemsData]);
 
-  // Calculate duped value
-  useEffect(() => {
-    const calculateDupedValue = () => {
-      try {
-        let totalDuped = 0;
-        const itemMap = new Map(itemsData.map((item) => [item.id, item]));
-
-        dupedItems.forEach((dupeItem) => {
-          const itemData = itemMap.get((dupeItem as { item_id: number }).item_id);
-          if (itemData) {
-            // Skip items with 49+ ownership history entries
-            if (dupeItem.history && dupeItem.history.length >= 49) {
-              return;
-            }
-
-            let dupedValue = parseCashValueForTotal(itemData.duped_value);
-
-            // If main item doesn't have duped value, check children/variants based on created date
-            if ((isNaN(dupedValue) || dupedValue <= 0) && itemData.children) {
-              // Get the year from the created date (from item info)
-              const createdAtInfo = (
-                dupeItem as { info: Array<{ title: string; value: string }> }
-              ).info.find((info) => info.title === 'Created At');
-              const createdYear = createdAtInfo
-                ? new Date(createdAtInfo.value).getFullYear().toString()
-                : null;
-
-              // Find the child variant that matches the created year
-              const matchingChild = createdYear
-                ? itemData.children.find(
-                    (child: { sub_name: string; data: { duped_value: string | null } }) =>
-                      child.sub_name === createdYear &&
-                      child.data &&
-                      child.data.duped_value &&
-                      child.data.duped_value !== 'N/A' &&
-                      child.data.duped_value !== null,
-                  )
-                : null;
-
-              if (matchingChild) {
-                dupedValue = parseCashValueForTotal(matchingChild.data.duped_value);
-              }
-            }
-
-            // Only use duped values, ignore cash values
-            if (!isNaN(dupedValue) && dupedValue > 0) {
-              totalDuped += dupedValue;
-            }
-          }
-        });
-
-        setTotalDupedValue(totalDuped);
-      } catch (error) {
-        logError('Error calculating duped value', error, {
-          component: 'UserStats',
-          action: 'calculateTotalDupedValue',
-        });
-        setTotalDupedValue(0);
-      }
-    };
-
-    calculateDupedValue();
-  }, [dupedItems, itemsData]);
-
   // Handle refresh
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -222,7 +155,7 @@ export default function UserStats({
   // Set loading state
   useEffect(() => {
     setIsLoadingValues(false);
-  }, [totalCashValue, totalDupedValue]);
+  }, [totalCashValue]);
 
   return (
     <div className="border-border-primary bg-secondary-bg shadow-card-shadow rounded-lg border p-6">
@@ -248,8 +181,8 @@ export default function UserStats({
         currentData={initialData}
         currentSeason={currentSeason}
         totalCashValue={totalCashValue}
-        totalDupedValue={totalDupedValue}
         isLoadingValues={isLoadingValues}
+        userId={initialData.user_id}
       />
     </div>
   );

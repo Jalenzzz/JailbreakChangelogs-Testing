@@ -159,6 +159,7 @@ export default function ValuesChangelogPage() {
                     <Link
                       key={changelog.id}
                       href={`/values/changelogs/${changelog.id}`}
+                      prefetch={false}
                       className="block"
                     >
                       <div

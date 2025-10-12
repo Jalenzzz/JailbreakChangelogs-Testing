@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { UserData, UserSettings } from '@/types/auth';
 import { updateSettings } from '@/services/settingsService';
 import toast from 'react-hot-toast';
+import { safeSetJSON } from '@/utils/safeStorage';
 
 export const useSettings = (
   userData: UserData | null,
@@ -53,7 +54,7 @@ export const useSettings = (
         ...userData,
         settings: newSettings,
       };
-      localStorage.setItem('user', JSON.stringify(updatedUser));
+      safeSetJSON('user', updatedUser);
 
       // Prepare all settings for the API call
       const updatedSettings = {
@@ -80,7 +81,7 @@ export const useSettings = (
         ...userData,
         settings: newSettings,
       };
-      localStorage.setItem('user', JSON.stringify(finalUser));
+      safeSetJSON('user', finalUser);
 
       // Dispatch authStateChanged event to notify other components
       window.dispatchEvent(new CustomEvent('authStateChanged', { detail: finalUser }));
@@ -98,7 +99,7 @@ export const useSettings = (
         ...userData,
         settings,
       };
-      localStorage.setItem('user', JSON.stringify(revertedUser));
+      safeSetJSON('user', revertedUser);
     }
   };
 

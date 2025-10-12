@@ -57,6 +57,7 @@ export default function OnlineUsers({ max = 4, className = '', initial }: Online
           <Link
             key={user.id}
             href={`/users/${user.id}`}
+            prefetch={false}
             className="border-border-primary hover:border-border-focus relative h-8 w-8 cursor-pointer overflow-hidden rounded-full border-2 transition-colors"
             style={{ zIndex: visibleUsers.length - index }}
           >

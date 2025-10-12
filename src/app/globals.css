@@ -283,3 +283,18 @@
     outline-color: hsla(231, 100%, 62%, 0.3); /* Button info color with opacity */
   }
 }
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  mix-blend-mode: normal;
+  animation: none;
+}
+
+/* Ensure smooth theme transitions */
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 999;
+}

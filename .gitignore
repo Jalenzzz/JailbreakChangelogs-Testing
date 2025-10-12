@@ -1,8 +1,30 @@
 node_modules
-package-lock.json
-.vercel
-.vscode
-.env*.local
 .next
+.vercel
+
+# Env
+.env
+.env*.local
+
+# TypeScript build info
 tsconfig.tsbuildinfo
-.tsbuildinfo
+
+# OS/Editor
+.DS_Store
+.idea
+.eslintcache
+.vscode
+.cursor
+
+# Build artifacts
+coverage/
+dist/
+
+# Lockfiles (non-Bun)
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Note: keep bun.lock tracked (do not ignore)
+# Sentry Config File
+.env.sentry-build-plugin

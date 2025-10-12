@@ -271,11 +271,6 @@ const SimilarItems = ({ currentItem, similarItemsPromise }: SimilarItemsProps) =
           </div>
           <div className="flex items-center gap-2">
             <h3 className="text-primary-text text-xl font-semibold">Similar Items</h3>
-            {sortBy === 'trading_metrics' && (
-              <span className="bg-button-info text-primary-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
-                New
-              </span>
-            )}
           </div>
         </div>
 
@@ -363,6 +358,7 @@ const SimilarItems = ({ currentItem, similarItemsPromise }: SimilarItemsProps) =
               key={item.id}
               href={`/item/${item.type.toLowerCase()}/${item.name}`}
               className="group block"
+              prefetch={false}
             >
               <div className="border-border-primary hover:border-border-focus bg-primary-bg relative overflow-hidden rounded-lg border transition-all duration-300">
                 {/* Media Section */}
@@ -375,6 +371,18 @@ const SimilarItems = ({ currentItem, similarItemsPromise }: SimilarItemsProps) =
                       playsInline
                       autoPlay
                       className="h-full w-full object-cover"
+                      onError={(e) => {
+                        console.log('Video error:', e);
+                      }}
+                      onAbort={(e) => {
+                        console.log('Video aborted by browser power saving:', e);
+                      }}
+                      onPause={(e) => {
+                        console.log('Video paused:', e);
+                      }}
+                      onPlay={(e) => {
+                        console.log('Video play attempted:', e);
+                      }}
                     />
                   ) : (
                     <Image

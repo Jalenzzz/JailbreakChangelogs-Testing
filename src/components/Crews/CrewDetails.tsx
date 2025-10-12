@@ -8,7 +8,7 @@ import { fetchMissingRobloxData } from '@/app/inventories/actions';
 import localFont from 'next/font/local';
 import { Inter } from 'next/font/google';
 import Link from 'next/link';
-import { FaClock } from 'react-icons/fa';
+import { Icon } from '../UI/IconWrapper';
 
 const bangers = localFont({
   src: '../../../public/fonts/Bangers.ttf',
@@ -128,7 +128,7 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
         <div className="bg-secondary-bg border-border-primary rounded-lg border p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="text-primary-text flex items-center gap-2">
-              <FaClock className="h-5 w-5" />
+              <Icon icon="mdi:clock" className="h-5 w-5" inline={true} />
               <span className="font-medium">Historical Data</span>
             </div>
             <Link
@@ -227,9 +227,6 @@ export default function CrewDetails({ crew, rank, currentSeason }: CrewDetailsPr
               >
                 {getUsername(crew.OwnerUserId.toString())}&apos;s {crew.ClanName}
               </h2>
-              <span className="bg-button-info text-form-button-text rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase">
-                New
-              </span>
             </div>
             {currentSeason !== 19 && (
               <p className="text-secondary-text text-sm">
