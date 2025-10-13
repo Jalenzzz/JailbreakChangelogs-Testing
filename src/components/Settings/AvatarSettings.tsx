@@ -171,6 +171,11 @@ export const AvatarSettings = ({ userData, onAvatarUpdate }: AvatarSettingsProps
       const errorMessage = error instanceof Error ? error.message : 'Failed to upload file';
       setAvatarError(errorMessage);
       toast.error(errorMessage);
+
+      // Reset file input to allow selecting the same file again
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     } finally {
       setIsUploading(false);
     }
