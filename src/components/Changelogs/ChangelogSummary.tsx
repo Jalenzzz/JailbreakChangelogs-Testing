@@ -3,6 +3,7 @@ import { Icon } from '../UI/IconWrapper';
 import { cleanMarkdown } from '@/utils/changelogs';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { isFeatureEnabled } from '@/utils/featureFlags';
 
 interface ChangelogSummaryProps {
   changelogId: number;
@@ -112,6 +113,10 @@ export default function ChangelogSummary({ changelogId, title, content }: Change
     setError('');
     setHasGenerated(false);
   }, [changelogId]);
+
+  if (!isFeatureEnabled('AI_SUMMARY')) {
+    return null;
+  }
 
   // Show message for short content
   if (content.length <= 300) {
