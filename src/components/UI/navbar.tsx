@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useAuthContext } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { UserAvatar, DefaultAvatar } from '@/utils/avatar';
 import { RobloxIcon } from '@/components/Icons/RobloxIcon';
 import { isFeatureEnabled } from '@/utils/featureFlags';
@@ -179,6 +180,7 @@ export const NavbarModern = ({ className }: { className?: string }) => {
 
   const pathname = usePathname();
   const { setShowLoginModal, user: authUser, isAuthenticated, logout } = useAuthContext();
+  const { resolvedTheme } = useTheme();
   const userData = isAuthenticated ? authUser : null;
 
   const isCollabPage =
@@ -210,7 +212,7 @@ export const NavbarModern = ({ className }: { className?: string }) => {
             <Image
               src={
                 isCollabPage
-                  ? 'https://assets.jailbreakchangelogs.xyz/assets/logos/collab/JBCL_X_TC_Logo_Long_Transparent.webp'
+                  ? `https://assets.jailbreakchangelogs.xyz/assets/logos/collab/JBCL_X_TC_Logo_Long_Transparent_${resolvedTheme === 'dark' ? 'Dark' : 'Light'}.webp`
                   : 'https://assets.jailbreakchangelogs.xyz/assets/logos/JBCL_Long_Transparent.webp'
               }
               alt="Jailbreak Changelogs Logo"
@@ -287,12 +289,7 @@ export const NavbarModern = ({ className }: { className?: string }) => {
             <HoveredLink href="/users">User Search</HoveredLink>
             <HoveredLink href="/crews">Crew Leaderboard</HoveredLink>
             <HoveredLink href="/leaderboard/money">Money Leaderboard</HoveredLink>
-            <HoveredLink href="/inventories/networth">
-              <div className="flex items-center gap-2">
-                <span>Networth Leaderboard</span>
-                <Badge variant="new">New</Badge>
-              </div>
-            </HoveredLink>
+            <HoveredLink href="/inventories/networth">Networth Leaderboard</HoveredLink>
             <HoveredLink href="/servers">Private Servers</HoveredLink>
             <HoveredLink href="/bot">Discord Bot</HoveredLink>
             <HoveredLink href="/faq">FAQ</HoveredLink>
