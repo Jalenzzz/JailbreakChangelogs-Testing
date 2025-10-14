@@ -375,7 +375,11 @@ const ItemValueChart = ({ itemId, variantId, hideTradingMetrics = false }: ItemV
         padding: 10,
         callbacks: {
           title: function (context: TooltipItem<'line'>[]) {
-            const date = new Date(context[0].parsed.x);
+            const x = context[0].parsed.x;
+            if (x === null || x === undefined) {
+              return 'Unknown Date';
+            }
+            const date = new Date(x);
             return date.toLocaleDateString('en-US', {
               month: 'short',
               day: 'numeric',
@@ -474,7 +478,11 @@ const ItemValueChart = ({ itemId, variantId, hideTradingMetrics = false }: ItemV
         padding: 10,
         callbacks: {
           title: function (context: TooltipItem<'line'>[]) {
-            const date = new Date(context[0].parsed.x);
+            const x = context[0].parsed.x;
+            if (x === null || x === undefined) {
+              return 'Unknown Date';
+            }
+            const date = new Date(x);
             return date.toLocaleDateString('en-US', {
               month: 'short',
               day: 'numeric',
@@ -482,7 +490,11 @@ const ItemValueChart = ({ itemId, variantId, hideTradingMetrics = false }: ItemV
             });
           },
           label: function (context: TooltipItem<'line'>) {
-            return `${context.dataset.label}: ${context.parsed.y.toLocaleString()}`;
+            const y = context.parsed.y;
+            if (y === null || y === undefined) {
+              return `${context.dataset.label}: N/A`;
+            }
+            return `${context.dataset.label}: ${y.toLocaleString()}`;
           },
         },
       },
