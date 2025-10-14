@@ -997,6 +997,11 @@ export async function fetchInventoryData(
             const socket = new WebSocket(`${INVENTORY_WS_URL}/socket`);
 
             let settled = false;
+            const connectionQuality = {
+              compressionEnabled: false,
+              messagesReceived: 0,
+              connectionStartTime: Date.now(),
+            };
             const timeout = setTimeout(() => {
               if (settled) return;
               settled = true;
@@ -1014,7 +1019,16 @@ export async function fetchInventoryData(
 
             socket.addEventListener('open', () => {
               try {
-                socket.send(JSON.stringify({ action: 'get_data', user_id: robloxId }));
+                connectionQuality.compressionEnabled =
+                  socket.extensions?.includes('permessage-deflate') || false;
+                connectionQuality.connectionStartTime = Date.now();
+
+                console.log(
+                  `[WS] Connected for user ${robloxId}, compression: ${connectionQuality.compressionEnabled}`,
+                );
+
+                const requestData = JSON.stringify({ action: 'get_data', user_id: robloxId });
+                socket.send(requestData);
               } catch (e) {
                 // If send fails, resolve with error and close
                 if (!settled) {
@@ -1036,8 +1050,29 @@ export async function fetchInventoryData(
               if (settled) return;
               settled = true;
               clearTimeout(timeout);
+
+              connectionQuality.messagesReceived++;
+
               try {
-                const parsed = JSON.parse(event.data);
+                const messageData = event.data;
+                const isCompressed = event.data instanceof ArrayBuffer;
+
+                let parsed;
+                if (isCompressed) {
+                  const decoder = new TextDecoder();
+                  parsed = JSON.parse(decoder.decode(messageData));
+                  console.log(`[WS] Received compressed data for user ${robloxId}`);
+                } else {
+                  parsed = JSON.parse(messageData);
+                }
+
+                const duration = Date.now() - connectionQuality.connectionStartTime;
+                console.log(`[WS] Connection quality for user ${robloxId}:`, {
+                  duration: `${duration}ms`,
+                  messagesReceived: connectionQuality.messagesReceived,
+                  compressionEnabled: connectionQuality.compressionEnabled,
+                });
+
                 resolve(parsed);
               } catch (e) {
                 console.error(`[WS] Parse error for user ${robloxId}:`, e);
