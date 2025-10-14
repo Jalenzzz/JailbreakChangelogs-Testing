@@ -240,58 +240,64 @@ const CalculatorItemGrid: React.FC<{
                     },
                   }}
                 >
-                  <div className="relative aspect-square">
-                    <div
-                      className="relative h-full w-full cursor-pointer overflow-hidden rounded-lg"
-                      onClick={() => openActionModal(item)}
-                    >
-                      <Image
-                        src={getItemImagePath(item.type, item.name, true)}
-                        alt={item.name}
-                        fill
-                        className="object-cover"
-                        onError={handleImageError}
-                      />
-                      {/* Status badge for Clean/Duped selection */}
+                  <div>
+                    <div className="relative aspect-square">
                       <div
-                        className={`text-form-button-text absolute top-1 left-1 rounded-full px-1.5 py-0.5 text-xs ${
-                          isDupedSelected
-                            ? 'border-status-error bg-status-error'
-                            : 'border-status-success bg-status-success'
-                        } border`}
-                        aria-label={
-                          isDupedSelected ? 'Duped value selected' : 'Clean value selected'
-                        }
+                        className="relative h-full w-full cursor-pointer overflow-hidden rounded-lg"
+                        onClick={() => openActionModal(item)}
                       >
-                        {isDupedSelected ? 'Duped' : 'Clean'}
-                      </div>
-                      <button
-                        type="button"
-                        aria-label="Edit item"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openActionModal(item);
-                        }}
-                        className="text-form-button-text absolute right-1 bottom-1 rounded-full border border-white/10 bg-black/50 p-1 hover:bg-black/60"
-                      >
-                        <EllipsisVerticalIcon className="h-4 w-4" />
-                      </button>
-                      {item.count > 1 && (
-                        <div className="border-primary bg-primary/90 text-primary-foreground absolute top-1 right-1 rounded-full border px-1.5 py-0.5 text-xs">
-                          ×{item.count}
+                        <Image
+                          src={getItemImagePath(item.type, item.name, true)}
+                          alt={item.name}
+                          fill
+                          className="object-cover"
+                          onError={handleImageError}
+                        />
+                        {/* Status badge for Clean/Duped selection */}
+                        <div
+                          className={`text-form-button-text absolute top-1 left-1 rounded-full px-1.5 py-0.5 text-xs ${
+                            isDupedSelected
+                              ? 'border-status-error bg-status-error'
+                              : 'border-status-success bg-status-success'
+                          } border`}
+                          aria-label={
+                            isDupedSelected ? 'Duped value selected' : 'Clean value selected'
+                          }
+                        >
+                          {isDupedSelected ? 'Duped' : 'Clean'}
                         </div>
-                      )}
-                      {/* Hover overlay removed; modal handles actions */}
+                        <button
+                          type="button"
+                          aria-label="Edit item"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openActionModal(item);
+                          }}
+                          className="text-form-button-text absolute right-1 bottom-1 rounded-full border border-white/10 bg-black/50 p-1 hover:bg-black/60"
+                        >
+                          <EllipsisVerticalIcon className="h-4 w-4" />
+                        </button>
+                        {item.count > 1 && (
+                          <div className="border-primary bg-primary/90 text-primary-foreground absolute top-1 right-1 rounded-full border px-1.5 py-0.5 text-xs">
+                            ×{item.count}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Item Name */}
+                    <div className="mt-2 text-center">
+                      <p className="text-primary-text hover:text-link line-clamp-2 text-xs font-medium transition-colors">
+                        {displayName}
+                      </p>
                     </div>
                   </div>
                 </Tooltip>
-                {/* Inline footer actions removed; actions available via modal */}
               </div>
             );
           })}
         </div>
       </div>
-      {/* Legacy context menu removed; modal is the single action surface */}
 
       {/* Action Modal styled like CustomConfirmationModal */}
       {actionModalOpen && (
@@ -964,13 +970,6 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
   };
 
   const handleAddItem = (item: TradeItem, side: 'offering' | 'requesting'): boolean => {
-    if (side === 'offering' && offeringItems.length >= 40) {
-      return false;
-    }
-    if (side === 'requesting' && requestingItems.length >= 40) {
-      return false;
-    }
-
     if (side === 'offering') {
       setOfferingItems((prev) => [...prev, item]);
     } else {
@@ -1219,7 +1218,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
             <Button
               variant="contained"
               onClick={handleSwapSides}
-              className="bg-primary text-primary-foreground hover:bg-primary/90"
+              className="bg-button-info text-form-button-text hover:bg-button-info-hover"
             >
               <ArrowsRightLeftIcon className="mr-1 h-5 w-5" />
               Swap Sides
@@ -1267,7 +1266,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <h3 className="text-secondary-text font-medium">Offering</h3>
-                <span className="text-secondary-text/70 text-sm">({offeringItems.length}/40)</span>
+                <span className="text-secondary-text/70 text-sm">({offeringItems.length})</span>
               </div>
               <Tooltip
                 title="Mirror to requesting"
@@ -1330,9 +1329,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({ initialItems = [
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <h3 className="text-secondary-text font-medium">Requesting</h3>
-                <span className="text-secondary-text/70 text-sm">
-                  ({requestingItems.length}/40)
-                </span>
+                <span className="text-secondary-text/70 text-sm">({requestingItems.length})</span>
               </div>
               <Tooltip
                 title="Mirror to offering"
