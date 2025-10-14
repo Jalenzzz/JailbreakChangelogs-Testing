@@ -274,6 +274,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                     >
                       <Header />
                     </Suspense>
+                    <ServiceAvailabilityTicker />
                     {/* <NewsTicker /> */}
                     <main className="flex-1">{children}</main>
                     <Footer />
