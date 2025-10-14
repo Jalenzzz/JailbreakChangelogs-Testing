@@ -41,7 +41,6 @@ export interface Season {
 
 import { Item, ItemDetails, RobloxUser } from '@/types';
 import { UserData } from '@/types/auth';
-import type WebSocket from 'ws';
 
 export const BASE_API_URL =
   process.env.NEXT_PHASE === 'phase-production-build' ||
@@ -994,18 +993,8 @@ export async function fetchInventoryData(
     try {
       const wsResult = await (async () => {
         try {
-          // Dynamically import ws to avoid bundling on the client
-          const wsModule = await import('ws');
-          const WS: typeof WebSocket =
-            (wsModule as { default?: typeof WebSocket }).default ||
-            (wsModule as { WebSocket?: typeof WebSocket }).WebSocket ||
-            (wsModule as unknown as typeof WebSocket);
           return await new Promise((resolve) => {
-            const socket = new WS(`${INVENTORY_WS_URL}/socket`, {
-              headers: {
-                'User-Agent': 'JailbreakChangelogs-InventoryChecker/1.0',
-              },
-            });
+            const socket = new WebSocket(`${INVENTORY_WS_URL}/socket`);
 
             let settled = false;
             const timeout = setTimeout(() => {
@@ -1023,7 +1012,7 @@ export async function fetchInventoryData(
               });
             }, timeoutMs);
 
-            socket.on('open', () => {
+            socket.addEventListener('open', () => {
               try {
                 socket.send(JSON.stringify({ action: 'get_data', user_id: robloxId }));
               } catch (e) {
@@ -1043,12 +1032,12 @@ export async function fetchInventoryData(
               }
             });
 
-            socket.on('message', (data: string) => {
+            socket.addEventListener('message', (event) => {
               if (settled) return;
               settled = true;
               clearTimeout(timeout);
               try {
-                const parsed = JSON.parse(data);
+                const parsed = JSON.parse(event.data);
                 resolve(parsed);
               } catch (e) {
                 console.error(`[WS] Parse error for user ${robloxId}:`, e);
@@ -1063,14 +1052,14 @@ export async function fetchInventoryData(
               }
             });
 
-            socket.on('error', (err: unknown) => {
+            socket.addEventListener('error', () => {
               if (settled) return;
               settled = true;
               clearTimeout(timeout);
               try {
                 socket.close();
               } catch {}
-              const errorMessage = err instanceof Error ? err.message : String(err);
+              const errorMessage = 'WebSocket connection error';
               // Only log 502 errors briefly, skip verbose timeout errors
               if (errorMessage.includes('502')) {
                 console.error(`[WS] Connection error for user ${robloxId}: ${errorMessage}`);
@@ -1093,23 +1082,21 @@ export async function fetchInventoryData(
               }
             });
 
-            socket.on('close', () => {
-              // If closed before message and not settled, treat as error
-              if (!settled) {
-                settled = true;
-                clearTimeout(timeout);
-                resolve({
-                  error: 'ws_closed',
-                  message: 'WebSocket closed before receiving data.',
-                });
-              }
+            socket.addEventListener('close', () => {
+              if (settled) return;
+              settled = true;
+              clearTimeout(timeout);
+              resolve({
+                error: 'ws_closed',
+                message: 'WebSocket connection closed unexpectedly.',
+              });
             });
           });
         } catch (err) {
-          console.error('[WS] Failed to initialize WebSocket client:', err);
+          console.error(`[WS] Failed to create WebSocket for user ${robloxId}:`, err);
           return {
             error: 'ws_init_error',
-            message: 'Failed to initialize WebSocket client.',
+            message: 'Failed to initialize WebSocket connection.',
           };
         }
       })();

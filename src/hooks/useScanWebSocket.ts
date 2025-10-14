@@ -70,7 +70,7 @@ export function useScanWebSocket(userId: string): UseScanWebSocketReturn {
       const ws = new WebSocket(wsUrl);
       wsRef.current = ws;
 
-      ws.onopen = () => {
+      ws.addEventListener('open', () => {
         console.log('[SCAN WS] Connected');
         setStatus('connected');
         setIsConnected(true);
@@ -101,9 +101,9 @@ export function useScanWebSocket(userId: string): UseScanWebSocketReturn {
             }
           }
         }, 30000);
-      };
+      });
 
-      ws.onmessage = (event) => {
+      ws.addEventListener('message', (event) => {
         try {
           const data = JSON.parse(event.data);
           console.log('[SCAN WS] Received:', data);
@@ -269,9 +269,9 @@ export function useScanWebSocket(userId: string): UseScanWebSocketReturn {
           setError('Invalid response from server');
           setStatus('error');
         }
-      };
+      });
 
-      ws.onclose = (event) => {
+      ws.addEventListener('close', (event) => {
         console.log('[SCAN WS] Closed:', event.code, event.reason);
         setIsConnected(false);
 
@@ -310,14 +310,14 @@ export function useScanWebSocket(userId: string): UseScanWebSocketReturn {
           setError('Connection lost');
           setStatus('error');
         }
-      };
+      });
 
-      ws.onerror = (err) => {
+      ws.addEventListener('error', (err) => {
         console.error('[SCAN WS] Error:', err);
         setError('WebSocket connection error');
         setStatus('error');
         setIsConnected(false);
-      };
+      });
     } catch (err) {
       console.error('[SCAN WS] Connection error:', err);
       setError('Failed to connect to scan service');
