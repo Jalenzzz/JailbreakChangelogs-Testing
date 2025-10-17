@@ -91,9 +91,9 @@ export default function XpCalculator({ season }: XpCalculatorProps) {
 
     const expPerWeekDouble = (hasGamePass: boolean) => {
       if (hasGamePass) {
-        return constants.MAX_DAILY_EXP_SEASON_PASS * 7 + constants.AVG_EXP_PER_CONTRACT * 12;
+        return constants.MAX_DAILY_EXP_SEASON_PASS * 2 * 7 + constants.AVG_EXP_PER_CONTRACT * 2 * 6;
       } else {
-        return constants.MAX_DAILY_EXP * 7 + constants.AVG_EXP_PER_CONTRACT * 8;
+        return constants.MAX_DAILY_EXP * 2 * 7 + constants.AVG_EXP_PER_CONTRACT * 2 * 4;
       }
     };
 
@@ -103,16 +103,25 @@ export default function XpCalculator({ season }: XpCalculatorProps) {
     const xpNeeded = targetLevelExp - myExp;
 
     // Time calculations
-    const howLongNoGamePassDays = Math.ceil(((targetLevelExp - myExp) / expPerWeek(false)) * 7);
-    const howLongWithGamePassDays = Math.ceil(((targetLevelExp - myExp) / expPerWeek(true)) * 7);
+    const howLongNoGamePassDays = Math.max(
+      0,
+      Math.ceil(((targetLevelExp - myExp) / expPerWeek(false)) * 7),
+    );
+    const howLongWithGamePassDays = Math.max(
+      0,
+      Math.ceil(((targetLevelExp - myExp) / expPerWeek(true)) * 7),
+    );
 
     const targetLevelDateNoGamePass = currentTime + howLongNoGamePassDays * 86400;
     const targetLevelDateWithGamePass = currentTime + howLongWithGamePassDays * 86400;
 
     // Check if achievable
     const doubleXpStart = constants.SEASON_ENDS - constants.DOUBLE_XP_TIME;
-    const achievableNoPass = targetLevelDateNoGamePass < constants.SEASON_ENDS;
-    const achievableWithPass = targetLevelDateWithGamePass < constants.SEASON_ENDS;
+    const alreadyReachedTarget = xpNeeded <= 0;
+    const achievableNoPass =
+      alreadyReachedTarget || targetLevelDateNoGamePass < constants.SEASON_ENDS;
+    const achievableWithPass =
+      alreadyReachedTarget || targetLevelDateWithGamePass < constants.SEASON_ENDS;
 
     // Double XP calculations (always calculate for comparison)
     let doubleXpResults: {
@@ -121,15 +130,19 @@ export default function XpCalculator({ season }: XpCalculatorProps) {
     } | null = null;
 
     // Calculate Double XP days using the old method
-    const newDaysNoPass =
+    const newDaysNoPass = Math.max(
+      0,
       (targetLevelExp - myExp) / expPerWeek(false) -
-      1 +
-      (targetLevelExp - myExp) / expPerWeekDouble(false);
+        1 +
+        (targetLevelExp - myExp) / expPerWeekDouble(false),
+    );
     const newLvlDateNoPass = Math.ceil(newDaysNoPass * 7) * 86400;
-    const newDaysWithPass =
+    const newDaysWithPass = Math.max(
+      0,
       (targetLevelExp - myExp) / expPerWeek(true) -
-      1 +
-      (targetLevelExp - myExp) / expPerWeekDouble(true);
+        1 +
+        (targetLevelExp - myExp) / expPerWeekDouble(true),
+    );
     const newLvlDateWithPass = Math.ceil(newDaysWithPass * 7) * 86400;
 
     doubleXpResults = {
