@@ -14,10 +14,11 @@
         "@mui/lab": "7.0.0",
         "@mui/material": "^7.3.4",
         "@mui/material-nextjs": "^7.3.3",
-        "@mui/x-date-pickers": "^8.14.0",
-        "@next/third-parties": "^15.5.5",
+        "@mui/x-date-pickers": "^8.14.1",
+        "@next/third-parties": "^15.5.6",
         "@radix-ui/react-slot": "^1.2.3",
-        "@sentry/nextjs": "^10.19.0",
+        "@sentry/nextjs": "^10.20.0",
+        "@tanstack/react-table": "^8.21.3",
         "@tanstack/react-virtual": "^3.13.12",
         "@types/canvas-confetti": "^1.9.0",
         "canvas-confetti": "^1.9.3",
@@ -32,7 +33,7 @@
         "framer-motion": "^12.23.24",
         "lucide-react": "^0.545.0",
         "motion": "^12.23.24",
-        "next": "^15.5.5",
+        "next": "^15.5.6",
         "nextjs-toploader": "^3.9.17",
         "react": "^19.2.0",
         "react-chartjs-2": "^5.3.0",
@@ -48,12 +49,12 @@
       "devDependencies": {
         "@eslint/eslintrc": "^3.3.1",
         "@tailwindcss/postcss": "^4.1.14",
-        "@types/node": "^24.7.2",
+        "@types/node": "^24.8.1",
         "@types/react": "^19.2.2",
         "@types/react-dom": "^19.2.2",
-        "daisyui": "^5.3.1",
+        "daisyui": "^5.3.7",
         "eslint": "^9.37.0",
-        "eslint-config-next": "^15.5.5",
+        "eslint-config-next": "^15.5.6",
         "eslint-config-prettier": "^10.1.8",
         "husky": "^9.1.7",
         "lint-staged": "^16.2.4",
@@ -517,7 +518,11 @@
 
     "@tailwindcss/postcss": ["@tailwindcss/postcss@4.1.14", "", { "dependencies": { "@alloc/quick-lru": "^5.2.0", "@tailwindcss/node": "4.1.14", "@tailwindcss/oxide": "4.1.14", "postcss": "^8.4.41", "tailwindcss": "4.1.14" } }, "sha512-BdMjIxy7HUNThK87C7BC8I1rE8BVUsfNQSI5siQ4JK3iIa3w0XyVvVL9SXLWO//CtYTcp1v7zci0fYwJOjB+Zg=="],
 
+    "@tanstack/react-table": ["@tanstack/react-table@8.21.3", "", { "dependencies": { "@tanstack/table-core": "8.21.3" }, "peerDependencies": { "react": ">=16.8", "react-dom": ">=16.8" } }, "sha512-5nNMTSETP4ykGegmVkhjcS8tTLW6Vl4axfEGQN3v0zdHYbK4UfoqfPChclTrJ4EoK9QynqAu9oUf8VEmrpZ5Ww=="],
+
     "@tanstack/react-virtual": ["@tanstack/react-virtual@3.13.12", "", { "dependencies": { "@tanstack/virtual-core": "3.13.12" }, "peerDependencies": { "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0", "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0" } }, "sha512-Gd13QdxPSukP8ZrkbgS2RwoZseTTbQPLnQEn7HY/rqtM+8Zt95f7xKC7N0EsKs7aoz0WzZ+fditZux+F8EzYxA=="],
+
+    "@tanstack/table-core": ["@tanstack/table-core@8.21.3", "", {}, "sha512-ldZXEhOBb8Is7xLs01fR3YEc3DERiz5silj8tnGkFZytt1abEvl/GhUmCE0PMLaMPTa3Jk4HbKmRlHmu+gCftg=="],
 
     "@tanstack/virtual-core": ["@tanstack/virtual-core@3.13.12", "", {}, "sha512-1YBOJfRHV4sXUmWsFSf5rQor4Ss82G8dQWLRbnk3GA4jeP8hQt1hxXh0tmflpC0dz3VgEv/1+qwPyLeWkQuPFA=="],
 
