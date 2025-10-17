@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import ImageModal from '@/components/UI/ImageModal';
+import { Icon } from '@/components/UI/IconWrapper';
 import dynamic from 'next/dynamic';
 import { Season } from '@/types/seasons';
 
@@ -100,8 +101,9 @@ export default function XpCalculatorForm({
           className="mx-auto w-full max-w-sm"
           priority
         />
-        <p className="text-secondary-text mt-2 text-sm">
-          💡 Use this image as a reference to find your current level and XP progress
+        <p className="text-secondary-text mt-2 flex items-center gap-2 text-sm">
+          <Icon icon="emojione:light-bulb" className="text-lg text-yellow-500" />
+          Use this image as a reference to find your current level and XP progress
         </p>
       </div>
 

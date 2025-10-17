@@ -1,6 +1,7 @@
 import React from 'react';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { XMarkIcon, TrophyIcon, SparklesIcon } from '@heroicons/react/24/outline';
+import { Icon } from '../UI/IconWrapper';
 import Link from 'next/link';
 import { getAllowedFileExtensions } from '@/config/settings';
 
@@ -294,8 +295,9 @@ export default function SupporterModal({
 
             {/* Footer Note */}
             <div className="border-border-primary bg-tertiary-bg mt-4 rounded-lg border p-3">
-              <p className="text-center text-xs">
-                💡 <strong className="text-primary-text">Pro tip:</strong>{' '}
+              <p className="flex items-center justify-center gap-1 text-center text-xs">
+                <Icon icon="emojione:light-bulb" className="text-sm text-yellow-500" />
+                <strong className="text-primary-text">Pro tip:</strong>{' '}
                 <span className="text-secondary-text">
                   All supporter purchases are one-time only and non-refundable! Once you purchase,
                   you keep the perks forever.
