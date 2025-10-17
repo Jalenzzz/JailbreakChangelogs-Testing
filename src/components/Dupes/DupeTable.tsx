@@ -12,11 +12,12 @@ import {
   ColumnFiltersState,
 } from '@tanstack/react-table';
 import { Icon } from '../UI/IconWrapper';
-import { formatRelativeDate, formatCustomDate } from '@/utils/timestamp';
 import { getCategoryColor } from '@/utils/categoryIcons';
 import { Tooltip } from '@mui/material';
 import { TradeAdTooltip } from '../trading/TradeAdTooltip';
 import Link from 'next/link';
+import Image from 'next/image';
+import { getItemImagePath, handleImageError, isVideoItem, getVideoPath } from '@/utils/images';
 import type { Item, DupeResult } from '@/types';
 
 interface DupeTableProps {
@@ -25,7 +26,7 @@ interface DupeTableProps {
 }
 
 interface DupeTableRow {
-  id: string; // Unique ID for each row (item_id + owner combination)
+  id: string;
   item_id: number;
   name: string;
   type: string;
@@ -50,28 +51,26 @@ const columnHelper = createColumnHelper<DupeTableRow>();
 const DupeTable: React.FC<DupeTableProps> = ({ initialItems, initialDupes }) => {
   const [sorting, setSorting] = useState<SortingState>([
     {
-      id: 'created_at',
-      desc: true,
+      id: 'name',
+      desc: false,
     },
   ]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
 
-  // Transform data for table - create a row for each individual dupe report
   const tableData = useMemo(() => {
     const itemMap = new Map<number, Item>();
     initialItems.forEach((item) => {
       itemMap.set(item.id, item);
     });
 
-    // Create a row for each individual dupe report
     return initialDupes
       .map((dupe): DupeTableRow | null => {
         const item = itemMap.get(dupe.item_id);
         if (!item) return null;
 
         return {
-          id: `${dupe.item_id}-${dupe.owner}-${dupe.created_at}`, // Unique ID
+          id: `${dupe.item_id}-${dupe.owner}-${dupe.created_at}`,
           item_id: item.id,
           name: item.name,
           type: item.type,
@@ -97,82 +96,108 @@ const DupeTable: React.FC<DupeTableProps> = ({ initialItems, initialDupes }) => 
   const columns = useMemo(
     () => [
       columnHelper.accessor('name', {
-        header: 'Item Name',
+        header: 'Item',
         cell: ({ row }) => {
           const item = row.original;
           return (
-            <div className="flex items-center gap-2">
-              <Tooltip
-                title={
-                  <TradeAdTooltip
-                    item={{
-                      id: item.item_id,
-                      name: item.name,
-                      type: item.type,
-                      is_seasonal: item.is_seasonal || 0,
-                      is_limited: item.is_limited || 0,
-                      cash_value: item.cash_value,
-                      duped_value: item.duped_value,
-                      trend: item.trend,
-                      tradable: item.tradable ? 1 : 0,
-                      base_name: item.name,
-                      is_sub: false,
-                      demand: item.demand,
-                      data: {
-                        name: item.name,
-                        type: item.type,
-                        creator: item.creator,
-                        is_seasonal: item.is_seasonal,
-                        cash_value: item.cash_value,
-                        duped_value: item.duped_value,
-                        price: item.price,
-                        is_limited: item.is_limited,
-                        duped_owners: '',
-                        notes: '',
-                        demand: item.demand,
-                        trend: item.trend,
-                        description: '',
-                        health: 0,
-                        tradable: item.tradable,
-                        last_updated: item.last_updated,
-                      },
+            <div className="flex items-center gap-3">
+              <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg">
+                {isVideoItem(item.name) ? (
+                  <video
+                    src={getVideoPath(item.type, item.name)}
+                    className="h-full w-full object-cover"
+                    muted
+                    playsInline
+                    loop
+                    autoPlay
+                    onError={(e) => {
+                      console.log('Video error:', e);
                     }}
                   />
-                }
-                arrow
-                placement="bottom"
-                disableTouchListener
-                slotProps={{
-                  tooltip: {
-                    sx: {
-                      backgroundColor: 'var(--color-secondary-bg)',
-                      color: 'var(--color-primary-text)',
-                      maxWidth: '400px',
-                      width: 'auto',
-                      minWidth: '300px',
-                      '& .MuiTooltip-arrow': {
-                        color: 'var(--color-secondary-bg)',
+                ) : (
+                  <Image
+                    src={getItemImagePath(item.type, item.name, true)}
+                    alt={item.name}
+                    fill
+                    className="object-cover"
+                    onError={handleImageError}
+                  />
+                )}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Tooltip
+                  title={
+                    <TradeAdTooltip
+                      item={{
+                        id: item.item_id,
+                        name: item.name,
+                        type: item.type,
+                        is_seasonal: item.is_seasonal || 0,
+                        is_limited: item.is_limited || 0,
+                        cash_value: item.cash_value,
+                        duped_value: item.duped_value,
+                        trend: item.trend,
+                        tradable: item.tradable ? 1 : 0,
+                        base_name: item.name,
+                        is_sub: false,
+                        demand: item.demand,
+                        data: {
+                          name: item.name,
+                          type: item.type,
+                          creator: item.creator,
+                          is_seasonal: item.is_seasonal,
+                          cash_value: item.cash_value,
+                          duped_value: item.duped_value,
+                          price: item.price,
+                          is_limited: item.is_limited,
+                          duped_owners: '',
+                          notes: '',
+                          demand: item.demand,
+                          trend: item.trend,
+                          description: '',
+                          health: 0,
+                          tradable: item.tradable,
+                          last_updated: item.last_updated,
+                        },
+                      }}
+                    />
+                  }
+                  arrow
+                  placement="bottom"
+                  disableTouchListener
+                  slotProps={{
+                    tooltip: {
+                      sx: {
+                        backgroundColor: 'var(--color-secondary-bg)',
+                        color: 'var(--color-primary-text)',
+                        maxWidth: '400px',
+                        width: 'auto',
+                        minWidth: '300px',
+                        '& .MuiTooltip-arrow': {
+                          color: 'var(--color-secondary-bg)',
+                        },
                       },
                     },
-                  },
-                }}
-              >
-                <Link
-                  href={`/item/${encodeURIComponent(item.type)}/${encodeURIComponent(item.name)}`}
-                  className="text-primary-text hover:text-link-hover font-medium transition-colors hover:underline"
+                  }}
                 >
-                  {item.name}
-                </Link>
-              </Tooltip>
-              <span
-                className="text-primary-text flex items-center rounded-full border px-2 py-0.5 text-xs font-medium"
-                style={{
-                  borderColor: getCategoryColor(item.type),
-                  backgroundColor: getCategoryColor(item.type) + '20',
-                }}
-              >
-                {item.type}
-              </span>
+                  <Link
+                    href={`/item/${encodeURIComponent(item.type)}/${encodeURIComponent(item.name)}`}
+                    className="text-primary-text hover:text-link-hover font-medium transition-colors hover:underline"
+                  >
+                    {item.name}
+                  </Link>
+                </Tooltip>
+                <span
+                  className="text-primary-text flex items-center rounded-full border px-2 py-0.5 text-xs font-medium"
+                  style={{
+                    borderColor: getCategoryColor(item.type),
+                    backgroundColor: getCategoryColor(item.type) + '20',
+                  }}
+                >
+                  {item.type}
+                </span>
+              </div>
             </div>
           );
         },
@@ -182,39 +207,6 @@ const DupeTable: React.FC<DupeTableProps> = ({ initialItems, initialDupes }) => 
         cell: ({ row }) => {
           const owner = row.original.owner;
           return <span className="text-primary-text font-medium">{owner}</span>;
-        },
-      }),
-      columnHelper.accessor('created_at', {
-        header: 'Reported',
-        cell: ({ row }) => {
-          const reportDate = row.original.created_at;
-
-          return (
-            <Tooltip
-              title={formatCustomDate(reportDate)}
-              placement="top"
-              arrow
-              slotProps={{
-                tooltip: {
-                  sx: {
-                    backgroundColor: 'var(--color-primary-bg)',
-                    color: 'var(--color-secondary-text)',
-                    fontSize: '0.75rem',
-                    padding: '8px 12px',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 12px var(--color-card-shadow)',
-                    '& .MuiTooltip-arrow': {
-                      color: 'var(--color-primary-bg)',
-                    },
-                  },
-                },
-              }}
-            >
-              <span className="text-secondary-text cursor-help text-sm">
-                {formatRelativeDate(reportDate)}
-              </span>
-            </Tooltip>
-          );
         },
       }),
     ],
@@ -238,8 +230,8 @@ const DupeTable: React.FC<DupeTableProps> = ({ initialItems, initialDupes }) => 
     initialState: {
       sorting: [
         {
-          id: 'created_at',
-          desc: true,
+          id: 'name',
+          desc: false,
         },
       ],
     },
@@ -247,7 +239,6 @@ const DupeTable: React.FC<DupeTableProps> = ({ initialItems, initialDupes }) => 
 
   return (
     <div className="space-y-6">
-      {/* Search */}
       <div className="relative">
         <input
           type="text"
@@ -272,7 +263,6 @@ const DupeTable: React.FC<DupeTableProps> = ({ initialItems, initialDupes }) => 
         )}
       </div>
 
-      {/* Table */}
       <div className="border-border-primary bg-secondary-bg overflow-hidden rounded-lg border">
         <div className="overflow-x-auto">
           <table className="w-full">
