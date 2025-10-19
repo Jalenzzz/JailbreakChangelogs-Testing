@@ -42,9 +42,7 @@ export default function CalculatorCard({ calculator }: CalculatorCardProps) {
           <ul className="text-secondary-text space-y-1 text-sm">
             {calculator.features.map((feature, index) => (
               <li key={index} className="flex items-center gap-2">
-                <div
-                  className={`${calculator.color.replace('bg-', 'bg-')} h-1.5 w-1.5 rounded-full`}
-                />
+                <div className={`${calculator.color} h-1.5 w-1.5 rounded-full`} />
                 {feature}
               </li>
             ))}

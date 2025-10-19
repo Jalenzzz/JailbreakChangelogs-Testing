@@ -1027,7 +1027,10 @@ export async function fetchInventoryData(
                   `[WS] Connected for user ${robloxId}, compression: ${connectionQuality.compressionEnabled}`,
                 );
 
-                const requestData = JSON.stringify({ action: 'get_data', user_id: robloxId });
+                const requestData = JSON.stringify({
+                  action: 'get_data',
+                  user_id: robloxId,
+                });
                 socket.send(requestData);
               } catch (e) {
                 // If send fails, resolve with error and close

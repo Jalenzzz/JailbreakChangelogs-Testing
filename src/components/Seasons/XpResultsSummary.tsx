@@ -168,7 +168,10 @@ export default function XpResultsSummary({ results, season }: XpResultsSummaryPr
           {isDoubleXpLive && (
             <div
               className="mt-3 inline-flex items-center gap-2 rounded-full px-4 py-2"
-              style={{ backgroundColor: 'var(--color-status-success)', color: 'white' }}
+              style={{
+                backgroundColor: 'var(--color-status-success)',
+                color: 'white',
+              }}
             >
               <Icon icon="mdi:lightning-bolt" style={{ color: 'white' }} inline={true} />
               <span className="text-sm font-semibold">Double XP is LIVE!</span>

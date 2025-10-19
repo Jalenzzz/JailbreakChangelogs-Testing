@@ -71,7 +71,9 @@ export default function Header() {
     pathname.startsWith('/values/changelogs');
   const [mobileOpen, setMobileOpen] = useState(false);
   const muiTheme = useMuiTheme();
-  const isMobile = useMediaQuery(muiTheme.breakpoints.down('lg'), { noSsr: true });
+  const isMobile = useMediaQuery(muiTheme.breakpoints.down('lg'), {
+    noSsr: true,
+  });
   const isSmallScreen = useMediaQuery(muiTheme.breakpoints.down('sm'));
   const { showLoginModal, setShowLoginModal, user: authUser, isAuthenticated } = useAuthContext();
   const { resolvedTheme } = useTheme();

@@ -119,7 +119,10 @@ export function useScanWebSocket(userId: string): UseScanWebSocketReturn {
         heartbeatIntervalRef.current = setInterval(() => {
           if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
             try {
-              const heartbeatMsg = JSON.stringify({ action: 'status', timestamp: Date.now() });
+              const heartbeatMsg = JSON.stringify({
+                action: 'status',
+                timestamp: Date.now(),
+              });
               wsRef.current.send(heartbeatMsg);
               console.log('[SCAN WS] Sent status check');
             } catch (err) {

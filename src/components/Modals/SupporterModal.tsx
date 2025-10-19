@@ -299,8 +299,8 @@ export default function SupporterModal({
                 <Icon icon="emojione:light-bulb" className="text-sm text-yellow-500" />
                 <strong className="text-primary-text">Pro tip:</strong>{' '}
                 <span className="text-secondary-text">
-                  All supporter purchases are one-time only and non-refundable! Once you purchase,
-                  you keep the perks forever.
+                  All supporter purchases are one-time only and non-refundable! Once you redeem your
+                  code, you keep the perks forever.
                 </span>
               </p>
             </div>
