@@ -32,9 +32,13 @@ interface InventoryFiltersProps {
   setSelectedCategories: (categories: string[]) => void;
   showOnlyOriginal: boolean;
   showOnlyNonOriginal: boolean;
+  hideDuplicates: boolean;
+  showMissingItems: boolean;
   availableCategories: string[];
   onFilterToggle: (checked: boolean) => void;
   onNonOriginalFilterToggle: (checked: boolean) => void;
+  onHideDuplicatesToggle: (checked: boolean) => void;
+  onShowMissingItemsToggle: (checked: boolean) => void;
   sortOrder: SortOrder;
   setSortOrder: (order: SortOrder) => void;
   hasDuplicates: boolean;
@@ -47,9 +51,13 @@ export default function InventoryFilters({
   setSelectedCategories,
   showOnlyOriginal,
   showOnlyNonOriginal,
+  hideDuplicates,
+  showMissingItems,
   availableCategories,
   onFilterToggle,
   onNonOriginalFilterToggle,
+  onHideDuplicatesToggle,
+  onShowMissingItemsToggle,
   sortOrder,
   setSortOrder,
   hasDuplicates,
@@ -84,6 +92,26 @@ export default function InventoryFilters({
             className="text-button-info focus:ring-button-info h-4 w-4 cursor-pointer rounded"
           />
           <span className="text-primary-text text-sm">Non-Original Items Only</span>
+        </label>
+
+        <label className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            checked={hideDuplicates}
+            onChange={(e) => onHideDuplicatesToggle(e.target.checked)}
+            className="text-button-info focus:ring-button-info h-4 w-4 cursor-pointer rounded"
+          />
+          <span className="text-primary-text text-sm">Hide Duplicates</span>
+        </label>
+
+        <label className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            checked={showMissingItems}
+            onChange={(e) => onShowMissingItemsToggle(e.target.checked)}
+            className="text-button-info focus:ring-button-info h-4 w-4 cursor-pointer rounded"
+          />
+          <span className="text-primary-text text-sm">Show Missing Items</span>
         </label>
       </div>
 

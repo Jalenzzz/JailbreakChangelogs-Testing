@@ -20,7 +20,9 @@ import AdRemovalNotice from '@/components/Ads/AdRemovalNotice';
 import { getCurrentUserPremiumType } from '@/contexts/AuthContext';
 import ChangelogDetailsHeader from './ChangelogDetailsHeader';
 import { Icon } from '../UI/IconWrapper';
-import StyledSelect from '../UI/StyledSelect';
+import dynamic from 'next/dynamic';
+
+const Select = dynamic(() => import('react-select'), { ssr: false });
 
 interface Item {
   id: number;
@@ -430,9 +432,9 @@ export default function ChangelogDetailsClient({
               <div className="mb-2">
                 <h3 className="text-secondary-text text-sm font-medium">Filter by item type:</h3>
               </div>
-              <StyledSelect
-                value={selectedType}
-                onChange={setSelectedType}
+              <Select
+                value={selectedType ? { value: selectedType, label: selectedType } : null}
+                onChange={(option) => setSelectedType((option as { value: string })?.value || '')}
                 options={[
                   { value: '', label: 'All Types' },
                   ...itemTypes.map((type) => ({ value: type, label: type })),
@@ -440,6 +442,32 @@ export default function ChangelogDetailsClient({
                 className="w-full"
                 isClearable={true}
                 placeholder="All Types"
+                classNamePrefix="react-select"
+                unstyled
+                classNames={{
+                  control: () =>
+                    'text-secondary-text flex items-center justify-between rounded-lg border border-border-primary bg-primary-bg p-3 min-h-[40px] hover:cursor-pointer focus-within:border-button-info',
+                  singleValue: () => 'text-secondary-text',
+                  placeholder: () => 'text-secondary-text',
+                  menu: () =>
+                    'absolute z-[3000] mt-1 w-full rounded-lg border border-border-primary bg-secondary-bg shadow-lg',
+                  option: ({ isSelected, isFocused, isDisabled }) =>
+                    `px-4 py-3 ${
+                      isDisabled
+                        ? 'cursor-not-allowed text-secondary-text opacity-50'
+                        : 'cursor-pointer'
+                    } ${
+                      isSelected
+                        ? 'bg-button-info text-form-button-text'
+                        : isFocused
+                          ? 'bg-quaternary-bg text-primary-text'
+                          : 'bg-secondary-bg text-secondary-text'
+                    }`,
+                  clearIndicator: () =>
+                    'text-secondary-text hover:text-primary-text cursor-pointer',
+                  dropdownIndicator: () =>
+                    'text-secondary-text hover:text-primary-text cursor-pointer',
+                }}
               />
             </div>
 
@@ -450,9 +478,20 @@ export default function ChangelogDetailsClient({
                   Filter by suggestion type:
                 </h3>
               </div>
-              <StyledSelect
-                value={selectedSuggestionType}
-                onChange={setSelectedSuggestionType}
+              <Select
+                value={
+                  selectedSuggestionType
+                    ? {
+                        value: selectedSuggestionType,
+                        label: selectedSuggestionType
+                          .replace(/_/g, ' ')
+                          .replace(/\b\w/g, (l) => l.toUpperCase()),
+                      }
+                    : null
+                }
+                onChange={(option) =>
+                  setSelectedSuggestionType((option as { value: string })?.value || '')
+                }
                 options={[
                   { value: '', label: 'All Suggestion Types' },
                   ...suggestionTypes.map((type) => ({
@@ -465,6 +504,32 @@ export default function ChangelogDetailsClient({
                 className="w-full"
                 isClearable={true}
                 placeholder="All Suggestion Types"
+                classNamePrefix="react-select"
+                unstyled
+                classNames={{
+                  control: () =>
+                    'text-secondary-text flex items-center justify-between rounded-lg border border-border-primary bg-primary-bg p-3 min-h-[40px] hover:cursor-pointer focus-within:border-button-info',
+                  singleValue: () => 'text-secondary-text',
+                  placeholder: () => 'text-secondary-text',
+                  menu: () =>
+                    'absolute z-[3000] mt-1 w-full rounded-lg border border-border-primary bg-secondary-bg shadow-lg',
+                  option: ({ isSelected, isFocused, isDisabled }) =>
+                    `px-4 py-3 ${
+                      isDisabled
+                        ? 'cursor-not-allowed text-secondary-text opacity-50'
+                        : 'cursor-pointer'
+                    } ${
+                      isSelected
+                        ? 'bg-button-info text-form-button-text'
+                        : isFocused
+                          ? 'bg-quaternary-bg text-primary-text'
+                          : 'bg-secondary-bg text-secondary-text'
+                    }`,
+                  clearIndicator: () =>
+                    'text-secondary-text hover:text-primary-text cursor-pointer',
+                  dropdownIndicator: () =>
+                    'text-secondary-text hover:text-primary-text cursor-pointer',
+                }}
               />
             </div>
           </div>

@@ -31,12 +31,13 @@ export default function InventoryItems({
   onPageChange,
   isOwnInventory = false,
 }: InventoryItemsProps) {
-  // State management
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [page, setPage] = useState(1);
   const [showOnlyOriginal, setShowOnlyOriginal] = useState(false);
   const [showOnlyNonOriginal, setShowOnlyNonOriginal] = useState(false);
+  const [hideDuplicates, setHideDuplicates] = useState(false);
+  const [showMissingItems, setShowMissingItems] = useState(false);
   const [isFiltering, setIsFiltering] = useState(false);
   const [localRobloxUsers, setLocalRobloxUsers] = useState<Record<string, RobloxUser>>(robloxUsers);
   const [localRobloxAvatars, setLocalRobloxAvatars] =
@@ -58,17 +59,15 @@ export default function InventoryItems({
 
   const itemsPerPage = 20;
 
-  // Helper function to get variant-specific values for inventory items
+  // Get variant-specific values (e.g., different hyperchrome colors by year)
   const getVariantSpecificValues = (item: InventoryItem, baseItemData: Item) => {
-    // If the item has children (variants), try to match based on creation date
+    // Match variant by creation year
     if (baseItemData.children && baseItemData.children.length > 0) {
-      // Get the year from the created date
       const createdAtInfo = item.info.find((info) => info.title === 'Created At');
       const createdYear = createdAtInfo
         ? new Date(createdAtInfo.value).getFullYear().toString()
         : null;
 
-      // Find the child variant that matches the created year
       const matchingChild = createdYear
         ? baseItemData.children.find(
             (child) =>
@@ -88,14 +87,13 @@ export default function InventoryItems({
       }
     }
 
-    // Fall back to base item values
+    // Use base item values if no variant match
     return {
       cash_value: baseItemData.cash_value,
       duped_value: baseItemData.duped_value,
     };
   };
 
-  // Event handlers
   const handleCardClick = (item: InventoryItem) => {
     setSelectedItemForAction(item);
     setShowActionModal(true);
@@ -116,7 +114,8 @@ export default function InventoryItems({
     setIsFiltering(true);
     if (checked) {
       setShowOnlyOriginal(true);
-      setShowOnlyNonOriginal(false); // Uncheck the other option
+      setShowOnlyNonOriginal(false);
+      setShowMissingItems(false);
     } else {
       setShowOnlyOriginal(false);
     }
@@ -129,7 +128,8 @@ export default function InventoryItems({
     setIsFiltering(true);
     if (checked) {
       setShowOnlyNonOriginal(true);
-      setShowOnlyOriginal(false); // Uncheck the other option
+      setShowOnlyOriginal(false);
+      setShowMissingItems(false);
     } else {
       setShowOnlyNonOriginal(false);
     }
@@ -138,7 +138,34 @@ export default function InventoryItems({
     }, 300);
   };
 
-  // Helper functions for user data
+  const handleHideDuplicatesToggle = (checked: boolean) => {
+    setIsFiltering(true);
+    if (checked) {
+      setHideDuplicates(true);
+      setShowMissingItems(false);
+    } else {
+      setHideDuplicates(false);
+    }
+    setTimeout(() => {
+      setIsFiltering(false);
+    }, 300);
+  };
+
+  const handleShowMissingItemsToggle = (checked: boolean) => {
+    setIsFiltering(true);
+    if (checked) {
+      setShowMissingItems(true);
+      setShowOnlyOriginal(false);
+      setShowOnlyNonOriginal(false);
+      setHideDuplicates(false);
+    } else {
+      setShowMissingItems(false);
+    }
+    setTimeout(() => {
+      setIsFiltering(false);
+    }, 300);
+  };
+
   const getUserDisplay = useCallback(
     (userId: string) => {
       const user = localRobloxUsers[userId];
@@ -163,10 +190,17 @@ export default function InventoryItems({
     [localRobloxUsers],
   );
 
-  // Effects
   useEffect(() => {
     setPage(1);
-  }, [searchTerm, showOnlyOriginal, showOnlyNonOriginal, selectedCategories, sortOrder]);
+  }, [
+    searchTerm,
+    showOnlyOriginal,
+    showOnlyNonOriginal,
+    selectedCategories,
+    sortOrder,
+    hideDuplicates,
+    showMissingItems,
+  ]);
 
   useEffect(() => {
     if (propItemsData) {
@@ -179,7 +213,7 @@ export default function InventoryItems({
     setLocalRobloxAvatars(robloxAvatars);
   }, [robloxUsers, robloxAvatars]);
 
-  // Pre-calculate duplicate counts from FULL inventory (not filtered) for consistent numbering
+  // Count duplicates across entire inventory for consistent numbering
   const duplicateCounts = useMemo(() => {
     const counts = new Map<string, number>();
     initialData.data.forEach((item) => {
@@ -189,7 +223,24 @@ export default function InventoryItems({
     return counts;
   }, [initialData.data]);
 
-  // Parse numeric value from string format like "23.4m" -> 23400000
+  // Recalculate counts when hiding duplicates
+  const filteredDuplicateCounts = useMemo(() => {
+    if (!hideDuplicates) return duplicateCounts;
+
+    const counts = new Map<string, number>();
+    const seenItems = new Set<string>();
+
+    initialData.data.forEach((item) => {
+      const key = `${item.categoryTitle}-${item.title}`;
+      if (!seenItems.has(key)) {
+        seenItems.add(key);
+        counts.set(key, 1);
+      }
+    });
+    return counts;
+  }, [initialData.data, hideDuplicates, duplicateCounts]);
+
+  // Parse values like "23.4m" -> 23400000
   const parseNumericValue = (value: string | null): number => {
     if (!value || value === 'N/A') return -1;
     const lower = value.toLowerCase();
@@ -203,6 +254,94 @@ export default function InventoryItems({
 
   // Filter and sort logic
   const filteredAndSortedItems = useMemo(() => {
+    if (showMissingItems) {
+      const ownedItemIds = new Set(initialData.data.map((item) => item.item_id));
+      const missingItems = itemsData.filter((itemData) => {
+        // Skip if user already owns this item
+        if (ownedItemIds.has(itemData.id)) {
+          return false;
+        }
+        if (searchTerm) {
+          const searchLower = searchTerm.toLowerCase();
+          if (
+            !itemData.name.toLowerCase().includes(searchLower) &&
+            !itemData.type.toLowerCase().includes(searchLower) &&
+            !itemData.creator.toLowerCase().includes(searchLower)
+          ) {
+            return false;
+          }
+        }
+        if (selectedCategories.length > 0) {
+          if (!selectedCategories.includes(itemData.type)) {
+            return false;
+          }
+        }
+
+        // For missing items, we don't filter by original/non-original since the user doesn't own them
+        // These filters are disabled when showMissingItems is true
+
+        return true;
+      });
+
+      const mappedMissingItems = missingItems.map((itemData) => {
+        // mock inventory item for missing items
+        const mockInventoryItem = {
+          item_id: itemData.id,
+          categoryTitle: itemData.type,
+          title: itemData.name,
+          id: `missing-${itemData.id}`, // Unique ID for missing items
+          info: [
+            { title: 'Status', value: 'Not Owned' },
+            { title: 'Cash Value', value: itemData.cash_value || 'N/A' },
+            { title: 'Duped Value', value: itemData.duped_value || 'N/A' },
+          ],
+          isOriginalOwner: false,
+          timesTraded: 0,
+          uniqueCirculation: 0,
+          scan_id: '',
+          is_duplicated: false,
+          level: null,
+          season: null,
+          tradePopularMetric: null,
+          history: [],
+        };
+
+        return {
+          item: mockInventoryItem,
+          itemData: itemData,
+        };
+      });
+
+      // Sort missing items
+      return [...mappedMissingItems].sort((a, b) => {
+        switch (sortOrder) {
+          case 'alpha-asc':
+            return a.itemData.name.localeCompare(b.itemData.name);
+          case 'alpha-desc':
+            return b.itemData.name.localeCompare(a.itemData.name);
+          case 'cash-desc':
+            const aCashDesc = parseNumericValue(a.itemData.cash_value);
+            const bCashDesc = parseNumericValue(b.itemData.cash_value);
+            return bCashDesc - aCashDesc;
+          case 'cash-asc':
+            const aCashAsc = parseNumericValue(a.itemData.cash_value);
+            const bCashAsc = parseNumericValue(b.itemData.cash_value);
+            return aCashAsc - bCashAsc;
+          case 'duped-desc':
+            const aDupedDesc = parseNumericValue(a.itemData.duped_value);
+            const bDupedDesc = parseNumericValue(b.itemData.duped_value);
+            return bDupedDesc - aDupedDesc;
+          case 'duped-asc':
+            const aDupedAsc = parseNumericValue(a.itemData.duped_value);
+            const bDupedAsc = parseNumericValue(b.itemData.duped_value);
+            return aDupedAsc - bDupedAsc;
+          default:
+            return a.itemData.name.localeCompare(b.itemData.name);
+        }
+      });
+    }
+
+    // Original logic for showing owned items
     const filtered = initialData.data.filter((item) => {
       const itemData = itemsData.find((data) => data.id === item.item_id);
       if (!itemData) return false;
@@ -240,7 +379,21 @@ export default function InventoryItems({
       return true;
     });
 
-    const mappedItems = filtered.map((item) => {
+    // Apply hide duplicates filter
+    let finalFiltered = filtered;
+    if (hideDuplicates) {
+      const seenItems = new Set<string>();
+      finalFiltered = filtered.filter((item) => {
+        const itemKey = `${item.categoryTitle}-${item.title}`;
+        if (seenItems.has(itemKey)) {
+          return false; // Skip this duplicate
+        }
+        seenItems.add(itemKey);
+        return true; // Keep the first occurrence
+      });
+    }
+
+    const mappedItems = finalFiltered.map((item) => {
       const baseItemData = itemsData.find((data) => data.id === item.item_id)!;
       const variantValues = getVariantSpecificValues(item, baseItemData);
 
@@ -265,9 +418,10 @@ export default function InventoryItems({
           const aKey = `${a.item.categoryTitle}-${a.item.title}`;
           const bKey = `${b.item.categoryTitle}-${b.item.title}`;
 
-          // Use pre-calculated counts (much faster!)
-          const aCount = duplicateCounts.get(aKey) || 0;
-          const bCount = duplicateCounts.get(bKey) || 0;
+          // Use appropriate counts based on hideDuplicates setting
+          const countsToUse = hideDuplicates ? filteredDuplicateCounts : duplicateCounts;
+          const aCount = countsToUse.get(aKey) || 0;
+          const bCount = countsToUse.get(bKey) || 0;
 
           // Prioritize duplicates (items with count > 1) over singles
           if (aCount > 1 && bCount === 1) return -1; // a is duplicate, b is single
@@ -324,8 +478,11 @@ export default function InventoryItems({
     selectedCategories,
     showOnlyOriginal,
     showOnlyNonOriginal,
+    hideDuplicates,
+    showMissingItems,
     sortOrder,
     duplicateCounts,
+    filteredDuplicateCounts,
   ]);
 
   // Pagination
@@ -335,7 +492,7 @@ export default function InventoryItems({
   const paginatedItems = filteredAndSortedItems.slice(startIndex, endIndex);
 
   // Use the pre-calculated duplicate counts from full inventory
-  const itemCounts = duplicateCounts;
+  const itemCounts = hideDuplicates ? filteredDuplicateCounts : duplicateCounts;
 
   // Create a map to track the order of duplicates based on creation date (using ALL items from full inventory)
   const duplicateOrders = useMemo(() => {
@@ -430,13 +587,41 @@ export default function InventoryItems({
         setSelectedCategories={setSelectedCategories}
         showOnlyOriginal={showOnlyOriginal}
         showOnlyNonOriginal={showOnlyNonOriginal}
+        hideDuplicates={hideDuplicates}
+        showMissingItems={showMissingItems}
         availableCategories={availableCategories}
         onFilterToggle={handleOriginalFilterToggle}
         onNonOriginalFilterToggle={handleNonOriginalFilterToggle}
+        onHideDuplicatesToggle={handleHideDuplicatesToggle}
+        onShowMissingItemsToggle={handleShowMissingItemsToggle}
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}
         hasDuplicates={hasDuplicates}
       />
+
+      {/* Item Counter */}
+      <div className="mb-4">
+        <p className="text-secondary-text">
+          {searchTerm ||
+          showOnlyOriginal ||
+          showOnlyNonOriginal ||
+          hideDuplicates ||
+          showMissingItems ||
+          selectedCategories.length > 0
+            ? `Found ${filteredAndSortedItems.length} ${filteredAndSortedItems.length === 1 ? 'item' : 'items'}${
+                searchTerm ? ` matching "${searchTerm}"` : ''
+              }${
+                showOnlyOriginal
+                  ? ' (Original only)'
+                  : showOnlyNonOriginal
+                    ? ' (Non-original only)'
+                    : ''
+              }${hideDuplicates ? ' (Duplicates hidden)' : ''}${
+                showMissingItems ? ' (Missing items)' : ''
+              }${selectedCategories.length > 0 ? ` in ${selectedCategories[0]}` : ''}`
+            : `Total Items: ${filteredAndSortedItems.length}`}
+        </p>
+      </div>
 
       {/* Duplicate Info */}
       {inventoryStats.duplicates.length > 0 && (
