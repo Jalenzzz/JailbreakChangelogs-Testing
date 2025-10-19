@@ -17,6 +17,7 @@ import UserStats from '@/components/Inventory/UserStats';
 import InventoryItems from '@/components/Inventory/InventoryItems';
 import TradeHistoryModal from '@/components/Modals/TradeHistoryModal';
 import InventoryAdSection from '@/components/Ads/InventoryAdSection';
+import { formatMessageDate } from '@/utils/timestamp';
 import { useScanWebSocket } from '@/hooks/useScanWebSocket';
 import { useSupporterModal } from '@/hooks/useSupporterModal';
 import SupporterModal from '@/components/Modals/SupporterModal';
@@ -335,13 +336,7 @@ export default function InventoryCheckerClient({
   }, [robloxId, isLoading, searchId]);
 
   const formatDate = (timestamp: number) => {
-    return new Date(timestamp * 1000).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+    return formatMessageDate(timestamp);
   };
 
   const handleItemClick = (item: InventoryItem) => {

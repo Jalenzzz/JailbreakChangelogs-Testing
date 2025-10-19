@@ -315,7 +315,7 @@ export default function TradeHistoryModal({
                                     href={`https://www.roblox.com/users/${trade.fromUser.UserId}/profile`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-primary-text hover:text-link truncate font-medium transition-colors hover:underline"
+                                    className="text-link hover:text-link-hover truncate font-medium transition-colors hover:underline"
                                   >
                                     <span className="inline-flex items-center gap-1.5">
                                       {enhancedGetUsername(trade.fromUser.UserId.toString())}
@@ -367,7 +367,7 @@ export default function TradeHistoryModal({
                                     href={`https://www.roblox.com/users/${trade.toUser.UserId}/profile`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-primary-text hover:text-link truncate font-medium transition-colors hover:underline"
+                                    className="text-link hover:text-link-hover truncate font-medium transition-colors hover:underline"
                                   >
                                     <span className="inline-flex items-center gap-1.5">
                                       {enhancedGetUsername(trade.toUser.UserId.toString())}
