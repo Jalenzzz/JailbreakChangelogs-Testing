@@ -8,7 +8,20 @@ interface CategoryIcon {
 }
 
 // Enhanced Iconify icon mapping following best practices
+// Memoize icon components to prevent stuttering during virtualization
+const iconCache = new Map<
+  string,
+  React.ComponentType<{
+    className?: string;
+    style?: React.CSSProperties;
+  }>
+>();
+
 const createIconifyIcon = (iconName: string) => {
+  if (iconCache.has(iconName)) {
+    return iconCache.get(iconName)!;
+  }
+
   const IconComponent = ({
     className,
     style,
@@ -17,6 +30,8 @@ const createIconifyIcon = (iconName: string) => {
     style?: React.CSSProperties;
   }) => <Icon icon={iconName} className={className} style={style} inline={true} />;
   IconComponent.displayName = `IconifyIcon(${iconName})`;
+
+  iconCache.set(iconName, IconComponent);
   return IconComponent;
 };
 

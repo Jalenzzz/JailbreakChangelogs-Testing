@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import { Dialog, DialogTitle } from '@headlessui/react';
 import { XMarkIcon, ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/24/outline';
 import { DefaultAvatar } from '@/utils/avatar';
 import { getCategoryColor } from '@/utils/categoryIcons';
 import { VerifiedBadgeIcon } from '@/components/Icons/VerifiedBadgeIcon';
+import { fetchMissingRobloxData } from '@/app/inventories/actions';
 
 interface TradeHistoryEntry {
   UserId: number;
@@ -26,7 +28,6 @@ interface TradeHistoryModalProps {
   getUserAvatar: (userId: string) => string | null;
   getUserDisplay: (userId: string) => string;
   formatDate: (timestamp: number) => string;
-  loadingUserIds?: Set<string>;
   getUsername?: (userId: string) => string;
   getHasVerifiedBadge?: (userId: string) => boolean;
 }
@@ -38,11 +39,101 @@ export default function TradeHistoryModal({
   getUserAvatar,
   getUserDisplay,
   formatDate,
-  loadingUserIds = new Set(),
   getUsername,
   getHasVerifiedBadge,
 }: TradeHistoryModalProps) {
   const [tradeSortOrder, setTradeSortOrder] = useState<'newest' | 'oldest'>('newest');
+  const [localUserData, setLocalUserData] = useState<
+    Record<string, { name?: string; displayName?: string; hasVerifiedBadge?: boolean }>
+  >({});
+  const [localAvatarData, setLocalAvatarData] = useState<Record<string, string>>({});
+
+  // Extract user IDs from trade history when modal opens
+  const userIds = useMemo(() => {
+    if (!item?.history || !Array.isArray(item.history)) return [];
+
+    const ids = new Set<string>();
+    item.history.forEach((entry) => {
+      ids.add(entry.UserId.toString());
+    });
+    return Array.from(ids);
+  }, [item?.history]);
+
+  // Fetch user data using TanStack Query
+  const { data: fetchedUserData, isLoading } = useQuery({
+    queryKey: ['userData', userIds.sort()],
+    queryFn: () => fetchMissingRobloxData(userIds),
+    enabled: isOpen && userIds.length > 0,
+    staleTime: 30 * 60 * 1000, // Cache for 30 minutes
+    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour
+  });
+
+  // Merge fetched user data with existing data
+  useEffect(() => {
+    if (fetchedUserData && 'userData' in fetchedUserData) {
+      setLocalUserData((prev) => ({
+        ...prev,
+        ...fetchedUserData.userData,
+      }));
+    }
+    if (fetchedUserData && 'avatarData' in fetchedUserData) {
+      setLocalAvatarData((prev) => ({
+        ...prev,
+        ...fetchedUserData.avatarData,
+      }));
+    }
+  }, [fetchedUserData]);
+
+  // Enhanced user avatar function that prioritizes passed-in data over local data
+  const enhancedGetUserAvatar = (userId: string) => {
+    // First check passed-in function (this has priority - it contains data from parent components)
+    const passedInAvatar = getUserAvatar(userId);
+    if (passedInAvatar) {
+      return passedInAvatar;
+    }
+    // Then check if we have local data
+    const localAvatar = localAvatarData[userId];
+    if (localAvatar) {
+      return localAvatar;
+    }
+    return null;
+  };
+
+  // Enhanced username function that prioritizes passed-in data over local data
+  const enhancedGetUsername = (userId: string) => {
+    // First check passed-in functions (these have priority - they contain data from parent components)
+    if (getUsername) {
+      const username = getUsername(userId);
+      if (username && username !== userId) {
+        return username;
+      }
+    }
+    const displayName = getUserDisplay(userId);
+    if (displayName && displayName !== userId) {
+      return displayName;
+    }
+    // Then check if we have local data
+    const localUser = localUserData[userId];
+    if (localUser?.name) {
+      return localUser.name;
+    }
+    // Fallback to user ID
+    return userId;
+  };
+
+  // Enhanced verified badge function that prioritizes passed-in data over local data
+  const enhancedGetHasVerifiedBadge = (userId: string) => {
+    // First check passed-in function (this has priority - it contains data from parent components)
+    if (getHasVerifiedBadge) {
+      return getHasVerifiedBadge(userId);
+    }
+    // Then check if we have local data
+    const localUser = localUserData[userId];
+    if (localUser?.hasVerifiedBadge !== undefined) {
+      return Boolean(localUser.hasVerifiedBadge);
+    }
+    return false;
+  };
 
   const toggleTradeSortOrder = () => {
     setTradeSortOrder((prev) => (prev === 'newest' ? 'oldest' : 'newest'));
@@ -78,7 +169,7 @@ export default function TradeHistoryModal({
                   )}
                 </div>
                 {/* Loading indicator in header */}
-                {loadingUserIds.size > 0 && (
+                {isLoading && (
                   <div className="text-button-info mt-2 flex items-center gap-2">
                     <svg
                       className="h-4 w-4 animate-spin"
@@ -208,9 +299,11 @@ export default function TradeHistoryModal({
                                 {/* From User */}
                                 <div className="flex items-center gap-2">
                                   <div className="border-border-primary flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border">
-                                    {getUserAvatar(trade.fromUser.UserId.toString()) ? (
+                                    {enhancedGetUserAvatar(trade.fromUser.UserId.toString()) ? (
                                       <Image
-                                        src={getUserAvatar(trade.fromUser.UserId.toString())!}
+                                        src={
+                                          enhancedGetUserAvatar(trade.fromUser.UserId.toString())!
+                                        }
                                         alt="User Avatar"
                                         width={24}
                                         height={24}
@@ -227,13 +320,10 @@ export default function TradeHistoryModal({
                                     className="text-primary-text hover:text-link truncate font-medium transition-colors hover:underline"
                                   >
                                     <span className="inline-flex items-center gap-1.5">
-                                      {getUsername
-                                        ? getUsername(trade.fromUser.UserId.toString())
-                                        : getUserDisplay(trade.fromUser.UserId.toString())}
-                                      {getHasVerifiedBadge &&
-                                        getHasVerifiedBadge(trade.fromUser.UserId.toString()) && (
-                                          <VerifiedBadgeIcon className="h-4 w-4" />
-                                        )}
+                                      {enhancedGetUsername(trade.fromUser.UserId.toString())}
+                                      {enhancedGetHasVerifiedBadge(
+                                        trade.fromUser.UserId.toString(),
+                                      ) && <VerifiedBadgeIcon className="h-4 w-4" />}
                                     </span>
                                   </a>
                                 </div>
@@ -263,9 +353,9 @@ export default function TradeHistoryModal({
                                 {/* To User */}
                                 <div className="flex items-center gap-2">
                                   <div className="border-border-primary flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border">
-                                    {getUserAvatar(trade.toUser.UserId.toString()) ? (
+                                    {enhancedGetUserAvatar(trade.toUser.UserId.toString()) ? (
                                       <Image
-                                        src={getUserAvatar(trade.toUser.UserId.toString())!}
+                                        src={enhancedGetUserAvatar(trade.toUser.UserId.toString())!}
                                         alt="User Avatar"
                                         width={24}
                                         height={24}
@@ -282,13 +372,10 @@ export default function TradeHistoryModal({
                                     className="text-primary-text hover:text-link truncate font-medium transition-colors hover:underline"
                                   >
                                     <span className="inline-flex items-center gap-1.5">
-                                      {getUsername
-                                        ? getUsername(trade.toUser.UserId.toString())
-                                        : getUserDisplay(trade.toUser.UserId.toString())}
-                                      {getHasVerifiedBadge &&
-                                        getHasVerifiedBadge(trade.toUser.UserId.toString()) && (
-                                          <VerifiedBadgeIcon className="h-4 w-4" />
-                                        )}
+                                      {enhancedGetUsername(trade.toUser.UserId.toString())}
+                                      {enhancedGetHasVerifiedBadge(
+                                        trade.toUser.UserId.toString(),
+                                      ) && <VerifiedBadgeIcon className="h-4 w-4" />}
                                     </span>
                                   </a>
                                 </div>

@@ -229,6 +229,8 @@ export default function InventoryFilters({
               onChange={(option) => {
                 if (option) {
                   setSortOrder((option as { value: SortOrder }).value);
+                } else {
+                  setSortOrder('created-desc');
                 }
               }}
               options={[

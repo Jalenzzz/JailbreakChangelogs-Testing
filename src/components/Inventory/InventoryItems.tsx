@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
 import { RobloxUser, Item } from '@/types';
 import { InventoryData, InventoryItem } from '@/app/inventories/types';
 import ItemActionModal from '@/components/Modals/ItemActionModal';
@@ -9,6 +10,7 @@ import InventoryFilters from './InventoryFilters';
 import InventoryItemsGrid from './InventoryItemsGrid';
 import { Icon } from '../UI/IconWrapper';
 import dynamic from 'next/dynamic';
+import { fetchMissingRobloxData } from '@/app/inventories/actions';
 
 const Tooltip = dynamic(() => import('@mui/material/Tooltip'), { ssr: false });
 
@@ -18,7 +20,6 @@ interface InventoryItemsProps {
   robloxAvatars: Record<string, string>;
   onItemClick: (item: InventoryItem) => void;
   itemsData?: Item[];
-  onPageChange?: (page: number) => void;
   isOwnInventory?: boolean;
 }
 
@@ -28,12 +29,10 @@ export default function InventoryItems({
   robloxAvatars,
   onItemClick,
   itemsData: propItemsData,
-  onPageChange,
   isOwnInventory = false,
 }: InventoryItemsProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [page, setPage] = useState(1);
   const [showOnlyOriginal, setShowOnlyOriginal] = useState(false);
   const [showOnlyNonOriginal, setShowOnlyNonOriginal] = useState(false);
   const [hideDuplicates, setHideDuplicates] = useState(false);
@@ -45,6 +44,7 @@ export default function InventoryItems({
   const [itemsData, setItemsData] = useState<Item[]>(propItemsData || []);
   const [showActionModal, setShowActionModal] = useState(false);
   const [selectedItemForAction, setSelectedItemForAction] = useState<InventoryItem | null>(null);
+  const [visibleUserIds, setVisibleUserIds] = useState<string[]>([]);
   const [sortOrder, setSortOrder] = useState<
     | 'duplicates'
     | 'alpha-asc'
@@ -57,7 +57,30 @@ export default function InventoryItems({
     | 'duped-asc'
   >('created-desc');
 
-  const itemsPerPage = 20;
+  // Fetch user data for visible items only using TanStack Query
+  const { data: fetchedUserData } = useQuery({
+    queryKey: ['userData', visibleUserIds.sort()],
+    queryFn: () => fetchMissingRobloxData(visibleUserIds),
+    enabled: visibleUserIds.length > 0,
+    staleTime: 30 * 60 * 1000, // Cache for 30 minutes
+    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour
+  });
+
+  // Merge fetched user data with existing data
+  useEffect(() => {
+    if (fetchedUserData && 'userData' in fetchedUserData) {
+      setLocalRobloxUsers((prev) => ({
+        ...prev,
+        ...fetchedUserData.userData,
+      }));
+      // Note: avatarData is empty for original owners since they're not displayed
+    }
+  }, [fetchedUserData]);
+
+  // Handle visible user IDs changes from virtual scrolling
+  const handleVisibleUserIdsChange = useCallback((userIds: string[]) => {
+    setVisibleUserIds(userIds);
+  }, []);
 
   // Get variant-specific values (e.g., different hyperchrome colors by year)
   const getVariantSpecificValues = (item: InventoryItem, baseItemData: Item) => {
@@ -189,18 +212,6 @@ export default function InventoryItems({
     },
     [localRobloxUsers],
   );
-
-  useEffect(() => {
-    setPage(1);
-  }, [
-    searchTerm,
-    showOnlyOriginal,
-    showOnlyNonOriginal,
-    selectedCategories,
-    sortOrder,
-    hideDuplicates,
-    showMissingItems,
-  ]);
 
   useEffect(() => {
     if (propItemsData) {
@@ -486,12 +497,6 @@ export default function InventoryItems({
     filteredDuplicateCounts,
   ]);
 
-  // Pagination
-  const totalPages = Math.ceil(filteredAndSortedItems.length / itemsPerPage);
-  const startIndex = (page - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedItems = filteredAndSortedItems.slice(startIndex, endIndex);
-
   // Use the pre-calculated duplicate counts from full inventory
   const itemCounts = hideDuplicates ? filteredDuplicateCounts : duplicateCounts;
 
@@ -568,13 +573,6 @@ export default function InventoryItems({
   const hasDuplicates = useMemo(() => {
     return inventoryStats.duplicates.length > 0;
   }, [inventoryStats.duplicates]);
-
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage);
-    if (onPageChange) {
-      onPageChange(newPage);
-    }
-  };
 
   return (
     <div className="border-border-primary bg-secondary-bg shadow-card-shadow rounded-lg border p-6">
@@ -706,10 +704,7 @@ export default function InventoryItems({
       )}
 
       <InventoryItemsGrid
-        filteredItems={paginatedItems}
-        currentPage={page}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
+        filteredItems={filteredAndSortedItems}
         getUserDisplay={getUserDisplay}
         getUserAvatar={getUserAvatar}
         getHasVerifiedBadge={getHasVerifiedBadge}
@@ -718,6 +713,7 @@ export default function InventoryItems({
         userId={initialData.user_id}
         itemCounts={itemCounts}
         duplicateOrders={duplicateOrders}
+        onVisibleUserIdsChange={handleVisibleUserIdsChange}
       />
 
       {/* Action Modal */}

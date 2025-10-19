@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { DupeFinderItem, RobloxUser, Item } from '@/types';
 import { UserConnectionData } from '@/app/inventories/types';
 import { parseCurrencyValue } from '@/utils/currency';
+import { fetchMissingRobloxData } from '@/app/inventories/actions';
 import ItemActionModal from '@/components/Modals/ItemActionModal';
 import TradeHistoryModal from '@/components/Modals/TradeHistoryModal';
 import DisplayAd from '@/components/Ads/DisplayAd';
@@ -47,7 +49,6 @@ export default function DupeFinderResults({
     | 'created-desc'
   >('duplicates');
 
-  const [page, setPage] = useState(1);
   const [localRobloxUsers, setLocalRobloxUsers] = useState<Record<string, RobloxUser>>(robloxUsers);
   const [localRobloxAvatars, setLocalRobloxAvatars] =
     useState<Record<string, string>>(robloxAvatars);
@@ -57,10 +58,35 @@ export default function DupeFinderResults({
   const [selectedItemForAction, setSelectedItemForAction] = useState<DupeFinderItem | null>(null);
   const [itemsData] = useState<Item[]>(items);
   const [totalDupedValue, setTotalDupedValue] = useState<number>(0);
+  const [visibleUserIds, setVisibleUserIds] = useState<string[]>([]);
 
   const { user } = useAuthContext();
   const currentUserPremiumType = user?.premiumtype || 0;
-  const itemsPerPage = 20;
+
+  // Fetch user data for visible items only using TanStack Query
+  const { data: fetchedUserData } = useQuery({
+    queryKey: ['userData', visibleUserIds.sort()],
+    queryFn: () => fetchMissingRobloxData(visibleUserIds),
+    enabled: visibleUserIds.length > 0,
+    staleTime: 30 * 60 * 1000, // Cache for 30 minutes
+    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour
+  });
+
+  // Merge fetched user data with existing data
+  useEffect(() => {
+    if (fetchedUserData && 'userData' in fetchedUserData) {
+      setLocalRobloxUsers((prev) => ({
+        ...prev,
+        ...fetchedUserData.userData,
+      }));
+      // Note: avatarData is empty for original owners since they're not displayed
+    }
+  }, [fetchedUserData]);
+
+  // Handle visible user IDs changes from virtual scrolling
+  const handleVisibleUserIdsChange = useCallback((userIds: string[]) => {
+    setVisibleUserIds(userIds);
+  }, []);
 
   // Helper functions
   const getUserDisplay = useCallback(
@@ -141,10 +167,6 @@ export default function DupeFinderResults({
     setLocalRobloxUsers(robloxUsers);
     setLocalRobloxAvatars(robloxAvatars);
   }, [robloxUsers, robloxAvatars]);
-
-  useEffect(() => {
-    setPage(1);
-  }, [searchTerm, selectedCategories, sortOrder]);
 
   // Items data is now passed as props from server-side, no need to fetch
 
@@ -238,14 +260,8 @@ export default function DupeFinderResults({
     });
   }, [filteredData, sortOrder]);
 
-  const paginatedData = useMemo(() => {
-    const startIndex = (page - 1) * itemsPerPage;
-    return sortedData.slice(startIndex, startIndex + itemsPerPage);
-  }, [sortedData, page, itemsPerPage]);
-
-  const totalPages = useMemo(() => {
-    return Math.ceil(sortedData.length / itemsPerPage);
-  }, [sortedData.length, itemsPerPage]);
+  // Use sortedData directly instead of pagination
+  const filteredAndSortedItems = sortedData;
 
   // Check if there are any duplicates
   const hasDuplicates = useMemo(() => {
@@ -331,10 +347,6 @@ export default function DupeFinderResults({
     setSelectedItem(null);
   };
 
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage);
-  };
-
   return (
     <div className="space-y-6">
       {/* Search Form */}
@@ -407,10 +419,7 @@ export default function DupeFinderResults({
         )}
 
         <DupeItemsGrid
-          paginatedData={paginatedData}
-          currentPage={page}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
+          filteredItems={filteredAndSortedItems}
           getUserDisplay={getUserDisplay}
           getUserAvatar={getUserAvatar}
           getHasVerifiedBadge={getHasVerifiedBadge}
@@ -419,6 +428,7 @@ export default function DupeFinderResults({
           itemCounts={itemCounts}
           duplicateOrders={duplicateOrders}
           itemsData={itemsData}
+          onVisibleUserIdsChange={handleVisibleUserIdsChange}
         />
       </div>
 
