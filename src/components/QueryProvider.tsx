@@ -1,7 +1,9 @@
 'use client';
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient } from '@tanstack/react-query';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { useState } from 'react';
+import { createIDBPersister } from '@/utils/idbPersister';
 
 export default function QueryProvider({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -9,14 +11,25 @@ export default function QueryProvider({ children }: { children: React.ReactNode 
       new QueryClient({
         defaultOptions: {
           queries: {
-            // With SSR, we usually want to set some default staleTime
-            // above 0 to avoid refetching immediately on the client
-            staleTime: 60 * 1000, // 1 minute
-            gcTime: 5 * 60 * 1000, // 5 minutes
+            staleTime: 60 * 60 * 1000, // 1 hour
+            gcTime: 24 * 60 * 60 * 1000, // 24 hours
           },
         },
       }),
   );
 
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+  const persister = createIDBPersister();
+
+  return (
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{
+        persister,
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+        buster: 'v1', // Cache buster - increment this when I want to invalidate all cached data
+      }}
+    >
+      {children}
+    </PersistQueryClientProvider>
+  );
 }

@@ -64,8 +64,6 @@ export default function TradeHistoryModal({
     queryKey: ['userData', userIds.sort()],
     queryFn: () => fetchMissingRobloxData(userIds),
     enabled: isOpen && userIds.length > 0,
-    staleTime: 30 * 60 * 1000, // Cache for 30 minutes
-    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour
   });
 
   // Merge fetched user data with existing data
