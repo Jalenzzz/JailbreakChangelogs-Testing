@@ -54,6 +54,7 @@ export default function InventoryItemCard({
   const isOriginalOwner = item.isOriginalOwner;
   const originalOwnerInfo = item.info.find((info) => info.title === 'Original Owner');
   const isDuplicate = duplicateCount > 1;
+  const isMissingItem = item.id.startsWith('missing-');
 
   return (
     <div
@@ -252,7 +253,9 @@ export default function InventoryItemCard({
         <div>
           <div className="text-secondary-text text-sm">ORIGINAL OWNER</div>
           <div className="text-xl font-bold">
-            {originalOwnerInfo ? (
+            {isMissingItem ? (
+              <span className="text-primary-text text-xl font-bold">???</span>
+            ) : originalOwnerInfo ? (
               <a
                 href={`https://www.roblox.com/users/${isOriginalOwner ? userId : originalOwnerInfo.value}/profile`}
                 target="_blank"
@@ -277,25 +280,34 @@ export default function InventoryItemCard({
             )}
           </div>
         </div>
+
         <div>
           <div className="text-secondary-text text-sm">CREATED ON</div>
           <div className="text-primary-text text-xl font-bold">
-            {item.info.find((info) => info.title === 'Created At')?.value || 'N/A'}
+            {isMissingItem ? (
+              <span className="text-primary-text text-xl font-bold">???</span>
+            ) : (
+              item.info.find((info) => info.title === 'Created At')?.value || 'N/A'
+            )}
           </div>
         </div>
       </div>
 
-      {/* Season and Level badges - always show container for consistent layout */}
+      {/* Season and Level badges */}
       <div className="border-secondary-text mt-3 flex min-h-[40px] justify-center gap-2 border-t pt-3">
-        {item.season && (
-          <div className="border-button-info bg-button-info flex h-8 w-8 items-center justify-center rounded-full border shadow-lg">
-            <span className="text-form-button-text text-xs font-bold">S{item.season}</span>
-          </div>
-        )}
-        {item.level && (
-          <div className="border-status-success bg-status-success flex h-8 w-8 items-center justify-center rounded-full border shadow-lg">
-            <span className="text-form-button-text text-xs font-bold">L{item.level}</span>
-          </div>
+        {!isMissingItem && (
+          <>
+            {item.season && (
+              <div className="border-button-info bg-button-info flex h-8 w-8 items-center justify-center rounded-full border shadow-lg">
+                <span className="text-form-button-text text-xs font-bold">S{item.season}</span>
+              </div>
+            )}
+            {item.level && (
+              <div className="border-status-success bg-status-success flex h-8 w-8 items-center justify-center rounded-full border shadow-lg">
+                <span className="text-form-button-text text-xs font-bold">L{item.level}</span>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

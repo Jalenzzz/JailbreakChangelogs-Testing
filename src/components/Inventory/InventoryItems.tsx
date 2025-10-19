@@ -291,9 +291,10 @@ export default function InventoryItems({
           title: itemData.name,
           id: `missing-${itemData.id}`, // Unique ID for missing items
           info: [
-            { title: 'Status', value: 'Not Owned' },
             { title: 'Cash Value', value: itemData.cash_value || 'N/A' },
             { title: 'Duped Value', value: itemData.duped_value || 'N/A' },
+            { title: 'Original Owner', value: '???' },
+            { title: 'Created At', value: '???' },
           ],
           isOriginalOwner: false,
           timesTraded: 0,
