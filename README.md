@@ -3,6 +3,9 @@
 [![Discord](https://img.shields.io/discord/1286064050135896064?logo=discord&logoColor=white&label=discord&color=4d3dff)](https://discord.jailbreakchangelogs.xyz)
 [![Better Stack Badge](https://uptime.betterstack.com/status-badges/v3/monitor/1ofdv.svg)](https://status.jailbreakchangelogs.xyz)
 
+> [!IMPORTANT]
+> **This repository is no longer being updated.** Testing has moved to the main repository's testing branch and will build from that. Please visit the [main repository testing branch](https://github.com/JBChangelogs/JailbreakChangelogs/tree/testing) for the latest development updates.
+
 > [!CAUTION]
 > The only websites associated with this repository are the [main website](https://jailbreakchangelogs.xyz/) and the [testing website](https://testing.jailbreakchangelogs.xyz). We have no other affiliated websites or domains. Any other websites or platforms claiming to represent or provide content for this repo are not controlled by us.
 
